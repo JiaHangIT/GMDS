@@ -1,0 +1,9 @@
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.deps.json
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.csprojResolveAssemblyReference.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.csproj.CoreCompileInputs.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfoInputs.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfo.cs
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb

@@ -1,0 +1,9 @@
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.deps.json
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.dll
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.pdb
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.csproj.CoreCompileInputs.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.AssemblyInfoInputs.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.AssemblyInfo.cs
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.dll
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.pdb
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.BLL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.BLL.csprojResolveAssemblyReference.cache

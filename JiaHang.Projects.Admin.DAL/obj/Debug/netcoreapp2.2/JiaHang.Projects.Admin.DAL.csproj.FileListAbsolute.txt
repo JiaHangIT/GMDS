@@ -1,0 +1,10 @@
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.deps.json
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.dll
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.pdb
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.csproj.CoreCompileInputs.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.AssemblyInfoInputs.cache
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.AssemblyInfo.cs
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.dll
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.pdb
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.runtimeconfig.json
+D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.runtimeconfig.dev.json
