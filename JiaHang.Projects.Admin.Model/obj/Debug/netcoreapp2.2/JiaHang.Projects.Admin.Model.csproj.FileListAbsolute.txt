@@ -7,3 +7,11 @@ D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\
 D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.dll
 D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.pdb
 D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.csprojResolveAssemblyReference.cache
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.deps.json
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.dll
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.pdb
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.csproj.CoreCompileInputs.cache
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.AssemblyInfoInputs.cache
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.AssemblyInfo.cs
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.dll
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Model\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Model.pdb

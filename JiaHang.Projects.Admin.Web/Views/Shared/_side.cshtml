@@ -1,0 +1,124 @@
+﻿
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll" style="user-select: none;-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;-o-user-select: none;-khtml-user-select: none; ">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" id="side"></ul>
+
+    </div>
+</div>
+
+
+
+<script>
+    //读取菜单
+    var routes_str = window.localStorage.getItem("userroutes");
+
+
+    if (routes_str != null) {
+        routes = JSON.parse(routes_str);
+        //获取当前模块id
+        var current_moduleId = window.localStorage.getItem("current_moduleId");
+        let side = document.getElementById("side");
+
+        let c_routes = routes[0];
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i].moduleId === current_moduleId) {
+                //generateMenu(side, [routes[i]], 1);
+                c_routes = routes[i];
+                break;
+            }
+        }
+        var data = [c_routes];
+        generateMenu(side, data, 1);
+    }
+
+    //获取当前url
+    function GetUrlRelativePath() {
+        var url = document.location.toString();
+        var arrUrl = url.split("//");
+
+        var start = arrUrl[1].indexOf("/");
+        var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
+
+        if (relUrl.indexOf("?") != -1) {
+            relUrl = relUrl.split("?")[0];
+        }
+        return relUrl;
+    }
+    function generateMenu(dom, routes, rindex) {
+        for (let i = 0; i < routes.length; i++) {
+            let index = rindex;
+            let li = document.createElement("li");
+            let li_class_name = "layui-nav-item";
+            if (i == 0)
+                li_class_name += " layui-nav-itemed";
+            li.className = li_class_name;
+            let a = document.createElement("a");
+            a.innerHTML = routes[i].moduleName;
+            //a.innerHTML = rouleName;
+            a.style.textIndent = 15 * index + 'px';
+            li.appendChild(a);
+            let dl = document.createElement("dl");
+            dl.classList = "layui-nav-child";
+
+
+            let controllers = routes[i].controllers;
+            for (let j = 0; j < controllers.length; j++) {
+                if (controllers[j].methods.length > 1) {
+                    let methods = controllers[j].methods;
+                    let eli = document.createElement("li");
+                    let eli_class_name = "layui-nav-item";
+                   
+                    let ea = document.createElement("a");
+                    ea.innerHTML = controllers[j].controllerAlias;
+                    ea.style.textIndent = 15 * index + 'px';
+                    eli.appendChild(ea);
+                    let edl = document.createElement("dl");
+                    edl.classList = "layui-nav-child";
+                    let this_nav_flag = false;
+
+                    for (let m = 0; m < methods.length; m++) {
+
+                        let dd = document.createElement("dd");
+                        dd.innerHTML = "<a href=" + methods[m].completePath + ">" + methods[m].methodAlias + "</a>";
+                        dd.style.textIndent = 15 * index + 'px';
+                        if (methods[m].completePath == GetUrlRelativePath()) {
+                            dd.className = "layui-this";
+                            this_nav_flag = true;
+                        }
+                        edl.appendChild(dd);
+                    }
+                    //layui-nav-itemed
+                    if (this_nav_flag) {
+                        eli_class_name += " layui-nav-itemed";
+
+                    }
+                    eli.className = eli_class_name;
+                    eli.appendChild(edl);
+                    dl.appendChild(eli);
+                    //continue;
+                }
+                else { 
+                    let dd = document.createElement("dd");
+                    dd.innerHTML = "<a href=" + controllers[j].methods[0].completePath + ">" + controllers[j].controllerAlias + "</a>";
+                    dd.style.textIndent = 15 * index + 'px';
+
+                    if (controllers[j].methods[0].completePath == GetUrlRelativePath()) {
+                        dd.className = "layui-this";
+                    }
+                    dl.appendChild(dd);
+                }
+
+              
+            }
+
+            li.appendChild(dl)
+            let children = routes[i].children;
+            if (children.length > 0) {
+                index++;
+                generateMenu(dl, routes[i].children, index);
+            }
+            dom.appendChild(li);
+        }
+    }
+</script>

@@ -1,5 +1,5 @@
 ﻿using System;
-using JiaHang.Projects.Admin.DAL.EntityFramework.Entitys;
+using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -29,7 +29,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<DcsServiceInfo> DcsServiceInfo { get; set; }
         public virtual DbSet<DcsServiceParams> DcsServiceParams { get; set; }
         public virtual DbSet<DcsServiceShareResults> DcsServiceShareResults { get; set; }
+        public virtual DbSet<SysAreaRoute> SysAreaRoute { get; set; }
         public virtual DbSet<SysConnectionInfo> SysConnectionInfo { get; set; }
+        public virtual DbSet<SysControllerRoute> SysControllerRoute { get; set; }
+        public virtual DbSet<SysDataCondition> SysDataCondition { get; set; }
         public virtual DbSet<SysDataRightInfo> SysDataRightInfo { get; set; }
         public virtual DbSet<SysDatabaseType> SysDatabaseType { get; set; }
         public virtual DbSet<SysDatarightType> SysDatarightType { get; set; }
@@ -43,30 +46,39 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<SysHelpType> SysHelpType { get; set; }
         public virtual DbSet<SysJobInfo> SysJobInfo { get; set; }
         public virtual DbSet<SysMessageInfo> SysMessageInfo { get; set; }
+        public virtual DbSet<SysMethodConditions> SysMethodConditions { get; set; }
+        public virtual DbSet<SysMethodRoute> SysMethodRoute { get; set; }
         public virtual DbSet<SysModelDatarightType> SysModelDatarightType { get; set; }
         public virtual DbSet<SysModelGroup> SysModelGroup { get; set; }
         public virtual DbSet<SysModelInfo> SysModelInfo { get; set; }
+        public virtual DbSet<SysModule> SysModule { get; set; }
+        public virtual DbSet<SysModuleRouteRelation> SysModuleRouteRelation { get; set; }
+        public virtual DbSet<SysModuleUserRelation> SysModuleUserRelation { get; set; }
         public virtual DbSet<SysOperRightInfo> SysOperRightInfo { get; set; }
         public virtual DbSet<SysProblemInfo> SysProblemInfo { get; set; }
         public virtual DbSet<SysProblemType> SysProblemType { get; set; }
         public virtual DbSet<SysSystemInfo> SysSystemInfo { get; set; }
+        public virtual DbSet<SysUserDataCondition> SysUserDataCondition { get; set; }
         public virtual DbSet<SysUserGroup> SysUserGroup { get; set; }
+        public virtual DbSet<SysUserGroupRelation> SysUserGroupRelation { get; set; }
         public virtual DbSet<SysUserInGroup> SysUserInGroup { get; set; }
         public virtual DbSet<SysUserInfo> SysUserInfo { get; set; }
+        public virtual DbSet<SysUserRoute> SysUserRoute { get; set; }
+        public virtual DbSet<SysUserRouteCondition> SysUserRouteCondition { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseOracle("DATA SOURCE=120.79.207.87:1521/DCSP; PASSWORD=123456;PERSIST SECURITY INFO=True;USER ID=dcsp_user;");
-            }
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseOracle("DATA SOURCE=120.79.207.87:1521/DCSP; PASSWORD=123456;PERSIST SECURITY INFO=True;USER ID=dcsp_user;");
+//            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
-                .HasAnnotation("Relational:DefaultSchema", "DCSP_DATA");
+            //modelBuilder.HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+            //    .HasAnnotation("Relational:DefaultSchema", "DCSP_DATA");
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>
             {
@@ -190,7 +202,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustomerServices>(entity =>
             {
-                entity.HasKey(e => new { e.CustomerId, e.ServiceId });
+                entity.HasKey(e => new { e.ServiceId, e.CustomerId });
 
                 entity.ToTable("DCS_CUSTOMER_SERVICES");
 
@@ -198,12 +210,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTOMER_SERVICES")
                     .IsUnique();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -343,7 +355,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveDatarightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.CustomerId, e.ServiceId, e.DatarightTypeId });
+                entity.HasKey(e => new { e.DatarightTypeId, e.ServiceId, e.CustomerId });
 
                 entity.ToTable("DCS_CUSTSVE_DATARIGHT_INFO");
 
@@ -351,16 +363,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_DATARIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.DatarightTypeId)
+                    .HasColumnName("DATARIGHT_TYPE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.DatarightTypeId)
-                    .HasColumnName("DATARIGHT_TYPE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -400,7 +412,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveDatarightType>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.DataRightId, e.CustomerId });
+                entity.HasKey(e => new { e.CustomerId, e.DataRightId, e.ServiceId });
 
                 entity.ToTable("DCS_CUSTSVE_DATARIGHT_TYPE");
 
@@ -408,16 +420,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_DATARIGHT_TYPE")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.DataRightId)
                     .HasColumnName("DATA_RIGHT_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -453,7 +465,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveFieldList>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.FieldId, e.CustomerId });
+                entity.HasKey(e => new { e.CustomerId, e.FieldId, e.ServiceId });
 
                 entity.ToTable("DCS_CUSTSVE_FIELD_LIST");
 
@@ -461,16 +473,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_FIELD_LIST")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.FieldId)
                     .HasColumnName("FIELD_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -496,7 +508,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsServiceCollectResults>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.ReFieldName });
+                entity.HasKey(e => new { e.ReFieldName, e.ServiceId });
 
                 entity.ToTable("DCS_SERVICE_COLLECT_RESULTS");
 
@@ -504,12 +516,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_SERVICE_COLLECT_RESULTS")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.ReFieldName)
                     .HasColumnName("RE_FIELD_NAME")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -760,7 +772,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsServiceShareResults>(entity =>
             {
-                entity.HasKey(e => new { e.FieldId, e.ServiceId });
+                entity.HasKey(e => new { e.ServiceId, e.FieldId });
 
                 entity.ToTable("DCS_SERVICE_SHARE_RESULTS");
 
@@ -768,12 +780,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_SERVICE_SHARE_RESULTS")
                     .IsUnique();
 
-                entity.Property(e => e.FieldId)
-                    .HasColumnName("FIELD_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.FieldId)
+                    .HasColumnName("FIELD_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -791,6 +803,50 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.LastUpdatedBy)
                     .HasColumnName("LAST_UPDATED_BY")
                     .HasMaxLength(80);
+            });
+
+            modelBuilder.Entity<SysAreaRoute>(entity =>
+            {
+                entity.ToTable("SYS_AREA_ROUTE");
+
+                entity.HasIndex(e => e.SysAreaRouteId)
+                    .HasName("PK_SYS_AREA_ROUTE")
+                    .IsUnique();
+
+                entity.Property(e => e.SysAreaRouteId)
+                    .HasColumnName("SYS_AREA_ROUTE_ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AreaAlias)
+                    .HasColumnName("AREA_ALIAS")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.AreaPath)
+                    .HasColumnName("AREA_PATH")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy).HasColumnName("CREATED_BY");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(4000)");
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy).HasColumnName("LAST_UPDATED_BY");
             });
 
             modelBuilder.Entity<SysConnectionInfo>(entity =>
@@ -845,9 +901,145 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasMaxLength(80);
             });
 
+            modelBuilder.Entity<SysControllerRoute>(entity =>
+            {
+                entity.ToTable("SYS_CONTROLLER_ROUTE");
+
+                entity.HasIndex(e => e.SysControllerRouteId)
+                    .HasName("PK_SYS_CONTROLLER_ROUTE")
+                    .IsUnique();
+
+                entity.Property(e => e.SysControllerRouteId)
+                    .HasColumnName("SYS_CONTROLLER_ROUTE_ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AreaId)
+                    .HasColumnName("AREA_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ControllerAlias)
+                    .HasColumnName("CONTROLLER_ALIAS")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ControllerPath)
+                    .HasColumnName("CONTROLLER_PATH")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.IsApi).HasColumnName("IS_API");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.SortValue).HasColumnName("SORT_VALUE");
+            });
+
+            modelBuilder.Entity<SysDataCondition>(entity =>
+            {
+                entity.ToTable("SYS_DATA_CONDITION");
+
+                entity.HasIndex(e => e.SysDataConditionId)
+                    .HasName("PK_SYS_DATA_CONDITION")
+                    .IsUnique();
+
+                entity.Property(e => e.SysDataConditionId)
+                    .HasColumnName("SYS_DATA_CONDITION_ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ChildColumn)
+                    .HasColumnName("CHILD_COLUMN")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ConditionDesc)
+                    .HasColumnName("CONDITION_DESC")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ConditionName)
+                    .HasColumnName("CONDITION_NAME")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ConditionValue)
+                    .HasColumnName("CONDITION_VALUE")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ConditionValueDesc)
+                    .HasColumnName("CONDITION_VALUE_DESC")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.MasterSlaveFlag).HasColumnName("MASTER_SLAVE_FLAG");
+
+                entity.Property(e => e.ParentColumn)
+                    .HasColumnName("PARENT_COLUMN")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ParentId)
+                    .HasColumnName("PARENT_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.SortValue).HasColumnName("SORT_VALUE");
+
+                entity.Property(e => e.TableName)
+                    .HasColumnName("TABLE_NAME")
+                    .HasMaxLength(72);
+            });
+
             modelBuilder.Entity<SysDataRightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.UserGroupId, e.ModelId, e.DatarightTypeId });
+                entity.HasKey(e => new { e.DatarightTypeId, e.ModelId, e.UserGroupId, e.UserId });
 
                 entity.ToTable("SYS_DATA_RIGHT_INFO");
 
@@ -855,20 +1047,20 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_SYS_DATA_RIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
-                    .HasMaxLength(80);
-
-                entity.Property(e => e.UserGroupId)
-                    .HasColumnName("USER_GROUP_ID")
+                entity.Property(e => e.DatarightTypeId)
+                    .HasColumnName("DATARIGHT_TYPE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ModelId)
                     .HasColumnName("MODEL_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.DatarightTypeId)
-                    .HasColumnName("DATARIGHT_TYPE_ID")
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -1764,9 +1956,119 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasMaxLength(400);
             });
 
+            modelBuilder.Entity<SysMethodConditions>(entity =>
+            {
+                entity.ToTable("SYS_METHOD_CONDITIONS");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_METHOD_CONDITIONS")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ConditionId)
+                    .HasColumnName("CONDITION_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ModuleId)
+                    .HasColumnName("MODULE_ID")
+                    .HasMaxLength(72);
+            });
+
+            modelBuilder.Entity<SysMethodRoute>(entity =>
+            {
+                entity.ToTable("SYS_METHOD_ROUTE");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_METHOD_ROUTE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ControllerId)
+                    .HasColumnName("CONTROLLER_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.MethodAlias)
+                    .HasColumnName("METHOD_ALIAS")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.MethodPath)
+                    .HasColumnName("METHOD_PATH")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.MethodType)
+                    .HasColumnName("METHOD_TYPE")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.SortValue).HasColumnName("SORT_VALUE");
+            });
+
             modelBuilder.Entity<SysModelDatarightType>(entity =>
             {
-                entity.HasKey(e => new { e.ModelId, e.DataRightTypeId });
+                entity.HasKey(e => new { e.DataRightTypeId, e.ModelId });
 
                 entity.ToTable("SYS_MODEL_DATARIGHT_TYPE");
 
@@ -1774,12 +2076,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_SYS_MODEL_DATARIGHT_TYPE")
                     .IsUnique();
 
-                entity.Property(e => e.ModelId)
-                    .HasColumnName("MODEL_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.DataRightTypeId)
                     .HasColumnName("DATA_RIGHT_TYPE_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.ModelId)
+                    .HasColumnName("MODEL_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -1950,9 +2252,171 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.SortKey).HasColumnName("SORT_KEY");
             });
 
+            modelBuilder.Entity<SysModule>(entity =>
+            {
+                entity.ToTable("SYS_MODULE");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_MODULE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.Level).HasColumnName("LEVEL");
+
+                entity.Property(e => e.ModuleName)
+                    .HasColumnName("MODULE_NAME")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.ParentId)
+                    .HasColumnName("PARENT_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.SortValue).HasColumnName("SORT_VALUE");
+            });
+
+            modelBuilder.Entity<SysModuleRouteRelation>(entity =>
+            {
+                entity.ToTable("SYS_MODULE_ROUTE_RELATION");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_MODULE_ROUTE_RELATION")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ControllerRouteId)
+                    .HasColumnName("CONTROLLER_ROUTE_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ModuleId)
+                    .HasColumnName("MODULE_ID")
+                    .HasMaxLength(72);
+            });
+
+            modelBuilder.Entity<SysModuleUserRelation>(entity =>
+            {
+                entity.ToTable("SYS_MODULE_USER_RELATION");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_MODULE_USER_RELATION")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ModuleId)
+                    .HasColumnName("MODULE_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ModuleUserRelation).HasColumnName("MODULE_USER_RELATION");
+
+                entity.Property(e => e.PermissionType).HasColumnName("PERMISSION_TYPE");
+
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
+                    .HasMaxLength(72);
+            });
+
             modelBuilder.Entity<SysOperRightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.UserGroupId, e.ModelId, e.ModelGroupId, e.FunctionCode });
+                entity.HasKey(e => new { e.FunctionCode, e.ModelGroupId, e.ModelId, e.UserGroupId, e.UserId });
 
                 entity.ToTable("SYS_OPER_RIGHT_INFO");
 
@@ -1960,25 +2424,25 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_SYS_OPER_RIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
-                    .HasMaxLength(80);
+                entity.Property(e => e.FunctionCode)
+                    .HasColumnName("FUNCTION_CODE")
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.UserGroupId)
-                    .HasColumnName("USER_GROUP_ID")
+                entity.Property(e => e.ModelGroupId)
+                    .HasColumnName("MODEL_GROUP_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ModelId)
                     .HasColumnName("MODEL_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.ModelGroupId)
-                    .HasColumnName("MODEL_GROUP_ID")
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.FunctionCode)
-                    .HasColumnName("FUNCTION_CODE")
-                    .HasMaxLength(20);
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
+                    .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -2145,6 +2609,74 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasMaxLength(200);
             });
 
+            modelBuilder.Entity<SysUserDataCondition>(entity =>
+            {
+                entity.ToTable("SYS_USER_DATA_CONDITION");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_USER_DATA_CONDITION")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ConditionId)
+                    .HasColumnName("CONDITION_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ConditionName)
+                    .HasColumnName("CONDITION_NAME")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ConditionValue)
+                    .HasColumnName("CONDITION_VALUE")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.ControllerId)
+                    .HasColumnName("CONTROLLER_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.SortValue).HasColumnName("SORT_VALUE");
+
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
+                    .HasMaxLength(72);
+            });
+
             modelBuilder.Entity<SysUserGroup>(entity =>
             {
                 entity.HasKey(e => e.UserGroupId);
@@ -2202,9 +2734,60 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasMaxLength(120);
             });
 
+            modelBuilder.Entity<SysUserGroupRelation>(entity =>
+            {
+                entity.ToTable("SYS_USER_GROUP_RELATION");
+
+                entity.HasIndex(e => e.SysUserGroupRelationId)
+                    .HasName("PK_SYS_USER_GROUP_RELATION")
+                    .IsUnique();
+
+                entity.Property(e => e.SysUserGroupRelationId)
+                    .HasColumnName("SYS_USER_GROUP_RELATION_ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
+                    .HasMaxLength(72);
+            });
+
             modelBuilder.Entity<SysUserInGroup>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.UserGroupId })
+                entity.HasKey(e => new { e.UserGroupId, e.UserId })
                     .HasName("PX_SYS_USER_IN_GROUP");
 
                 entity.ToTable("SYS_USER_IN_GROUP");
@@ -2213,12 +2796,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PX_SYS_USER_IN_GROUP")
                     .IsUnique();
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.UserGroupId)
                     .HasColumnName("USER_GROUP_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
                     .HasMaxLength(80);
             });
 
@@ -2319,6 +2902,114 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.UserTel)
                     .HasColumnName("USER_TEL")
                     .HasMaxLength(60);
+            });
+
+            modelBuilder.Entity<SysUserRoute>(entity =>
+            {
+                entity.ToTable("SYS_USER_ROUTE");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_USER_ROUTE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ControllerId)
+                    .HasColumnName("CONTROLLER_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.GroupId)
+                    .HasColumnName("GROUP_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
+                    .HasMaxLength(72);
+            });
+
+            modelBuilder.Entity<SysUserRouteCondition>(entity =>
+            {
+                entity.ToTable("SYS_USER_ROUTE_CONDITION");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("PK_SYS_USER_ROUTE_CONDITION")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(72)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ConditionId)
+                    .HasColumnName("CONDITION_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
+                entity.Property(e => e.DeleteTime)
+                    .HasColumnName("DELETE_TIME")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("TIMESTAMP(6)");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.PropertyId)
+                    .HasColumnName("PROPERTY_ID")
+                    .HasMaxLength(72);
+
+                entity.Property(e => e.UserRouteId)
+                    .HasColumnName("USER_ROUTE_ID")
+                    .HasMaxLength(72);
             });
         }
     }

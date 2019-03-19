@@ -1,0 +1,536 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .layui-layer-shade { display: none; }
+
+    .layui-select-title input { width: 180px; }
+
+    .top > div > .el-collapse-item__header { background-color: #E4E7ED; padding: 0 8px; }
+
+    .middle > div > .el-collapse-item__header { background-color: #EBEEF5; padding: 0 8px; }
+
+    .bottom > div > .el-collapse-item__header { background-color: #F2F6FC; padding: 0 8px; }
+
+    .el-collapse-item__content { padding-bottom: 0px }
+</style>
+
+<div id="app">
+
+
+
+    <div class="layui-fluid layui-card" style="margin-top:20px;padding:0px;">
+        <div class="layui-row layui-col-space15" style="background-color:#F1F1F1;margin:0px;">
+            <div class="layui-col-md8">
+                <el-collapse v-for="module in modules" :key="module.moduleId" :value="module.moduleId" style="margin-bottom:25px;">
+                    <el-collapse-item class="top" :name="module.moduleId" style="border: 1px solid #DCDFE6">
+                        <template slot="title">
+                            {{module.moduleName}}(一级模块)
+                            <div style="margin-left:8px">
+                                <el-button type="primary" size="mini" @@click="function(e){showGenerateLayer(module);e.cancelBubble = true;}">绑定用户</el-button>
+                            </div>
+                            <div style="margin-left:8px">
+                                <el-button type="primary" size="mini" @@click="function(e){showGenerateLayer1(module);e.cancelBubble = true;}">绑定功能模块</el-button>
+                            </div>
+                        </template>
+
+                        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                            <ul class="layui-tab-title">
+                                <li class="layui-this">用户管理</li>
+                                <li>功能模块</li>
+                            </ul>
+                            <div class="layui-tab-content">
+                                @*用户管理*@
+                                <div class="layui-tab-item layui-show">
+                                    <blockquote class="layui-elem-quote">
+                                        <div>用户</div>
+                                        <div v-if="!module.listUser || module.listUser.length===0">无绑定用户。</div>
+                                        <el-row :gutter="10" style="padding-bottom:15px;">
+                                            <el-col :sm="12" :md="8" :lg="6" v-for="user in module.listUser" :key="user.userId">
+                                                <el-tag style="height: auto;width: 100%;">
+                                                    <el-row>
+                                                        <el-col :span="20">
+                                                            <el-row>
+                                                                <el-col :span="6">账号:</el-col>
+                                                                <el-col :span="6">{{user.userAccount}}</el-col>
+
+                                                            </el-row>
+                                                            <el-row>
+                                                                <el-col :span="6">姓名:</el-col>
+                                                                <el-col :span="6">{{user.userName}}</el-col>
+                                                            </el-row>
+                                                            @*<el-row>
+                                        <el-col :span="4">权限:</el-col>
+                                        <el-col v-if="user.permissionType&1" :span="6">【查询】</el-col>
+                                        <el-col v-if="user.permissionType&2" :span="6">【新增】</el-col>
+                                        <el-col v-if="user.permissionType&4" :span="6">【修改】</el-col>
+                                        <el-col v-if="user.permissionType&8" :span="6">【删除】</el-col>
+                                    </el-row>*@
+                                                        </el-col>
+                                                        <el-col :span="4">
+                                                            <i class="el-tag__close el-icon-close" @@click="removeItem(module.listUser, user)"></i>
+                                                        </el-col>
+                                                    </el-row>
+                                                </el-tag>
+                                            </el-col>
+                                        </el-row>
+
+                                        <div style="padding-top:15px;border-top:1px solid #DCDFE6">用户组</div>
+                                        <div v-if="!module.listUserGroup || module.listUserGroup.length===0">无绑定用户组。</div>
+                                        <el-row :gutter="10">
+                                            <el-col :sm="12" :md="8" :lg="6" v-for="group in module.listUserGroup " :key="group.userGroupId" style="margin-bottom:10px">
+                                                <el-tag style="height: auto;width: 100%;">
+                                                    <el-row>
+                                                        <el-col :span="20">
+                                                            <el-row>
+                                                                <el-col :span="6">组名:</el-col>
+                                                                <el-col :span="6">{{group.userGroupName}}</el-col>
+
+                                                            </el-row>
+                                                            <el-row>
+                                                                <el-col :span="8">组级别:</el-col>
+                                                                <el-col :span="4">{{group.userGroupLevel}}</el-col>
+                                                            </el-row>
+                                                        </el-col>
+                                                        <el-col :span="4">
+                                                            <i class="el-tag__close el-icon-close" @@click="removeItem(module.listUserGroup, group)"></i>
+                                                        </el-col>
+                                                    </el-row>
+                                                </el-tag>
+                                            </el-col>
+                                        </el-row>
+                                    </blockquote>
+                                    @*<blockquote class="layui-elem-quote">
+                <div>用户组</div>
+                <div v-if="!module.listUserGroup || module.listUserGroup.length===0">无绑定用户组。</div>
+                <el-row :gutter="10">
+                    <el-col :sm="12" :md="8" :lg="6" v-for="group in module.listUserGroup " :key="group.userGroupId" style="margin-bottom:10px">
+                        <el-tag style="height: auto;width: 100%;">
+                            <el-row>
+                                <el-col :span="23">
+                                    <el-row>
+                                        <el-col :span="4">组名:</el-col>
+                                        <el-col :span="8">{{group.userGroupName}}</el-col>
+                                        <el-col :span="4">组级别:</el-col>
+                                        <el-col :span="8">{{group.userGroupLevel}}</el-col>
+                                    </el-row>
+                                </el-col>
+                                <el-col :span="1">
+                                    <i class="el-tag__close el-icon-close" @@click="removeItem(module.listUserGroup, group)"></i>
+                                </el-col>
+                            </el-row>
+                        </el-tag>
+                    </el-col>
+                </el-row>
+            </blockquote>*@
+                                </div>
+                                @*功能模块*@
+                                <div class="layui-tab-item">
+                                    <div class="layui-field-box" style="padding:0px;">
+                                        <div v-if="!module.controllers||module.controllers.length===0" style="padding:8px">无控制器。</div>
+                                        <el-collapse v-for="ctrl in module.controllers" :key="ctrl.controllerId" :value="ctrl.controllerId" style="margin-bottom:25px;border:none;">
+                                            <el-collapse-item class="middle" :name="ctrl.controllerId" style="border: 1px solid #DCDFE6;">
+                                                <template slot="title">
+                                                    {{ctrl.controllerPath}}({{ctrl.controllerAlias}})
+                                                    <div style="margin-left:8px">
+                                                        <el-button type="danger" icon="el-icon-delete" circle size="mini" @@click="function(e){removeItem1(module.controllers, ctrl);e.cancelBubble = true;}"></el-button>
+                                                    </div>
+                                                </template>
+                                                <div v-if="!ctrl.methods||ctrl.methods.length===0" style="padding:8px">无方法。</div>
+                                                <div v-for="method in ctrl.methods" :key="method.methodId" :class="method.methodType" style="padding:8px">
+                                                    <el-tag class="MethoedType" style="color:white">{{method.methodType}}</el-tag>
+                                                    <span style="margin-left:8px">{{method.completePath}}({{method.methodAlias}})</span>
+                                                </div>
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </el-collapse-item>
+                </el-collapse>
+                <h4 v-if="modules.length<=0">暂无数据</h4>
+            </div>
+            <div class="view_search layui-col-md4" style="height:550px; background-color:#fff; margin-top:8px;">
+                <div class="layui-card">
+                    <div class="layui-card-header">帮助面板</div>
+                    <div class="layui-card-body">
+                        模块组与用户/用户组关联绑定页面<br>
+                        点击模块组边上添加图标即可将用户/用户组加入至该模块组<br>
+                        点击用户/用户组下边上的【x】按钮,可移除该绑定关系
+                    </div>
+                </div>
+
+                <div class="layui-card-header">查询</div>
+
+                <div class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">模块组</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" placeholder="输入要搜索的模块组..." autocomplete="off" v-model="condition_module" class="layui-input">
+                        </div>
+                    </div>
+                    @*<div class="layui-form-item">
+                            <label class="layui-form-label">用户组</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" placeholder="输入要搜索的用户组..." autocomplete="off" v-model="condition_usergroup" class="layui-input">
+                            </div>
+                        </div>*@
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" placeholder="输入要搜索的用户..." autocomplete="off" v-model="condition_user" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <button class="layui-btn" @@click="contentSearch" lay-filter="formDemoPane">&nbsp;&nbsp;&nbsp;&nbsp;查询 &nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="generate_layer" style="display:none; padding:40px;">
+        <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+            <blockquote class="layui-elem-quote">
+                <el-collapse value="unbindUsers">
+                    <el-collapse-item class="top" name="unbindUsers" style="border: 1px solid #DCDFE6;">
+                        <template slot="title">
+                            用户
+                        </template>
+                        <el-row :gutter="10" style="padding:8px">
+                            <el-col :sm="13" :md="9" :lg="8" :xl="8" v-for="user in unbindUsers" :key="user.userId" style="margin-bottom:10px">
+                                <el-tag style="height: auto;width: 100%;">
+                                    <el-row>
+                                        <el-col :span="2">
+                                            <el-checkbox v-model="user.checked"></el-checkbox>
+                                        </el-col>
+                                        <el-col :span="22">
+                                            <el-row>
+                                                <el-col :span="4">账号:</el-col>
+                                                <el-col :span="20">{{user.userAccount}}</el-col>
+
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="4">姓名:</el-col>
+                                                <el-col :span="20">{{user.userName}}</el-col>
+                                            </el-row>
+                                        </el-col>
+                                    </el-row>
+                                </el-tag>
+                            </el-col>
+                        </el-row>
+                    </el-collapse-item>
+                </el-collapse>
+            </blockquote>
+            <blockquote class="layui-elem-quote" style="margin-top: 35px">
+                <el-collapse value="unbindUserGroups">
+                    <el-collapse-item class="top" name="unbindUserGroups" style="border: 1px solid #DCDFE6;">
+                        <template slot="title">
+                            用户组
+                        </template>
+                        <el-row :gutter="10" style="padding:8px">
+                            <el-col :sm="13" :md="9" :lg="8" :xl="8" v-for="group in unbindUsersGroups" :key="group.userGroupId" style="margin-bottom:10px">
+                                <el-tag style="height: auto;width: 100%;">
+                                    <el-row>
+                                        <el-col :span="2">
+                                            <el-checkbox v-model="group.checked"></el-checkbox>
+                                        </el-col>
+                                        <el-col :span="22">
+                                            <el-row>
+                                                <el-col :span="4">组名:</el-col>
+                                                <el-col :span="20">{{group.userGroupName}}</el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="4">级别:</el-col>
+                                                <el-col :span="20">{{group.userGroupLevel}}</el-col>
+                                            </el-row>
+                                        </el-col>
+                                    </el-row>
+                                </el-tag>
+                            </el-col>
+                        </el-row>
+                    </el-collapse-item>
+                </el-collapse>
+            </blockquote>
+        </div>
+    </div>
+
+    <div id="generate_layer_route" style="display:none; padding:15px;">
+        <div class="layui-field-box" style="padding:0px;">
+            <div v-if="!unbindControllers||unbindControllers.length===0" style="padding:8px">无控制器。</div>
+            <el-collapse v-for="ctrl in unbindControllers" :key="ctrl.controllerId" :value="ctrl.controllerId" style="margin-bottom:25px;border:none;">
+                <el-collapse-item class="middle" :name="ctrl.controllerId" style="border: 1px solid #DCDFE6;">
+                    <template slot="title">
+                        <el-checkbox v-model="ctrl.checked" border>{{ctrl.controllerPath}}({{ctrl.controllerAlias}})</el-checkbox>
+                    </template>
+                    <div v-if="!ctrl.methods||ctrl.methods.length===0" style="padding:8px">无方法。</div>
+                    <div v-for="method in ctrl.methods" :key="method.methodId" :class="method.methodType" style="padding:8px">
+                        <el-tag class="MethoedType" style="color:white">{{method.methodType}}</el-tag>
+                        <span style="margin-left:8px">{{method.completePath}}({{method.methodAlias}})</span>
+                    </div>
+                </el-collapse-item>
+            </el-collapse>
+        </div>        
+    </div>
+    <div id="permission_layer" style="display:none; padding:40px; ">
+        <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+            <el-checkbox-group v-model="permissionList">
+                <el-checkbox label="1" border disabled>查看</el-checkbox>
+                <el-checkbox label="2" border>增加</el-checkbox>
+                <el-checkbox label="4" border>修改</el-checkbox>
+                <el-checkbox label="8" border>删除</el-checkbox>
+            </el-checkbox-group>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+        var layer = layui.layer;
+        var table = layui.table
+        var generateLayer_index = 0;
+        var generateLayer1_index = 0;
+        var permissionLayer_index = 0
+        var layType = true;//true 新增  false 编辑
+        var user_id = 0;
+        var $ = layui.$, active = {};
+
+        var selectedModule = {}
+        var selectedModuleRoute = {}
+        new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    modules: [],
+                    modulesClone: [],
+                    unbindUsers: [],
+                    unbindUsersGroups: [],
+                    permissionList: [],
+                    condition_module: "",
+                    condition_user: "",
+                    condition_usergroup: "",
+                    unbindAreas: [],
+                    unbindControllers: [],
+                    condition_module: "",
+                    condition_route: "",
+                }
+            },
+            methods: {
+                fetchList: function () {
+                    var vm = this
+                    axios.get('/api/SysModuleUserRelationData')
+                        .then(function (response) {
+                            vm.modules = response.data.content
+                            vm.modulesClone = response.data.content
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                },
+                showGenerateLayer: function (module) {
+                    var vm = this
+                    axios.get('/api/SysModuleUserRelationData/NotBindUsers/' + module.moduleId)
+                        .then(function (response) {
+                            vm.unbindUsers = response.data.content.users
+                            vm.unbindUsersGroups = response.data.content.userGroups
+                            //response.data.content.forEach(function (user) { user["checked"] = false })
+                            //vm.users = response.data.content
+                            selectedModule = module
+                            generateLayer_index = layer.open({
+                                type: 1
+                                , title: "新增绑定 - " + module.moduleName //不显示标题栏
+                                , closeBtn: false
+                                , shade: 0.8
+                                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                                , area: ['900px', '500px']
+                                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                , btn: ['添加绑定', '取消']
+                                , yes: function (index, layero) {
+                                    vm.permissionList = ['1']
+                                    vm.addBinds()
+                                    //permissionLayer_index = layer.open({
+                                    //    type: 1
+                                    //    , title: "权限选择 - " + module.moduleName //不显示标题栏
+                                    //    , closeBtn: false
+                                    //    , shade: 0.8
+                                    //    , id: 'permissionLayer' //设定一个id，防止重复弹出
+                                    //    , area: ['700px',]
+                                    //    , content: $('#permission_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                    //    , btn: ['确定', '取消']
+                                    //    , yes: function (index, layero) {
+                                    //        vm.addBinds()
+                                    //    }
+                                    //    , btn2: function (index, layero) {
+                                    //        vm.closePermissionLayer()
+                                    //    }
+                                    //});
+                                }
+                                , btn2: function (index, layero) {
+                                    vm.closeGenerateLayer()
+                                }
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                showGenerateLayer1: function (module) {
+                    //将功能模块与模块组绑定
+                    var vm = this
+                    axios.get('/api/SysModuleRouteRelationData/NotBindRoute')
+                        .then(function (response) {
+                            vm.unbindAreas = response.data.content.areas
+                            vm.unbindControllers = response.data.content.controllers
+                            selectedModuleRoute = module
+                            generateLayer_index1 = layer.open({
+                                type: 1
+                                , title: "新增绑定 - " + module.moduleName //不显示标题栏
+                                , closeBtn: false
+                                , shade: 0.8
+                                , id: 'LAY_layuipro_route' //设定一个id，防止重复弹出
+                                , area: ['900px', '500px']
+                                , content: $('#generate_layer_route') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                , btn: ['添加绑定', '取消']
+                                , yes: function (index, layero) {
+                                    vm.addBinds1()
+                                }
+                                , btn2: function (index, layero) {
+                                    vm.closeGenerateLayer1()
+                                }
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                closeGenerateLayer: function () {
+                    layer.close(generateLayer_index);
+                },
+                closeGenerateLayer1: function () {
+                    layer.close(generateLayer_index1);
+                },
+                closePermissionLayer: function () {
+                    layer.close(permissionLayer_index);
+                },
+                addBinds: function () {
+                    var vm = this
+                    // 获取权限
+                    //var permission = vm.permissionList.reduce(function (sum, item) { return parseInt(sum) + parseInt(item) }, 0)
+                    // 组装新增绑定数据
+                    var data = []
+                    vm.unbindUsers.forEach(function (item) {
+                        if (item.checked) {
+                            console.log(item);
+                            data.push({
+                                userId: item.userId,
+                                moduleId: selectedModule.moduleId,
+                                //permissionType: permission,
+                            })
+                        }
+                    })
+                    vm.unbindUsersGroups.forEach(function (item) {
+                        if (item.checked) {
+                            data.push({
+                                userGroupId: item.userGroupId,
+                                moduleId: selectedModule.moduleId,
+                                //permissionType: permission,
+                            })
+                        }
+                    })
+                    axios.post('/api/SysModuleUserRelationData/AddOrUpdate', data)
+                        .then(function (response) {
+                            console.log(response);
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '添加成功', type: 'success' })
+                            //vm.closePermissionLayer()
+                            vm.closeGenerateLayer()
+                            vm.fetchList()
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '失败', message: '添加失败', type: 'error' })
+                            vm.fetchList()                       
+                        });
+                },
+                addBinds1: function () {
+                    console.log(selectedModuleRoute);
+                    var vm = this
+                    var data = []            
+                    vm.unbindControllers.forEach(function (ctrl) {
+                        if (ctrl.checked)
+                            data.push({ moduleId: selectedModuleRoute.moduleId, controllerId: ctrl.controllerId })
+                    })
+                    axios.post('/api/SysModuleRouteRelationData/AddOrUpdate', data)
+                        .then(function (response) {
+                            vm.$message({ title: '成功', message: '添加成功', type: 'success' })
+                            vm.closeGenerateLayer()
+                            vm.fetchList()
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '失败', message: '添加失败', type: 'error' })
+                            vm.fetchList()
+                            console.log(error);
+                        });
+                },
+                removeItem: function (list, item) {
+                    var vm = this
+                    var relationId = item.relationId
+                    list.splice(list.indexOf(item), 1);
+                    axios.delete('/api/SysModuleUserRelationData/' + relationId)
+                        .then(function (response) {
+                            vm.$message({ title: '成功', message: '移除成功', type: 'success' })
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '失败', message: '移除失败', type: 'error' })
+                            vm.fetchList()
+                            console.log(error);
+                        });
+                },
+                removeItem1: function (list, ctrl) {
+                    var vm = this
+                    var relationId = ctrl.relationId
+                    list.splice(list.indexOf(ctrl), 1);
+                    axios.delete('/api/SysModuleRouteRelationData/' + relationId)
+                        .then(function (response) {
+                            vm.$message({ title: '成功', message: '移除成功', type: 'success' })
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '失败', message: '移除失败', type: 'error' })
+                            vm.fetchList()
+                            console.log(error);
+                        });
+                },
+                contentSearch: function () {
+                    var vm = this;
+                    let modules = JSON.parse(JSON.stringify(vm.modulesClone));
+                    let condition_user = vm.condition_user;
+                    let condition_userGroup = vm.condition_usergroup;
+                    let condition_module = vm.condition_module;
+                    var result = JSLINQ(modules).Where(function (item) {
+                        if (item.moduleName.indexOf(condition_module) != -1 || condition_module == "") {
+                            let listUser = JSLINQ(item.listUser).Where(function (route) {
+                                if (route.userName.indexOf(condition_user) != -1 || condition_user == "" ) return route
+                            })
+                            item.listUser = listUser.items;
+                            return item;
+                        }
+                    })
+                    vm.modules = result.items;
+                }
+            },
+            mounted: function () {
+                var vm = this
+                vm.fetchList()
+            }
+        })
+    });
+
+</script>

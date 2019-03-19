@@ -1,0 +1,251 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .layui-layer-shade { display: none; }
+
+    .layui-select-title input { width: 180px; }
+</style>
+
+<div id="app">
+
+    <div class="layui-fluid" style="margin-top:20px;">
+        <div class="layui-row layui-col-space15" style="background-color:#F1F1F1;">
+            <div class="layui-col-md8">
+
+                <div v-for="group in userGroups" :key="group.id">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            {{group.name}}
+                            <button class="layui-btn" @@click="showGenerateLayer(group)" style="float: right">新增绑定</button>
+                        </div>
+                        <div class="layui-card-body">
+                            <div v-if="!group.children || group.children.length===0">无关联绑定。</div>
+                            <el-row :gutter="10">
+                                <el-col :sm="12" :md="8" :lg="6" v-for="user in group.children" :key="user.id" style="margin-bottom:10px">
+                                    <el-tag style="height: auto;width: 100%;">
+                                        <el-row>
+                                            <el-col :span="20">
+                                                <el-row>
+                                                    <el-col :span="6">账号:</el-col>
+                                                    <el-col :span="6">{{user.userAccount}}</el-col>
+                                                    
+                                                </el-row>
+                                                <el-row>
+                                                    <el-col :span="6">姓名:</el-col>
+                                                    <el-col :span="6">{{user.name}}</el-col>
+                                                </el-row>
+                                                @*<el-row>
+                                                    <el-col :span="4">LDAP:</el-col>
+                                                    <el-col :span="8">{{user.userIsLock?'是':'否'}}</el-col>
+                                                    <el-col :span="4">手机:</el-col>
+                                                    <el-col :span="8">{{user.userMobileNo}}</el-col>
+                                                </el-row>*@
+                                            </el-col>
+                                            <el-col :span="4">
+                                                <i class="el-tag__close el-icon-close" @@click="removeUserGroupRelation(group.children, user)"></i>
+                                            </el-col>
+                                        </el-row>
+                                    </el-tag>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                </div>
+              <h4 v-if="userGroups.length<=0">暂无数据</h4>
+            </div>
+            <div class="view_search layui-col-md4" style="height:550px; background-color:#fff; margin-top:8px;">
+                <div class="layui-card">
+                    <div class="layui-card-header">帮助面板</div>
+                    <div class="layui-card-body">
+                        用户与用户组绑定页面<br>
+                        用户组边上添加绑定按钮即可将用户加入至该用户组<br>
+                        点击用户组下用户的【x】按钮,可移除该绑定关系
+                    </div>
+                </div>
+
+                <div class="layui-card-header">查询</div>
+
+
+                <div class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户组</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" placeholder="输入要搜索的用户组..." autocomplete="off" v-model="condition_group" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" placeholder="输入要搜索的用户..." autocomplete="off" v-model="condition_user" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <button class="layui-btn" @@click="contentSearch" lay-filter="formDemoPane">&nbsp;&nbsp;&nbsp;&nbsp;查询 &nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <div id="generate_layer" style="display:none; padding:40px;">
+            <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+
+                <el-row :gutter="10">
+                    <el-col :sm="13" :md="9" :lg="8" :xl="8" v-for="user in users" :key="user.id" style="margin-bottom:10px">
+                        <el-tag style="height: auto;width: 100%;">
+                            <el-row>
+                                <el-col :span="2">
+                                    <el-checkbox v-model="user.checked"></el-checkbox>
+                                </el-col>
+                                <el-col :span="22">
+                                    <el-row>
+                                        <el-col :span="4">账号:</el-col>
+                                        <el-col :span="8">{{user.userAccount}}</el-col>
+                                        <el-col :span="4">姓名:</el-col>
+                                        <el-col :span="8">{{user.name}}</el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="4">LDAP:</el-col>
+                                        <el-col :span="8">{{user.userIsLock?'是':'否'}}</el-col>
+                                        <el-col :span="4">手机:</el-col>
+                                        <el-col :span="8">{{user.userMobileNo}}</el-col>
+                                    </el-row>
+                                </el-col>
+                            </el-row>
+                        </el-tag>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+        layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+            var layer = layui.layer;
+            var table = layui.table
+            var generateLayer_index = 0;
+            var layType = true;//true 新增  false 编辑
+            var user_id = 0;
+            var $ = layui.$, active = {};
+
+            var selectedGroupID = ""
+
+            new Vue({
+                el: '#app',
+                data: function () {
+                    return {
+                        userGroups: [],
+                        userGroupsClone: [],
+                        users: [],
+                        condition_group: "",
+                        condition_user: "",
+                    }
+                },
+                methods: {
+                    fetchList: function () {
+                        var vm = this
+                        axios.get('/api/SysUserGroupRelationData')
+                            .then(function (response) {
+                                vm.userGroups = response.data.content;
+                                let clone = [];
+                                Object.assign(clone, response.data.content);
+                                vm.userGroupsClone = clone;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                    },
+                    showGenerateLayer: function (group) {
+                        var vm = this
+                        axios.get('/api/SysUserGroupRelationData/NotBindUser?groupId=' + group.id)
+                            .then(function (response) {
+                                response.data.content.forEach(function (user) { user["checked"] = false })
+                                vm.users = response.data.content
+                                selectedGroupID = group.id
+                                generateLayer_index = layer.open({
+                                    type: 1
+                                    , title: "新增绑定 - " + group.name //不显示标题栏
+                                    , closeBtn: false
+                                    , shade: 0.8
+                                    , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                                    , area: ['900px', '500px']
+                                    , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                    , btn: ['添加绑定', '取消']
+                                    , yes: function (index, layero) {
+                                        vm.addUserGroupRelation()
+                                    }
+                                    , btn2: function (index, layero) {
+                                        vm.closeGenerateLayer()
+                                    }
+                                });
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    },
+                    closeGenerateLayer: function () {
+                        layer.close(generateLayer_index);
+                    },
+                    addUserGroupRelation: function () {
+                        var vm = this
+                        var checkedData = vm.users.filter(function (user) { return user.checked }); //idTest 即为基础参数 id 对应的值
+                        var data = checkedData.map(function (item) {
+                            return { GroupId: selectedGroupID, UserId: item.id }
+                        })
+                        axios.post('/api/SysUserGroupRelationData', data)
+                            .then(function (response) {
+                                vm.closeGenerateLayer()
+                                vm.$notify({ title: '成功', message: '添加成功', type: 'success' })
+                                vm.fetchList()
+                            })
+                            .catch(function (error) {
+                                vm.$notify({ title: '失败', message: '添加失败', type: 'error' })
+                                vm.fetchList()
+                                console.log(error);
+                            });
+                    },
+                    removeUserGroupRelation: function (list, user) {
+                        var vm = this
+                        var relationId = user.relationId
+                        list.splice(list.indexOf(user), 1);
+                        axios.delete('/api/SysUserGroupRelationData/' + relationId)
+                            .then(function (response) {
+                                vm.$notify({ title: '成功', message: '移除成功', type: 'success' })
+                            })
+                            .catch(function (error) {
+                                vm.$notify({ title: '失败', message: '移除失败', type: 'error' })
+                                vm.fetchList()
+                                console.log(error);
+                            });
+                    },
+                    contentSearch: function () {
+                        var vm = this;
+                        let usergroups = JSON.parse(JSON.stringify(vm.userGroupsClone));
+                        let condition_user = vm.condition_user;
+                        let condition_group = vm.condition_group;
+                        var result = JSLINQ(usergroups).Where(function (item) {
+                            if (item.name.indexOf(condition_group) != -1 || condition_group == "") {
+
+                                let children = JSLINQ(item.children).Where(function (user) {
+                                    if (user.name.indexOf(condition_user) != -1 || condition_user == "") return user
+                                })
+                                item.children = children.items;
+                                return item;
+                            }
+                        })
+                        vm.userGroups = result.items;
+                    }
+                },
+                mounted: function () {
+                    var vm = this
+                    vm.fetchList()
+                }
+            })
+        });
+
+    </script>

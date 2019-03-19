@@ -1,0 +1,364 @@
+﻿
+@{
+    ViewData["Title"] = "数据权限绑定";
+}
+
+
+<style>
+    .v-modal { display: none; }
+
+    #app { margin-top: 30px; }
+
+    .text { font-size: 14px; }
+
+    .item { margin-bottom: 18px; }
+
+    .clearfix:before,
+    .clearfix:after { display: table; content: ""; }
+    .clearfix:after { clear: both }
+
+    .box-card { width: 480px; }
+</style>
+<div id="app">
+
+    <el-container>
+
+        <el-main style="padding:0px;margin:0px 15px 15px 15px; background-color:#fff;">
+            <el-tabs v-model="activeName" style="padding-left:15px;">
+                <el-tab-pane label="查询权限-用户" name="first">
+                    <el-tree :data="usertree"
+                             show-checkbox
+                             node-key="id"
+                             default-expand-all
+                             :expand-on-click-node="false">
+                        <span class="custom-tree-node" slot-scope="{ node, data }">
+                            <span>{{ node.label }}</span>
+                            <span>
+                                <el-button v-if="data.isController" type="text"
+                                           size="mini"
+                                           @@click="() => append(node,data)">
+                                    添加
+                                </el-button>
+                                <el-button v-if="data.isEdit" type="text"
+                                           size="mini"
+                                           @@click="() => remove(node, data)">
+                                    删除
+                                </el-button>
+                            </span>
+                        </span>
+                    </el-tree>
+                </el-tab-pane>
+
+                <el-tab-pane label="查询权限-用户组" name="second">
+                    <el-tree :data="usergrouptree"
+                             show-checkbox
+                             node-key="id"
+                             default-expand-all
+                             :expand-on-click-node="false">
+                        <span class="custom-tree-node" slot-scope="{ node, data }">
+                            <span>{{ node.label }}</span>
+                            <span>
+                                <el-button v-if="data.isController" type="text"
+                                           size="mini"
+                                           @@click="() => append1(node,data)">
+                                    添加
+                                </el-button>
+                                <el-button v-if="data.isEdit" type="text"
+                                           size="mini"
+                                           @@click="() => remove(node, data)">
+                                    删除
+                                </el-button>
+                            </span>
+                        </span>
+                    </el-tree>
+                </el-tab-pane>
+            </el-tabs>
+
+        </el-main>
+        <el-aside width="500px">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>帮助面板</span>
+                </div>
+
+                <div class="el-textarea item">
+                    数据权限与用户/用户组关联页面<br />
+                </div>
+                <div class="el-textarea item">
+                    可在此页面编辑用户/用户在页面中的数据查询权限<br />
+
+                </div>
+                <div class="el-textarea item">
+                    点击控制器边上的添加，即可在该用户下该控制上选择需要的查询权限<br />
+                </div>
+                <div class="el-textarea item">
+                    点击权限值边上的删除，即可解除该关联关系<br />
+                </div>
+                <el-form>
+                    <el-form-item label="用户名">
+                        <el-input v-model="userName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="用户组名" prop="tableName">
+                        <el-input v-model="userGroupName"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div>
+                    <el-button type="primary" v-on:click="search()">查询 </el-button>
+                    <el-button v-on:click="cancel()">取消 </el-button>
+                </div>
+            </el-card>
+        </el-aside>
+    </el-container>
+
+
+    <el-dialog title="绑定用户查询数据权限"
+               :visible.sync="centerDialogVisible"
+               width="30%"
+               center>
+        <el-tree :data="notbind_usertree" ref="notbind_usertree"
+                 show-checkbox
+                 node-key="id"
+                 default-expand-all
+                 :expand-on-click-node="false">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+            </span>
+        </el-tree>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave()">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="绑定用户组查询数据权限"
+               :visible.sync="centerDialogVisible1"
+               width="30%"
+               center>
+        <el-tree :data="notbind_usergrouptree" ref="notbind_usergrouptree"
+                 show-checkbox
+                 node-key="id"
+                 default-expand-all
+                 :expand-on-click-node="false">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+            </span>
+        </el-tree>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel1()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave1()">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                usertree: [],
+                usergrouptree: [],
+                notbind_usertree: [],
+                notbind_usergrouptree: [],
+                centerDialogVisible: false,
+                centerDialogVisible1: false,
+                c_userid: 0,
+                c_controllerId: '',
+                activeName: 'first',
+                userName: '',
+                userGroupName:'',
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this;
+                let url = '/api/DataCondition/GetUserRoutes';
+                if (vm.userName != "") url += "?userName=" + vm.userName;
+                if (vm.userGroupName != "") {
+                    if (vm.userName != "") {
+                        url += "&userGroupName=" + vm.userGroupName;
+                    }
+                    else { 
+                        url += "?userGroupName=" + vm.userGroupName;
+                    }
+                }
+                axios.get(url)
+                    .then(function (response) {
+                        console.log(response);
+                        vm.usertree = response.data.content.users;
+                        vm.usergrouptree = response.data.content.usergroups;
+                        console.log(vm.usertree);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            },
+
+            //用户
+            append(node, data) {
+                let vm = this;
+                vm.showDialog(data.userId, data.id);
+            },
+            remove(node, data) {
+                console.log(data);
+                let vm = this;
+                axios.delete('/api/DataCondition/Unbind/' + data.userConditionId)
+                    .then(function (response) {
+                        if (!response.data.content.isSuccess) {
+                            vm.$message({ title: '失败', message: response.data.content.message, type: 'error' })
+                            return;
+                        }
+                        vm.$message({ title: '成功', message: '删除成功', type: 'success' });
+                        vm.fetchList();
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            showDialog: function (userid, controllerid) {
+                let vm = this;
+                vm.c_userid = userid;
+                vm.c_controllerid = controllerid;
+                vm.centerDialogVisible = true;
+                axios.get('/api/DataCondition/GetNotBindConditionValues/' + userid + '/' + controllerid)
+                    .then(function (response) {
+                        console.log(response);
+                        vm.notbind_usertree = response.data.content
+                        console.log(vm.notbind_usertree);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            dialogSave: function () {
+                let vm = this;
+                var usertree = vm.$refs.notbind_usertree.getCheckedNodes();
+                var data = new Array();
+                usertree.map(function (item) {
+                    console.log(item);
+                    if (item.isEdit != undefined && item.isEdit == true)
+                        data.push({
+                            UserId: vm.c_userid,
+                            ControllerId: vm.c_controllerid,
+                            ConditionId: item.conditionId,
+                            ConditionValue: item.id,
+                            ConditionName: item.conditionName,
+                            SortValue: item.sortValue
+                        });
+
+                });
+                console.log(vm.c_userid);
+                if (data.length == 0) {
+                    vm.$message({ title: '失败', message: "请选中需要绑定数据权限值", type: 'error' })
+                    return;
+                }
+                axios.post('/api/DataCondition/Bind/', data)
+                    .then(function (response) {
+                        console.log(response);
+                        if (!response.data.content.isSuccess) {
+                            vm.$message({ title: '失败', message: response.data.content.message, type: 'error' })
+                            return;
+                        }
+                        vm.centerDialogVisible = false;
+                        vm.$message({ title: '成功', message: '已成功绑定', type: 'success' });
+                        vm.fetchList();
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            dialogCancel: function () {
+                let vm = this;
+                vm.centerDialogVisible = false;
+            },
+
+
+
+            //用户组
+            append1(node, data) {
+                let vm = this;
+                console.log(data);
+                vm.showDialog1(data.userGroupId, data.id);
+            },
+            
+            showDialog1: function (userid, controllerid) {
+                let vm = this;
+                vm.c_userid = userid;
+                vm.c_controllerid = controllerid;
+                vm.centerDialogVisible1 = true;
+                axios.get('/api/DataCondition/GetUserGroupNotBindConditionValues/' + userid + '/' + controllerid)
+                    .then(function (response) {
+                        console.log(response);
+                        vm.notbind_usergrouptree = response.data.content
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            dialogSave1: function () {
+                let vm = this;
+                var usertree = vm.$refs.notbind_usergrouptree.getCheckedNodes();
+                var data = new Array();
+                usertree.map(function (item) {
+                    console.log(item);
+                    if (item.isEdit != undefined && item.isEdit == true)
+                        data.push({
+                            UserGroupId: vm.c_userid,
+                            ControllerId: vm.c_controllerid,
+                            ConditionId: item.conditionId,
+                            ConditionValue: item.id,
+                            ConditionName: item.conditionName,
+                            SortValue: item.sortValue
+                        });
+
+                });
+                console.log(vm.c_userid);
+                if (data.length == 0) {
+                    vm.$message({ title: '失败', message: "请选中需要绑定数据权限值", type: 'error' })
+                    return;
+                }
+                axios.post('/api/DataCondition/Bind/', data)
+                    .then(function (response) {
+                        console.log(response);
+                        if (!response.data.content.isSuccess) {
+                            vm.$message({ title: '失败', message: response.data.content.message, type: 'error' })
+                            return;
+                        }
+                        vm.centerDialogVisible1 = false;
+                        vm.$message({ title: '成功', message: '已成功绑定', type: 'success' });
+                        vm.fetchList();
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            dialogCancel1: function () {
+                let vm = this;
+                vm.centerDialogVisible1 = false;
+            },
+
+            //共用
+            search: function () { 
+                let vm = this;
+                vm.fetchList();
+            },
+            cancel: function () { 
+                let vm = this;
+                vm.userName = '';
+                vm.userGroupName = '';
+                vm.fetchList();
+            }
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>

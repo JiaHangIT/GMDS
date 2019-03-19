@@ -12,4 +12,29 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="wwwroot\images\banner1.svg" />
+    <None Include="wwwroot\images\banner2.svg" />
+    <None Include="wwwroot\images\banner3.svg" />
+    <None Include="wwwroot\images\banner4.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JiaHang.Projects.Admin.BLL\JiaHang.Projects.Admin.BLL.csproj" />
+    <ProjectReference Include="..\JiaHang.Projects.Admin.Common\JiaHang.Projects.Admin.Common.csproj" />
+    <ProjectReference Include="..\JiaHang.Projects.Admin.DAL\JiaHang.Projects.Admin.DAL.csproj" />
+    <ProjectReference Include="..\JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="jslinq" Version="2.10.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.5.5" />
+  </ItemGroup>
 </Project>

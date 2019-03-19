@@ -7,3 +7,11 @@ D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2
 D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfo.cs
 D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
 D:\git_repository\DSCAdmin\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.deps.json
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.csproj.CoreCompileInputs.cache
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfoInputs.cache
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfo.cs
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb

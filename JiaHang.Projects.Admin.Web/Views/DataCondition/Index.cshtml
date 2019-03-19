@@ -1,0 +1,269 @@
+﻿
+@{
+    ViewData["Title"] = "数据权限维护";
+}
+
+
+<style>
+    .v-modal {
+        display:none;
+    }
+    #app {
+        margin-top:30px;
+    }
+</style>
+<div id="app">
+    <el-table :data="tableData" 
+              style="width: 100%">
+        @*<el-table :data="tableData"
+        style="width: 100%">*@
+        <el-table-column label="数据权限名称"
+                         prop="conditionName">
+        </el-table-column>
+        <el-table-column label="维度表名"
+                         prop="tableName">
+        </el-table-column>
+        <el-table-column label="数据值名称所在列名"
+                         prop="conditionValueDesc">
+        </el-table-column>
+        <el-table-column label="数据值所在列名"
+                         prop="parentColumn">
+        </el-table-column>
+        <el-table-column label="是否从属表">
+            <template slot-scope="scope">
+                <el-tag size="medium" v-if="scope.row.masterSlaveFlag">具有从属</el-tag>
+                <el-tag size="medium" type="warning" v-else>暂无从属</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column label="数据子级值所在列名"
+                         prop="childColumn">
+        </el-table-column>
+        <el-table-column label="排序值"
+                         prop="sortValue">
+        </el-table-column>
+        >   <el-table-column label="创建日期"
+                             prop="creation_Date">
+        </el-table-column>
+
+        <el-table-column align="right">
+            <template slot="header" slot-scope="scope">
+                <el-button type="primary" size="mini"
+                           v-on:click="handleAdd(scope.$index, scope.row)">添加</el-button>
+            </template>
+
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="30%" 
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="数据权限名称" prop="conditionName">
+                <el-input v-model="form.conditionName"></el-input>
+            </el-form-item>
+            <el-form-item label="维度表名" prop="tableName">
+                <el-input v-model="form.tableName"></el-input>
+            </el-form-item>
+            <el-form-item label="数据值名称所在列名" prop="conditionValueDesc">
+                <el-input v-model="form.conditionValueDesc"></el-input>
+            </el-form-item>
+            <el-form-item label="数据值所在列名" prop="parentColumn">
+                <el-input v-model="form.parentColumn"></el-input>
+            </el-form-item>
+            <el-form-item label="排序值">
+                <el-input-number v-model="form.sortValue" :min="1" :max="300" label="排序值"></el-input-number>
+            </el-form-item>
+            <el-form-item label="是否具有从属关系">
+                <el-switch v-model="form.masterSlaveFlag"
+                           active-text="具有"
+                           inactive-text="没有">
+                </el-switch>
+            </el-form-item>
+            <el-form-item label="数据子级值所在列名" v-if="form.masterSlaveFlag">
+                <el-input v-model="form.childColumn"></el-input>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                tableData: [],
+                centerDialogVisible: false,
+                form: {   
+                    conditionName:'',
+                    tableName: '',
+                    conditionValueDesc: '',
+                    parentColumn: '',
+                    masterSlaveFlag: false,
+                    childColumn:'',
+                    sortValue:1,
+                },
+                rules: {
+                    conditionName: [
+                        { required: true, message: '数据权限名称', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    tableName: [
+                        { required: true, message: '维度表名', trigger: 'blur' }
+                    ],
+                    conditionValueDesc: [
+                        { required: true, message: '数据值名称所在列名', trigger: 'blur' }
+                    ],
+                    parentColumn: [
+                        { required: true, message: '数据值所在列名', trigger: 'blur' }
+                    ],
+                    
+                },        
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
+                IsCreate: true,//是否新增
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                axios.get('/api/DataCondition/Get')
+                    .then(function (response) {
+                        console.log(response.data.content.data);
+                        vm.tableData = response.data.content.data
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleEdit: function (index,row) {
+                //编辑
+                let vm = this
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑数据权限"
+                vm.form = row;
+                vm.centerDialogVisible = true
+            },
+            handleDelete: function (index,row) {
+                let vm = this
+                //删除
+
+                //弹出确认框
+                
+                this.$confirm('此操作将删除该数据权限, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/DataCondition/delete/'+row.id)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+                    
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+            },
+            handleAdd: function () {
+                let vm = this
+                vm.IsCreate = true
+
+               // vm.$refs['form'].resetFields();
+                vm.resetForm()
+                vm.dialogTitle="添加数据权限"
+                vm.centerDialogVisible = true
+                //添加
+            },
+            dialogCancel: function () {
+                let vm = this;
+
+                vm.centerDialogVisible = false
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/DataCondition/add";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = "/api/DataCondition/Update";
+                            method = "PUT";
+                        }
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
+                        return ;
+                    }
+                });
+
+               
+
+            },
+            resetForm() {
+                let vm = this;
+                vm.form.conditionName= ''
+                vm.form.tableName = ''
+                vm.form.conditionValueDesc = ''
+                vm.form.parentColumn = ''
+                vm.form.masterSlaveFlag = false
+                vm.form.childColumn= ''
+                vm.form.sortValue = 1 
+            }
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>
