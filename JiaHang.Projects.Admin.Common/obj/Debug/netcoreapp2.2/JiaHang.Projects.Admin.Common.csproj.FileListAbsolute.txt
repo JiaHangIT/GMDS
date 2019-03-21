@@ -15,3 +15,12 @@ E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreap
 E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfo.cs
 E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
 E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.deps.json
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.Common\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb

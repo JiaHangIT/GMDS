@@ -22,3 +22,17 @@ E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.
 E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.csproj.CopyComplete
 E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.dll
 E:\projects\tsyuding\DSCAdmin-\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.pdb
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.deps.json
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.runtimeconfig.json
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.runtimeconfig.dev.json
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.dll
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.pdb
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.dll
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\bin\Debug\netcoreapp2.2\JiaHang.Projects.Admin.Common.pdb
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.csproj.CopyComplete
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.dll
+C:\Users\Administrator\Desktop\Dsc\JiaHang.Projects.Admin.DAL\obj\Debug\netcoreapp2.2\JiaHang.Projects.Admin.DAL.pdb
