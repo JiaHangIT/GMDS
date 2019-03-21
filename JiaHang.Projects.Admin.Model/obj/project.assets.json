@@ -692,11 +692,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\工作\\数据共享与采集平台系统\\代码\\git\\DSCAdmin\\JiaHang.Projects.Admin.Model\\JiaHang.Projects.Admin.Model.csproj",
+      "projectUniqueName": "E:\\projects\\tsyuding\\DSCAdmin-\\JiaHang.Projects.Admin.Model\\JiaHang.Projects.Admin.Model.csproj",
       "projectName": "JiaHang.Projects.Admin.Model",
-      "projectPath": "D:\\工作\\数据共享与采集平台系统\\代码\\git\\DSCAdmin\\JiaHang.Projects.Admin.Model\\JiaHang.Projects.Admin.Model.csproj",
+      "projectPath": "E:\\projects\\tsyuding\\DSCAdmin-\\JiaHang.Projects.Admin.Model\\JiaHang.Projects.Admin.Model.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "D:\\工作\\数据共享与采集平台系统\\代码\\git\\DSCAdmin\\JiaHang.Projects.Admin.Model\\obj\\",
+      "outputPath": "E:\\projects\\tsyuding\\DSCAdmin-\\JiaHang.Projects.Admin.Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
