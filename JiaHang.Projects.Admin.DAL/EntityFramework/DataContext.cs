@@ -129,15 +129,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CUSTOMER_STATUS")
                     .HasMaxLength(60);
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.EffEndDate)
                     .HasColumnName("EFF_END_DATE")
@@ -187,6 +190,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.LogDate)
                     .HasColumnName("LOG_DATE")
                     .HasColumnType("DATE");
@@ -228,6 +235,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DatarightFlag).HasColumnName("DATARIGHT_FLAG");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastAccessDate)
                     .HasColumnName("LAST_ACCESS_DATE")
@@ -348,6 +359,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("ACCESS_PARAMS")
                     .HasMaxLength(1000);
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.ReturnResult)
                     .HasColumnName("RETURN_RESULT")
                     .HasColumnType("CLOB(4000)");
@@ -383,6 +398,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -454,6 +473,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DATA_RIGHT_COLUMN3")
                     .HasMaxLength(120);
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasColumnType("DATE");
@@ -492,6 +515,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("DISPLAY_NAME")
@@ -533,6 +560,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.DimTransFlag).HasColumnName("DIM_TRANS_FLAG");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -573,15 +604,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ImageUrl)
                     .HasColumnName("IMAGE_URL")
@@ -636,16 +669,19 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DataPageFlag).HasColumnName("DATA_PAGE_FLAG");
 
+                entity.Property(e => e.DeleteBy)
+                    .IsRequired()
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .IsRequired()
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -731,6 +767,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasColumnType("DATE");
@@ -796,6 +836,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasColumnType("DATE");
@@ -836,7 +880,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasColumnType("NVARCHAR2(4000)");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -882,15 +929,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DatabaseTypeId).HasColumnName("DATABASE_TYPE_ID");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -939,7 +988,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -1005,7 +1057,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -1071,6 +1126,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("DISPLAY_NAME")
                     .HasMaxLength(200);
@@ -1130,6 +1189,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DATABASE_TYPE _NAME")
                     .HasMaxLength(200);
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasColumnType("DATE");
@@ -1178,15 +1241,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DATASOURCE_CODE")
                     .HasMaxLength(120);
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag).HasColumnName("ENABLE_FLAG");
 
@@ -1271,15 +1336,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DATASOURCE_ID")
                     .HasMaxLength(80);
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimFieldCode)
                     .HasColumnName("DIM_FIELD_CODE")
@@ -1379,15 +1446,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DATASOURCE_USE")
                     .HasMaxLength(60);
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -1424,15 +1493,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimName)
                     .HasColumnName("DIM_NAME")
@@ -1478,15 +1549,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimTypeName)
                     .HasColumnName("DIM_TYPE_NAME")
@@ -1534,15 +1607,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ErrorCodeCode)
                     .IsRequired()
@@ -1590,6 +1665,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.FieldTypeCode)
                     .HasColumnName("FIELD_TYPE_CODE")
@@ -1644,15 +1723,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.HelpContent)
                     .HasColumnName("HELP_CONTENT")
@@ -1702,16 +1783,19 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .IsRequired()
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .IsRequired()
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.HelpTypeName)
                     .IsRequired()
@@ -1847,15 +1931,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CYCLE_WEEK_ONETIMES_TIME")
                     .HasMaxLength(60);
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag).HasColumnName("ENABLE_FLAG");
 
@@ -1927,15 +2013,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ImportantFlag).HasColumnName("IMPORTANT_FLAG");
 
@@ -1986,7 +2074,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2036,7 +2127,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2106,6 +2200,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DATA_RIGHT_COLUMN3")
                     .HasMaxLength(80);
 
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
+
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasColumnType("DATE");
@@ -2142,16 +2240,19 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .IsRequired()
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .IsRequired()
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.EnableFlag).HasColumnName("ENABLE_FLAG");
 
@@ -2212,15 +2313,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag).HasColumnName("ENABLE_FLAG");
 
@@ -2278,7 +2381,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2336,7 +2442,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2382,7 +2491,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(72);
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2452,15 +2564,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
-                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2504,15 +2618,15 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2558,15 +2672,15 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2595,6 +2709,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.SystemId)
                     .HasColumnName("SYSTEM_ID")
                     .ValueGeneratedNever();
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.SystemCode)
                     .HasColumnName("SYSTEM_CODE")
@@ -2703,15 +2821,15 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2803,6 +2921,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.UserId)
                     .HasColumnName("USER_ID")
                     .HasMaxLength(80);
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql("0 ");
             });
 
             modelBuilder.Entity<SysUserInfo>(entity =>
@@ -2833,15 +2955,15 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("CREATION_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
-
-                entity.Property(e => e.DeletedBy)
-                    .HasColumnName("DELETED_BY")
-                    .HasMaxLength(80);
 
                 entity.Property(e => e.EffEndDate)
                     .HasColumnName("EFF_END_DATE")

@@ -124,7 +124,7 @@ namespace JiaHang.Projects.Admin.BLL
                 foreach (var obj in deletes)
                 {
                     obj.DeleteFlag = 1;
-                    obj.DeletedBy = currentUserId;
+                    obj.DeleteBy = currentUserId;
                     obj.DeleteDate = DateTime.Now;
                     _context.SysUserGroup.Update(entity);
                 }

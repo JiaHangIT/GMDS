@@ -9,5 +9,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string SystemCode { get; set; }
         public string SystemName { get; set; }
         public string SystemUrl { get; set; }
+        public int DeleteFlag { get; set; }
     }
 }

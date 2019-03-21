@@ -109,7 +109,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
 
             foreach (DcsServiceGroup obj in entitys)
             {
-                obj.DeletedBy = currentuserid;
+                obj.DeleteBy = currentuserid;
                 obj.DeleteFlag = 1;
                 obj.DeleteDate = DateTime.Now;
             }

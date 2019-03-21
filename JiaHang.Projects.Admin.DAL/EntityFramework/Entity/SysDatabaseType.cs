@@ -12,5 +12,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdatedBy { get; set; }
         public string DatabaseTypeCode { get; set; }
+        public int DeleteFlag { get; set; }
     }
 }

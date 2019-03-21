@@ -7,5 +7,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
     {
         public string UserId { get; set; }
         public string UserGroupId { get; set; }
+        public int DeleteFlag { get; set; }
     }
 }

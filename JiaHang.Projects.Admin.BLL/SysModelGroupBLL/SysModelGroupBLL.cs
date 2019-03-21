@@ -96,7 +96,7 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
                 return new FuncResult() { IsSuccess = false, Message = "用户ID不存在!" };
             }
             entity.DeleteFlag = 1;
-            entity.DeletedBy = currentUserId;
+            entity.DeleteBy = currentUserId;
             entity.DeleteDate = DateTime.Now;
             _context.SysUserInfo.Update(entity);
             await _context.SaveChangesAsync();
@@ -111,7 +111,7 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
             }
             foreach (var obj in entitys)
             {
-                obj.DeletedBy = currentUserId;
+                obj.DeleteBy = currentUserId;
                 obj.DeleteFlag = 1;
                 obj.DeleteDate = DateTime.Now;
                 _context.SysModelGroup.Update(obj);

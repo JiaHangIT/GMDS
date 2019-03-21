@@ -10,5 +10,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public DateTime? LogDate { get; set; }
         public string LogType { get; set; }
         public string LogInfo { get; set; }
+        public int DeleteFlag { get; set; }
     }
 }
