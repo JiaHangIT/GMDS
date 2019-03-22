@@ -18,7 +18,7 @@ namespace JiaHang.Projects.Admin.Web
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            WebHost.CreateDefaultBuilder(args).UseUrls("http://localhost:6060")
                 .UseStartup<Startup>()
                 .Build();
     }

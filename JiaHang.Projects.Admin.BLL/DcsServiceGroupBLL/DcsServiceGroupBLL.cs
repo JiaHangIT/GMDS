@@ -40,7 +40,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 //需要的字段
                 Service_Group_Id = s.ServiceGroupId,
                 Service_Group_Code = s.ServiceGroupCode,
-                Service_Group_Name = s.ServiceGroupName
+                Service_Group_Name = s.ServiceGroupName,
+                Image_Url =s.ImageUrl
             });
 
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };

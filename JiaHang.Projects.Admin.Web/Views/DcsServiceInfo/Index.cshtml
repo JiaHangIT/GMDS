@@ -1,0 +1,404 @@
+﻿@{
+    ViewData["Title"] = "DcsServiceGroup";
+}
+<script src="~/js/enclosure.js"></script>
+<style>
+    .layui-layer-shade {
+        display: none;
+    }
+
+    .layui-select-title input {
+        width: 180px;
+    }
+
+    .layui-row .layui-col-md4 {
+        padding-right: 5%;
+    }
+
+    .layui-row {
+        margin-bottom: 6px;
+    }
+
+    .layui-form-pane .layui-form-select {
+        width: 182px;
+    }
+</style>
+<div>
+
+
+    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+        <div class="layui-row">
+            <div class=" layui-col-md6 layui-col-xs6">
+                <label class="layui-form-label">分类编号：</label>
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="search_service_code" autocomplete="off">
+                </div>
+            </div>
+            <div class=" layui-col-md6 layui-col-xs6">
+                <label class="layui-form-label">分类名称：</label>
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="search_service_name" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top:15px;">
+            <button class="layui-btn btn-search" data-type="search">条件查询</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增接口分类</button>
+            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+            @*<a class="layui-btn" href="/api/dcsservicegroupdata/export">导出所有</a>*@
+        </div>
+
+    </div>
+    <table class="layui-hide" id="test" lay-filter="dcsservice"> </table>
+
+</div>
+
+<div id="generate_layer" style="display:none;position:relative;padding:15px;">
+    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">分类编号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="add_service_code" id="add_service_code" autocomplete="off" placeholder="接口分类编号" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">分类名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="add_service_name" id="add_service_name" autocomplete="off" placeholder="接口分类名称" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-form-item">
+
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="test1">上传图片</button>
+                <div class="layui-upload-list">
+                    <img class="layui-upload-img" id="demo1">
+                    <p id="demoText"></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    let layui_id;//用来标记当前是哪个table
+
+    //用于保存多个表格的数据+状态
+    var mytbs = undefined; //{ }
+
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+
+        var table = layui.table;
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var formSelects = layui.formSelects;
+        //日期
+        laydate.render({
+            elem: '#end'
+            , range: true,
+            value: @Html.Raw(ViewBag.RangeTime),
+        });
+        function table_done(res, curr, count) {
+            //设置样式
+            $('th').css({ 'background-color': '#C0C0C0', 'font-size': '14px', 'font': 'bold' });
+
+
+        }
+
+        mytbs = {
+            tbs: [],
+            id: "tb_test",
+            getTitles: [
+                function (data) { return data.storeCode; },
+
+                //end
+            ],
+            getSearchModels: [
+                function (data) { return { storeCode: data.storeCode }; },
+
+                //end
+            ],
+            tbOptions: undefined, //[],
+            alltbOptions: [
+                [
+                    //...1
+                    {
+                        url: '/api/DcsServiceInfoData/search/',
+                        cols: [
+                            [
+                                { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 },
+                                {
+                                    field: 'storeCode', rowspan: 2, title: '店铺编码', sort: true, width: 120,
+                                    templet: function (data) {
+                                        var is_total = data.storeCode == '汇总：';
+                                        if (is_total) return data.storeCode;
+                                        return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>'
+                                            + data.storeCode + '</a>';
+                                    }
+                                },
+                                { field: 'productCode', rowspan: 2, title: '产品编号', sort: true, width: 120 } //rowspan即纵向跨越的单元格数
+                                , { field: 'productName', rowspan: 2, title: '产品名称', width: 150 }
+                                , { field: 'dish_Color', rowspan: 2, title: '色碟' }
+                                , { field: 'category', rowspan: 2, title: '类别' }
+                                , { field: 'price', rowspan: 2, title: '价格' }
+                                , { field: 'cost', rowspan: 2, title: '成本价', width: 80 }
+                                , { field: 'tradeAmount', rowspan: 2, title: '售出数', width: 90 }
+                                , { field: 'tradePercent', rowspan: 2, title: '售出数%', width: 90 }
+                                , { field: 'tradeMoney', rowspan: 2, title: '金额', width: 100 }
+                                , { field: 'tradeMoneyPercent', rowspan: 2, title: '金额%', width: 80 }
+                                , { field: 'tradeAmountBelt', rowspan: 2, title: '售出数(Belt)', width: 120 }
+                                , { field: 'tradePercentBelt', rowspan: 2, title: '售出数%(Belt)', width: 120 }
+                                , { field: 'tradeMoneyBelt', rowspan: 2, title: '金额(Belt)', width: 120 }
+                                , { field: 'tradeAmountAlacart', rowspan: 2, title: '售出数(A-La-Cart)', width: 150 }
+                                , { field: 'tradePercentAlacart', rowspan: 2, title: '售出数%(A-La-Cart)', width: 160 }
+                                , { field: 'tradeMoneyAlacart', rowspan: 2, title: '金额(A-La-Cart)', width: 150 }
+                                , { field: 'costMoney', rowspan: 2, title: '成本金额', width: 100 }
+                                , { field: 'costPercent', rowspan: 2, title: '成本%', width: 90 }
+                            ]
+                        ]
+                    },
+                    //...2
+                    {
+                        url: '/api/FactPMIXData/SearchDetail/',
+                        unresize: true,
+                        cols: [
+                            [
+                                //标题栏
+                                { align: 'center', title: '', colspan: 11 }
+                                , { align: 'center', title: 'Belt', colspan: 3 }
+                                , { align: 'center', title: 'A-La-Cart', colspan: 3 }
+                                , { align: 'center', title: '', colspan: 2 }//colspan即横跨的单元格数，这种情况下不用设置field和width
+                            ],
+
+                            [
+                                {
+                                    field: 'storeCode', rowspan: 2, title: '店铺编码', sort: true, width: 120,
+                                },
+                                { field: 'productCode', rowspan: 2, title: '产品编号', sort: true, width: 120 } //rowspan即纵向跨越的单元格数
+                                , { field: 'productName', rowspan: 2, title: '产品名称', width: 150 }
+                                , { field: 'dish_Color', rowspan: 2, title: '色碟' }
+                                , { field: 'category', rowspan: 2, title: '类别' }
+                                , { field: 'price', rowspan: 2, title: '价格' }
+                                , { field: 'cost', rowspan: 2, title: '成本价', width: 80 }
+                                , { field: 'tradeAmount', rowspan: 2, title: '售出数', width: 90 }
+                                , { field: 'tradePercent', rowspan: 2, title: '售出数%', width: 90 }
+                                , { field: 'tradeMoney', rowspan: 2, title: '金额', width: 100 }
+                                , { field: 'tradeMoneyPercent', rowspan: 2, title: '金额%', width: 80 }
+                                , { field: 'tradeAmountBelt', rowspan: 2, title: '售出数(Belt)', width: 120 }
+                                , { field: 'tradePercentBelt', rowspan: 2, title: '售出数%(Belt)', width: 120 }
+                                , { field: 'tradeMoneyBelt', rowspan: 2, title: '金额(Belt)', width: 120 }
+                                , { field: 'tradeAmountAlacart', rowspan: 2, title: '售出数(A-La-Cart)', width: 150 }
+                                , { field: 'tradePercentAlacart', rowspan: 2, title: '售出数%(A-La-Cart)', width: 160 }
+                                , { field: 'tradeMoneyAlacart', rowspan: 2, title: '金额(A-La-Cart)', width: 150 }
+                                , { field: 'costMoney', rowspan: 2, title: '成本金额', width: 100 }
+                                , { field: 'costPercent', rowspan: 2, title: '成本%', width: 90 }
+                            ]
+                        ],
+                        done: function () {
+                            //表高度自适应
+                            encolsure.AdjustSize();
+                        }
+                    },
+                ],
+            ]
+        };//mytbs
+        //表格加载
+        mytbs.init = function (i) {
+            if (i >= mytbs.tbOptions.length) return;
+            var id = mytbs.id + "_" + i;
+            console.log(id);
+            layui_id = id;
+            mytbs.tbs[i] = mytbs.tbs[i] || {};
+
+            var w = {};
+            if (i != 0) {
+                w.width = 20;
+                $.each(mytbs.tbOptions[i].cols[mytbs.tbOptions[i].cols.length - 1] || [], function (_, c) { w.width += (c.width || 80); });
+            }
+
+            table.render($.extend(w,
+                {
+                    contentType: 'application/json',
+                    method: 'post',
+                    parseData: function (res) { //res 即为原始返回的数据
+                        return {
+                            "status": res.isSuccess,
+                            "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                            "msg": res.message, //解析提示文本
+                            "count": res.content.total, //解析数据长度
+                            "data": res.content.data //解析数据列表
+                        };
+                    },
+                },
+                mytbs.tbOptions[i] || {},
+                {
+                    id: id,
+                    elem: '#' + id,
+                    text: {
+                        none: '暂无相关数据'
+                    },
+                    done: table_done
+                }
+            ));
+        };
+        //点击事件
+        mytbs.click = function (a) {
+            var i = parseInt(a.parents('[lay-id]').prev().attr('id').replace(mytbs.id + '_', ''));
+            var id = mytbs.id + "_" + i, id2 = mytbs.id + "_" + (i + 1);
+            console.log(id);
+            var data = JSON.parse(a.find('pre').html());
+            layui_id = id;
+            //关闭之前的窗口
+            //layer.close(mytbs.tbs[i].tr)
+
+            var str = '<div class="tbs-div">'
+                + '<table class="layui-hide" id="' + id2 + '" lay-filter="' + id2 + '"></table>'
+                + '</div>';
+
+            mytbs.tbs[i].title = mytbs.getTitles[i](data);
+            //打开一个div
+            layer.open({
+                type: 1,
+                //skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '70%'], //宽高
+                resize: true,
+                isOutAnim: false,
+                title: mytbs.tbs[i].title || ' ',
+                content: str,
+                success: function (layero, index) {
+                    //mytbs.tbs[i].tr = index;
+
+                    //set mytbs.tbOptions[i + 1].where
+                    mytbs.tbOptions[i + 1].where = $.extend(getSearchParms(), mytbs.getSearchModels[i](data));
+
+                    mytbs.init(i + 1);
+                    setTimeout(function () { table.resize(id); }, 1);
+                },
+
+                end: function () {
+                    mytbs.tbs[i] = {}; //reset to empty
+                    setTimeout(function () { table.resize(id); }, 1);
+                }
+            });
+        };
+        mytbs.reload = function (i, where, done) {
+            var id = mytbs.id + "_" + i;
+            layui_id = id;
+            table.reload(id, {
+                where: where,
+                done: function () {
+                    table_done.call(this, arguments), done.call(this, arguments);
+                }
+            });
+        };
+
+        mytbs.tbOptions = mytbs.alltbOptions[0];
+        mytbs.init(0);
+        //获取查询参数
+        function getSearchParms() {
+            //获取品牌参数
+            let Brands = "";
+            var stbrands = $(($(".ms-brand .el-select__tags-text")));
+            for (var i = 0; i < stbrands.length; i++) {
+                if (Brands != "") Brands += ",";
+                Brands += "'" + $(($(".ms-brand .el-select__tags-text"))[i]).html() + "'";
+            }
+            //获取品牌参数
+            let Regions = "";
+            var stregions = $(($(".ms-region .el-select__tags-text")));
+            for (var i = 0; i < stregions.length; i++) {
+                if (Regions != "") Regions += ",";
+                Regions += "'" + $(($(".ms-region .el-select__tags-text"))[i]).html() + "'";
+            }
+            //获取城市参数
+            let Citys = "";
+            var stcitys = $(($(".ms-city .el-select__tags-text")));
+            for (var i = 0; i < stcitys.length; i++) {
+                if (Citys != "") Citys += ",";
+                Citys += "'" + $(($(".ms-city .el-select__tags-text"))[i]).html() + "'";
+            }
+            //获取DM参数
+            let DMS = "";
+            var stDM = $(($(".ms-dm .el-select__tags-text")));
+            for (var i = 0; i < stDM.length; i++) {
+                if (DMS != "") DMS += ",";
+                DMS += "'" + $(($(".ms-dm .el-select__tags-text"))[i]).html() + "'";
+            }
+            //获取店铺参数
+            let Store = "";
+            var stores = $(($(".ms-store .el-select__tags-text")));
+            for (var i = 0; i < stores.length; i++) {
+                if (Store != "") Store += ",";
+                Store += "'" + $(($(".ms-store .el-select__tags-text"))[i]).html() + "'";
+            }
+            let date_region = document.getElementById("end").value;
+            var _start = "", _end = "";
+            if (date_region != "") {
+                _start = date_region.split(" - ")[0];
+                _end = date_region.split(" - ")[1];
+            }
+            return {
+                stBrand: Brands,
+                stRegion: Regions,//$("#search_region").val(),
+                stCity: Citys, //$("#search_city").val(),
+                stDM: DMS,//formSelects.value('dm', 'valStr'), //$("#search_dm").val(),
+                storeCode: Store, //$("#search_store").val(),
+                countType: $("#search_countType").val(),
+                StartTime: _start + " 00:00:00",
+                EndTime: _end + " 00:00:00",
+            };
+
+
+        }
+
+        var active = {
+            //查询操作传参数
+            search: function () {
+                let pars = getSearchParms();
+                //var sel = pars.stRegion == "" ? "" : pars.stRegion + "," + pars.StartTime + " 至  " + pars.EndTime;
+                mytbs.reload(0, pars, function () {
+                    //sel && $('[lay-id=' + this.id + '] thead tr:first span').html(sel);
+                });
+            },
+
+            //导出
+            export: function () {
+                console.log('export');
+
+                let pars = getSearchParms();
+
+                //,string stRegion,string stCity, string stDM  +  一个店铺下拉条件
+                let url = '/api/FactPMIXData/export?' + $.param(pars);
+                window.location.href = url;
+            }
+        };
+
+
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+
+
+</script>
+
+

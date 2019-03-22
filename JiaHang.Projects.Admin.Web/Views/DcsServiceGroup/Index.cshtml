@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "DcsServiceGroup";
 }
+<script src="~/js/enclosure.js"></script>
 <style>
     .layui-layer-shade {
         display: none;
@@ -172,9 +173,10 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'service_Group_Id', width: 350, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left' }
                 , { field: 'service_Group_Code', title: '接口分类编号' }
                 , { field: 'service_Group_Name', title: '接口分类名', sort: true }
+                , { field: 'image_Url', title: '接口图片地址', sort: true }
             ]]
             , id: 'testReload'
             , page: true,
@@ -266,17 +268,11 @@
                 let pars = {
                     limit: 10,
                     page: 1,
-                    //User_Account: $("#search_user_account").val(),
-                    //User_Name: $("#search_user_name").val(),
                     Service_Group_Code: $('#search_service_code').val(),
                     Service_Group_Name: $('#search_service_name').val(),
-                    //User_Is_Ldap: 0,
-                    //User_Ower: 0,
 
                 }
-                //if ($("#search_user_ower").val() != "") {
-                //    pars.User_Ower = Number($("#search_user_ower").val());
-                //}
+
                 //执行重载
                 table.reload('testReload', {
                     where: pars,
@@ -297,9 +293,8 @@
             let model = {
                 servicegroupcode: $("#add_service_code").val(),
                 servicegroupname: $("#add_service_name").val(),
-
+                //imageurl: base.decode($("#demo1").attr('src'))
             };
-            var imageurl = $('#demo1');
             let url = "/api/dcsservicegroupdata";
             let method = "POST";
             if (layType != true) {
@@ -344,11 +339,9 @@
         function showLayer(data) {
             initFormValue(data);
             let title = "新增接口分类";
-            //document.getElementById("add_service_code").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
                 title = "编辑接口分类";
-                //document.getElementById("add_service_code").disabled = true;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -368,17 +361,21 @@
         };
         function initFormValue(data) {
             if (data == undefined) {
-
+                $('#demo1').removeAttr('src');
                 form.val("generate-form", {
                     add_service_code: "",
                     add_service_name: ""
                 })
                 return;
             }
-            form.val("generate-form", {
-                add_service_code: data.service_Group_Code,
-                add_service_name: data.service_Group_Name
-            })
+            else {
+                $('#demo1').attr('src', '../' + data.image_Url);
+                form.val("generate-form", {
+                    add_service_code: data.service_Group_Code,
+                    add_service_name: data.service_Group_Name
+                }) 
+            }
+           
         }
 
 

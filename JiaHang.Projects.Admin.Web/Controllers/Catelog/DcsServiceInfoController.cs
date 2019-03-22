@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.Catelog
 {
-    public class CatelogResourceRegController : Controller
+    public class DcsServiceInfoController : Controller
     {
         public IActionResult Index()
         {
