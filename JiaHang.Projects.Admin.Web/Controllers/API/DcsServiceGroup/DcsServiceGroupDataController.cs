@@ -100,7 +100,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
 
 
         /// <summary>
-        /// layui在线编辑器里的上传图片功能
+        /// 图片上传（上传路径为~/wwwroot/images/catelog/..）
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -124,18 +124,18 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
                     tempname = filename1;
                     var path = hostingEnv.WebRootPath;
                     string dir = DateTime.Now.ToString("yyyyMMdd");
-                    if (!Directory.Exists(hostingEnv.WebRootPath + $@"\upload\{dir}"))
+                    if (!Directory.Exists(hostingEnv.WebRootPath + $@"\images\catelog\{dir}"))
                     {
-                        Directory.CreateDirectory(hostingEnv.WebRootPath + $@"\upload\{dir}");
+                        Directory.CreateDirectory(hostingEnv.WebRootPath + $@"\images\catelog\{dir}");
                     }
-                    filename = hostingEnv.WebRootPath + $@"\upload\{dir}\{filename1}";
+                    filename = hostingEnv.WebRootPath + $@"\images\catelog\{dir}\{filename1}";
                     size += imgFile.Length;
                     using (FileStream fs = System.IO.File.Create(filename))
                     {
                         imgFile.CopyTo(fs);
                         fs.Flush();
                     }
-                    return new FuncResult() { IsSuccess = true, Message = "上传成功", Content = new { src = $"/upload/{dir}/{filename1}" } };
+                    return new FuncResult() { IsSuccess = true, Message = "上传成功", Content = new { src = $"/images/catelog/{dir}/{filename1}" } };
                 }
           
                 #endregion

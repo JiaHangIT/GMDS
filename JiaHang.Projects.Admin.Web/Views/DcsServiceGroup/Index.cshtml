@@ -114,8 +114,13 @@
                 if (res.code > 0) {
                     return layer.msg('上传失败');
                 }
-                //上传成功
-                layer.msg('上传成功');
+                if (res.isSuccess == true) {
+                    //上传成功
+                    layer.msg('上传成功');
+                }
+                else {
+                    layer.msg(msg.message);
+                }
             }
             , error: function () {
                 //演示失败状态，并实现重传
@@ -167,7 +172,7 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'service_Group_Id', width: 320, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'service_Group_Id', width: 350, title: 'ID', sort: true, fixed: 'left' }
                 , { field: 'service_Group_Code', title: '接口分类编号' }
                 , { field: 'service_Group_Name', title: '接口分类名', sort: true }
             ]]
@@ -292,9 +297,9 @@
             let model = {
                 servicegroupcode: $("#add_service_code").val(),
                 servicegroupname: $("#add_service_name").val(),
-               
+
             };
-            var imageurl= $('#demo1');
+            var imageurl = $('#demo1');
             let url = "/api/dcsservicegroupdata";
             let method = "POST";
             if (layType != true) {
