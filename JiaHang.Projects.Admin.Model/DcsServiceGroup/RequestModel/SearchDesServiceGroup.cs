@@ -10,6 +10,8 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceGroup.RequestModel
 
         public int page { get; set; }
 
-        public string Servoce_Group_Name { get; set; }
+        public string Service_Group_Code { get; set; }
+
+        public string Service_Group_Name { get; set; }
     }
 }

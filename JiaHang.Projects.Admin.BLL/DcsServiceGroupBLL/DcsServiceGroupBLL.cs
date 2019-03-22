@@ -8,6 +8,7 @@ using JiaHang.Projects.Admin.Model.DcsServiceGroup.RequestModel;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
+using OfficeOpenXml;
 
 namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
 {
@@ -30,7 +31,11 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 .OrderByDescending(o => o.CreationDate);
 
             int total = query.Count();
-            var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
+            var data = query.Skip(model.limit * model.page).Where(s =>
+            (string.IsNullOrWhiteSpace(model.Service_Group_Code) || s.ServiceGroupCode.Contains(model.Service_Group_Code)) &&
+            (string.IsNullOrWhiteSpace(model.Service_Group_Name) || s.ServiceGroupName.Contains(model.Service_Group_Name)) &&
+            (s.DeleteFlag == 0)
+            ).Take(model.limit).ToList().Select(s => new
             {
                 //需要的字段
                 Service_Group_Id = s.ServiceGroupId,
@@ -63,7 +68,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
         {
             DcsServiceGroup entity = new DcsServiceGroup()
             {
-                ServiceGroupId = model.ServiceGroupId,
+                ServiceGroupId = Guid.NewGuid().ToString("N").ToUpper(),
                 ServiceGroupCode = model.ServiceGroupCode,
                 ServiceGroupName = model.ServiceGroupName,
                 ImageUrl = model.ImageUrl,
@@ -81,6 +86,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 try
                 {
                     await _context.SaveChangesAsync();
+                    trans.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -94,7 +100,28 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
         }
 
         /// <summary>
-        /// 删除
+        /// 删除（一个）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUserId"></param>
+        /// <returns></returns>
+        public async Task<FuncResult> Delete(string id, string currentUserId)
+        {
+            DcsServiceGroup entity = await _context.DcsServiceGroup.FindAsync(id);
+            if (entity == null)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "用户ID不存在!" };
+            }
+            entity.DeleteFlag = 1;
+            entity.DeleteBy = currentUserId;
+            entity.DeleteDate = DateTime.Now;
+            _context.DcsServiceGroup.Update(entity);
+            await _context.SaveChangesAsync();
+            return new FuncResult() { IsSuccess = true, Content = entity, Message = "删除成功" };
+        }
+
+        /// <summary>
+        /// 删除（多个）
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="currentuserid"></param>
@@ -179,6 +206,46 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 result.Message = ex.Message;
                 return result;
             }
+        }
+
+        /// <summary>
+        /// 导出使用
+        /// </summary>
+        /// <returns></returns>
+        public async Task<byte[]> GetDcsServiceGroupListBytes()
+        {
+
+            var comlumHeadrs = new[] { "目录分类ID", "目录分类编号", "目录分类名", "创建时间" };
+            byte[] result;
+            var data = _context.DcsServiceGroup.ToList();
+            var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
+                                                                       //First add the headers
+            for (var i = 0; i < comlumHeadrs.Count(); i++)
+            {
+                worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
+            }
+            //Add values
+            var j = 2;
+            // var chars = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+            await Task.Run(() =>
+            {
+                foreach (var obj in data)
+                {
+                    var rt = obj.GetType();
+                    var rp = rt.GetProperties();
+
+                    worksheet.Cells["A" + j].Value = obj.ServiceGroupId;
+                    worksheet.Cells["B" + j].Value = obj.ServiceGroupCode;
+                    worksheet.Cells["C" + j].Value = obj.ServiceGroupName;
+                    worksheet.Cells["D" + j].Value = obj.CreationDate;
+                    j++;
+                }
+            });
+
+            result = package.GetAsByteArray();
+            
+            return result;
         }
     }
 }

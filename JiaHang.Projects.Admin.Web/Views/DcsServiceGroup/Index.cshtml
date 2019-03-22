@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "DcsServiceGroup";
 }
 <style>
     .layui-layer-shade {
@@ -9,6 +9,7 @@
     .layui-select-title input {
         width: 180px;
     }
+
     .layui-row .layui-col-md4 {
         padding-right: 5%;
     }
@@ -16,66 +17,76 @@
     .layui-row {
         margin-bottom: 6px;
     }
+
     .layui-form-pane .layui-form-select {
-        width:182px;
+        width: 182px;
     }
 </style>
 <div>
 
-    
+
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">用户账号：</label>
+                <label class="layui-form-label">分类编号：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_user_account" autocomplete="off">
+                    <input class="layui-input" name="id" id="search_service_code" autocomplete="off">
                 </div>
             </div>
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">用户名称：</label>
-                <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_user_name" autocomplete="off">
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">接口分类名：</label>
+                <label class="layui-form-label">分类名称：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_service_name" autocomplete="off">
-                </div>
-            </div>            
-        @*</div>
-        <div class="layui-row">*@
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 是否有效：</label>
-                <div class="layui-inline">
-                    <select name="interest" id="search_user_is_ldap" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="0" selected="">有效</option>
-                        <option value="1">无效</option>
-                    </select>
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 用户类型：</label>
-                <div class="layui-inline">
-                    <select name="interest" id="search_user_ower" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="1">管理员</option>
-                        <option value="2">领导</option>
-                        <option value="4">kds报表用户</option>
-                    </select>
                 </div>
             </div>
         </div>
         <div class="layui-form-item" style="margin-top:15px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增用户</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增接口分类</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-            <a class="layui-btn" href="/api/sysuserinfodata/export">导出所有</a>
+            @*<a class="layui-btn" href="/api/dcsservicegroupdata/export">导出所有</a>*@
         </div>
 
     </div>
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+    <table class="layui-hide" id="test" lay-filter="dcsservice"> </table>
+
+</div>
+
+<div id="generate_layer" style="display:none;position:relative;padding:15px;">
+    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">分类编号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="add_service_code" id="add_service_code" autocomplete="off" placeholder="接口分类编号" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">分类名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="add_service_name" id="add_service_name" autocomplete="off" placeholder="接口分类名称" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-form-item">
+
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="test1">上传图片</button>
+                <div class="layui-upload-list">
+                    <img class="layui-upload-img" id="demo1">
+                    <p id="demoText"></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+        </div>
+    </div>
+
 
 </div>
 
@@ -84,6 +95,39 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
+    layui.use('upload', function () {
+        var $ = layui.jquery
+            , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            , url: '/api/dcsservicegroupdata/upload/'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                layer.msg('上传成功');
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+    })
+
 
     layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
         var table = layui.table;
@@ -93,7 +137,7 @@
         var laydate = layui.laydate;
         var generateLayer_index = 0;
         var layType = true;//true 新增  false 编辑
-        var user_id = 0;
+        var servicegroupid = 0;
         //日期
         laydate.render({
             elem: '#eff_start_date'
@@ -105,7 +149,7 @@
 
         table.render({
             elem: '#test'
-            , url: '/api/dcsservicegroupdata/search/'           
+            , url: '/api/dcsservicegroupdata/search/'
             , contentType: 'application/json'
             , method: 'post'
             , parseData: function (res) { //res 即为原始返回的数据
@@ -121,11 +165,11 @@
             , cols: [[
 
                 { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title:'操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'Service_Group_Id', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                , { field: 'Service_Group_Code', title: '接口分类编号' }
-                , { field: 'Service_Group_Name', title: '接口分类名', sort: true }
+                , { field: 'service_Group_Id', width: 320, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'service_Group_Code', title: '接口分类编号' }
+                , { field: 'service_Group_Name', title: '接口分类名', sort: true }
             ]]
             , id: 'testReload'
             , page: true,
@@ -135,18 +179,18 @@
         });
 
 
-        table.on('checkbox(dcsservice)', function (obj) {
-        });
+        //table.on('checkbox(dcsservice)', function (obj) {
+        //});
         //监听工具条
         table.on('tool(dcsservice)', function (obj) {
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
             } else if (obj.event === 'del') {
-                let confirm_title = "确认删除账号" + data.user_Account + "的记录么";
+                let confirm_title = "确认删除账号" + data.service_Group_Id + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/dcsservicegroupdata/' + data.service_group_id)
+                    axios.delete('/api/dcsservicegroupdata/' + data.service_Group_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -161,7 +205,7 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                user_id = data.service_group_id
+                servicegroupid = data.service_Group_Id
                 layType = false;
                 showLayer(data);
             }
@@ -179,12 +223,12 @@
                     let ids = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        ids.push(data[i].service_group_id);
-                        parms += "ids=" + data[i].service_group_id + "&";
+                        ids.push(data[i].service_Group_Id);
+                        parms += "ids=" + data[i].service_Group_Id + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/sysuserinfodata/batchdelete/" + parms)
+                    axios.delete("/api/dcsservicegroupdata/batchdelete/" + parms)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -202,8 +246,8 @@
                             //}
                             //console.log(tabledata);
                             tableReload(tabledata);
-                            
-                            
+
+
                         })
                         .catch(function (error) {
                             layer.msg("发生了预料之外的错误!");
@@ -211,7 +255,7 @@
                         });
                 });
 
-                
+
             },
             search: function () {
                 let pars = {
@@ -219,7 +263,8 @@
                     page: 1,
                     //User_Account: $("#search_user_account").val(),
                     //User_Name: $("#search_user_name").val(),
-                    Servoce_Group_Name: $('#search_service_name').val(),
+                    Service_Group_Code: $('#search_service_code').val(),
+                    Service_Group_Name: $('#search_service_name').val(),
                     //User_Is_Ldap: 0,
                     //User_Ower: 0,
 
@@ -227,9 +272,6 @@
                 //if ($("#search_user_ower").val() != "") {
                 //    pars.User_Ower = Number($("#search_user_ower").val());
                 //}
-                if ($("#search_user_is_ldap").val() != "") {
-                    pars.User_Is_Ldap = $("#search_user_is_ldap").val();
-                }
                 //执行重载
                 table.reload('testReload', {
                     where: pars,
@@ -248,23 +290,15 @@
         };
         form.on('submit(submit)', function () {
             let model = {
-                useraccount: $("#user_account").val(),
-                username: $("#user_name").val(),
-                userpassword: $("#user_password").val(),
-                useremail: $("#user_email").val(),
-                userisldap: $("#user_is_ldap").val() ,
-                usermobileno: $("#user_mobile_no").val(),
-                userower: Number($("#user_ower").val()),
-                languagecode: $("#language_code").val(),
-                userislock: $("#user_is_lock").val() ,
-                effstartdate: $("#eff_start_date").val(),
-                effenddate: $("#eff_end_date").val(),
+                servicegroupcode: $("#add_service_code").val(),
+                servicegroupname: $("#add_service_name").val(),
+               
             };
-
-            let url = "/api/sysuserinfodata";
+            var imageurl= $('#demo1');
+            let url = "/api/dcsservicegroupdata";
             let method = "POST";
             if (layType != true) {
-                url = "/api/sysuserinfodata/" + user_id;
+                url = "/api/dcsservicegroupdata/" + servicegroupid;
                 method = "PUT";
             }
             axios({ url: url, method: method, data: model })
@@ -277,7 +311,7 @@
                     if (layType != true) {
                         //修改
                         for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].user_Id == response.data.content.user_Id) {
+                            if (datatable[i].service_group_id == response.data.content.service_group_id) {
                                 datatable.splice(i, 1, response.data.content);
                                 break;
                             }
@@ -292,7 +326,6 @@
                     layer.close(generateLayer_index);
                 })
                 .catch(function (error) {
-
                     layer.msg("发生了预料之外的错误!");
                     console.log(error);
                 });
@@ -305,12 +338,12 @@
             });
         function showLayer(data) {
             initFormValue(data);
-            let title = "新增系统用户";
-            document.getElementById("user_account").disabled = false;
+            let title = "新增接口分类";
+            //document.getElementById("add_service_code").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
-                title = "编辑系统用户";
-                document.getElementById("user_account").disabled = true;
+                title = "编辑接口分类";
+                //document.getElementById("add_service_code").disabled = true;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -325,44 +358,21 @@
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                ,offset: ['10%', '3%']
+                , offset: ['10%', '3%']
             });
         };
         function initFormValue(data) {
             if (data == undefined) {
 
                 form.val("generate-form", {
-                    eff_end_date: "",
-                    eff_start_date: "",
-                    language_code: "",
-                    user_account: "",
-                    user_email: "",
-                    user_group_names: "",
-                    user_id: "",
-                    user_is_ldap: "",
-                    user_is_lock: "",
-                    user_mobile_no: "",
-                    user_name: "",
-                    user_org_id: "",
-                    user_ower: ""
+                    add_service_code: "",
+                    add_service_name: ""
                 })
                 return;
             }
             form.val("generate-form", {
-                eff_end_date: data.eff_End_Date,
-                eff_start_date: data.eff_Start_Date,
-                language_code: data.language_Code,
-                user_account: data.user_Account,
-                user_email: data.user_Email,
-                user_group_names: data.user_Group_Names,
-                user_id: data.user_Id,
-                user_is_ldap: data.user_Is_Ldap,
-                user_is_lock: data.user_Is_Lock,
-                user_mobile_no: data.user_Mobile_No,
-                user_name: data.user_Name,
-                user_org_id: data.user_Org_Id,
-                user_ower: data.user_Ower,
-                user_password: data.user_Password
+                add_service_code: data.service_Group_Code,
+                add_service_name: data.service_Group_Name
             })
         }
 
