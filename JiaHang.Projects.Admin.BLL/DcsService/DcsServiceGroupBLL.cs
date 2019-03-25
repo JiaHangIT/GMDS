@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using OfficeOpenXml;
 
-namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
+namespace JiaHang.Projects.Admin.BLL.DcsService
 {
     public class DcsServiceGroupBLL
     {
@@ -31,17 +31,17 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 .OrderByDescending(o => o.CreationDate);
 
             int total = query.Count();
-            var data = query.Skip(model.limit * model.page).Where(s =>
+            var data = query.Where(s =>
             (string.IsNullOrWhiteSpace(model.Service_Group_Code) || s.ServiceGroupCode.Contains(model.Service_Group_Code)) &&
             (string.IsNullOrWhiteSpace(model.Service_Group_Name) || s.ServiceGroupName.Contains(model.Service_Group_Name)) &&
             (s.DeleteFlag == 0)
-            ).Take(model.limit).ToList().Select(s => new
+            ).Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
             {
                 //需要的字段
                 Service_Group_Id = s.ServiceGroupId,
                 Service_Group_Code = s.ServiceGroupCode,
                 Service_Group_Name = s.ServiceGroupName,
-                Image_Url =s.ImageUrl
+                Image_Url = s.ImageUrl
             });
 
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
@@ -140,6 +140,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 obj.DeleteBy = currentuserid;
                 obj.DeleteFlag = 1;
                 obj.DeleteDate = DateTime.Now;
+                _context.DcsServiceGroup.Update(obj);
             }
 
             using (IDbContextTransaction trans  = _context.Database.BeginTransaction())
@@ -182,7 +183,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
                 if (entity == null)
                 {
                     result.IsSuccess = false;
-                    result.Message = "用户ID错误";
+                    result.Message = "主键ID错误";
                     return result;
                 }
 
@@ -198,7 +199,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL
 
                 result.IsSuccess = true;
                 result.Content = entity;
-                result.Message = "修改更新";
+                result.Message = "修改成功";
                 return result;
             }
             catch (Exception ex)

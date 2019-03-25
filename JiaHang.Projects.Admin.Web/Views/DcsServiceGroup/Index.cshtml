@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "DcsServiceGroup";
 }
-<script src="~/js/enclosure.js"></script>
+
 <style>
     .layui-layer-shade {
         display: none;
@@ -106,9 +106,9 @@
             , url: '/api/dcsservicegroupdata/upload/'
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
-                obj.preview(function (index, file, result) {
-                    $('#demo1').attr('src', result); //图片链接（base64）
-                });
+                //obj.preview(function (index, file, result) {
+                //    $('#demo1').attr('src', result); //图片链接（base64）
+                //});
             }
             , done: function (res) {
                 //如果上传失败
@@ -117,6 +117,7 @@
                 }
                 if (res.isSuccess == true) {
                     //上传成功
+                    $('#demo1').attr('src', res.content.src);//src赋值
                     layer.msg('上传成功');
                 }
                 else {
@@ -293,7 +294,7 @@
             let model = {
                 servicegroupcode: $("#add_service_code").val(),
                 servicegroupname: $("#add_service_name").val(),
-                //imageurl: base.decode($("#demo1").attr('src'))
+                imageurl: $("#demo1").attr('src')
             };
             let url = "/api/dcsservicegroupdata";
             let method = "POST";
@@ -369,7 +370,9 @@
                 return;
             }
             else {
-                $('#demo1').attr('src', '../' + data.image_Url);
+                //$('#demo1').attr('src', '../' + data.image_Url);
+                $('#demo1').attr('src', data.image_Url);
+
                 form.val("generate-form", {
                     add_service_code: data.service_Group_Code,
                     add_service_name: data.service_Group_Name

@@ -10,4 +10,8 @@
     <ProjectReference Include="..\JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DcsServiceGroupBLL\" />
+  </ItemGroup>
+
 </Project>
