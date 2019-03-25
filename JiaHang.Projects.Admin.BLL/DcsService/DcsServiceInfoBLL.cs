@@ -27,7 +27,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// <returns></returns>
         public FuncResult Select(SearchDcsServiceInfo model)
         {
-            IOrderedQueryable<DcsServiceInfo> query = context.DcsServiceInfo.OrderByDescending(o => o.CreationDate);
+            List<DcsServiceInfo> query = context.DcsServiceInfo.OrderByDescending(o => o.CreationDate).ToList();
 
             int total = query.Count();
             var data = query.Where(s => (string.IsNullOrWhiteSpace(model.ServiceCode) || s.ServiceCode.Contains(model.ServiceCode)) &&

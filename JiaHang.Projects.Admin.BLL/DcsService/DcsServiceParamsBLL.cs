@@ -28,7 +28,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// <returns></returns>
         public FuncResult Select(SearchDcsServiceParams model, string currentuser)
         {
-            IOrderedQueryable<DcsServiceParams> query = context.DcsServiceParams.OrderByDescending(o => o.CreationDate);
+            List<DcsServiceParams> query = context.DcsServiceParams.OrderByDescending(o => o.CreationDate).ToList();
 
             int total = query.Count();
             var data = query.Skip(model.page * model.limit).Take(model.limit).ToList().Select(s => new

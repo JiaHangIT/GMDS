@@ -27,15 +27,13 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// <returns></returns>
         public FuncResult Select(SearchDesServiceGroup model)
         {
-            IOrderedQueryable<DcsServiceGroup> query = _context.DcsServiceGroup
-                .OrderByDescending(o => o.CreationDate);
-
-            int total = query.Count();
-            var data = query.Where(s =>
+            List<DcsServiceGroup> query = _context.DcsServiceGroup.Where(s =>
             (string.IsNullOrWhiteSpace(model.Service_Group_Code) || s.ServiceGroupCode.Contains(model.Service_Group_Code)) &&
             (string.IsNullOrWhiteSpace(model.Service_Group_Name) || s.ServiceGroupName.Contains(model.Service_Group_Name)) &&
-            (s.DeleteFlag == 0)
-            ).Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
+            (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+
+            int total = query.Count();
+            var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
             {
                 //需要的字段
                 Service_Group_Id = s.ServiceGroupId,
