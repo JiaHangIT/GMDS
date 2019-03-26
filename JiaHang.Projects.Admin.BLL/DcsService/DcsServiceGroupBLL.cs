@@ -58,6 +58,34 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         }
 
         /// <summary>
+        /// 查询目录分类下的接口基本信息(仅需要service_group_id)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public FuncResult SelectRelateServiceInfo(SearchDesServiceGroup model)
+        {
+            var query = (from a in _context.DcsServiceInfo
+                         join b in _context.DcsServiceGroup.Where(w => (string.IsNullOrWhiteSpace(model.Service_Group_Id) || w.ServiceGroupId.Contains(model.Service_Group_Id)))
+                         on a.ServiceGroupId equals b.ServiceGroupId
+                         select new
+                         {
+                             Service_Group_Id = b.ServiceGroupId,
+                             Service_Id = a.ServiceId,
+                             Service_No = a.ServiceNo,
+                             Service_Code = a.ServiceCode,
+                             Service_Name = a.ServiceName,
+                             Service_Version = a.ServiceVersion,
+                             Service_Tech = a.ServiceTech,
+                             Service_Type = a.ServiceType,
+                             Service_Status = a.ServiceStatus
+                         }).ToList();
+            var total = query.Count;
+            var data = query.Skip(model.page * model.limit).Take(model.limit);
+
+            return new FuncResult() { IsSuccess = true, Content = new { total, data } };
+        }
+
+        /// <summary>
         /// 添加一条记录
         /// </summary>
         /// <param name="model"></param>
@@ -127,20 +155,37 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// <returns></returns>
         public async Task<FuncResult> Delete(string[] ids, string currentuserid)
         {
+            /*
+             * 分类下的所有数据接口基本信息删除
+             * **/
             IQueryable<DcsServiceGroup> entitys = _context.DcsServiceGroup.Where(f => ids.Contains(f.ServiceGroupId));
             if (entitys != null && ( entitys.Count() != ids.Length ))
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-
-            foreach (DcsServiceGroup obj in entitys)
+            await Task.Run(() =>
             {
-                obj.DeleteBy = currentuserid;
-                obj.DeleteFlag = 1;
-                obj.DeleteDate = DateTime.Now;
-                _context.DcsServiceGroup.Update(obj);
-            }
-
+                foreach (DcsServiceGroup obj in entitys)
+                {
+                    obj.DeleteBy = currentuserid;
+                    obj.DeleteDate = DateTime.Now;
+                    obj.DeleteFlag = 1;
+                    _context.DcsServiceGroup.Update(obj);
+                }
+            });
+          
+            await Task.Run(()=> {
+                //与当前分类有关的数据接口基本信息
+                var ls_service_info = _context.DcsServiceInfo.Where(w => entitys.Select(s => s.ServiceGroupId).Contains(w.ServiceGroupId));
+                foreach (var service_info in ls_service_info)
+                {
+                    service_info.DeleteBy = currentuserid;
+                    service_info.DeleteDate = DateTime.Now;
+                    service_info.DeleteFlag = 1;
+                    _context.DcsServiceInfo.Update(service_info);
+                }
+            });
+           
             using (IDbContextTransaction trans  = _context.Database.BeginTransaction())
             {
                 try

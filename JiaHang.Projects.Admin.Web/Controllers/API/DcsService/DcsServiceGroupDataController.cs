@@ -39,6 +39,21 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
         }
 
         /// <summary>
+        /// 查询目录分类下的接口基本信息(仅需要service_group_id)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SearchRelateServiceInfo")]
+        [HttpPost]
+        public FuncResult SelectRelateServiceInfo([FromBody] SearchDesServiceGroup model)
+        {
+            model.page--; if (model.page < 0)
+                model.page = 0;
+
+            return DcsserviceBll.SelectRelateServiceInfo(model);
+        }
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id"></param>

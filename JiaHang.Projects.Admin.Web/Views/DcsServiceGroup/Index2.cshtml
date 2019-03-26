@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "DcsServiceGroup";
+    ViewBag.RangeTime = "'" + DateTime.Now.AddDays(-15).ToString("yyyy-MM-dd") + " - " + DateTime.Now.ToString("yyyy-MM-dd") + "'";
 }
 
 <style>
@@ -21,6 +22,10 @@
 
     .layui-form-pane .layui-form-select {
         width: 182px;
+    }
+
+    .tbs-a {
+        color: blue;
     }
 </style>
 <div>
@@ -49,7 +54,7 @@
         </div>
 
     </div>
-    <table class="layui-hide" id="test" lay-filter="dcsservice"> </table>
+    <table class="layui-hide" id="tb_test_0" lay-filter="dcsservice"> </table>
 
 </div>
 
@@ -136,94 +141,221 @@
     })
 
 
+   let layui_id;//用来标记当前是哪个table
+
+    //用于保存多个表格的数据+状态
+    var mytbs = undefined; //{ }
+
+    //用于保存多个表格的数据+状态
+    var mytbs = undefined; //{ }
+
     layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+
         var table = layui.table;
         var element = layui.element;
         var layer = layui.layer;
         var form = layui.form;
         var laydate = layui.laydate;
-        var generateLayer_index = 0;
-        var layType = true;//true 新增  false 编辑
-        var servicegroupid = 0;
+        var formSelects = layui.formSelects;
         //日期
         laydate.render({
-            elem: '#eff_start_date'
+            elem: '#end'
+            , range: true,
+            value: @Html.Raw(ViewBag.RangeTime),
         });
-        laydate.render({
-            elem: '#eff_end_date'
-        });
+        function table_done(res, curr, count) {
+            //设置样式
+            $('th').css({ 'background-color': '#C0C0C0', 'font-size': '14px', 'font': 'bold' });
+            
+        }
 
+        mytbs = {
+            tbs: [],
+            id: "tb_test",
+            getTitles: [
+                function (data) { return data.service_Group_Name; },
+                //end
+            ],
+            getSearchModels: [
+                function (data) { return { Service_Group_Id: data.service_Group_Id }; }
+                //end
+            ],
+            tbOptions: undefined, //[],
+            alltbOptions: [
+                [
+                    //...1
+                    {
+                        url: '/api/dcsservicegroupdata/search/',
+                        cols: [[
+                            { type: 'checkbox', fixed: 'left', width: 40 }
+                            , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-        table.render({
-            elem: '#test'
-            , url: '/api/dcsservicegroupdata/search/'
-            , contentType: 'application/json'
-            , method: 'post'
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
-            }
-
-            , cols: [[
-                { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-
-                , { field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left' }
-                , { field: 'service_Group_Code', title: '接口分类编号' }
-                , { field: 'service_Group_Name', title: '接口分类名', sort: true }
-                , { field: 'image_Url', title: '接口图片地址', sort: true }
-            ]]
-            , id: 'testReload'
-            , page: true,
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
-
-
-        //table.on('checkbox(dcsservice)', function (obj) {
-        //});
-        //监听工具条
-        table.on('tool(dcsservice)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'detail') {
-                layer.msg('ID：' + data.id + ' 的查看操作');
-            } else if (obj.event === 'del') {
-                let confirm_title = "确认删除账号" + data.service_Group_Id + "的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios.delete('/api/dcsservicegroupdata/' + data.service_Group_Id)
-                        .then(function (response) {
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
+                            , {
+                                field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left',
+                                templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Group_Id + '</a>'; }
                             }
-                            obj.del();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                            , { field: 'service_Group_Code', title: '接口分类编号' }
+                            , { field: 'service_Group_Name', title: '接口分类名', sort: true }
+                            , { field: 'image_Url', title: '接口图片地址', sort: true }
+                        ]],
+                        page:true
+                    },
+                    //...2 SearchRelateServiceInfo
+                    {
+                        url: '/api/dcsservicegroupdata/searchrelateserviceinfo/',
+                        unresize: true,
+                        cols: [[
+                            { field: 'service_Group_Id', title: 'Service_Group_Id', fixed: 'left', width: 340 }
+                            , {
+                                field: 'service_Id', width: 340, title: 'Service_Id', sort: true, fixed: 'left',
+                                //templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Id + '</a>'; }
+                            }
+                            , { field: 'service_No', title: '接口编号' }
+                            , { field: 'service_Code', title: '接口代码', sort: true }
+                            , { field: 'service_Name', title: '接口名', sort: true }
+                            , { field: 'service_Version', title: '接口版本' }
+                            , { field: 'service_Tech', title: '接口技术类型', sort: true }
+                            , { field: 'service_Type', title: '接口业务类型', sort: true }
+                            , { field: 'service_Status', title: '接口状态', sort: true }
+                        ]],
+                        page:true
+                    },
+                    //...3
+                ],
+            ]
+        };//mytbs
+        //表格加载
+        mytbs.init = function (i) {
+            if (i >= mytbs.tbOptions.length) return;
+            var id = mytbs.id + "_" + i;
+            console.log(id);
+            layui_id = id;
+            mytbs.tbs[i] = mytbs.tbs[i] || {};
 
-                });
-            } else if (obj.event === 'edit') {
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                servicegroupid = data.service_Group_Id
-                layType = false;
-                showLayer(data);
+            var w = {};
+            if (i != 0) {
+                w.width = 20;
+                $.each(mytbs.tbOptions[i].cols[mytbs.tbOptions[i].cols.length - 1] || [], function (_, c) { w.width += (c.width || 80); });
             }
-        });
 
-        var $ = layui.$, active = {
+            table.render($.extend(w,
+                {
+                    contentType: 'application/json',
+                    method: 'post',
+                    parseData: function (res) { //res 即为原始返回的数据
+                        return {
+                            "status": res.isSuccess,
+                            "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                            "msg": res.message, //解析提示文本
+                            "count": res.content.total, //解析数据长度
+                            "data": res.content.data //解析数据列表
+                        };
+                    },
+                },
+                mytbs.tbOptions[i] || {},
+                {
+                    id: id,
+                    elem: '#' + id,
+                    text: {
+                        none: '暂无相关数据'
+                    },
+                    done: table_done
+                }
+            ));
+
+            //监听工具条
+            table.on('tool(dcsservice)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'detail') {
+                    layer.msg('ID：' + data.id + ' 的查看操作');
+                } else if (obj.event === 'del') {
+                    let confirm_title = "确认删除账号" + data.service_Group_Id + "的记录么";
+                    layer.confirm(confirm_title, function (index) {
+                        layer.close(index);
+                        axios.delete('/api/dcsservicegroupdata/' + data.service_Group_Id)
+                            .then(function (response) {
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                }
+                                obj.del();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+
+                    });
+                } else if (obj.event === 'edit') {
+                    servicegroupid = data.service_Group_Id
+                    layType = false;
+                    showLayer(data);
+                }
+            });
+
+
+
+        };
+        //点击事件
+        mytbs.click = function (a) {
+            var i = parseInt(a.parents('[lay-id]').prev().attr('id').replace(mytbs.id + '_', ''));
+            var id = mytbs.id + "_" + i, id2 = mytbs.id + "_" + (i + 1);
+            console.log(id);
+            var data = JSON.parse(a.find('pre').html());
+            layui_id = id;
+            //关闭之前的窗口
+            //layer.close(mytbs.tbs[i].tr)
+
+            var str = '<div class="tbs-div">'
+                + '<table class="layui-hide" id="' + id2 + '" lay-filter="' + id2 + '"></table>'
+                + '</div>';
+
+            mytbs.tbs[i].title = mytbs.getTitles[i](data);
+            //打开一个div
+            layer.open({
+                type: 1,
+                //skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '70%'], //宽高
+                resize: true,
+                isOutAnim: false,
+                title: mytbs.tbs[i].title || ' ',
+                content: str,
+                success: function (layero, index) {
+                    mytbs.tbOptions[i + 1].where = $.extend(getSearchParms(), mytbs.getSearchModels[i](data));
+
+                    mytbs.init(i + 1);
+                    setTimeout(function () { table.resize(id); }, 1);
+                },
+
+                end: function () {
+                    mytbs.tbs[i] = {}; //reset to empty
+                    setTimeout(function () { table.resize(id); }, 1);
+                }
+            });
+        };
+        mytbs.reload = function (i, where, done) {
+            var id = mytbs.id + "_" + i;
+            layui_id = id;
+            table.reload(id, {
+                where: where,
+                done: function () {
+                    table_done.call(this, arguments), done.call(this, arguments);
+                }
+            });
+        };
+
+        mytbs.tbOptions = mytbs.alltbOptions[0];
+        mytbs.init(0);
+        //获取查询参数
+        function getSearchParms() {
+
+
+        }
+
+        var active = {
             getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('testReload')
+                var checkStatus = table.checkStatus('tb_test_0')
                     , data = checkStatus.data;
-
-
+                
                 layer.confirm("确认删除" + data.length + "条记录么", function (index) {
                     layer.close(index);
 
@@ -234,7 +366,6 @@
                         parms += "ids=" + data[i].service_Group_Id + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
-                    //layer.alert(JSON.stringify(data));
                     axios.delete("/api/dcsservicegroupdata/batchdelete/" + parms)
                         .then(function (response) {
                             layer.msg(response.data.message);
@@ -243,7 +374,7 @@
                             }
 
                             //移除
-                            let tabledata = table.cache.testReload;
+                            let tabledata = table.cache.tb_test_0;
                             tableReload(tabledata);
 
 
@@ -256,6 +387,7 @@
 
 
             },
+            //查询操作传参数
             search: function () {
                 let pars = {
                     limit: 10,
@@ -266,7 +398,7 @@
                 }
 
                 //执行重载
-                table.reload('testReload', {
+                table.reload('tb_test_0', {
                     where: pars,
                     contentType: 'application/json',
                     method: 'post'
@@ -279,8 +411,18 @@
             closeGenerateLayer: function () {
                 layer.close(generateLayer_index);
             },
+            //导出
+            export: function () {
+                console.log('export');
+
+                let pars = getSearchParms();
+                
+                let url = '/api/dcsserviceinfo/export?' + $.param(pars);
+                window.location.href = url;
+            }
 
         };
+
         form.on('submit(submit)', function () {
             let model = {
                 servicegroupcode: $("#add_service_code").val(),
@@ -299,7 +441,7 @@
                     if (!response.data.isSuccess) {
                         return;
                     }
-                    let datatable = table.cache.testReload;
+                    let datatable = table.cache.tb_test_0;
                     if (layType != true) {
                         //修改
                         for (let i = 0; i < datatable.length; i++) {
@@ -324,10 +466,10 @@
 
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         }),
-            $('.layui-btn').on('click', function () {
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
         function showLayer(data) {
             initFormValue(data);
             let title = "新增接口分类";
@@ -361,28 +503,23 @@
                 return;
             }
             else {
-                //$('#demo1').attr('src', '../' + data.image_Url);
                 $('#demo1').attr('src', data.image_Url);
 
                 form.val("generate-form", {
                     add_service_code: data.service_Group_Code,
                     add_service_name: data.service_Group_Name
-                }) 
+                })
             }
-           
+
         }
 
-
         function tableReload(datatable) {
-            table.reload("testReload", {
+            table.reload("tb_test_0", {
                 data: datatable
             })
         }
-
     });
-
-
-
+    
 </script>
 
 

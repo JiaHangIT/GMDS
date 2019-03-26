@@ -2,43 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JiaHang.Projects.Admin.BLL.DcsService;
+using JiaHang.Projects.Admin.DAL.EntityFramework;
+using JiaHang.Projects.Admin.Model;
+using JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
 {
     [Route("api/[controller]")]
     public class DcsServiceInfoDataController : Controller
     {
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly DcsServiceInfoBLL DcsServiceInfo;
+        private readonly IMemoryCache cache;
+
+        public DcsServiceInfoDataController(DataContext datacontext, IMemoryCache cache)
         {
-            return new string[] { "value1", "value2" };
+            DcsServiceInfo = new DcsServiceInfoBLL(datacontext);
+            this.cache = cache;
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("Search")]
+        public FuncResult Select([FromBody] SearchDcsServiceInfo model)
         {
-            return "value";
-        }
+            model.page--;if (model.page < 0)
+                model.page = 0;
 
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return DcsServiceInfo.Select(model);
         }
     }
 }

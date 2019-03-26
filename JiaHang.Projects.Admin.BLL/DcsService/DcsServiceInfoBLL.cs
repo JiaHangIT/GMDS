@@ -27,7 +27,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// <returns></returns>
         public FuncResult Select(SearchDcsServiceInfo model)
         {
-            List<DcsServiceInfo> query = context.DcsServiceInfo.OrderByDescending(o => o.CreationDate).ToList();
+            List<DcsServiceInfo> query = context.DcsServiceInfo.OrderByDescending(o => o.CreationDate).DefaultIfEmpty().ToList();
 
             int total = query.Count();
             var data = query.Where(s => (string.IsNullOrWhiteSpace(model.ServiceCode) || s.ServiceCode.Contains(model.ServiceCode)) &&
@@ -36,6 +36,14 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             ).Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
             {
                 //需要的列
+                Service_Id = s.ServiceId,
+                Service_No = s.ServiceNo,
+                Service_Code = s.ServiceCode,
+                Service_Name = s.ServiceName,
+                Service_Version = s.ServiceVersion,
+                Service_Tech = s.ServiceTech,
+                Service_Type = s.ServiceType,
+                Service_Status = s.ServiceStatus
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -149,13 +157,16 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
 
-            foreach (DcsServiceInfo obj in entities)
+            await Task.Run(() =>
             {
-                obj.DeleteBy = currentuserid;
-                obj.DeleteDate = DateTime.Now;
-                obj.DeleteFlag = 1;
-                context.DcsServiceInfo.Update(obj);
-            }
+                foreach (DcsServiceInfo obj in entities)
+                {
+                    obj.DeleteBy = currentuserid;
+                    obj.DeleteDate = DateTime.Now;
+                    obj.DeleteFlag = 1;
+                    context.DcsServiceInfo.Update(obj);
+                }
+            });
 
             using (IDbContextTransaction trans = context.Database.BeginTransaction())
             {

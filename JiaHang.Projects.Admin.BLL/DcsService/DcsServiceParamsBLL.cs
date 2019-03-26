@@ -34,6 +34,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             var data = query.Skip(model.page * model.limit).Take(model.limit).ToList().Select(s => new
             {
                 //根据需求返回字段
+
+
             });
 
             return new FuncResult() { IsSuccess = true, Content = new { total, data } };
