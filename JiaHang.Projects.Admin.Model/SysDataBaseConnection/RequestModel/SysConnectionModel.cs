@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
+namespace JiaHang.Projects.Admin.Model.SysConnection.RequestModel
 {
-    
-    public partial class SysConnectionInfo
+   public class SysConnectionModel
     {
         public string ConnectionId { get; set; }
         public string ConnectionName { get; set; }
