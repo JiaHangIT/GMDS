@@ -84,8 +84,6 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             {
                 return new FuncResult() { IsSuccess = false, Message = "用户ID错误!" };
             }
-
-
             entity.UserName = model.UserName;
             entity.UserPassword = model.UserPassword;
             entity.UserOrgId = model.UserOrgId;
@@ -97,7 +95,6 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             entity.UserIsLock = model.UserIsLock;
             entity.EffStartDate = model.EffStartDate;
             entity.EffEndDate = model.EffEndDate;
-
             entity.LastUpdatedBy = currentUserId;
             entity.LastUpdateDate = DateTime.Now;
 
