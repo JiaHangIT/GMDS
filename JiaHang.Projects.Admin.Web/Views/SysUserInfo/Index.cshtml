@@ -271,7 +271,7 @@
                 let confirm_title = "确认删除账号" + data.user_Account + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/SysUserInfoData/' + data.user_Id)
+                    axios.delete('/api/sysuserinfodata/' + data.user_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
