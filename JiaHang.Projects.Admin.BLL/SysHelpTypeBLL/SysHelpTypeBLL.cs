@@ -28,15 +28,17 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             IOrderedQueryable<SysHelpType> query = _context.SysHelpType.
                 Where(a =>
                 (
-                (string.IsNullOrWhiteSpace(model.Help_Type_Name) || a.HelpTypeName.Contains(model.Help_Type_Name))
+                (string.IsNullOrWhiteSpace(model.help_Type_Name) || a.HelpTypeName.Contains(model.help_Type_Name))
                 )
                 ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
 
-                HELP_TYPE_ID = e.HelpTypeId,
-                HELP_TYPE_NAME = e.HelpTypeName
+                //HELP_TYPE_ID = e.HelpTypeId,
+                //HELP_TYPE_NAME = e.HelpTypeName
+                e.HelpTypeId,
+                e.HelpTypeName
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -85,9 +87,11 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             SysHelpType entity = await _context.SysHelpType.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "用户ID不存在!" };
+                return new FuncResult() { IsSuccess = false, Message = "帮助类型ID不存在!" };
             }
             entity.DeleteFlag = 1;
+            //entity.DeleteFlag = true;
+
             entity.DeleteBy = currentUserId;
             entity.DeleteDate = DateTime.Now;
             _context.SysHelpType.Update(entity);
@@ -104,6 +108,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             foreach (SysHelpType obj in entitys)
             {
                 obj.DeleteBy = currentUserId;
+                //obj.DeleteFlag = true;
                 obj.DeleteFlag = 1;
                 obj.DeleteDate = DateTime.Now;
                 _context.SysHelpType.Update(obj);
@@ -134,7 +139,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         {
             SysHelpType entity = new SysHelpType
             {
-                
+
                 HelpTypeName = model.HelpTypeName,
 
                 LastUpdatedBy = currentUserId,
@@ -162,43 +167,43 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
 
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
-        public async Task<byte[]> GetUserListBytes()
+        //public async Task<byte[]> GetUserListBytes()
 
-        {
+        //{
 
-            var comlumHeadrs = new[] { "帮助类型ID", "帮助类型名称" };
-            byte[] result;
-            var data = _context.SysHelpType.ToList();
-            var package = new ExcelPackage();
-            var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
-                                                                       //First add the headers
-            for (var i = 0; i < comlumHeadrs.Count(); i++)
-            {
-                worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
-            }
-            //Add values
-            var j = 2;
-            // var chars = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-            await Task.Run(() =>
-            {
-                foreach (var obj in data)
-                {
-                    var rt = obj.GetType();
-                    var rp = rt.GetProperties();
+        //    var comlumHeadrs = new[] { "帮助类型ID", "帮助类型名称" };
+        //    byte[] result;
+        //    var data = _context.SysHelpType.ToList();
+        //    var package = new ExcelPackage();
+        //    var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
+        //                                                               //First add the headers
+        //    for (var i = 0; i < comlumHeadrs.Count(); i++)
+        //    {
+        //        worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
+        //    }
+        //    //Add values
+        //    var j = 2;
+        //    // var chars = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+        //    await Task.Run(() =>
+        //    {
+        //        foreach (var obj in data)
+        //        {
+        //            var rt = obj.GetType();
+        //            var rp = rt.GetProperties();
 
-                    worksheet.Cells["A" + j].Value = obj.HelpTypeId;
-                    worksheet.Cells["B" + j].Value = obj.HelpTypeName;
-                    
-                    j++;
-                }
-            });
+        //            worksheet.Cells["A" + j].Value = obj.HelpTypeId;
+        //            worksheet.Cells["B" + j].Value = obj.HelpTypeName;
 
-            result = package.GetAsByteArray();
+        //            j++;
+        //        }
+        //    });
+
+        //    result = package.GetAsByteArray();
 
 
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
     }

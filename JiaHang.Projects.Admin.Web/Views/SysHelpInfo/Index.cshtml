@@ -68,7 +68,7 @@
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增信息</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-            <a class="layui-btn" href="/api/syshelpinfodata/export">导出所有</a>
+            @*<a class="layui-btn" href="/api/syshelpinfodata/export">导出所有</a>*@
         </div>
 
     </div>
@@ -115,7 +115,7 @@
                     <select class="layui-input" disabled="" name="interest" id="audit_flag" lay-filter="aihao" readOnly="ture">
 
                         <option value="0" selected="">否</option>
-
+                        <option value="1">是</option>
 
                     </select>
                 </div>
@@ -143,9 +143,7 @@
 </div>
 
 
-<script type="text/html" id="barDemo1">
-    <a class="layui-btn layui-btn-xs" lay-event="audit">审核</a>
-</script>
+
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -211,18 +209,17 @@
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
         });
+
+
         table.on('checkbox(syshelp)', function (obj) {
         });
-
-
-
         //监听工具条
         table.on('tool(syshelp)', function (obj) {
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
             } else if (obj.event === 'del') {
-                let confirm_title = "确认删除账号" + data.help_Id + "的记录么";
+                let confirm_title = "确认删除" + data.help_Id + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
                     axios.delete('/api/SysHelpInfoData/' + data.help_Id)
@@ -297,20 +294,14 @@
                 let pars = {
                     limit: 10,
                     page: 1,
-                    Help_Type_Id: $("#search_Help_Type_Id").val(),
-                    Help_Title: $("#search_Help_Title").val(),
-                    Important_Flag: 0,
-                    Audit_Flag: 0,
+                    help_Type_Id: $("#search_help_type_id").val(),
+                    help_Title: $("#search_help_title").val(),
+                    important_Flag: 0,
+                    audit_Flag: 0,
                 }
                 if ($("#search_important_flag").val() != "") {
                     pars.Important_Flag = $("#search_important_flag").val();
                 }
-                //执行重载
-                table.reload('testReload', {
-                    where: pars,
-                    contentType: 'application/json',
-                    method: 'post'
-                });
                 if ($("#search_audit_flag").val() != "") {
                     pars.Audit_Flag = $("#search_audit_flag").val();
                 }
@@ -320,6 +311,7 @@
                     contentType: 'application/json',
                     method: 'post'
                 });
+
             },
             showGenerateLayer: function () {
                 layType = true;
@@ -336,12 +328,12 @@
                 helptypeid: $("#help_type_id").val(),
                 helptitle: $("#help_title").val(),
                 helpcontent: $("#help_content").val(),
-                importantflag: $("#important_flag").val(),
-                auditflag: $("#audit_flag").val(),
+                importantflag: $("#important_flag").val() == "1",
+                auditflag: $("#audit_flag").val() == "1",
                 //auditeddate: $("#audited_date").val(),
                 //auditedby: $("#audited_by").val()
             };
-            console.log(model);
+            
             let url = "/api/syshelpinfodata";
             let method = "POST";
             if (layType != true) {
@@ -433,7 +425,7 @@
                 help_Title: data.help_Title,
                 help_Contant: data.help_Contant,
                 important_Flag: data.important_Flag,
-                audit_flag: data.audit_flag,
+                audit_flag: data.audit_Flag,
                 //audited_Date: data.audited_Date,
                 //audited_By: data.audited_By,
             })

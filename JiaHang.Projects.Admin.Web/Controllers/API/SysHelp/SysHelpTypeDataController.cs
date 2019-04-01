@@ -101,14 +101,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
         /// 导出
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [Route("Export")]
-        public async Task<IActionResult> Export()
-        {
-            var result = await HelpTypeService.GetUserListBytes();
-            return File(result, "application/ms-excel", $"系统帮助类型.xlsx");
+        //[HttpGet]
+        //[Route("Export")]
+        //public async Task<IActionResult> Export()
+        //{
+        //    var result = await HelpTypeService.GetUserListBytes();
+        //    return File(result, "application/ms-excel", $"系统帮助类型.xlsx");
 
-        }
+        //}
 
     }
 }

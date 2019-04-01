@@ -31,7 +31,7 @@
             <div class=" layui-col-md6 layui-col-xs6">
                 <label class="layui-form-label">类型：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_help_type_name" autocomplete="off">
+                    <input class="layui-input" name="id" id="search_help_Type_Name" autocomplete="off">
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增帮助</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-            <a class="layui-btn" href="/api/syshelptypedata/export">导出所有</a>
+            @*<a class="layui-btn" href="/api/syshelptypedata/export">导出所有</a>*@
         </div>
     </div>
     <table class="layui-hide" id="test" lay-filter="syshelp"> </table>
@@ -51,7 +51,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">帮助类型名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="help_type_name" id="help_type_name" autocomplete="off" placeholder="帮助类型名称" class="layui-input" lay-verify="required">
+                    <input type="text" name="help_Type_Name" id="help_Type_Name" autocomplete="off" placeholder="帮助类型名称" class="layui-input" lay-verify="required">
                 </div>
             </div>
         </div>
@@ -77,12 +77,12 @@
         var layType = true;//true 新增  false 编辑
         var help_id = 0;
         //日期
-        laydate.render({
-            elem: '#eff_start_date'
-        });
-        laydate.render({
-            elem: '#eff_end_date'
-        });
+        //laydate.render({
+        //    elem: '#eff_start_date'
+        //});
+        //laydate.render({
+        //    elem: '#eff_end_date'
+        //});
 
 
         table.render({
@@ -106,7 +106,7 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'help_type_id', width: 80, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'help_Type_Id', width: 80, title: 'ID', sort: true, fixed: 'left' }
                 , { field: 'help_Type_Name', width: 120, title: '帮助类型名称'}
             ]]
             , id: 'testReload'
@@ -125,10 +125,10 @@
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
             } else if (obj.event === 'del') {
-                let confirm_title = "确认删除账号" + data.help_type_Name + "的记录么";
+                let confirm_title = "确认删除" + data.help_Type_Name + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/SysHelpTypeData/' + data.help_type_id)
+                    axios.delete('/api/SysHelpTypeData/' + data.help_Type_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -143,7 +143,7 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                help_type_id = data.help_type_Id
+                help_Type_Id = data.help_Type_Id
                 layType = false;
                 showLayer(data);
             }
@@ -164,8 +164,8 @@
                     let ids = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        ids.push(data[i].help_type_Id);
-                        parms += "ids=" + data[i].help_type_Id + "&";
+                        ids.push(data[i].help_Type_Id);
+                        parms += "ids=" + data[i].help_Type_Id + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
@@ -200,7 +200,7 @@
                 let pars = {
                     limit: 10,
                     page: 1,
-                    help_type_Name: $("#search_help_type_name").val(),
+                    help_Type_Name: $("#search_help_Type_Name").val(),
 
                 }
                 //if ($("#search_user_ower").val() != "") {
@@ -225,13 +225,13 @@
         };
         form.on('submit(submit)', function () {
             let model = {
-                helptypename: $("#help_type_name").val(),
+                helptypename: $("#help_Type_Name").val(),
 
             };
             let url = "/api/syshelptypedata";
             let method = "POST";
             if (layType != true) {
-                url = "/api/syshelptypedata/" + help_type_id;
+                url = "/api/syshelptypedata/" + help_Type_Id;
                 method = "PUT";
             }
 
@@ -250,7 +250,7 @@
                     if (layType != true) {
                         //修改
                         for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].help_type_Id == response.data.content.help_type_Id) {
+                            if (datatable[i].help_Type_Id == response.data.content.help_Type_Id) {
                                 datatable.splice(i, 1, response.data.content);
                                 break;
                             }
@@ -283,11 +283,11 @@
         function showLayer(data) {
             initFormValue(data);
             let title = "新增系统用户";
-            document.getElementById("help_type_name").disabled = false;
+            document.getElementById("help_Type_Name").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
                 title = "编辑系统用户";
-                document.getElementById("help_type_name").disabled = true;
+                document.getElementById("help_Type_Name").disabled = true;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -309,15 +309,15 @@
             if (data == undefined) {
 
                 form.val("generate-form", {
-                    help_type_id: "",
-                    help_type_name:"",
+                    help_Type_Id: "",
+                    help_Type_Name:"",
                     
                 })
                 return;
             }
             form.val("generate-form", {
-                help_type_id: data.help_Type_ID,
-                help_type_name: data.help_Type_Name,
+                help_Type_Id: data.help_Type_Id,
+                help_Type_Name: data.help_Type_Name,
                 
             })
         }

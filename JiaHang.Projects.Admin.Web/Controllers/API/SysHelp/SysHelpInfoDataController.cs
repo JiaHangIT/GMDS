@@ -98,13 +98,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelp
 
         }
 
-        [HttpGet]
-        [Route("Export")]
-        public async Task<IActionResult> Export()
-        {
-            var result = await HelpInfoService.GetUserListBytes();
-            return File(result, "application/ms-excel", $"系统帮助信息.xlsx");
+        //[HttpGet]
+        //[Route("Export")]
+        //public async Task<IActionResult> Export()
+        //{
+        //    var result = await HelpInfoService.GetUserListBytes();
+        //    return File(result, "application/ms-excel", $"系统帮助信息.xlsx");
 
-        }
+        //}
     }
 }

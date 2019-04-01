@@ -57,7 +57,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 CreationDate = e.CreationDate.ToString("yyyy-MM-dd")
             });
 
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
 
         /// <summary>
