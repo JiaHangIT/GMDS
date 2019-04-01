@@ -38,20 +38,20 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
-                //Help_Id =              e.HelpId,
-                //Help_Type_id =            e.HelpTypeId,
-                //Help_Title =         e.HelpTitle,
-                //Important_Flag =         e.ImportantFlag,
-                //Audit_Flag =          e.AuditFlag,
-                //Audited_Date =         e.AuditedDate,
-                //Audited_By =            e.AuditedBy
-                e.HelpId,
-                e.HelpTypeId,
-                e.HelpTitle,
-                e.ImportantFlag,
-                e.AuditFlag,
-                e.AuditedDate,
-                e.AuditedBy
+                Help_Id = e.HelpId,
+                Help_Type_id = e.HelpTypeId,
+                Help_Title = e.HelpTitle,
+                Important_Flag = e.ImportantFlag,
+                Audit_Flag = e.AuditFlag,
+                Audited_Date = e.AuditedDate,
+                Audited_By = e.AuditedBy
+                //e.HelpId,
+                //e.HelpTypeId,
+                //e.HelpTitle,
+                //e.ImportantFlag,
+                //e.AuditFlag,
+                //e.AuditedDate,
+                //e.AuditedBy
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
