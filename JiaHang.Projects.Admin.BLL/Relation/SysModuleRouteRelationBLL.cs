@@ -11,9 +11,9 @@ namespace JiaHang.Projects.Admin.BLL.Relation
 {
     public class SysModuleRouteRelationBLL
     {
-        private readonly DataContext _context;
+        private readonly DAL.EntityFramework.DataContext _context;
 
-        public SysModuleRouteRelationBLL(DataContext dataContext)
+        public SysModuleRouteRelationBLL(DAL.EntityFramework.DataContext dataContext)
         {
             _context = dataContext;
         }

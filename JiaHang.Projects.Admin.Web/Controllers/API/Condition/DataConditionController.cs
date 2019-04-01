@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Condition
     {
         private readonly DataConditionBLL storeService;
         private readonly IMemoryCache cache;
-        public DataConditionController(DataContext dataContext, IMemoryCache cache)
+        public DataConditionController(DAL.EntityFramework.DataContext dataContext, IMemoryCache cache)
         {
             this.cache = cache;
             storeService = new DataConditionBLL(dataContext);

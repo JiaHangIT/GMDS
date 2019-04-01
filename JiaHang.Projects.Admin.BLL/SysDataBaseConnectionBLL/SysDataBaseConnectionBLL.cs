@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
 {
    public class SysDataBaseConnectionBLL
     {
-        private readonly DataContext _context;
-        public SysDataBaseConnectionBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysDataBaseConnectionBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -46,7 +46,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                              DatabaseTypeCode = a_ifnull.DatabaseTypeCode,
                              DatabaseTypeName = a_ifnull.DatabaseTypeName,
                              DatabaseTypeId = a_ifnull.DatabaseTypeId,
-                             CreationDate = a.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
+                             CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
                          };
             int total = querys.Count();
             var data = querys.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();

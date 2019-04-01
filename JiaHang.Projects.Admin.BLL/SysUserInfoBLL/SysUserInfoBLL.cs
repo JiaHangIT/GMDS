@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
 {
     public class SysUserInfoBLL
     {
-        private readonly DataContext _context;
-        public SysUserInfoBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysUserInfoBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -152,6 +152,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
         {
             SysUserInfo entity = new SysUserInfo
             {
+                UserId=Guid.NewGuid().ToString(),
                 UserAccount = model.UserAccount,
                 UserName = model.UserName,
                 UserPassword = model.UserPassword,

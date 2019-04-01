@@ -10,8 +10,8 @@ namespace JiaHang.Projects.Admin.BLL
 {
     public class SysUserGroupBLL
     {
-        private readonly DataContext _context;
-        public SysUserGroupBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysUserGroupBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
