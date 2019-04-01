@@ -35,13 +35,19 @@
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">分类编号：</label>
+                <label class="layui-form-label">接口编号：</label>
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="search_service_no" autocomplete="off">
+                </div>
+            </div>
+            <div class=" layui-col-md6 layui-col-xs6">
+                <label class="layui-form-label">接口代码：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_service_code" autocomplete="off">
                 </div>
             </div>
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">分类名称：</label>
+                <label class="layui-form-label">接口名称：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_service_name" autocomplete="off">
                 </div>
@@ -49,7 +55,7 @@
         </div>
         <div class="layui-form-item" style="margin-top:15px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增接口分类</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增基本信息</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
             @*<a class="layui-btn" href="/api/dcsservicegroupdata/export">导出所有</a>*@
         </div>
@@ -62,32 +68,107 @@
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-
             <div class="layui-inline">
-                <label class="layui-form-label">分类编号</label>
+                <label class="layui-form-label">目录分类</label>
                 <div class="layui-input-block">
-                    <input type="text" name="add_service_code" id="add_service_code" autocomplete="off" placeholder="接口分类编号" class="layui-input" lay-verify="required">
+                    <select name="servicegroupid" id="servicegroupid" class="layui-input" lay-verify="required" lay-filter="xmFilter">
+                        <option value=""></option>
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">分类名称</label>
+                <label class="layui-form-label">接口编号</label>
                 <div class="layui-input-block">
-                    <input type="text" name="add_service_name" id="add_service_name" autocomplete="off" placeholder="接口分类名称" class="layui-input" lay-verify="required">
+                    <input type="text" name="serviceno" id="serviceno" autocomplete="off" placeholder="接口编号" class="layui-input" lay-verify="required">
                 </div>
             </div>
-
         </div>
-
         <div class="layui-form-item">
 
-            <div class="layui-upload">
-                <button type="button" class="layui-btn layui-btn-normal" id="test1">上传图片</button>
-                <div class="layui-upload-list">
-                    <img class="layui-upload-img" id="demo1">
-                    <p id="demoText"></p>
+            <div class="layui-inline">
+                <label class="layui-form-label">接口代码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="servicecode" id="servicecode" autocomplete="off" placeholder="接口代码" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">接口名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="servicename" id="servicename" autocomplete="off" placeholder="接口名称" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">接口版本</label>
+                <div class="layui-input-block">
+                    <input type="text" name="serviceversion" id="serviceversion" autocomplete="off" placeholder="接口版本" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">技术类型</label>
+                <div class="layui-input-block">
+                    <input type="text" name="servicetech" id="servicetech" autocomplete="off" placeholder="技术类型" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">业务类型</label>
+                <div class="layui-input-block">
+                    <input type="text" name="servicetype" id="servicetype" autocomplete="off" placeholder="业务类型" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">返回格式</label>
+                <div class="layui-input-block">
+                    <input type="text" name="servicereturn" id="servicereturn" autocomplete="off" placeholder="返回格式" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <div>
+                <label class="layui-form-label">接口说明</label>
+                <div class="layui-input-block">
+                    <textarea name="servicedesc" id="servicedesc" placeholder="接口说明" class="layui-textarea"></textarea>
                 </div>
             </div>
         </div>
+
+        <div class="layui-form-item" style="display:none">
+            <div>
+                <input type="checkbox" id="status" title="状态">
+                <input type="checkbox" id="page" title="是否分页">
+                <input type="checkbox" id="muli" title="是否多条结果">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" id="servicestatus" name="servicestatus" lay-skin="switch" lay-text="正常|停用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">是否分页</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" id="datapageflag" name="datapageflag" lay-skin="switch" lay-text="是|否">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">是否多条结果</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" id="datamultiflag" name="datamultiflag" lay-skin="switch" lay-text="是|否">
+                </div>
+            </div>
+        </div>
+
+
+
         <div class="layui-form-item">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
@@ -102,6 +183,9 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
+
+    var serviceId = 0;
+
     let layui_id;//用来标记当前是哪个table
 
     //用于保存多个表格的数据+状态
@@ -246,6 +330,35 @@
                     done: table_done
                 }
             ));
+
+            //监听工具条
+            table.on('tool(dcsservice)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'detail') {
+                    layer.msg('ID：' + data.id + ' 的查看操作');
+                } else if (obj.event === 'del') {
+                    let confirm_title = "确认删除账号" + data.service_Id + "的记录么";
+                    layer.confirm(confirm_title, function (index) {
+                        layer.close(index);
+                        axios.delete('/api/dcsserviceinfodata/' + data.service_Group_Id)
+                            .then(function (response) {
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                }
+                                obj.del();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+
+                    });
+                } else if (obj.event === 'edit') {
+                    serviceId = data.service_Id
+                    layType = false;
+                    showLayer(data);
+                }
+            });
         };
         //点击事件
         mytbs.click = function (a) {
@@ -306,31 +419,223 @@
         }
 
         var active = {
+            getCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('tb_test_0')
+                    , data = checkStatus.data;
+
+                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+
+                    let ids = [];
+                    let parms = "?";
+                    for (let i = 0; i < data.length; i++) {
+                        ids.push(data[i].service_Id);
+                        parms += "ids=" + data[i].service_Id + "&";
+                    }
+                    parms = parms.substring(0, parms.length - 1);
+                    axios.delete("/api/dcsserviceinfodata/batchdelete/" + parms)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            //移除
+                            let tabledata = table.cache.tb_test_0;
+                            tableReload(tabledata);
+
+
+                        })
+                        .catch(function (error) {
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+                });
+
+
+            },
             //查询操作传参数
             search: function () {
-                let pars = getSearchParms();
-                //var sel = pars.stRegion == "" ? "" : pars.stRegion + "," + pars.StartTime + " 至  " + pars.EndTime;
-                mytbs.reload(0, pars, function () {
-                    //sel && $('[lay-id=' + this.id + '] thead tr:first span').html(sel);
+                let pars = {
+                    limit: 10,
+                    page: 1,
+                    ServiceNo: $('#search_service_no').val(),
+                    ServiceCode: $('#search_service_code').val(),
+                    ServiceName: $('#search_service_name').val()
+                }
+
+                //执行重载
+                table.reload('tb_test_0', {
+                    where: pars,
+                    contentType: 'application/json',
+                    method: 'post'
                 });
             },
-
+            showGenerateLayer: function () {
+                layType = true;
+                showLayer();
+            },
+            closeGenerateLayer: function () {
+                layer.close(generateLayer_index);
+            },
             //导出
             export: function () {
                 console.log('export');
 
                 let pars = getSearchParms();
 
-                //,string stRegion,string stCity, string stDM  +  一个店铺下拉条件
-                let url = '/api/dcsserviceinfo/export?' + $.param(pars);
+                let url = '/api/dcsserviceinfodata/export?' + $.param(pars);
                 window.location.href = url;
             }
         };
+        //监听指定开关
+        //form.on('switch(switchTest)', function (data) {
+        //    if (this.checked == 'true') {
+        //        this.checked = 'false';
+        //    }
+        //    else {
+        //        this.checked = 'true';
+        //    }
+        //    layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
+        //        offset: '6px'
+        //    });
+        //});
 
+        form.on('submit(submit)', function () {
+            let model = {
+                servicegroupid: $("#servicegroupid").val(),
+                serviceno: $("#serviceno").val(),
+                servicecode: $("#servicecode").val(),
+                servicename: $("#servicename").val(),
+                servicedesc: $("#servicedesc").val(),
+                serviceversion: $("#serviceversion").val(),
+                servicetech: $("#servicetech").val(),
+                servicetype: $("#servicetype").val(),
+                servicereturn: $("#servicereturn").val(),
+                servicestatus: $("#servicestatus")[0].checked == 'true' ? 'N' : 'Y',
+                datapageflag: $("#datapageflag")[0].checked == true ? 1 : 0,
+                datamultiflag: $("#datamultiflag")[0].checked == true ? 1 : 0
+            };
+            let url = "/api/dcsserviceinfodata";
+            let method = "POST";
+            if (layType != true) {
+                url = "/api/dcsserviceinfodata/" + serviceId;
+                method = "PUT";
+            }
+            axios({ url: url, method: method, data: model })
+                .then(function (response) {
+                    layer.msg(response.data.message);
+                    if (!response.data.isSuccess) {
+                        return;
+                    }
+                    let datatable = table.cache.tb_test_0;
+                    if (layType != true) {
+                        //修改
+                        for (let i = 0; i < datatable.length; i++) {
+                            if (datatable[i].service_group_id == response.data.content.service_group_id) {
+                                datatable.splice(i, 1, response.data.content);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        //新增
+                        datatable.unshift(response.content)
+
+                    }
+                    tableReload(datatable)
+                    layer.close(generateLayer_index);
+                })
+                .catch(function (error) {
+                    layer.msg("发生了预料之外的错误!");
+                    console.log(error);
+                });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        }),
 
         $('.layui-btn').on('click', function () {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
+        });
+        function showLayer(data) {
+            initFormValue(data);
+            let title = "新增基本信息";
+            document.getElementById("generate_btn").innerHTML = "立即创建";
+            if (layType != true) {
+                title = "编辑基本信息";
+                document.getElementById("generate_btn").innerHTML = "立即修改";
+            }
+            generateLayer_index = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: false
+                , fixed: false
+                , area: ['800px', '600px']
+                , resize: false
+                , shade: 0.8
+                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 0 //拖拽模式，0或者1
+                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , offset: ['10%', '3%']
+            });
+        };
+        function initFormValue(data) {
+            if (data == undefined) {
+                form.val("generate-form", {
+                    servicegroupid: '',
+                    serviceno:'',
+                    servicecode: '',
+                    servicename: '',
+                    servicedesc: '',
+                    serviceversion: '',
+                    servicetech: '',
+                    servicetype: '',
+                    servicereturn: '',
+                    servicestatus: '',
+                    datapageflag: '',
+                    datamultiflag: ''
+                })
+                return;
+            }
+            else {
+                form.val("generate-form", {
+                    servicegroupid: data.service_Group_Id,
+                    serviceno: data.service_No,
+                    servicecode: data.service_Code,
+                    servicename: data.service_Name,
+                    servicedesc: data.Service_Desc,
+                    serviceversion: data.service_Version,
+                    servicetech: data.service_Tech,
+                    servicetype: data.service_Type,
+                    servicereturn: data.service_Return,
+                    servicestatus: data.service_Status == '启用' ? true : false,
+                    datapageflag: data.datapageflag == 1 ? true : false,
+                    datamultiflag: data.datamultiflag == 1 ? true : false
+                });
+            }
+
+        }
+
+        function tableReload(datatable) {
+            table.reload("tb_test_0", {
+                data: datatable
+            })
+        }
+
+        //目录分类
+        $.ajax({
+            async: false,
+            url: "/api/dcsservicegroupdata/GetServiceGroup",
+            type:'post',
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#servicegroupid').append(new Option(item.value,item.key));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
         });
 
     });

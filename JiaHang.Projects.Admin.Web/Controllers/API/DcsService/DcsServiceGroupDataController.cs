@@ -104,6 +104,22 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
             return data;
         }
 
+        /// <summary>
+        /// 获取目录分类
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GetServiceGroup")]
+        public dynamic GetServiceGroup()
+        {
+            return DcsserviceBll.GetServiceGroup();
+        }
+
+
+
+
+        //=================================================================================
+
         [HttpGet]
         [Route("Export")]
         public async Task<IActionResult> Export()
