@@ -13,9 +13,9 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
 {
     public class DcsServiceParamsBLL
     {
-        private readonly DataContext context;
+        private readonly DAL.EntityFramework.DataContext context;
 
-        public DcsServiceParamsBLL(DataContext datacontext)
+        public DcsServiceParamsBLL(DAL.EntityFramework.DataContext datacontext)
         {
             this.context = datacontext;
         }

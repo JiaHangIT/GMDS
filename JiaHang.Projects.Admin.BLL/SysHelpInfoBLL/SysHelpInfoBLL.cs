@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
 {
     public class SysHelpInfoBLL
     {
-        private readonly DataContext _context;
-        public SysHelpInfoBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysHelpInfoBLL(DAL.EntityFramework.DataContext context)
         {
 
             _context = context;

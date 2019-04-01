@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
 {
     public class SysModelGroupBLL
     {
-        private readonly DataContext _context;
-        public SysModelGroupBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysModelGroupBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }

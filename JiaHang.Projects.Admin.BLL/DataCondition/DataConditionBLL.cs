@@ -12,8 +12,8 @@ namespace JiaHang.Projects.Admin.BLL
 {
     public class DataConditionBLL
     {
-        private readonly DataContext _context;
-        public DataConditionBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public DataConditionBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }

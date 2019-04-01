@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
 {
   public  class SysDataSourceBLL
     {
-        private readonly DataContext _context;
-        public SysDataSourceBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysDataSourceBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
