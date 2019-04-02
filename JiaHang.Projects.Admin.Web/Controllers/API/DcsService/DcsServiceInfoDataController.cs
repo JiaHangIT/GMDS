@@ -29,6 +29,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         /// <param name="model"></param>
         /// <returns></returns>
         [Route("Search")]
+        [HttpPost]
         public FuncResult Select([FromBody] SearchDcsServiceInfo model)
         {
             model.page--;if (model.page < 0)
