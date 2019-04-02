@@ -31,7 +31,7 @@
             <div class=" layui-col-md6 layui-col-xs6">
                 <label class="layui-form-label">类型：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_help_Type_Name" autocomplete="off">
+                    <input class="layui-input" name="id" id="search_help_type_name" autocomplete="off">
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">帮助类型名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="help_Type_Name" id="help_Type_Name" autocomplete="off" placeholder="帮助类型名称" class="layui-input" lay-verify="required">
+                    <input type="text" name="help_type_name" id="help_type_name" autocomplete="off" placeholder="帮助类型名称" class="layui-input" lay-verify="required">
                 </div>
             </div>
         </div>
@@ -121,6 +121,7 @@
         });
         //监听工具条
         table.on('tool(syshelp)', function (obj) {
+            debugger;
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
@@ -200,7 +201,7 @@
                 let pars = {
                     limit: 10,
                     page: 1,
-                    help_Type_Name: $("#search_help_Type_Name").val(),
+                    help_Type_Name: $("#search_help_type_name").val(),
 
                 }
                 //if ($("#search_user_ower").val() != "") {
@@ -309,15 +310,15 @@
             if (data == undefined) {
 
                 form.val("generate-form", {
-                    help_Type_Id: "",
-                    help_Type_Name:"",
+                    help_type_id: "",
+                    help_type_name:"",
                     
                 })
                 return;
             }
             form.val("generate-form", {
-                help_Type_Id: data.help_Type_Id,
-                help_Type_Name: data.help_Type_Name,
+                help_type_id: data.help_Type_Id,
+                help_type_name: data.help_Type_Name,
                 
             })
         }

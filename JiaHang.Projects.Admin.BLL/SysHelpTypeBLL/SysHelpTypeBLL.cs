@@ -35,12 +35,12 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
 
-                //HELP_TYPE_ID = e.HelpTypeId,
-                //HELP_TYPE_NAME = e.HelpTypeName
-                e.HelpTypeId,
-                e.HelpTypeName
+                Help_Type_Id = e.HelpTypeId,
+                Help_Type_Name = e.HelpTypeName
+                //e.HelpTypeId,
+                //e.HelpTypeName
             });
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+           return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
         /// 查询一条
