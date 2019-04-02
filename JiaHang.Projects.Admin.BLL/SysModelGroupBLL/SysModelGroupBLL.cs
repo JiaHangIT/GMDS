@@ -137,6 +137,7 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
         {
             var entity = new SysModelGroup()
             {
+                ModelGroupId=Guid.NewGuid().ToString("N"),
                 ModelGroupCode = model.ModelGroupCode,
                 ModelGroupName = model.ModelGroupName,
                 ParentId = model.ParentId,

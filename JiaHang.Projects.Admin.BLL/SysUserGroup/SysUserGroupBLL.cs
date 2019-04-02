@@ -169,6 +169,7 @@ namespace JiaHang.Projects.Admin.BLL
 
             var entity = new SysUserGroup()
             {
+                UserGroupId=Guid.NewGuid().ToString(),
                 UserGroupName = model.Name,
                 UserGroupLevel = level,
                 ParentId = model.ParentId,
