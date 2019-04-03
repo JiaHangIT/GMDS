@@ -147,8 +147,6 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
                 CreationDate = DateTime.Now,
                 CreatedBy = currentUserId,
                 DeleteBy="00000000000000000000000000000000"
-                
-
             };
             await _context.SysHelpType.AddAsync(entity);
 
