@@ -8,6 +8,6 @@ namespace JiaHang.Projects.Admin.Model.SysHelpType.RequestModel
     {
         public int limit { get; set; }
         public int page { get; set; }
-        public string help_Type_Name { get; set; }
+        public string Help_Type_Name { get; set; }
     }
 }

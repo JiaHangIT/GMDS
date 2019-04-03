@@ -39,7 +39,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
                 Help_Id = e.HelpId,
-                Help_Type_id = e.HelpTypeId,
+                Help_Type_Id = e.HelpTypeId,
                 Help_Title = e.HelpTitle,
                 Important_Flag = e.ImportantFlag,
                 Audit_Flag = e.AuditFlag,
@@ -157,6 +157,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         {
             SysHelpInfo entity = new SysHelpInfo
             {
+                HelpId = Guid.NewGuid().ToString(),
                 HelpTypeId = model.HelpTypeId,
                 HelpTitle = model.HelpTitle,
                 HelpContent = model.HelpContent,

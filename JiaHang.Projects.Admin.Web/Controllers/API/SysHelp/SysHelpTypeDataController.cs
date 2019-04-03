@@ -17,11 +17,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
 
     public class SysHelpTypeDataController : ControllerBase
     {
-        private readonly SysHelpTypeBLL HelpTypeService;
+        private readonly SysHelpTypeBLL helpTypeService;
         private readonly IMemoryCache cache;
         public SysHelpTypeDataController(DataContext dataContext, IMemoryCache cache)
         {
-            HelpTypeService = new SysHelpTypeBLL(dataContext);
+            helpTypeService = new SysHelpTypeBLL(dataContext);
             this.cache = cache;
         }
         /// <summary>
@@ -38,7 +38,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
                 model.page = 0;
             }
 
-            return HelpTypeService.Select(model);
+            return helpTypeService.Select(model);
 
         }
         /// <summary>
@@ -49,7 +49,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
         [HttpGet("{id}")]
         public async Task<FuncResult> Select(string id)
         {
-            return await HelpTypeService.Select(id);
+            return await helpTypeService.Select(id);
         }
         /// <summary>
         /// 添加
@@ -63,7 +63,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-            return await HelpTypeService.Add(model, HttpContext.CurrentUser(cache).Id);
+            return await helpTypeService.Add(model, HttpContext.CurrentUser(cache).Id);
         }
         /// <summary>
         /// 修改
@@ -74,7 +74,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
         [HttpPut("{id}")]
         public async Task<FuncResult> Update(string id, [FromBody]SysHelpTypeModel model)
         {
-            FuncResult data = await HelpTypeService.Update(id, model, HttpContext.CurrentUser(cache).Id);
+            FuncResult data = await helpTypeService.Update(id, model, HttpContext.CurrentUser(cache).Id);
             return data;
 
         }
@@ -86,7 +86,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
         [HttpDelete("{id}")]
         public async Task<FuncResult> Delete([FromRoute]string id)
         {
-            return await HelpTypeService.Delete(id, HttpContext.CurrentUser(cache).Id);
+            return await helpTypeService.Delete(id, HttpContext.CurrentUser(cache).Id);
 
         }
 
@@ -94,7 +94,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
         [HttpDelete]
         public async Task<FuncResult> Delete(string[] ids)
         {
-            return await HelpTypeService.Delete(ids, HttpContext.CurrentUser(cache).Id);
+            return await helpTypeService.Delete(ids, HttpContext.CurrentUser(cache).Id);
 
         }
         /// <summary>

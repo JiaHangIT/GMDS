@@ -107,7 +107,7 @@
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
                 , { field: 'help_Type_Id', width: 80, title: 'ID', sort: true, fixed: 'left' }
-                , { field: 'help_Type_Name', width: 120, title: '帮助类型名称'}
+                , { field: 'help_Type_Name', width: 120, title: '帮助类型名称' }
             ]]
             , id: 'testReload'
             , page: true,
@@ -129,7 +129,7 @@
                 let confirm_title = "确认删除" + data.help_Type_Name + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/SysHelpTypeData/' + data.help_Type_Id)
+                    axios.delete('/api/syshelptypedata/' + data.help_Type_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -144,7 +144,7 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                help_Type_Id = data.help_Type_Id
+                help_type_id = data.help_Type_Id
                 layType = false;
                 showLayer(data);
             }
@@ -226,21 +226,15 @@
         };
         form.on('submit(submit)', function () {
             let model = {
-                helptypename: $("#help_Type_Name").val(),
+                helptypename: $("#help_type_name").val(),
 
             };
             let url = "/api/syshelptypedata";
             let method = "POST";
             if (layType != true) {
-                url = "/api/syshelptypedata/" + help_Type_Id;
+                url = "/api/syshelptypedata/" + help_type_id;
                 method = "PUT";
             }
-
-
-
-
-
-
             axios({ url: url, method: method, data: model })
                 .then(function (response) {
                     layer.msg(response.data.message);
@@ -273,22 +267,18 @@
 
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         }),
-
-
-
-
             $('.layui-btn').on('click', function () {
                 var type = $(this).data('type');
                 active[type] ? active[type].call(this) : '';
             });
         function showLayer(data) {
             initFormValue(data);
-            let title = "新增系统用户";
-            document.getElementById("help_Type_Name").disabled = false;
+            let title = "新增";
+            document.getElementById("help_type_name").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
-                title = "编辑系统用户";
-                document.getElementById("help_Type_Name").disabled = true;
+                title = "编辑";
+                document.getElementById("help_type_name").disabled = false;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -311,15 +301,15 @@
 
                 form.val("generate-form", {
                     help_type_id: "",
-                    help_type_name:"",
-                    
+                    help_type_name: "",
+
                 })
                 return;
             }
             form.val("generate-form", {
                 help_type_id: data.help_Type_Id,
                 help_type_name: data.help_Type_Name,
-                
+
             })
         }
 

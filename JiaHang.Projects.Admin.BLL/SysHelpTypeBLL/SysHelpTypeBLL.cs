@@ -28,7 +28,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             IOrderedQueryable<SysHelpType> query = _context.SysHelpType.
                 Where(a =>
                 (
-                (string.IsNullOrWhiteSpace(model.help_Type_Name) || a.HelpTypeName.Contains(model.help_Type_Name))
+                (string.IsNullOrWhiteSpace(model.Help_Type_Name) || a.HelpTypeName.Contains(model.Help_Type_Name))
                 )
                 ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
@@ -67,7 +67,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "帮助类型ID错误!" };
             }
-            entity.HelpTypeId = model.HelpTypeID;
+           
             entity.HelpTypeName = model.HelpTypeName;
             entity.LastUpdateDate = DateTime.Now;
             entity.LastUpdatedBy = currentUserId;
@@ -139,13 +139,15 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         {
             SysHelpType entity = new SysHelpType
             {
-
+                HelpTypeId = Guid.NewGuid().ToString(),
                 HelpTypeName = model.HelpTypeName,
-
+                
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
                 CreationDate = DateTime.Now,
-                CreatedBy = currentUserId
+                CreatedBy = currentUserId,
+                DeleteBy="00000000000000000000000000000000"
+                
 
             };
             await _context.SysHelpType.AddAsync(entity);
