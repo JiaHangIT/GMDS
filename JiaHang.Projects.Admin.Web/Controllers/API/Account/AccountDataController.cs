@@ -22,7 +22,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
         private readonly CredentialsManage credentialsManage;
         private readonly SysUserInfoBLL sysUserInfoService;
         private readonly CurrentUserRouteBLL currentUserRouteBLL;
-        public AccountDataController(DataContext context, IMemoryCache cache)
+        public AccountDataController(DAL.EntityFramework.DataContext context, IMemoryCache cache)
         {
             credentialsManage = new CredentialsManage(cache);
             sysUserInfoService = new SysUserInfoBLL(context);

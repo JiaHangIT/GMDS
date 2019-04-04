@@ -11,8 +11,8 @@ namespace JiaHang.Projects.Admin.BLL.Relation
 {
     public class SysUserGroupRelationBLL
     {
-        private readonly DataContext _context;
-        public SysUserGroupRelationBLL(DataContext dataContext)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysUserGroupRelationBLL(DAL.EntityFramework.DataContext dataContext)
         {
             _context = dataContext;
         }

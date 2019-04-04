@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
 {
     public class SysHelpTypeBLL
     {
-        private readonly DataContext _context;
-        public SysHelpTypeBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysHelpTypeBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -28,19 +28,19 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             IOrderedQueryable<SysHelpType> query = _context.SysHelpType.
                 Where(a =>
                 (
-                (string.IsNullOrWhiteSpace(model.help_Type_Name) || a.HelpTypeName.Contains(model.help_Type_Name))
+                (string.IsNullOrWhiteSpace(model.Help_Type_Name) || a.HelpTypeName.Contains(model.Help_Type_Name))
                 )
                 ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
 
-                //HELP_TYPE_ID = e.HelpTypeId,
-                //HELP_TYPE_NAME = e.HelpTypeName
-                e.HelpTypeId,
-                e.HelpTypeName
+                Help_Type_Id = e.HelpTypeId,
+                Help_Type_Name = e.HelpTypeName
+                //e.HelpTypeId,
+                //e.HelpTypeName
             });
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+           return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
         /// 查询一条
@@ -67,7 +67,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "帮助类型ID错误!" };
             }
-            entity.HelpTypeId = model.HelpTypeID;
+           
             entity.HelpTypeName = model.HelpTypeName;
             entity.LastUpdateDate = DateTime.Now;
             entity.LastUpdatedBy = currentUserId;
@@ -139,14 +139,14 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         {
             SysHelpType entity = new SysHelpType
             {
-
+                HelpTypeId = Guid.NewGuid().ToString(),
                 HelpTypeName = model.HelpTypeName,
-
+                
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
                 CreationDate = DateTime.Now,
-                CreatedBy = currentUserId
-
+                CreatedBy = currentUserId,
+                DeleteBy="00000000000000000000000000000000"
             };
             await _context.SysHelpType.AddAsync(entity);
 

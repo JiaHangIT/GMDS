@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
 {
     public class DcsServiceGroupBLL
     {
-        private readonly DataContext _context;
-        public DcsServiceGroupBLL(DataContext datacontext)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public DcsServiceGroupBLL(DAL.EntityFramework.DataContext datacontext)
         {
             _context = datacontext;
         }

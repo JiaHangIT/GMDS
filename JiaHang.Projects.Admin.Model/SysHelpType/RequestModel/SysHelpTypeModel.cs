@@ -12,7 +12,7 @@ namespace JiaHang.Projects.Admin.Model.SysHelpType.RequestModel
         /// 帮助类型ID
         /// </summary>
         [StringLength(40)]
-        public string HelpTypeID { get; set; }
+        public string HelpTypeId { get; set; }
         /// <summary>
         /// 帮助类型名称
         /// </summary>

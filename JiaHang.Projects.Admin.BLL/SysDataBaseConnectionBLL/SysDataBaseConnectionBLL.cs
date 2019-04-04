@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
 {
    public class SysDataBaseConnectionBLL
     {
-        private readonly DataContext _context;
-        public SysDataBaseConnectionBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysDataBaseConnectionBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -28,10 +28,8 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
         {
             var querys = from a in _context.SysConnectionInfo
                          where (
-                            (string.IsNullOrWhiteSpace(model.Connection_Name) || model.Connection_Name.Contains(model.Connection_Name))
-                            && (string.IsNullOrWhiteSpace(model.Connection_String) || model.Connection_String.Contains(model.Connection_String))
-                            && (string.IsNullOrWhiteSpace(model.Database_Type_Code) || model.Database_Type_Code.Contains(model.Database_Type_Code))
-                            && (string.IsNullOrWhiteSpace(model.Database_Type_Name) || model.Database_Type_Name.Contains(model.Database_Type_Name))
+                            (string.IsNullOrWhiteSpace(model.Connection_Name) || a.ConnectionName.Contains(model.Connection_Name))
+                            && (string.IsNullOrWhiteSpace(model.Connection_String) || a.ConnectionString.Contains(model.Connection_String))
                             && a.DeleteFlag==0
                             )
                          join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId
@@ -46,7 +44,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                              DatabaseTypeCode = a_ifnull.DatabaseTypeCode,
                              DatabaseTypeName = a_ifnull.DatabaseTypeName,
                              DatabaseTypeId = a_ifnull.DatabaseTypeId,
-                             CreationDate = a.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
+                             CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
                          };
             int total = querys.Count();
             var data = querys.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
