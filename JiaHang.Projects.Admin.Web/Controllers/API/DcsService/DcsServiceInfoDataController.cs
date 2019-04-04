@@ -148,6 +148,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         /// </summary>
         /// <returns></returns>
         [Route("GetRelaFieldId")]
+        [HttpPost]
         public dynamic GetRelaFieldId()
         {
             try
