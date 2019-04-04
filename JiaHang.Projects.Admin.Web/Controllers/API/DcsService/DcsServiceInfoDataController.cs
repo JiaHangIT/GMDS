@@ -98,6 +98,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         /// </summary>
         /// <returns></returns>
         [Route("GetDataSource")]
+        [HttpPost]
         public dynamic GetDataSource()
         {
             try
@@ -122,6 +123,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         /// </summary>
         /// <returns></returns>
         [Route("GetFieldType")]
+        [HttpPost]
         public dynamic GetFieldType()
         {
             try
