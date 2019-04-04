@@ -55,7 +55,7 @@
                                     <option value="VIEW">VIEW</option>
                                 </select>
                             </div>
-                            <input class="layui-input" hidden name="datasource_Id" id="datasource_Id" autocomplete="off">
+                            <input class="layui-input" style="display:none" name="datasource_Id" id="datasource_Id" autocomplete="off">
                         </div>
                         <div class=" layui-col-md6 layui-col-xs6">
                             <label class="layui-form-label" style="width:150px">数据源用途：</label>
@@ -143,7 +143,7 @@
                             <table class="layui-hide" id="test2" lay-filter="sysuser2"> </table>
                             <div style="margin-left:600px">
                                 <a class="layui-btn layui-btn-xs" lay-event="addfield" data-type="addfield">添加字段</a>
-                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deltefield">删除字段</a>
+                                <a class="layui-btn layui-btn-danger layui-btn-xs" data-type="deltefield" lay-event="deltefield">删除字段</a>
                             </div>
                         </div>
                        
@@ -315,10 +315,7 @@
     <a class="layui-btn layui-btn-xs" lay-event="editfield">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delfield">删除</a>
 </script>
-<script type="text/html" id="bartab">
-    <a class="layui-btn layui-btn-xs" lay-event="addfield">添加字段</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deltefield">删除字段</a>
-</script>
+
 <script>
 
     layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
@@ -458,8 +455,6 @@
 
             } else {
                 let par = {
-                    limit: 10,
-                    page: 2,
                     dataSourceId: $('#datasource_Id').val(),
                 };
                 table.reload('testReloadField',{
@@ -582,7 +577,9 @@
                 showFieldLayers();
 
             },
-
+            deltefield: function () {
+                delFieldLayers();
+            },
             getFieldCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload2')
                     , data = checkStatus.data;
@@ -715,7 +712,7 @@
             //document.getElementById("seldatabasetypename").style.display = '';
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
-                title = "编辑连接信息";
+                title = "编辑字段信息";
                 //$('#database_type_code').attr("lay-verify", "required");
                 //$('#database_type_name').attr("lay-verify", "required");
                 //document.getElementById("seldatabasetypename").style.display = 'none';
@@ -745,7 +742,7 @@
             //document.getElementById("seldatabasetypename").style.display = '';
             document.getElementById("generatefield_btn").innerHTML = "立即创建";
             if (layFieldType != true) {
-                title = "编辑字段信息";
+                title = "编辑数据源信息";
                 //$('#database_type_code').attr("lay-verify", "required");
                 //$('#database_type_name').attr("lay-verify", "required");
                 //document.getElementById("seldatabasetypename").style.display = 'none';
@@ -884,12 +881,59 @@
                             none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
                         }
                     })
-                    var str = "<div style='margin-left:600px' class='fieldevent'><a class='layui-btn layui-btn-xs' id='addfields'   lay-event='addfields' data-type='addfields' > 添加字段</a ><a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='deltefield2'>删除字段</a></div >"
+                    var str = "<div style='margin-left:600px' class='fieldevent'><a class='layui-btn layui-btn-xs' id='addfields'   lay-event='addfields' data-type='addfields' > 添加字段</a ><a class='layui-btn layui-btn-danger layui-btn-xs' id='closefield1' lay-event='closefield1'>关闭</a></div >"
                     $('#testTable').append(str)
                 },
             });
            
         }
+        function delFieldLayers() {
+            var checkStatus = table.checkStatus('testReloadField')
+                , data = checkStatus.data;
+            if (data.length == 0) {
+                layer.msg("请选中数据再进行删除！");
+                return;
+            } 
+            layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                layer.close(index);
+
+                let ids = [];
+                let parms = "?";
+                for (let i = 0; i < data.length; i++) {
+                    ids.push(data[i].dataSourceId);
+                    parms += "ids=" + data[i].dataSourceId + "&";
+                }
+                parms = parms.substring(0, parms.length - 1);
+                //layer.alert(JSON.stringify(data));
+                axios.delete("/api/sysdatasource/DeleteDatasourceField/" + parms)
+                    .then(function (response) {
+                        layer.msg(response.data.message);
+                        if (!response.data.isSuccess) {
+                            return;
+                        }
+
+                        //移除
+                        let tabledata = table.cache.testReload;
+                        //for (let i = 0; i < tabledata.length; i++) {
+                        //    for (let j = 0; j < ids.length; j++) {
+                        //        if (tabledata[i].connectionId == ids[j]) {
+                        //            tabledata.splice(i, 1);
+                        //        }
+                        //    }
+                        //}
+                        //console.log(tabledata);
+                        tableReload(tabledata);
+
+
+                    })
+                    .catch(function (error) {
+                        layer.msg("发生了预料之外的错误!");
+                        console.log(error);
+                    });
+            });
+
+        }
+        //添加多个字段
         $('body').on('click','#addfields', function () {
             var checkStatus = table.checkStatus('testReloadNotExistsField')
                 , data = checkStatus.data;
@@ -948,7 +992,10 @@
                 });
             }
         })
-       
+       //关闭事件
+        $('body').on('click','#closefield1', function () {
+          layer.close(genratefieldLayer)
+        })
         //监听工具条
         table.on('tool(sysuser2)', function (obj) {
             var data = obj.data;
