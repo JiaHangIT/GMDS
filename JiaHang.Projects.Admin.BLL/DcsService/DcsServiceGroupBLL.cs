@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
 {
     public class DcsServiceGroupBLL
     {
-        private readonly DataContext _context;
-        public DcsServiceGroupBLL(DataContext datacontext)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public DcsServiceGroupBLL(DAL.EntityFramework.DataContext datacontext)
         {
             _context = datacontext;
         }
@@ -252,6 +252,29 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 return result;
             }
         }
+
+        /// <summary>
+        /// 获取目录分类（主键、名字）
+        /// </summary>
+        /// <returns></returns>
+        public dynamic GetServiceGroup()
+        {
+            try
+            {
+                List<DcsServiceGroup> query = _context.DcsServiceGroup.DefaultIfEmpty().ToList();
+
+                var data = query.Select(s => new { key = s.ServiceGroupId, value = s.ServiceGroupName });
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.Message };
+            }
+          
+        }
+
+
 
         /// <summary>
         /// 导出使用

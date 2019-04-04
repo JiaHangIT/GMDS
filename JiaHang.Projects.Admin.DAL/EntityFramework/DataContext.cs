@@ -1,7 +1,9 @@
 ﻿using System;
-using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace JiaHang.Projects.Admin.DAL.EntityFramework
 {
@@ -24,11 +26,11 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<DcsCustsveDatarightInfo> DcsCustsveDatarightInfo { get; set; }
         public virtual DbSet<DcsCustsveDatarightType> DcsCustsveDatarightType { get; set; }
         public virtual DbSet<DcsCustsveFieldList> DcsCustsveFieldList { get; set; }
-        public virtual DbSet<DcsServiceCollectResults> DcsServiceCollectResults { get; set; }
+        public virtual DbSet<DcsServiceCResults> DcsServiceCResults { get; set; }
         public virtual DbSet<DcsServiceGroup> DcsServiceGroup { get; set; }
         public virtual DbSet<DcsServiceInfo> DcsServiceInfo { get; set; }
         public virtual DbSet<DcsServiceParams> DcsServiceParams { get; set; }
-        public virtual DbSet<DcsServiceShareResults> DcsServiceShareResults { get; set; }
+        public virtual DbSet<DcsServiceSResults> DcsServiceSResults { get; set; }
         public virtual DbSet<SysAreaRoute> SysAreaRoute { get; set; }
         public virtual DbSet<SysConnectionInfo> SysConnectionInfo { get; set; }
         public virtual DbSet<SysControllerRoute> SysControllerRoute { get; set; }
@@ -209,7 +211,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustomerServices>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.CustomerId });
+                entity.HasKey(e => new { e.CustomerId, e.ServiceId });
 
                 entity.ToTable("DCS_CUSTOMER_SERVICES");
 
@@ -217,12 +219,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTOMER_SERVICES")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.CustomerId)
                     .HasColumnName("CUSTOMER_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -370,7 +372,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveDatarightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.DatarightTypeId, e.ServiceId, e.CustomerId });
+                entity.HasKey(e => new { e.CustomerId, e.DatarightTypeId, e.ServiceId });
 
                 entity.ToTable("DCS_CUSTSVE_DATARIGHT_INFO");
 
@@ -378,16 +380,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_DATARIGHT_INFO")
                     .IsUnique();
 
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.DatarightTypeId)
                     .HasColumnName("DATARIGHT_TYPE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
-                    .HasMaxLength(80);
-
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -431,7 +433,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveDatarightType>(entity =>
             {
-                entity.HasKey(e => new { e.CustomerId, e.DataRightId, e.ServiceId });
+                entity.HasKey(e => new { e.DataRightId, e.CustomerId, e.ServiceId });
 
                 entity.ToTable("DCS_CUSTSVE_DATARIGHT_TYPE");
 
@@ -439,12 +441,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_DATARIGHT_TYPE")
                     .IsUnique();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.DataRightId)
                     .HasColumnName("DATA_RIGHT_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ServiceId)
@@ -488,7 +490,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveFieldList>(entity =>
             {
-                entity.HasKey(e => new { e.CustomerId, e.FieldId, e.ServiceId });
+                entity.HasKey(e => new { e.ServiceId, e.FieldId, e.CustomerId });
 
                 entity.ToTable("DCS_CUSTSVE_FIELD_LIST");
 
@@ -496,16 +498,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_FIELD_LIST")
                     .IsUnique();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.FieldId)
                     .HasColumnName("FIELD_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -533,11 +535,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasMaxLength(80);
             });
 
-            modelBuilder.Entity<DcsServiceCollectResults>(entity =>
+            modelBuilder.Entity<DcsServiceCResults>(entity =>
             {
-                entity.HasKey(e => new { e.ReFieldName, e.ServiceId });
+                entity.HasKey(e => new { e.ReFieldName, e.ServiceId })
+                    .HasName("PK_DCS_SERVICE_COLLECT_RESULTS");
 
-                entity.ToTable("DCS_SERVICE_COLLECT_RESULTS");
+                entity.ToTable("DCS_SERVICE_C_RESULTS");
 
                 entity.HasIndex(e => new { e.ServiceId, e.ReFieldName })
                     .HasName("PK_DCS_SERVICE_COLLECT_RESULTS")
@@ -653,7 +656,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
-                    .HasMaxLength(80)
+                    .HasMaxLength(72)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedBy)
@@ -669,8 +672,11 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DataPageFlag).HasColumnName("DATA_PAGE_FLAG");
 
+                entity.Property(e => e.DatasourceId)
+                    .HasColumnName("DATASOURCE_ID")
+                    .HasMaxLength(72);
+
                 entity.Property(e => e.DeleteBy)
-                    .IsRequired()
                     .HasColumnName("DELETE_BY")
                     .HasMaxLength(80);
 
@@ -680,8 +686,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -810,22 +815,23 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.TimestampFlag).HasColumnName("TIMESTAMP_FLAG");
             });
 
-            modelBuilder.Entity<DcsServiceShareResults>(entity =>
+            modelBuilder.Entity<DcsServiceSResults>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.FieldId });
+                entity.HasKey(e => new { e.FieldId, e.ServiceId })
+                    .HasName("PK_DCS_SERVICE_SHARE_RESULTS");
 
-                entity.ToTable("DCS_SERVICE_SHARE_RESULTS");
+                entity.ToTable("DCS_SERVICE_S_RESULTS");
 
                 entity.HasIndex(e => new { e.FieldId, e.ServiceId })
                     .HasName("PK_DCS_SERVICE_SHARE_RESULTS")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.FieldId)
                     .HasColumnName("FIELD_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -1094,7 +1100,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysDataRightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.DatarightTypeId, e.ModelId, e.UserGroupId, e.UserId });
+                entity.HasKey(e => new { e.UserId, e.ModelId, e.UserGroupId, e.DatarightTypeId });
 
                 entity.ToTable("SYS_DATA_RIGHT_INFO");
 
@@ -1102,8 +1108,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_SYS_DATA_RIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.DatarightTypeId)
-                    .HasColumnName("DATARIGHT_TYPE_ID")
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ModelId)
@@ -1114,8 +1120,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("USER_GROUP_ID")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
+                entity.Property(e => e.DatarightTypeId)
+                    .HasColumnName("DATARIGHT_TYPE_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -1511,7 +1517,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DimTypeCode)
                     .HasColumnName("DIM_TYPE_CODE")
-                    .HasMaxLength(60);
+                    .HasMaxLength(80);
 
                 entity.Property(e => e.DimValue)
                     .HasColumnName("DIM_VALUE")
@@ -2352,6 +2358,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("MODEL_NAME")
                     .HasMaxLength(120);
 
+                entity.Property(e => e.ModelUrl)
+                    .HasColumnName("MODEL_URL")
+                    .HasMaxLength(200);
+
                 entity.Property(e => e.SortKey).HasColumnName("SORT_KEY");
             });
 
@@ -2528,7 +2538,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysOperRightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.FunctionCode, e.ModelGroupId, e.ModelId, e.UserGroupId, e.UserId });
+                entity.HasKey(e => new { e.FunctionCode, e.UserId, e.ModelGroupId, e.ModelId, e.UserGroupId });
 
                 entity.ToTable("SYS_OPER_RIGHT_INFO");
 
@@ -2540,6 +2550,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("FUNCTION_CODE")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.ModelGroupId)
                     .HasColumnName("MODEL_GROUP_ID")
                     .HasMaxLength(80);
@@ -2550,10 +2564,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.UserGroupId)
                     .HasColumnName("USER_GROUP_ID")
-                    .HasMaxLength(80);
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)
@@ -2905,7 +2915,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysUserInGroup>(entity =>
             {
-                entity.HasKey(e => new { e.UserGroupId, e.UserId })
+                entity.HasKey(e => new { e.UserId, e.UserGroupId })
                     .HasName("PX_SYS_USER_IN_GROUP");
 
                 entity.ToTable("SYS_USER_IN_GROUP");
@@ -2914,12 +2924,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PX_SYS_USER_IN_GROUP")
                     .IsUnique();
 
-                entity.Property(e => e.UserGroupId)
-                    .HasColumnName("USER_GROUP_ID")
-                    .HasMaxLength(80);
-
                 entity.Property(e => e.UserId)
                     .HasColumnName("USER_ID")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
                     .HasMaxLength(80);
 
                 entity.Property(e => e.DeleteFlag)
@@ -3133,6 +3143,27 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("USER_ROUTE_ID")
                     .HasMaxLength(72);
             });
+           
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+                //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
+                )
+            {
+                //foreach (var property in entityType.GetProperties()) {
+                //    property.Relational().ColumnName = property.Name.ToUpper();
+                //}
+
+                modelBuilder.Entity(entityType.ClrType).Property<int>("DeleteFlag");
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var body = Expression.Equal(
+                    Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(int) }, parameter, Expression.Constant("DeleteFlag")),
+                Expression.Constant(0));
+
+
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
+            }
+
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

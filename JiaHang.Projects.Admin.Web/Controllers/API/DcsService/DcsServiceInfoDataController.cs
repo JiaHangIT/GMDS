@@ -37,5 +37,58 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
 
             return DcsServiceInfo.Select(model);
         }
+
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<FuncResult> Add([FromBody] DcsServiceInfoModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
+            }
+            await Task.Run(() => {   });
+            return new FuncResult() { IsSuccess = true, Message = "添加成功" };
+            //return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<FuncResult> Delete([FromRoute] string id)
+        {
+            return await DcsServiceInfo.Delete(id, HttpContext.CurrentUser(cache).Id);
+        }
+        
+        /// <summary>
+        /// 删除（批）
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [Route("BatchDelete")]
+        [HttpDelete]
+        public async Task<FuncResult> Delete(string[] ids)
+        {
+            return await DcsServiceInfo.Delete(ids,HttpContext.CurrentUser(cache).Id);
+        }
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public async Task<FuncResult> Update(string id, [FromBody]DcsServiceInfoModel model)
+        {
+            var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
+            return data;
+        }
     }
 }

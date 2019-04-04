@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Index";
 }
 <style>
@@ -9,6 +10,7 @@
     .layui-select-title input {
         width: 180px;
     }
+
     .layui-row .layui-col-md4 {
         padding-right: 5%;
     }
@@ -16,110 +18,90 @@
     .layui-row {
         margin-bottom: 6px;
     }
+
     .layui-form-pane .layui-form-select {
-        width:182px;
+        width: 182px;
     }
 </style>
 <div>
 
-    
+
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">用户账号：</label>
+                <label class="layui-form-label">帮助类型：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_user_account" autocomplete="off">
+                    <input class="layui-input" name="id" id="search_help_type_id" autocomplete="off">
                 </div>
             </div>
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">用户名称：</label>
+                <label class="layui-form-label">公告标题：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_user_name" autocomplete="off">
+                    <input class="layui-input" name="id" id="search_help_title" autocomplete="off">
                 </div>
             </div>
+
+            @*</div>
+                <div class="layui-row">*@
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">组织机构：</label>
+                <label class="layui-form-label"> 是否重要：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_demoReload" autocomplete="off">
-                </div>
-            </div>            
-        @*</div>
-        <div class="layui-row">*@
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 是否有效：</label>
-                <div class="layui-inline">
-                    <select name="interest" id="search_user_is_ldap" lay-filter="aihao">
+                    <select name="interest" id="search_important_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="0" selected="">有效</option>
-                        <option value="1">无效</option>
+                        <option value="0" selected="">是</option>
+                        <option value="1">否</option>
                     </select>
                 </div>
             </div>
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 用户类型：</label>
+                <label class="layui-form-label"> 是否审核：</label>
                 <div class="layui-inline">
-                    <select name="interest" id="search_user_ower" lay-filter="aihao">
+                    <select name="interest" id="search_audit_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="1">管理员</option>
-                        <option value="2">领导</option>
-                        <option value="4">kds报表用户</option>
+                        <option value="0" selected="">是</option>
+                        <option value="1">否</option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="layui-form-item" style="margin-top:15px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增用户</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增信息</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-            <a class="layui-btn" href="/api/sysuserinfodata/export">导出所有</a>
+            @*<a class="layui-btn" href="/api/syshelpinfodata/export">导出所有</a>*@
         </div>
 
     </div>
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+    <table class="layui-hide" id="test" lay-filter="syshelp"> </table>
 
 </div>
+
+
+
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
+
             <div class="layui-inline">
-                <label class="layui-form-label">登录帐号</label>
+                <label class="layui-form-label">帮助类型</label>
                 <div class="layui-input-block">
-                    <input type="text" name="user_account" id="user_account" autocomplete="off" placeholder="登录帐号" class="layui-input" lay-verify="required">
+                    <input type="text" name="help_type_id" id="help_type_id" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">用户密码</label>
+                <label class="layui-form-label">公告标题</label>
                 <div class="layui-input-block">
-                    <input type="text" name="user_password" id="user_password" autocomplete="off" placeholder="用户密码" class="layui-input" lay-verify="required">
+                    <input type="text" name="help_title" id="help_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
 
         </div>
         <div class="layui-form-item">
+
             <div class="layui-inline">
-                <label class="layui-form-label">用户名称</label>
+                <label class="layui-form-label">是否重要</label>
                 <div class="layui-input-block">
-                    <input type="text" name="user_name" id="user_name" autocomplete="off" placeholder="用户名称" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">电子邮件</label>
-                <div class="layui-input-block">
-                    <input type="text" name="user_email" id="user_email" autocomplete="off" placeholder="用户电子邮件地址" class="layui-input" lay-verify="email">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">手机号码</label>
-                <div class="layui-input-block">
-                    <input type="text" name="user_mobile_no" id="user_mobile_no" autocomplete="off" placeholder="用户手机号码" class="layui-input" lay-verify="phone">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">是否ldap</label>
-                <div class="layui-input-block">
-                    <select name="interest" id="user_is_ldap" lay-filter="aihao">
+                    <select name="interest" id="important_flag" lay-filter="aihao">
                         <option value=""></option>
                         <option value="0" selected="">否</option>
                         <option value="1">是</option>
@@ -127,63 +109,30 @@
                     </select>
                 </div>
             </div>
-
-        </div>
-
-        <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">默认语言</label>
+                <label class="layui-form-label">是否审核</label>
                 <div class="layui-input-block">
-                    @*<input type="text" name="title" id="language_code" autocomplete="off" placeholder="用户默认语言" class="layui-input">*@
-                    <select name="interest" id="language_code" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="zh-cn" selected="">中文</option>
-                        <option value="en-us">英文</option>
+                    <select class="layui-input" disabled="" name="interest" id="audit_flag" lay-filter="aihao" readOnly="ture">
 
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">用户类型</label>
-                <div class="layui-input-block">
-                    <select name="interest" id="user_ower" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="1">管理员</option>
-                        <option value="2">领导</option>
-                        <option value="4" selected="">kds报表用户</option>
-                    </select>
-                </div>
-            </div>
-
-        </div>
-   
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">开始日期</label>
-                <div class="layui-input-block">
-                    <input type="text" name="eff_start_date" id="eff_start_date" autocomplete="off" class="layui-input" lay-verify="date">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">结束日期</label>
-                <div class="layui-input-block">
-                    <input type="text" name="eff_end_date" id="eff_end_date" autocomplete="off" class="layui-input" lay-verify="date">
-                </div>
-            </div>
-
-            <div class="layui-inline">
-                <label class="layui-form-label">锁定用户</label>
-                <div class="layui-input-block">
-                    <select name="interest" id="user_is_lock" lay-filter="aihao">
-                        <option value=""></option>
                         <option value="0" selected="">否</option>
                         <option value="1">是</option>
 
-
                     </select>
                 </div>
             </div>
+
+
         </div>
+
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">公告内容</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+
         <div class="layui-form-item">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
@@ -192,33 +141,35 @@
 
 
 </div>
+
+
+
+
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
 
-    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+    layui.use(['table', 'element', 'layer', 'layedit', 'form', 'laydate'], function () {
         var table = layui.table;
         var element = layui.element;
         var layer = layui.layer;
         var form = layui.form;
         var laydate = layui.laydate;
+        var layedit = layui.layedit
         var generateLayer_index = 0;
         var layType = true;//true 新增  false 编辑
-        var user_id = 0;
+        var help_id = 0;
         //日期
-        laydate.render({
-            elem: '#eff_start_date'
-        });
-        laydate.render({
-            elem: '#eff_end_date'
-        });
+        //laydate.render({
+        //    elem: '#audited_date'
+        //});
 
 
         table.render({
             elem: '#test'
-            , url: '/api/sysuserinfodata/search/'           
+            , url: '/api/syshelpinfodata/search/'
             , contentType: 'application/json'
             , method: 'post'
             , parseData: function (res) { //res 即为原始返回的数据
@@ -231,24 +182,26 @@
                 };
             }
 
+
+
             , cols: [[
 
                 { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title:'操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'user_Id', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                , { field: 'user_Account', title: '用户账号' }
-                , { field: 'user_Name', title: '用户名', sort: true }
+                , { field: 'help_Id', width: 80, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'help_Type_Id', title: '帮助类型' }
+                , { field: 'help_Title', title: '公告标题', sort: true }
                 //, { field: 'user_Org_Id', title: '用户组别', }
-                , { field: 'user_Email', title: '邮箱地址', sort: true }
-                , { field: 'user_Is_Ldap', title: '是否ldap用户' }
+                , { field: 'important_Flag', title: '是否重要', sort: true }
+                , { field: 'audit_Flag', title: '是否审核' }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
-                , { field: 'user_Ower', title: '用户类型', sort: true }
+                , { field: 'audited_Date', title: '审核时间', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
-                , { field: 'user_Is_Lock', title: '是否锁定', sort: true }
+                , { field: 'audited_By', title: '审核人', sort: true }
                 //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }
                 //, { field: 'eff_End_Date', title: '有效结束日期', sort: true }
-                , { field: 'creation_Date', title: '创建时间', sort: true }
+
             ]]
             , id: 'testReload'
             , page: true,
@@ -258,19 +211,19 @@
         });
 
 
-        table.on('checkbox(sysuser)', function (obj) {
+        table.on('checkbox(syshelp)', function (obj) {
         });
         //监听工具条
-        table.on('tool(sysuser)', function (obj) {
+        table.on('tool(syshelp)', function (obj) {
             debugger;
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
             } else if (obj.event === 'del') {
-                let confirm_title = "确认删除账号" + data.user_Account + "的记录么";
+                let confirm_title = "确认删除" + data.help_Title + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/sysuserinfodata/' + data.user_Id)
+                    axios.delete('/api/syshelpinfodata/' + data.help_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -285,11 +238,12 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                user_id = data.user_Id
+                help_id = data.help_Id
                 layType = false;
                 showLayer(data);
             }
         });
+
 
         var $ = layui.$, active = {
             getCheckData: function () { //获取选中数据
@@ -303,12 +257,12 @@
                     let ids = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        ids.push(data[i].user_Id);
-                        parms += "ids=" + data[i].user_Id + "&";
+                        ids.push(data[i].help_Id);
+                        parms += "ids=" + data[i].help_Id + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/sysuserinfodata/batchdelete/" + parms)
+                    axios.delete("/api/syshelpinfodata/batchdelete/" + parms)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -326,8 +280,8 @@
                             //}
                             //console.log(tabledata);
                             tableReload(tabledata);
-                            
-                            
+
+
                         })
                         .catch(function (error) {
                             layer.msg("发生了预料之外的错误!");
@@ -335,23 +289,22 @@
                         });
                 });
 
-                
+
             },
             search: function () {
                 let pars = {
                     limit: 10,
                     page: 1,
-                    User_Account: $("#search_user_account").val(),
-                    User_Name: $("#search_user_name").val(),
-                    User_Is_Ldap: 0,
-                    User_Ower: 0,
-
+                    help_Type_Id: $("#search_help_type_id").val(),
+                    help_Title: $("#search_help_title").val(),
+                    important_Flag: 0,
+                    audit_Flag: 0,
                 }
-                //if ($("#search_user_ower").val() != "") {
-                //    pars.User_Ower = Number($("#search_user_ower").val());
-                //}
-                if ($("#search_user_is_ldap").val() != "") {
-                    pars.User_Is_Ldap = $("#search_user_is_ldap").val();
+                if ($("#search_important_flag").val() != "") {
+                    pars.Important_Flag = $("#search_important_flag").val();
+                }
+                if ($("#search_audit_flag").val() != "") {
+                    pars.Audit_Flag = $("#search_audit_flag").val();
                 }
                 //执行重载
                 table.reload('testReload', {
@@ -359,6 +312,7 @@
                     contentType: 'application/json',
                     method: 'post'
                 });
+
             },
             showGenerateLayer: function () {
                 layType = true;
@@ -370,37 +324,36 @@
 
         };
         form.on('submit(submit)', function () {
+            //alert($("#help_type_id").val());
             let model = {
-                useraccount: $("#user_account").val(),
-                username: $("#user_name").val(),
-                userpassword: $("#user_password").val(),
-                useremail: $("#user_email").val(),
-                userisldap: $("#user_is_ldap").val() ,
-                usermobileno: $("#user_mobile_no").val(),
-                userower: Number($("#user_ower").val()),
-                languagecode: $("#language_code").val(),
-                userislock: $("#user_is_lock").val() ,
-                effstartdate: $("#eff_start_date").val(),
-                effenddate: $("#eff_end_date").val(),
+                helptypeid: $("#help_type_id").val(),
+                helptitle: $("#help_title").val(),
+                helpcontent: $("#help_content").val(),
+                importantflag: $("#important_flag").val(),
+                auditflag: $("#audit_flag").val(),
+                //auditeddate: $("#audited_date").val(),
+                //auditedby: $("#audited_by").val()
             };
-
-            let url = "/api/sysuserinfodata";
+            
+            let url = "/api/syshelpinfodata";
             let method = "POST";
             if (layType != true) {
-                url = "/api/sysuserinfodata/" + user_id;
+                url = "/api/syshelpinfodata/" + help_id;
                 method = "PUT";
             }
             axios({ url: url, method: method, data: model })
                 .then(function (response) {
+
                     layer.msg(response.data.message);
                     if (!response.data.isSuccess) {
+
                         return;
                     }
                     let datatable = table.cache.testReload;
                     if (layType != true) {
                         //修改
                         for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].user_Id == response.data.content.user_Id) {
+                            if (datatable[i].help_Id == response.data.content.help_Id) {
                                 datatable.splice(i, 1, response.data.content);
                                 break;
                             }
@@ -416,7 +369,7 @@
                 })
                 .catch(function (error) {
 
-                    layer.msg("发生了预料之外的错误 !");
+                    layer.msg("发生了预料之外的错误!");
                     console.log(error);
                 });
 
@@ -428,12 +381,12 @@
             });
         function showLayer(data) {
             initFormValue(data);
-            let title = "新增系统用户";
-            document.getElementById("user_account").disabled = false;
+            let title = "新增";
+            document.getElementById("help_title").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
-                title = "编辑系统用户";
-                document.getElementById("user_account").disabled = true;
+                title = "编辑";
+                document.getElementById("help_title").disabled = false;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -448,44 +401,34 @@
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                ,offset: ['10%', '3%']
+                , offset: ['10%', '3%']
             });
         };
         function initFormValue(data) {
             if (data == undefined) {
 
                 form.val("generate-form", {
-                    eff_end_date: "",
-                    eff_start_date: "",
-                    language_code: "",
-                    user_account: "",
-                    user_email: "",
-                    user_group_names: "",
-                    user_id: "",
-                    user_is_ldap: "",
-                    user_is_lock: "",
-                    user_mobile_no: "",
-                    user_name: "",
-                    user_org_id: "",
-                    user_ower: ""
+                    help_id: "",
+                    help_type_id: "",
+                    help_title: "",
+                    help_contant: "",
+                    important_flag: "",
+                    audit_flag: "",
+                    //audited_Date: "",
+                    //audited_By: "",
+
                 })
                 return;
             }
             form.val("generate-form", {
-                eff_end_date: data.eff_End_Date,
-                eff_start_date: data.eff_Start_Date,
-                language_code: data.language_Code,
-                user_account: data.user_Account,
-                user_email: data.user_Email,
-                user_group_names: data.user_Group_Names,
-                user_id: data.user_Id,
-                user_is_ldap: data.user_Is_Ldap,
-                user_is_lock: data.user_Is_Lock,
-                user_mobile_no: data.user_Mobile_No,
-                user_name: data.user_Name,
-                user_org_id: data.user_Org_Id,
-                user_ower: data.user_Ower,
-                user_password: data.user_Password
+                help_id: data.help_Id,
+                help_type_id: data.help_Type_Id,
+                help_title: data.help_Title,
+                help_contant: data.help_Contant,
+                important_flag: data.important_Flag,
+                audit_flag: data.audit_Flag,
+                //audited_Date: data.audited_Date,
+                //audited_By: data.audited_By,
             })
         }
 
@@ -501,5 +444,15 @@
 
 
 </script>
+
+
+
+
+
+
+
+
+
+
 
 

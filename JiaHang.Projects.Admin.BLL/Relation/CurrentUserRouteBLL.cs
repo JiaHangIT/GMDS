@@ -12,8 +12,8 @@ namespace JiaHang.Projects.Admin.BLL.Relation
     /// </summary>
     public class CurrentUserRouteBLL
     {
-        private readonly DataContext _context;
-        public CurrentUserRouteBLL(DataContext dataContext)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public CurrentUserRouteBLL(DAL.EntityFramework.DataContext dataContext)
         {
             _context = dataContext;
         }

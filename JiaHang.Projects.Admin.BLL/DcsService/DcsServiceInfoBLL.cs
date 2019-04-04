@@ -13,9 +13,9 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
 {
     public class DcsServiceInfoBLL
     {
-        private readonly DataContext context;
+        private readonly DAL.EntityFramework.DataContext context;
 
-        public DcsServiceInfoBLL(DataContext datacontext)
+        public DcsServiceInfoBLL(DAL.EntityFramework.DataContext datacontext)
         {
             context = datacontext;
         }
@@ -37,6 +37,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             {
                 //需要的列
                 Service_Id = s.ServiceId,
+                Service_Group_Id = s.ServiceGroupId,
                 Service_No = s.ServiceNo,
                 Service_Code = s.ServiceCode,
                 Service_Name = s.ServiceName,
