@@ -263,11 +263,9 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
         public async Task<FuncResult> AddDataSourceField(List<AddFieldInfoParm> model, string userId)
         {
             SysDatasourceField entity = null;
-            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
+            foreach (var item in model)
             {
-              
-            foreach (var item in model) {
-                 entity = new SysDatasourceField
+                entity = new SysDatasourceField
                 {
                     FieldId = Guid.NewGuid().ToString("N"),
                     DatasourceId = item.DatasourceId,
@@ -289,8 +287,8 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                     CreationDate = DateTime.Now
                 };
                 await _context.SysDatasourceField.AddAsync(entity);
-
-               
+                using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
+            {
                     try
                     {
                         await _context.SaveChangesAsync();
@@ -302,9 +300,6 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                         return new FuncResult() { IsSuccess = false, Content = ex.Message };
                     }
                 }
-
-
-                
             }
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
 
