@@ -459,7 +459,7 @@
             } else {
                 let par = {
                     limit: 10,
-                    page: 1,
+                    page: 2,
                     dataSourceId: $('#datasource_Id').val(),
                 };
                 table.reload('testReloadField',{
@@ -754,7 +754,7 @@
             generateLayer_field_index = layer.open({
                 type: 1
                 , title: title //不显示标题栏
-                , closeBtn: false
+                , closeBtn: true
                 , fixed: false
                 , area: ['800px', '600px']
                 , shade: 0.8
@@ -832,11 +832,6 @@
                 })
             }
         }
-        function tableReload(datatable) {
-            table.reload("testReload", {
-                data: datatable
-            })
-        }
         function showFieldLayers() {
            
             genratefieldLayer= layer.open({
@@ -913,12 +908,12 @@
                         obj.FieldName = data[i].fieldName;
                         obj.FieldLength = data[i].fieldLength;
                         obj.FieldTypeId = data[i].fieldTypeId;
-                        obj.FieldNullable = data[i].fieldNullable;
+                        obj.FieldNullable = data[i].fieldNullable == "是" ? 1 : 0;
                         obj.FieldKeyFlag = data[i].fieldKeyFlag;
-                        obj.FieldIndexFlag = data[i].fieldIndexFlag;
+                        obj.FieldIndexFlag = data[i].fieldIndexFlag =="是" ? 1 : 0;
                         obj.FieldValue = data[i].fieldValue;
-                        obj.DimFlag = data[i].dimFlag;
-                        obj.TimestampFlag = data[i].timestampFlag;
+                        obj.DimFlag = data[i].dimFlag == "是" ? 1 : 0;
+                        obj.TimestampFlag = data[i].timestampFlag== "是" ? 1 : 0;
                         obj.DimTableName = data[i].dimTableName;
                         obj.DimFieldCode = data[i].dimFieldCode;
                         obj.DimFieldName = data[i].dimFieldName;
@@ -934,11 +929,15 @@
                     //    error: function (msg) {alert("111") }
                     //})
 
-                    axios({ url: "/api/SysDataSourceField/AddDataSourceField", method: "POST", data: { model: arr}    })
+                    axios({ url: "/api/SysDataSourceField/AddDataSourceField", method: "POST", data:  arr    })
                         .then(function (response) {
                             layer.msg(response.data.message);
 
                             layer.close(genratefieldLayer);
+                            table.reload('testReloadNotExistsField', {
+                                contentType: 'application/json',
+                                method: 'post'
+                            });
                         })
                         .catch(function (error) {
 
