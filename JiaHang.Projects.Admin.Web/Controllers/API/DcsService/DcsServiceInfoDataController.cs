@@ -15,11 +15,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
     public class DcsServiceInfoDataController : Controller
     {
         private readonly DcsServiceInfoBLL DcsServiceInfo;
+        private readonly DataContext context;
         private readonly IMemoryCache cache;
 
         public DcsServiceInfoDataController(DataContext datacontext, IMemoryCache cache)
         {
             DcsServiceInfo = new DcsServiceInfoBLL(datacontext);
+            context = datacontext;
             this.cache = cache;
         }
 
@@ -89,6 +91,80 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
             return data;
+        }
+
+        /// <summary>
+        /// 获取数据源主键和键值 
+        /// </summary>
+        /// <returns></returns>
+        [Route("GetDataSource")]
+        [HttpPost]
+        public dynamic GetDataSource()
+        {
+            try
+            {
+                var data = context.SysDatasourceInfo.Select(s => new
+                {
+                    key = s.DatasourceId,
+                    value = s.DatasourceName
+                });
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.Message };
+            }
+        }
+
+        /// <summary>
+        /// 获取参数类型（数据接口参数信息）
+        /// SYS_FIELD_TYPE.FIELD_TYPE_ID
+        /// </summary>
+        /// <returns></returns>
+        [Route("GetFieldType")]
+        [HttpPost]
+        public dynamic GetFieldType()
+        {
+            try
+            {
+                var data = context.SysFieldType.Select(s => new
+                {
+                    key = s.FieldTypeId,
+                    value = s.FieldTypeName
+                });
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.Message };
+            }
+        }
+
+        /// <summary>
+        /// 获取关联字段ID（数据接口参数信息）
+        /// SYS_DATASOURCE_FIELD.FIELD_ID
+        /// </summary>
+        /// <returns></returns>
+        [Route("GetRelaFieldId")]
+        [HttpPost]
+        public dynamic GetRelaFieldId()
+        {
+            try
+            {
+                var data = context.SysDatasourceField.Select(s => new
+                {
+                    key = s.FieldId,
+                    value = s.FieldName
+                });
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.Message };
+            }
         }
     }
 }

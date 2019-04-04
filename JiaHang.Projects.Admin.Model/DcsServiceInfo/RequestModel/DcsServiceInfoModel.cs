@@ -89,4 +89,9 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// </summary>
         public int? DataMultiFlag { get; set; }
     }
+
+    public class DcsServiceInfoDeail
+    {
+
+    }
 }

@@ -110,6 +110,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
         /// <param name="model"></param>
         /// <returns></returns>
         [Route("GetServiceGroup")]
+        [HttpPost]
         public dynamic GetServiceGroup()
         {
             return DcsserviceBll.GetServiceGroup();
