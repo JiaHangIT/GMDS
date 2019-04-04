@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using JiaHang.Projects.Admin.BLL.SysConnectionBLL;
 using JiaHang.Projects.Admin.Model.SysDataSource.RequestModel;
 using JiaHang.Projects.Admin.BLL.SysDataSourceBLL;
+using System.Collections.Generic;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
 {
@@ -27,12 +28,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
         /// <returns></returns>
         [Route("AddDataSourceField")]
         [HttpPost]
-        public async Task<FuncResult> AddDataSourceField([FromBody] SysDataSourceFieldModel model)
+        public async Task<FuncResult> AddDataSourceField([FromBody] List<AddFieldInfoParm> model)
         {
-            if (!ModelState.IsValid)
-            {
-                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
-            }
+           
             return await dataSourceServers.AddDataSourceField(model, HttpContext.CurrentUser(cache).Id);
         }
         /// <summary>
@@ -79,6 +77,38 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
         public async Task<FuncResult> SelectFieldInfo()
         {
             return await dataSourceServers.SelectFieldInfo();
+
+        }
+        
+        /// <summary>
+        ///查询数据源所有字段
+        /// </summary>
+        /// <returns></returns>
+        [Route("SelectDataSourceFiled")]
+        [HttpPost]
+        public  FuncResult SelectDataSourceFiled([FromBody]SerchByDatasourceId model)
+        {
+            model.page--; if (model.page < 0)
+            {
+                model.page = 0;
+            }
+            return dataSourceServers.SelectDataSourceFiled(model); ;
+
+        }
+        
+        /// <summary>
+        ///查询数据源没有的字段
+        /// </summary>
+        /// <returns></returns>
+        [Route("SelectNotDataSouceField")]
+        [HttpPost]
+        public FuncResult SelectNotDataSouceField([FromBody]SerchByDatasourceId model)
+        {
+            model.page--; if (model.page < 0)
+            {
+                model.page = 0;
+            }
+            return dataSourceServers.SelectNotDataSouceField(model); ;
 
         }
     }

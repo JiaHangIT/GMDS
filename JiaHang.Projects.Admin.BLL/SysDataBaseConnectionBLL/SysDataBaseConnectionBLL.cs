@@ -28,10 +28,8 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
         {
             var querys = from a in _context.SysConnectionInfo
                          where (
-                            (string.IsNullOrWhiteSpace(model.Connection_Name) || model.Connection_Name.Contains(model.Connection_Name))
-                            && (string.IsNullOrWhiteSpace(model.Connection_String) || model.Connection_String.Contains(model.Connection_String))
-                            && (string.IsNullOrWhiteSpace(model.Database_Type_Code) || model.Database_Type_Code.Contains(model.Database_Type_Code))
-                            && (string.IsNullOrWhiteSpace(model.Database_Type_Name) || model.Database_Type_Name.Contains(model.Database_Type_Name))
+                            (string.IsNullOrWhiteSpace(model.Connection_Name) || a.ConnectionName.Contains(model.Connection_Name))
+                            && (string.IsNullOrWhiteSpace(model.Connection_String) || a.ConnectionString.Contains(model.Connection_String))
                             && a.DeleteFlag==0
                             )
                          join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId

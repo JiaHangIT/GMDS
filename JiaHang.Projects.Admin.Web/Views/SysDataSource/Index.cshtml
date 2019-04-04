@@ -55,6 +55,7 @@
                                     <option value="VIEW">VIEW</option>
                                 </select>
                             </div>
+                            <input class="layui-input" hidden name="datasource_Id" id="datasource_Id" autocomplete="off">
                         </div>
                         <div class=" layui-col-md6 layui-col-xs6">
                             <label class="layui-form-label" style="width:150px">数据源用途：</label>
@@ -75,6 +76,7 @@
                 </div>
                 <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
             </div>
+            
             <div id="generate_layer" style="display:none;position:relative;padding:15px;">
                 <div class="layui-tab" lay-filter="tabtest">
                     <ul class="layui-tab-title">
@@ -140,17 +142,19 @@
                         <div class="layui-tab-item">
                             <table class="layui-hide" id="test2" lay-filter="sysuser2"> </table>
                             <div style="margin-left:600px">
-                                <a class="layui-btn layui-btn-xs" lay-event="addfield">添加字段</a>
+                                <a class="layui-btn layui-btn-xs" lay-event="addfield" data-type="addfield">添加字段</a>
                                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deltefield">删除字段</a>
                             </div>
                         </div>
+                       
+                       
                     </div>
                 </div>
 
 
 
-                        </div>
-                    </div>
+            </div>
+        </div>
                     <div class="layui-tab-item">
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
@@ -325,10 +329,13 @@
         var laydate = layui.laydate;
         var generateLayer_index = 0;
         var generateLayer_field_index = 1;
+        var genratefieldLayer = 2;
         var layType = true;//true 新增  false 编辑
         var layFieldType = true;
         var dataSourceId = 0;
         var fieldId = 0;
+        var testReload2;
+       
         //初始化下拉框加载
         getConnectionName();
         table.render({
@@ -345,9 +352,7 @@
                     "data": res.content.data //解析数据列表
                 };
             }
-
             , cols: [[
-
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
@@ -362,95 +367,108 @@
             , id: 'testReload'
             , page: true,
             limits: [1, 2, 3, 4, 5],
+           
             text: {
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
         });
-        element.on('tab(tests)', function (data) {
-            if (data.index == 0) {
-                table.render({
-                    elem: '#test'
-                    , url: '/api/sysdatasource/SelectDataSourceInfo/'
-                    , contentType: 'application/json'
-                    , method: 'post'
-                    , parseData: function (res) { //res 即为原始返回的数据
-                        return {
-                            "status": res.isSuccess,
-                            "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                            "msg": res.message, //解析提示文本
-                            "count": res.content.total, //解析数据长度
-                            "data": res.content.data //解析数据列表
-                        };
-                    }
-
-                    , cols: [[
-
-                        { type: 'checkbox', fixed: 'left', width: 40 }
-                        , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-
-                        //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                        , { field: 'dataSourceCode', title: '数据源代码', sort: true }
-                        , { field: 'dataSourceName', title: '数据源名称', sort: true }
-                        , { field: 'dataSourceType', title: '数据源类型', sort: true }
-                        , { field: 'dataSourceUse', title: '数据源用途', sort: true }
-                        , { field: 'connectionName', title: '数据库连接名称', sort: true }
-                        , { field: 'creationDate', title: '创建时间', width: 140, sort: true }
-                    ]]
-                    , id: 'testReload'
-                    , page: true,
-                    limits: [1, 2, 3, 4, 5],
-                    text: {
-                        none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-                    }
-                });
-            } else {
-
+         table.render({
+            elem: '#test2'
+            , url: '/api/sysdatasourcefield/SelectDataSourceFiled/'
+            , contentType: 'application/json'
+            , method: 'post',
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "status": res.isSuccess,
+                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.content.total, //解析数据长度
+                    "data": res.content.data //解析数据列表
+                };
             }
 
+            , cols: [[
+
+                { type: 'checkbox', fixed: 'left', width: 40 }
+                , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+                , { field: 'fieldCode', title: '字段代码', sort: true }
+                , { field: 'fieldName', title: '字段名称', sort: true }
+                , { field: 'fieldTypeName', title: '字段类型', sort: true }
+                //, { field: 'datasourceName', title: '所属数据源', sort: true }
+                , { field: 'fieldNullable', title: '是否可为空', sort: true }
+                , { field: 'fieldLength', title: '字段长度', sort: true }
+                //, { field: 'oraSequenceCode', title: '序列号', sort: true }
+                , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
+            ]]
+            , id: 'testReloadField'
+            , page: true,
+            //limits: [1, 2, 3, 4, 5],
+            text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
         });
+        
+        //element.on('tab(tests)', function (data) {
+        //    if (data.index == 0) {
+        //        table.render({
+        //            elem: '#test'
+        //            , url: '/api/sysdatasource/SelectDataSourceInfo/'
+        //            , contentType: 'application/json'
+        //            , method: 'post'
+        //            , parseData: function (res) { //res 即为原始返回的数据
+        //                return {
+        //                    "status": res.isSuccess,
+        //                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+        //                    "msg": res.message, //解析提示文本
+        //                    "count": res.content.total, //解析数据长度
+        //                    "data": res.content.data //解析数据列表
+        //                };
+        //            }
+
+        //            , cols: [[
+
+        //                { type: 'checkbox', fixed: 'left', width: 40 }
+        //                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+        //                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+        //                , { field: 'dataSourceCode', title: '数据源代码', sort: true }
+        //                , { field: 'dataSourceName', title: '数据源名称', sort: true }
+        //                , { field: 'dataSourceType', title: '数据源类型', sort: true }
+        //                , { field: 'dataSourceUse', title: '数据源用途', sort: true }
+        //                , { field: 'connectionName', title: '数据库连接名称', sort: true }
+        //                , { field: 'creationDate', title: '创建时间', width: 140, sort: true }
+        //            ]]
+        //            , id: 'testReload'
+        //            , page: true,
+        //            limits: [1, 2, 3, 4, 5],
+        //            limit: 3,
+        //            text: {
+        //                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+        //            }
+        //        });
+        //    } else {
+
+        //    }
+
+        //});
         element.on('tab(tabtest)', function (data) {
             if (data.index == 0) {
-                console.log("0");
+
             } else {
-                console.log("1");
-                getFieldInfo()
-                table.render({
-                    elem: '#test2'
-                    , url: '/api/sysdatasource/Search/'
-                    , contentType: 'application/json'
-                    , method: 'post'
-                    , parseData: function (res) { //res 即为原始返回的数据
-                        return {
-                            "status": res.isSuccess,
-                            "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                            "msg": res.message, //解析提示文本
-                            "count": res.content.total, //解析数据长度
-                            "data": res.content.data //解析数据列表
-                        };
-                    }
-
-                    , cols: [[
-
-                        { type: 'checkbox', fixed: 'left', width: 40 }
-                        , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-
-                        //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                        , { field: 'fieldCode', title: '字段代码', sort: true }
-                        , { field: 'fieldName', title: '字段名称', sort: true }
-                        , { field: 'fieldTypeName', title: '字段类型', sort: true }
-                        //, { field: 'datasourceName', title: '所属数据源', sort: true }
-                        , { field: 'fieldNullable', title: '是否可为空', sort: true }
-                        , { field: 'fieldLength', title: '字段长度', sort: true }
-                        //, { field: 'oraSequenceCode', title: '序列号', sort: true }
-                        , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
-                    ]]
-                    , id: 'testReload2'
-                    , page: true,
-                    limits: [1, 2, 3, 4, 5],
-                    text: {
-                        none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-                    }
+                let par = {
+                    limit: 10,
+                    page: 1,
+                    dataSourceId: $('#datasource_Id').val(),
+                };
+                table.reload('testReloadField',{
+                    where: par,
+                    contentType: 'application/json',
+                    method: 'post'
                 });
+                getFieldInfo();
+               
             }
         })
 
@@ -489,6 +507,7 @@
         });
 
         var $ = layui.$, active = {
+
             getCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload')
                     , data = checkStatus.data;
@@ -557,9 +576,13 @@
                 showLayer();
             },
             closeGenerateLayer: function () {
-                console.log(generateLayer_index);
                 layer.close(generateLayer_index);
             },
+            addfield: function () {
+                showFieldLayers();
+
+            },
+
             getFieldCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload2')
                     , data = checkStatus.data;
@@ -714,7 +737,7 @@
             });
         };
         function showFieldLayer(data) {
-            initFieldFormValue(data);
+           // initFieldFormValue(data);
             // divdatabasetypename divseldatabasetypename divdatabasetypecode
             let title = "新增字段信息";
             //$('#database_type_code').remove();
@@ -756,6 +779,7 @@
                 return;
             }
             else {
+                $("#datasource_Id").val(data.dataSourceId)
                 $("#datasource_type").val(data.dataSourceType)
                 $("#datasource_use").val(data.dataSourceUse)
                 $("#databaseconnection_name").val(data.connectionId)
@@ -813,6 +837,119 @@
                 data: datatable
             })
         }
+        function showFieldLayers() {
+           
+            genratefieldLayer= layer.open({
+                type: 1
+                , title: "新增字段信息"
+                , closeBtn: true
+                , fixed: false
+                , area: ['800px', '600px']
+                , shade: 0.8
+                , id: 'loadField' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 0 //拖拽模式，0或者1
+                , content: '<div class="divtestTable"><table id="testTable"></table></div>'//这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , offset: ['10%', '3%'],
+                success: function (index,layero) {
+                    table.render({
+                        elem: '#testTable'
+                        , url: '/api/sysdatasourcefield/SelectNotDataSouceField/'
+                        , contentType: 'application/json'
+                        , method: 'post',
+                        where: { dataSourceId: $('#datasource_Id').val()},
+                        parseData: function (res) { //res 即为原始返回的数据
+                            return {
+                                "status": res.isSuccess,
+                                "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                                "msg": res.message, //解析提示文本
+                                "count": res.content.total, //解析数据长度
+                                "data": res.content.data //解析数据列表
+                            };
+                        }
+                        , cols: [[
+                            { type: 'checkbox', fixed: 'left', width: 40 }
+                            , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+                            //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+                            , { field: 'fieldCode', title: '字段代码', sort: true }
+                            , { field: 'fieldName', title: '字段名称', sort: true }
+                            , { field: 'fieldTypeName', title: '字段类型', sort: true }
+                            //, { field: 'datasourceName', title: '所属数据源', sort: true }
+                            , { field: 'fieldNullable', title: '是否可为空', sort: true }
+                            , { field: 'fieldLength', title: '字段长度', sort: true }
+                            //, { field: 'oraSequenceCode', title: '序列号', sort: true }
+                            , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
+                        ]]
+                        , id: 'testReloadNotExistsField'
+                        , page: true,
+                        //limits: [1, 2, 3, 4, 5],
+                        text: {
+                            none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+                        }
+                    })
+                    var str = "<div style='margin-left:600px' class='fieldevent'><a class='layui-btn layui-btn-xs' id='addfields'   lay-event='addfields' data-type='addfields' > 添加字段</a ><a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='deltefield2'>删除字段</a></div >"
+                    $('#testTable').append(str)
+                },
+            });
+           
+        }
+        $('body').on('click','#addfields', function () {
+            var checkStatus = table.checkStatus('testReloadNotExistsField')
+                , data = checkStatus.data;
+            var arr = [];
+            if (data.length == 0) {
+                layer.msg("请选中数据再进行操作！");
+                return;
+            } else {
+                layer.confirm("确定添加" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+                    for (let i = 0; i < data.length; i++) {
+                        var obj = new Object();
+                        obj.DatasourceId = $('#datasource_Id').val();
+                        obj.FieldId = data[i].fieldId;
+                        obj.FieldCode = data[i].fieldCode;
+                        obj.FieldName = data[i].fieldName;
+                        obj.FieldLength = data[i].fieldLength;
+                        obj.FieldTypeId = data[i].fieldTypeId;
+                        obj.FieldNullable = data[i].fieldNullable;
+                        obj.FieldKeyFlag = data[i].fieldKeyFlag;
+                        obj.FieldIndexFlag = data[i].fieldIndexFlag;
+                        obj.FieldValue = data[i].fieldValue;
+                        obj.DimFlag = data[i].dimFlag;
+                        obj.TimestampFlag = data[i].timestampFlag;
+                        obj.DimTableName = data[i].dimTableName;
+                        obj.DimFieldCode = data[i].dimFieldCode;
+                        obj.DimFieldName = data[i].dimFieldName;
+                        obj.OraSequenceCode = data[i].oraSequenceCode;
+                        arr.push(obj);
+                    }
+                    console.log(JSON.stringify(arr));
+                    //$.ajax({
+                    //    url: "/api/SysDataSourceField/AddDataSourceField",
+                    //    method: "POST",
+                    //    data: { obj: JSON.stringify(model) },
+                    //    success: function () { alert("成功"); },
+                    //    error: function (msg) {alert("111") }
+                    //})
+
+                    axios({ url: "/api/SysDataSourceField/AddDataSourceField", method: "POST", data: { model: arr}    })
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+
+                            layer.close(genratefieldLayer);
+                        })
+                        .catch(function (error) {
+
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+
+                });
+            }
+        })
+       
         //监听工具条
         table.on('tool(sysuser2)', function (obj) {
             var data = obj.data;
@@ -902,10 +1039,20 @@
         }),
             
         
-
+           
 
         function tablefieldReload(datatable) {
             table.reload("testReload2", {
+                data: datatable
+            })
+            }
+        function tableReload(datatable) {
+            table.reload("testReload", {
+                data: datatable
+            })
+        }
+        function tableNotfieldReload(datatable) {
+            table.reload("testReloadNotExistsField", {
                 data: datatable
             })
         }
@@ -943,6 +1090,6 @@
                 console.log(error);
             });
     }
-
+   
 </script>
 

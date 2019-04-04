@@ -116,6 +116,63 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
+        /// 查询数据源的所有字段
+        /// </summary>
+        /// <param name="datasourceId"></param>
+        /// <returns></returns>
+        public FuncResult SelectDataSourceFiled(SerchByDatasourceId model) {
+            var querys = from a in _context.SysDatasourceField where (model.dataSourceId == a.DatasourceId)
+                        select new{
+                            FieldId = a.FieldId,
+                            FieldCode = a.FieldCode,
+                            FieldName = a.FieldName,
+                            FieldLength = a.FieldLength,
+                            FieldNullable = a.FieldNullable == 1 ? "否" : "是",
+                            FieldKeyFlag = a.FieldKeyFlag,
+                            FieldIndexFlag = a.FieldIndexFlag == 1 ? "否" : "是",
+                            FieldValue = a.FieldValue,
+                            DimFlag = a.DimFlag == 1 ? "否" : "是",
+                            TimestampFlag = a.TimestampFlag == 1 ? "否" : "是",
+                            DimTableName = a.DimTableName,
+                            DimFieldCode = a.DimFieldCode,
+                            DimFieldName = a.DimFieldName,
+                            OraSequenceCode = a.OraSequenceCode,
+                        };
+            int total = querys.Count();
+            var data = querys.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+        /// <summary>
+        /// 查询数据源不存在的字段
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public FuncResult SelectNotDataSouceField(SerchByDatasourceId model) {
+            var querys = from a in _context.SysDatasourceField
+                         where (model.dataSourceId != a.DatasourceId)
+                         select new
+                         {
+                             DatasourceId=a.DatasourceId,
+                             FieldId = a.FieldId,
+                             FieldCode = a.FieldCode,
+                             FieldName = a.FieldName,
+                             FieldLength = a.FieldLength,
+                             FieldNullable = a.FieldNullable == 1 ? "否" : "是",
+                             FieldKeyFlag = a.FieldKeyFlag,
+                             FieldIndexFlag = a.FieldIndexFlag == 1 ? "否" : "是",
+                             FieldValue = a.FieldValue,
+                             DimFlag = a.DimFlag == 1 ? "否" : "是",
+                             TimestampFlag = a.TimestampFlag == 1 ? "否" : "是",
+                             DimTableName = a.DimTableName,
+                             DimFieldCode = a.DimFieldCode,
+                             DimFieldName = a.DimFieldName,
+                             OraSequenceCode = a.OraSequenceCode,
+                         };
+            int total = querys.Count();
+            var data = querys.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+        /// <summary>
         /// 查询数据库连接信息
         /// </summary>
         /// <returns></returns>
@@ -198,52 +255,59 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
         /// <summary>
-        /// 添加方法(数据源字段信息)
+        /// 添加一个或者多个(数据源字段信息)
         /// </summary>
         /// <param name="model"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> AddDataSourceField(SysDataSourceFieldModel model, string userId)
+        public async Task<FuncResult> AddDataSourceField(List<AddFieldInfoParm> model, string userId)
         {
-            SysDatasourceField entity = new SysDatasourceField
-            {
-             FieldId= Guid.NewGuid().ToString("N"),
-             DatasourceId=model.DatasourceId,
-             FieldCode=model.FieldCode,
-             FieldName=model.FieldName,
-             FieldTypeId=model.FieldTypeId,
-             FieldLength=model.FieldLength,
-             FieldNullable=model.FieldNullable,
-             FieldKeyFlag=model.FieldKeyFlag,
-             FieldIndexFlag=model.FieldIndexFlag,
-             FieldValue=model.FieldValue,
-             DimFlag=model.DimFlag,
-             TimestampFlag=model.TimestampFlag,
-             DimTableName=model.DimTableName,
-             DimFieldCode=model.DimFieldCode,
-             DimFieldName=model.DimFieldName,
-             OraSequenceCode=model.OraSequenceCode,
-             CreatedBy = userId,
-             CreationDate = DateTime.Now
-            };
-            await _context.SysDatasourceField.AddAsync(entity);
-
+            SysDatasourceField entity = null;
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
             {
-                try
+              
+            foreach (var item in model) {
+                 entity = new SysDatasourceField
                 {
-                    await _context.SaveChangesAsync();
-                    trans.Commit();
+                    FieldId = Guid.NewGuid().ToString("N"),
+                    DatasourceId = item.DatasourceId,
+                    FieldCode = item.FieldCode,
+                    FieldName = item.FieldName,
+                    FieldTypeId = item.FieldTypeId,
+                    FieldLength = item.FieldLength,
+                    FieldNullable = item.FieldNullable,
+                    FieldKeyFlag = item.FieldKeyFlag,
+                    FieldIndexFlag = item.FieldIndexFlag,
+                    FieldValue = item.FieldValue,
+                    DimFlag = item.DimFlag,
+                    TimestampFlag = item.TimestampFlag,
+                    DimTableName = item.DimTableName,
+                    DimFieldCode = item.DimFieldCode,
+                    DimFieldName = item.DimFieldName,
+                    OraSequenceCode = item.OraSequenceCode,
+                    CreatedBy = userId,
+                    CreationDate = DateTime.Now
+                };
+                await _context.SysDatasourceField.AddAsync(entity);
+
+               
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        return new FuncResult() { IsSuccess = false, Content = ex.Message };
+                    }
                 }
-                catch (Exception ex)
-                {
-                    trans.Rollback();
-                    return new FuncResult() { IsSuccess = false, Content = ex.Message };
-                }
+
+
+                
             }
-
-
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
+
         }
         /// <summary>
         /// 修改（数据源信息）
