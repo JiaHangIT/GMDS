@@ -12,8 +12,8 @@ namespace JiaHang.Projects.Admin.BLL.Relation
     /// </summary>
     public class CurrentUserRouteBLL
     {
-        private readonly DAL.EntityFramework.DataContext _context;
-        public CurrentUserRouteBLL(DAL.EntityFramework.DataContext dataContext)
+        private readonly DataContext _context;
+        public CurrentUserRouteBLL(DataContext dataContext)
         {
             _context = dataContext;
         }
@@ -61,7 +61,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
             }
 
             var routes = (from a in _context.SysControllerRoute.Where(s=>s.DeleteFlag == 0)
-                          join b in _context.SysModuleRouteRelation
+                          join b in _context.SysModuleRoute
                             on a.SysControllerRouteId equals b.ControllerRouteId
                           join c in modules on b.ModuleId equals c.Id
                           join d in _context.SysMethodRoute on a.SysControllerRouteId equals d.ControllerId
