@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
-    public partial class SysModuleRouteRelation
+    public partial class SysModuleRoute
     {
         public string Id { get; set; }
         public int DeleteFlag { get; set; }

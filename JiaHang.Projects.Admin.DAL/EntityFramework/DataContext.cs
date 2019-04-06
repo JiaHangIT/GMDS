@@ -54,7 +54,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<SysModelGroup> SysModelGroup { get; set; }
         public virtual DbSet<SysModelInfo> SysModelInfo { get; set; }
         public virtual DbSet<SysModule> SysModule { get; set; }
-        public virtual DbSet<SysModuleRouteRelation> SysModuleRouteRelation { get; set; }
+        public virtual DbSet<SysModuleRoute> SysModuleRouteRelation { get; set; }
         public virtual DbSet<SysModuleUserRelation> SysModuleUserRelation { get; set; }
         public virtual DbSet<SysOperRightInfo> SysOperRightInfo { get; set; }
         public virtual DbSet<SysProblemInfo> SysProblemInfo { get; set; }
@@ -2422,9 +2422,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.SortValue).HasColumnName("SORT_VALUE");
             });
 
-            modelBuilder.Entity<SysModuleRouteRelation>(entity =>
+            modelBuilder.Entity<SysModuleRoute>(entity =>
             {
-                entity.ToTable("SYS_MODULE_ROUTE_RELATION");
+                entity.ToTable("SYS_MODULE_ROUTE");
 
                 entity.HasIndex(e => e.Id)
                     .HasName("PK_SYS_MODULE_ROUTE_RELATION")

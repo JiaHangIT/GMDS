@@ -160,7 +160,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
             {
                 foreach (var add in adds)
                 {
-                    var add_entity = new SysModuleRouteRelation()
+                    var add_entity = new SysModuleRoute()
                     {
                         Id = Guid.NewGuid().ToString("N"),
                         ModuleId = add.ModuleId,
