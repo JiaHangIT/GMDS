@@ -62,7 +62,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        [Route("DeleteDatasourceField")]
+        [Route("DeleteDatasourceFields")]
         [HttpDelete]
         public async Task<FuncResult> DeleteDataSourceFields(string[] ids)
         {

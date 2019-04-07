@@ -83,10 +83,10 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
         public FuncResult SelectDataSourceInfo(SearchDatasource model) {
             var query = from a in _context.SysDatasourceInfo
                         where (
-                            (string.IsNullOrWhiteSpace(model.DataSource_Code) || model.DataSource_Code.Contains(model.DataSource_Code))
-                         && (string.IsNullOrWhiteSpace(model.DataSource_Name) || model.DataSource_Name.Contains(model.DataSource_Name))
-                         && (string.IsNullOrWhiteSpace(model.DataSource_Type) || model.DataSource_Type.Contains(model.DataSource_Type))
-                         && (string.IsNullOrWhiteSpace(model.DataSource_Use) || model.DataSource_Use.Contains(model.DataSource_Use))
+                            (string.IsNullOrWhiteSpace(model.DataSource_Code) || a.DatasourceCode.Contains(model.DataSource_Code))
+                         && (string.IsNullOrWhiteSpace(model.DataSource_Name) || a.DatasourceName.Contains(model.DataSource_Name))
+                         && (string.IsNullOrWhiteSpace(model.DataSource_Type) || a.DatasourceType.Contains(model.DataSource_Type))
+                         && (string.IsNullOrWhiteSpace(model.DataSource_Use) || a.DatasourceUse.Contains(model.DataSource_Use))
                          && a.DeleteFlag == 0
                                )
                         join b in _context.SysConnectionInfo on a.ConnectionId equals b.ConnectionId
@@ -453,7 +453,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
         /// <returns></returns>
         public async Task<FuncResult> DeleteDataSourceFields(string[] ids, string currentUserId)
         {
-            IQueryable<SysDatasourceField> entitys = _context.SysDatasourceField.Where(e => ids.Contains(e.DatasourceId));
+            IQueryable<SysDatasourceField> entitys = _context.SysDatasourceField.Where(e => ids.Contains(e.FieldId));
             if (entitys.Count() != ids.Length)
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
