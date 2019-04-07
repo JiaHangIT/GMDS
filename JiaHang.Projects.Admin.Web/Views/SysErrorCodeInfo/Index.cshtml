@@ -1,0 +1,542 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+
+    .layui-layer-shade {
+        display: none;
+    }
+
+    .layui-select-title input {
+        width: 180px;
+    }
+</style>
+<div>
+
+    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
+        <div class="layui-form-item">
+            错误代码代码：
+            <div class="layui-inline">
+                <input class="layui-input" name="searchError_Code_Code" id="searchError_Code_Code" autocomplete="off">
+            </div>
+            错误代码名称：
+            <div class="layui-inline">
+                <input class="layui-input" name="searcCreated_By" id="searcCreated_By" autocomplete="off">
+            </div>
+            建立人：
+            <div class="layui-inline">
+                <input class="layui-input" name="searchError_Code_Name" id="searchError_Code_Name" autocomplete="off">
+            </div>
+            是否审核：
+            <div class="layui-inline">
+                <select name="searchauditFlag" id="searchauditFlag" lay-verify="required" lay-filter="xmFilter">
+                    <option value="">请选择</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+            @*<div class="layui-inline">
+            <label class="layui-form-label">审核时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+
+            </div>
+        </div>*@
+            <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
+        </div>
+        @*<div class="layui-form-item" style="margin-top:30px;">
+
+                <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
+                <button class="layui-btn layui-btn-danger" data-type="getCheckData">选中行删除</button>
+            </div>*@
+    </div>
+    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+</div>
+<div id="generate_layer" style="display:none; padding:40px;">
+    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">错误代码ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ErrorCodeId" id="ErrorCodeId" autocomplete="off" placeholder="错误代码ID" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" >错误代码代码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ErrorCodeCode" id="ErrorCodeCode" autocomplete="off" placeholder="错误代码代码" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">错误代码名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ErrorCodeName" id="ErrorCodeName" autocomplete="off" placeholder="错误代码名称" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">错误代码描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ErrorCodeDesc" id="ErrorCodeDesc" autocomplete="off" placeholder="错误代码描述" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">是否重要标志</label>
+                <div class="layui-inline">
+                    <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
+                        <option value="">请选择</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="layui-form-item">
+            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+        </div>
+    </div>
+</div>
+
+@*<div id="examine_layer" style="display:none; padding:40px;">
+    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">系统公告ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Message_ID" id="Message_ID" autocomplete="off" placeholder="产品编号" class="layui-input" disabled>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">公告标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="MESSAGETITLE" id="MESSAGETITLE" autocomplete="off" placeholder="产品名称" class="layui-input" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">公告内容</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" name="MESSAGECONTENT" id="MESSAGECONTENT" class="layui-textarea" disabled></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <button class="layui-btn" data-type="generate" id="examine_btn" lay-submit lay-filter="submit1">立即创建</button>
+            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayerT">取消</button>
+        </div>
+    </div>
+    </div>*@
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    @*<a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>*@
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+        var table = layui.table;
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var generateLayer_index = 0;
+        var layType = true;//true 新增  false 编辑
+        var store_id = "";
+        //日期
+        laydate.render({
+            elem: '#searchAuditedDate'
+        });
+        laydate.render({
+            elem: '#stCloseDate'
+        });
+
+        
+        table.render({
+            elem: '#test'
+            , url: '/api/SysErrorCodeInfo/search/'
+            , contentType: 'application/json'
+            , method: 'post'
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "status": res.isSuccess,
+                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.content.total, //解析数据长度
+                    "data": res.content.data //解析数据列表
+                };
+            }
+
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'errorCodeId', title: '错误代码ID', sort: true, fixed: 'left' }
+                , { field: 'errorCodeCode', title: '错误代码代码', sort: true }
+                , { field: 'errorCodeName', title: '错误代码名称' }
+                , { field: 'errorCodeDesc', title: '错误代码描述' }
+                , { field: 'importantFlag', width: 99, title: '是否重要', sort: true }
+                , { field: 'auditFlag', width: 99, title: '是否审核', sort: true }
+                , { field: 'auditedDate', title: '审核时间', sort: true }
+                , { field: 'auditedBy', title: '审核人', sort: true }
+                , { field: 'creationDate', title: '建立时间', sort: true }
+                , { field: 'createdBy', title: '建立人', sort: true }
+                , { field: 'LastUpdateDate', title: '最后更新时间', sort: true }
+                , { field: 'LastUpdatedBy', title: '最后更新人', sort: true }
+                //, { field: 'stOpenDate', title: '开业日期', sort: true }
+                //, { field: 'stCloseDate', title: '关店日期', sort: true }
+                //, { field: 'stTel', title: '电话', sort: true }
+                //, { field: 'stFax', title: '传真', sort: true }
+                //, { field: 'stSeat', title: '座位数', sort: true }
+                , { fixed: 'right', align: 'center', width: 177, toolbar: '#barDemo', fixed: 'right' } //这里的toolbar值是模板元素的选择器
+            ]]
+            , id: 'testReload'
+            , page: true,
+            text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+        });
+        table.on('checkbox(sysuser)', function (obj) {
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(sysuser)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('Message_ID：' + data.errorCodeId + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                console.log("delete");
+                let confirm_title = "确认删除产品编号" + data.errorCodeId + "的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios.delete('/api/SysErrorCodeInfo/' + data.errorCodeId)
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            obj.del();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
+            } else if (obj.event === 'edit') {
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                console.log(data);
+                store_id = data.errorCodeId;
+                layType = false;
+                showLayer(data);
+            } else if (obj.event === 'examine') {
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                console.log(data);
+                store_id = data.errorCodeId;
+                layType = false;
+                examineLayer(data);
+            }
+        });
+        var $ = layui.$, active = {
+            getCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('testReload')
+                    , data = checkStatus.data;
+
+
+                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+
+                    let Message_IDs = [];
+                    let parms = "?";
+                    for (let i = 0; i < data.length; i++) {
+                        Message_IDs.push(data[i].errorCodeId);
+                        parms += "Message_IDs=" + data[i].Message_ID + "&";
+                    }
+                    parms = parms.substring(0, parms.length - 1);
+                    //layer.alert(JSON.stringify(data));
+                    axios.delete("/api/SysErrorCodeInfo/batchdelete/" + parms)
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            //移除
+                            let tabledata = table.cache.testReload;
+                            //for (let i = 0; i < tabledata.length; i++) {
+                            //    for (let j = 0; j < ids.length; j++) {
+                            //        if (tabledata[i].user_Id == ids[j]) {
+                            //            tabledata.splice(i, 1);
+                            //        }
+                            //    }
+                            //}
+                            //console.log(tabledata);
+                            tableReload(tabledata);
+
+
+                        })
+                        .catch(function (error) {
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+                });
+
+
+            },
+            search: function () {
+                console.log('reload');
+                let pars = {
+                    //limit: 10,
+                    //page: 1,
+                    Error_Code_Code: $("#searchError_Code_Code").val(),
+                    Error_Code_Name: $("#searcCreated_By").val(),
+                    Created_By: $("#searchError_Code_Name").val(),
+                    Audit_Flag: $("#searchauditFlag").val(),
+                }
+                //执行重载
+                console.log(pars);
+                table.reload('testReload', {
+                    where: pars,
+                    contentType: 'application/json',
+                    method: 'post'
+                });
+            },
+            showGenerateLayer: function () {
+                console.log('show');
+                layType = true;
+                showLayer();
+            },
+            closeGenerateLayer: function () {
+                layer.close(generateLayer_index);
+            },
+
+        };
+        //form.on('submit(submit1)', function () {
+        //    console.log('save');
+        //    //alert($("#Message_ID").val());
+        //    let model = {
+        //        Message_ID: $("#Message_ID").val(),
+        //        //Message_title: $("#MESSAGETITLE").val(),
+        //        //Message_Content: $("#MESSAGECONTENT").val(),
+        //        //Important_Flag: $("#Important_Flag").val(),
+        //        //Audit_Flag: $("#colorName").val(),
+        //        //Audited_Date: $("#category").val(),
+        //        //Audited_By: $("#code").val(),
+        //        //Creation_Date: $("#name").val(),
+        //        //Creation_By: $("#price").val(),
+        //        //Last_Updata_Date: $("#cost").val(),
+        //        //Last_Updata_By: $("#colorName").val(),
+        //    };
+        //    alert(store_id);
+        //    console.log(model);
+
+        //    url = "/api/SysMessageInfo/UpdateExamine" + store_id;
+        //        method = "post";
+
+        //    axios({ url: url, method: method, data: model })
+        //        .then(function (response) {
+        //            console.log(response);
+        //            layer.msg(response.data.message);
+        //            if (!response.data.isSuccess) {
+        //                return;
+        //            }
+        //            let datatable = table.cache.testReload;
+        //            console.log(datatable);
+        //                //审核
+        //                for (let i = 0; i < datatable.length; i++) {
+        //                    if (datatable[i].Message_ID == response.data.content.Message_ID) {
+        //                        datatable.splice(i, 1, response.data.content);
+        //                        break;
+        //                    }
+        //                }
+
+
+        //            tableReload(datatable)
+        //            layer.close(generateLayer_index);
+        //        })
+        //        .catch(function (error) {
+
+        //            layer.msg("发生了预料之外的错误!");
+        //            console.log(error);
+        //        });
+
+        //    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        //}),
+        //    $('.layui-btn').on('click', function () {
+        //        var type = $(this).data('type');
+        //        active[type] ? active[type].call(this) : '';
+        //    });
+        form.on('submit(submit)', function () {
+            console.log('save');
+            //alert($("#Message_ID").val());
+            let model = {
+                ErrorCodeId: $("#ErrorCodeId").val(),
+                ErrorCodeCode: $("#ErrorCodeCode").val(),
+                ErrorCodeName: $("#ErrorCodeName").val(),
+                ErrorCodeDesc: $("#ErrorCodeDesc").val(),
+                ImportantFlag: $("#Important_Flag").val(),
+                //Audit_Flag: $("#colorName").val(),
+                //Audited_Date: $("#category").val(),
+                //Audited_By: $("#code").val(),
+                //Creation_Date: $("#name").val(),
+                //Creation_By: $("#price").val(),
+                //Last_Updata_Date: $("#cost").val(),
+                //Last_Updata_By: $("#colorName").val(),
+            };
+            
+            console.log(model);
+            let url = "/api/SysErrorCodeInfo/add";
+            let method = "POST";
+            if (layType != true) {
+                url = "/api/SysErrorCodeInfo/" + store_id;
+                method = "PUT";
+            }
+            axios({ url: url, method: method, data: model })
+                .then(function (response) {
+                    console.log(response);
+                    layer.msg(response.data.message);
+                    if (!response.data.isSuccess) {
+                        return;
+                    }
+                    let datatable = table.cache.testReload;
+                    console.log(datatable);
+                    if (layType != true) {
+                        //修改
+                        for (let i = 0; i < datatable.length; i++) {
+                            if (datatable[i].Message_ID == response.data.content.Message_ID) {
+                                datatable.splice(i, 1, response.data.content);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        //新增
+                        datatable.unshift(response.content)
+                    }
+                    tableReload(datatable)
+                    layer.close(generateLayer_index);
+                })
+                .catch(function (error) {
+
+                    layer.msg("发生了预料之外的错误!");
+                    console.log(error);
+                });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        }),
+            $('.layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        //function examineLayer(data) {
+
+        //    console.log(table);
+        //    console.log(table.cache);
+        //    initFormValue(data);
+
+        //        let title = "审核";
+        //        document.getElementById("Message_ID").disabled = true;
+        //        document.getElementById("examine_btn").innerHTML = "立即审核";
+
+        //    generateLayer_indexT = layer.open({
+        //        type: 1
+        //        , title: "审核" //不显示标题栏
+        //        , closeBtn: false
+        //        , area: ['50%', '60%']
+        //        , shade: 0.8
+        //        , id: 'LAY_examine' //设定一个id，防止重复弹出
+        //        //, btn: ['火速围观', '残忍拒绝']
+        //        , btnAlign: 'c'
+        //        , moveType: 1 //拖拽模式，0或者1
+        //        , content: $('#examine_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+
+        //    });
+        //};
+
+        function showLayer(data) {
+
+            console.log(table);
+            console.log(table.cache);
+            initFormValue(data);
+            let title = "新增";
+            document.getElementById("ErrorCodeId").disabled = false;
+            document.getElementById("generate_btn").innerHTML = "立即创建";
+            if (layType != true) {
+                title = "编辑";
+                document.getElementById("ErrorCodeId").disabled = true;
+                document.getElementById("generate_btn").innerHTML = "立即修改";
+            }
+            generateLayer_index = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: false
+                , area: ['50%', '60%']
+                , closeBtn: 2
+                , shade: 0.8
+                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 1 //拖拽模式，0或者1
+                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+
+            });
+        };
+        function initFormValue(data) {
+            if (data == undefined) {
+
+                form.val("generate-form", {
+                    ErrorCodeId: "",
+                    ErrorCodeCode: "",
+                    ErrorCodeName: "",
+                    ErrorCodeDesc: "",
+                    Important_Flag: "",
+                    //colorName: "",
+                    //category: ""
+                })
+                return;
+            }
+            form.val("generate-form", {
+                ErrorCodeId: data.errorCodeId,
+                ErrorCodeCode: data.errorCodeCode,
+                ErrorCodeName: data.errorCodeName,
+                ErrorCodeDesc: data.errorCodeDesc,
+                Important_Flag: data.importantFlag
+                //colorName: data.dish_Color,
+                //category: data.category
+            })
+        }
+        function tableReload(datatable) {
+            console.log(datatable);
+            table.reload("testReload", {
+                data: datatable
+            })
+        }
+
+
+        ////色蝶
+        //$.ajax({
+        //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
+        //    success: function (data) {
+        //        $.each(data, function (index, item) {
+        //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
+        //        });
+        //        layui.form.render("select");
+        //    }
+        //});
+
+    });
+</script>
+
