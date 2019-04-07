@@ -992,7 +992,7 @@
         $('body').on('click', '#selField', function () {
             let pars = {
               
-                Field_Type: $("#search_field_type option:selected").val(),
+                FieldName: $("#search_field_name").val(),
             }
             //执行重载
             table.reload('testReloadField', {

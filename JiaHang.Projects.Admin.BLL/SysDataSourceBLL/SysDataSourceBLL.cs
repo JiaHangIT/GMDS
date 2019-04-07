@@ -149,7 +149,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
         /// <returns></returns>
         public FuncResult SelectNotDataSouceField(SerchByDatasourceId model) {
             var querys = from a in _context.SysDatasourceField
-                         where (model.dataSourceId != a.DatasourceId)
+                         where (model.dataSourceId != a.DatasourceId && (string.IsNullOrWhiteSpace(model.fieldName) || a.FieldName.Contains(model.fieldName)))
                          select new
                          {
                              DatasourceId=a.DatasourceId,
