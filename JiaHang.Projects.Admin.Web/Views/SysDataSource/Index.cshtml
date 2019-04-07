@@ -1,0 +1,1141 @@
+﻿
+@{
+    ViewData["Title"] = "数据源管理";
+}
+<style>
+    .layui-layer-shade {
+        display: none;
+    }
+
+    .layui-select-title input {
+        width: 180px;
+    }
+
+    .layui-row .layui-col-md4 {
+        padding-right: 5%;
+    }
+
+    .layui-row {
+        margin-bottom: 6px;
+    }
+
+    .layui-form-pane .layui-form-select {
+        width: 182px;
+    }
+</style>
+
+<div class="layui-tab" lay-filter="tests">
+    <ul class="layui-tab-title">
+        <li>数据源基础信息</li>
+        <li>数据源字段信息</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div>
+                <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+                    <div class="layui-row">
+                        <div class=" layui-col-md6 layui-col-xs6">
+                            <label class="layui-form-label" style="width:150px">数据源代码：</label>
+                            <div class="layui-inline">
+                                <input class="layui-input" name="search_connection_name" id="search_connection_name" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class=" layui-col-md6 layui-col-xs6">
+                            <label class="layui-form-label" style="width:150px">数据源名称：</label>
+                            <div class="layui-inline">
+                                <input class="layui-input" name="search_connection_string" id="search_connection_string" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class=" layui-col-md6 layui-col-xs6">
+                            <label class="layui-form-label" style="width:150px">数据库源类型：</label>
+                            <div class="layui-inline">
+                                <select name="search_datasource_type" id="search_datasource_type">
+                                    <option value="">请选择</option>
+                                    <option value="TABLE">TABLE</option>
+                                    <option value="VIEW">VIEW</option>
+                                </select>
+                            </div>
+                            <input class="layui-input" style="display:none" name="datasource_Id" id="datasource_Id" autocomplete="off">
+                        </div>
+                        <div class=" layui-col-md6 layui-col-xs6">
+                            <label class="layui-form-label" style="width:150px">数据源用途：</label>
+                            <div class="layui-inline">
+                                <select name="search_datasource_use" id="search_datasource_use">
+                                    <option value="">请选择</option>
+                                    <option value="SHARE">SHARE</option>
+                                    <option value="COLLECT">COLLECTION</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="margin-top:15px;">
+                        <button class="layui-btn btn-search" data-type="search">条件查询</button>
+                        <button class="layui-btn" data-type="showGenerateLayer">新增数据源</button>
+                        <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+                    </div>
+                </div>
+                <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+            </div>
+            
+            <div id="generate_layer" style="display:none;position:relative;padding:15px;">
+                <div class="layui-tab" lay-filter="tabtest">
+                    <ul class="layui-tab-title">
+                        <li>数据源基础信息</li>
+                        <li>数据源字段信息</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width:150px">数据源代码</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="datasource_code" id="datasource_code" autocomplete="off" placeholder="数据源代码" class="layui-input" lay-verify="required">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width:150px">数据源名称</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="datasource_name" id="datasource_name" autocomplete="off" placeholder="数据源名称" class="layui-input" lay-verify="required">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width:150px">数据库源类型：</label>
+                                        <div class="layui-inline">
+                                            <select name="datasource_type" id="datasource_type">
+                                                <option value="">请选择</option>
+                                                <option value="TABLE">TABLE</option>
+                                                <option value="VIEW">VIEW</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width:150px">数据源用途：</label>
+                                        <div class="layui-inline">
+                                            <select name="datasource_use" id="datasource_use">
+                                                <option value="">请选择</option>
+                                                <option value="SHARE">SHARE</option>
+                                                <option value="COLLECTION">COLLECTION</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width:150px">数据库连接名称</label>
+                                        <div class="layui-input-inline">
+                                            <select name="databaseconnection_name" id="databaseconnection_name"></select>
+                                        </div>
+                                        <input type="text" name="database_type_id" id="database_type_id" autocomplete="off" style="display:none" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">添加</button>
+                                    <button class="layui-btn layui-layer-btn1" lay-filter="demo" data-type="closeGenerateLayer">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            <table class="layui-hide" id="test2" lay-filter="sysuser2"> </table>
+                            <div style="margin-left:600px">
+                                <a class="layui-btn layui-btn-xs" lay-event="addfield" data-type="addfield">添加字段</a>
+                                <a class="layui-btn layui-btn-danger layui-btn-xs" data-type="deltefield" lay-event="deltefield">删除字段</a>
+                            </div>
+                        </div>
+                       
+                       
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div>
+                                    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+                                        <div class="layui-row">
+                                            <div class=" layui-col-md6 layui-col-xs6">
+                                                <label class="layui-form-label" style="width:150px">字段代码：</label>
+                                                <div class="layui-inline">
+                                                    <input class="layui-input" name="search_field_code" id="search_field_code" placeholder="字段代码" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div class=" layui-col-md6 layui-col-xs6">
+                                                <label class="layui-form-label" style="width:150px">字段名称：</label>
+                                                <div class="layui-inline">
+                                                    <input class="layui-input" name="search_field_name" id="search_field_name" placeholder="字段名称" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div class=" layui-col-md6 layui-col-xs6">
+                                                <label class="layui-form-label" style="width:150px">字段类型：</label>
+                                                <div class="layui-inline">
+                                                    <select name="search_field_type" id="search_field_type"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item" style="margin-top:15px;">
+                                            <button class="layui-btn btn-search" data-type="searchfield">条件查询</button>
+                                            <button class="layui-btn" data-type="showGenerateFieldLayer">新增数据源字段信息</button>
+                                            <button class="layui-btn" data-type="getFieldCheckData">选中行删除</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                               
+                            </div>
+                            <div id="generatefield_layer" style="display:none;position:relative;padding:15px;">
+                                <div class="layui-form layui-form-pane" action="" lay-filter="generatefield-form">
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">所属数据源</label>
+                                            <div class="layui-input-inline">
+                                                <select name="datasource_ids" id="datasource_ids"></select>
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">字段代码</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" name="field_code" id="field_code" autocomplete="off" placeholder="字段代码" class="layui-input" lay-verify="required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">字段名称：</label>
+                                            <div class="layui-inline">
+                                                <input type="text" name="field_name" id="field_name" autocomplete="off" placeholder="字段名称" class="layui-input" lay-verify="required">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">字段类型：</label>
+                                            <div class="layui-inline">
+                                                <select name="field_type" id="field_type"></select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">是否唯一索引：</label>
+                                            <div class="layui-inline">
+                                                <select name="field_index_flag" id="field_index_flag">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">否</option>
+                                                    <option value="1">是</option>
+                                                </select>
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" style="width:150px">字段默认值（可为空）</label>
+                                                <div class="layui-inline">
+                                                    <input type="text" name="field_value" id="field_value" autocomplete="off" placeholder="字段默认值" class="layui-input">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">是否维度字段</label>
+                                            <div class="layui-inline">
+                                                <select name="dim_flag" id="dim_flag">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">否</option>
+                                                    <option value="1">是</option>
+                                                </select>
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" style="width:150px">是否时间戳字段</label>
+                                                <div class="layui-inline">
+                                                    <select name="timestamp_flag" id="timestamp_flag">
+                                                        <option value="">请选择</option>
+                                                        <option value="0">否</option>
+                                                        <option value="1">是</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">维度字段表名</label>
+                                            <div class="layui-inline">
+                                                <input type="text" name="dim_table_name" id="dim_table_name" autocomplete="off" placeholder="维度字段表名" class="layui-input">
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" style="width:150px">维度字段代码</label>
+                                                <div class="layui-inline">
+                                                    <input type="text" name="dim_field_code" id="dim_field_code" autocomplete="off" placeholder="维度字段代码" class="layui-input">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" style="width:150px">维度字段名称</label>
+                                            <div class="layui-inline">
+                                                <input type="text" name="dim_field_name" id="dim_field_name" autocomplete="off" placeholder="维度字段表名" class="layui-input">
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" style="width:150px">序列代码</label>
+                                                <div class="layui-inline">
+                                                    <input type="text" name="ora_sequence_code" id="ora_sequence_code" autocomplete="off" placeholder="序列代码" class="layui-input">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <button class="layui-btn" data-type="generate" id="generatefield_btn" lay-submit lay-filter="submitfield">添加</button>
+                                        <button class="layui-btn layui-layer-btn2" lay-filter="demo2" data-type="closeGenerateFieldLayer">取消</button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="barField">
+    <a class="layui-btn layui-btn-xs" lay-event="editfield">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delfield">删除</a>
+</script>
+
+<script>
+
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+        var table = layui.table;
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var generateLayer_index = 0;
+        var generateLayer_field_index = 1;
+        var genratefieldLayer = 2;
+        var layType = true;//true 新增  false 编辑
+        var layFieldType = true;
+        var dataSourceId = 0;
+        var fieldId = 0;
+        var testReload2;
+       
+        //初始化下拉框加载
+        getConnectionName();
+        table.render({
+            elem: '#test'
+            , url: '/api/sysdatasource/SelectDataSourceInfo/'
+            , contentType: 'application/json'
+            , method: 'post'
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "status": res.isSuccess,
+                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.content.total, //解析数据长度
+                    "data": res.content.data //解析数据列表
+                };
+            }
+            , cols: [[
+                { type: 'checkbox', fixed: 'left', width: 40 }
+                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+                , { field: 'dataSourceCode', title: '数据源代码', sort: true }
+                , { field: 'dataSourceName', title: '数据源名称', sort: true }
+                , { field: 'dataSourceType', title: '数据源类型', sort: true }
+                , { field: 'dataSourceUse', title: '数据源用途', sort: true }
+                , { field: 'connectionName', title: '数据库连接名称', sort: true }
+                , { field: 'creationDate', title: '创建时间', width: 140, sort: true }
+            ]]
+            , id: 'testReload'
+            , page: true,
+            limits: [1, 2, 3, 4, 5],
+           
+            text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+        });
+         table.render({
+            elem: '#test2'
+            , url: '/api/sysdatasourcefield/SelectDataSourceFiled/'
+            , contentType: 'application/json'
+            , method: 'post',
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "status": res.isSuccess,
+                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.content.total, //解析数据长度
+                    "data": res.content.data //解析数据列表
+                };
+            }
+
+            , cols: [[
+
+                { type: 'checkbox', fixed: 'left', width: 40 }
+                , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+                , { field: 'fieldCode', title: '字段代码', sort: true }
+                , { field: 'fieldName', title: '字段名称', sort: true }
+                , { field: 'fieldTypeName', title: '字段类型', sort: true }
+                //, { field: 'datasourceName', title: '所属数据源', sort: true }
+                , { field: 'fieldNullable', title: '是否可为空', sort: true }
+                , { field: 'fieldLength', title: '字段长度', sort: true }
+                //, { field: 'oraSequenceCode', title: '序列号', sort: true }
+                , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
+            ]]
+            , id: 'testReloadField'
+            , page: true,
+            //limits: [1, 2, 3, 4, 5],
+            text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+        });
+        
+        //element.on('tab(tests)', function (data) {
+        //    if (data.index == 0) {
+        //        table.render({
+        //            elem: '#test'
+        //            , url: '/api/sysdatasource/SelectDataSourceInfo/'
+        //            , contentType: 'application/json'
+        //            , method: 'post'
+        //            , parseData: function (res) { //res 即为原始返回的数据
+        //                return {
+        //                    "status": res.isSuccess,
+        //                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+        //                    "msg": res.message, //解析提示文本
+        //                    "count": res.content.total, //解析数据长度
+        //                    "data": res.content.data //解析数据列表
+        //                };
+        //            }
+
+        //            , cols: [[
+
+        //                { type: 'checkbox', fixed: 'left', width: 40 }
+        //                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+        //                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+        //                , { field: 'dataSourceCode', title: '数据源代码', sort: true }
+        //                , { field: 'dataSourceName', title: '数据源名称', sort: true }
+        //                , { field: 'dataSourceType', title: '数据源类型', sort: true }
+        //                , { field: 'dataSourceUse', title: '数据源用途', sort: true }
+        //                , { field: 'connectionName', title: '数据库连接名称', sort: true }
+        //                , { field: 'creationDate', title: '创建时间', width: 140, sort: true }
+        //            ]]
+        //            , id: 'testReload'
+        //            , page: true,
+        //            limits: [1, 2, 3, 4, 5],
+        //            limit: 3,
+        //            text: {
+        //                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+        //            }
+        //        });
+        //    } else {
+
+        //    }
+
+        //});
+        element.on('tab(tabtest)', function (data) {
+            if (data.index == 0) {
+
+            } else {
+                let par = {
+                    dataSourceId: $('#datasource_Id').val(),
+                };
+                table.reload('testReloadField',{
+                    where: par,
+                    contentType: 'application/json',
+                    method: 'post'
+                });
+                getFieldInfo();
+               
+            }
+        })
+
+
+        table.on('checkbox(sysuser)', function (obj) {
+        });
+        //监听工具条
+        table.on('tool(sysuser)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                let confirm_title = "确认删除数据源" + data.dataSourceName + "的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios.delete('/api/sysdatasource/' + data.dataSourceId)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            obj.del();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
+            } else if (obj.event === 'edit') {
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                connectionId = data.connectionId;
+                dataSourceId = data.dataSourceId;
+                layType = false;
+                showLayer(data);
+            }
+        });
+
+        var $ = layui.$, active = {
+
+            getCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('testReload')
+                    , data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.msg("请选中数据再进行操作！");
+                    return;
+                }
+                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+
+                    let ids = [];
+                    let parms = "?";
+                    for (let i = 0; i < data.length; i++) {
+                        ids.push(data[i].dataSourceId);
+                        parms += "ids=" + data[i].dataSourceId + "&";
+                    }
+                    parms = parms.substring(0, parms.length - 1);
+                    //layer.alert(JSON.stringify(data));
+                    axios.delete("/api/sysdatasource/DeleteDatasourceField/" + parms)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            //移除
+                            let tabledata = table.cache.testReload;
+                            //for (let i = 0; i < tabledata.length; i++) {
+                            //    for (let j = 0; j < ids.length; j++) {
+                            //        if (tabledata[i].connectionId == ids[j]) {
+                            //            tabledata.splice(i, 1);
+                            //        }
+                            //    }
+                            //}
+                            //console.log(tabledata);
+                            tableReload(tabledata);
+
+
+                        })
+                        .catch(function (error) {
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+                });
+
+
+            },
+            search: function () {
+                let pars = {
+                    limit: 10,
+                    page: 1,
+                    Datasource_Code: $("#search_datasource_code").val(),
+                    Datasource_Name: $("#search_datasource_name").val(),
+                    Search_Datasource_Type: $("#search_datasource_type option:selected").val(),
+                    Search_Datasource_Use: $("#search_datasource_use option:selected").val(),
+                }
+                //执行重载
+                table.reload('testReload', {
+                    where: pars,
+                    contentType: 'application/json',
+                    method: 'post'
+                });
+            },
+            showGenerateLayer: function () {
+                layType = true;
+                showLayer();
+            },
+            closeGenerateLayer: function () {
+                layer.close(generateLayer_index);
+            },
+            addfield: function () {
+                showFieldLayers();
+
+            },
+            deltefield: function () {
+                delFieldLayers();
+            },
+            getFieldCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('testReload2')
+                    , data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.msg("请选中数据再进行操作！");
+                    return;
+                }
+                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+
+                    let ids = [];
+                    let parms = "?";
+                    for (let i = 0; i < data.length; i++) {
+                        ids.push(data[i].fieldId);
+                        parms += "ids=" + data[i].fieldId + "&";
+                    }
+                    parms = parms.substring(0, parms.length - 1);
+                    //layer.alert(JSON.stringify(data));
+                    axios.delete("/api/sysdatasourcefield/DeleteDatasourceField/" + parms)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            //移除
+                            let tabledata = table.cache.tablefieldReload;
+                            //for (let i = 0; i < tabledata.length; i++) {
+                            //    for (let j = 0; j < ids.length; j++) {
+                            //        if (tabledata[i].connectionId == ids[j]) {
+                            //            tabledata.splice(i, 1);
+                            //        }
+                            //    }
+                            //}
+                            //console.log(tabledata);
+                            tablefieldReload(tabledata);
+
+
+                        })
+                        .catch(function (error) {
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+                });
+
+
+            },
+            searchfield: function () {
+                let pars = {
+                    limit: 10,
+                    page: 1,
+                    Field_Code: $("#search_field_code").val(),
+                    Field_Name: $("#search_field_name").val(),
+                    Field_Type: $("#search_field_type option:selected").val(),
+                }
+                //执行重载
+                table.reload('testReload2', {
+                    where: pars,
+                    contentType: 'application/json',
+                    method: 'post'
+                });
+            },
+            showGenerateFieldLayer: function () {
+                layFieldType = true;
+                showFieldLayer();
+            },
+            closeGenerateFieldLayer: function () {
+                console.log(generateLayer_field_index);
+                layer.close(generateLayer_field_index);
+            },
+        };
+        form.on('submit(submit)', function () {
+            let model = {
+                datasourceCode: $('#datasource_code').val(),
+                datasourceName: $('#datasource_name').val(),
+                datasourceType: $("#datasource_type").val(),
+                datasourceUse: $("#datasource_use").val(),
+                connectionId: $('#databaseconnection_name').val(),
+            };
+
+            let url = "/api/sysdatasource";
+            let method = "POST";
+            if (layType != true) {
+                url = "/api/sysdatasource/" + dataSourceId;
+                method = "PUT";
+            }
+            axios({ url: url, method: method, data: model })
+                .then(function (response) {
+                    layer.msg(response.data.message);
+                    if (!response.data.isSuccess) {
+                        return;
+                    }
+                    let datatable = table.cache.testReload;
+                    if (layType != true) {
+                        //修改
+                        for (let i = 0; i < datatable.length; i++) {
+                            if (datatable[i].dataSourceId == response.data.content.dataSourceId) {
+                                datatable.splice(i, 1, response.data.content);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        //新增
+                        console.log(response.content);
+                        datatable.unshift(response.content)
+
+                    }
+                    tableReload(datatable)
+                    layer.close(generateLayer_index);
+                })
+                .catch(function (error) {
+
+                    layer.msg("发生了预料之外的错误!");
+                    console.log(error);
+                });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        }),
+            $('.layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        function showLayer(data) {
+            initFormValue(data);
+            // divdatabasetypename divseldatabasetypename divdatabasetypecode
+            let title = "新增连接信息";
+            //$('#database_type_code').remove();
+            //$('#database_type_name').remove();
+            //document.getElementById("seldatabasetypename").style.display = '';
+            document.getElementById("generate_btn").innerHTML = "立即创建";
+            if (layType != true) {
+                title = "编辑字段信息";
+                //$('#database_type_code').attr("lay-verify", "required");
+                //$('#database_type_name').attr("lay-verify", "required");
+                //document.getElementById("seldatabasetypename").style.display = 'none';
+                document.getElementById("generate_btn").innerHTML = "立即修改";
+            }
+            generateLayer_index = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: false
+                , fixed: false
+                , area: ['800px', '600px']
+                , shade: 0.8
+                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 0 //拖拽模式，0或者1
+                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , offset: ['10%', '3%']
+            });
+        };
+        function showFieldLayer(data) {
+           // initFieldFormValue(data);
+            // divdatabasetypename divseldatabasetypename divdatabasetypecode
+            let title = "新增字段信息";
+            //$('#database_type_code').remove();
+            //$('#database_type_name').remove();
+            //document.getElementById("seldatabasetypename").style.display = '';
+            document.getElementById("generatefield_btn").innerHTML = "立即创建";
+            if (layFieldType != true) {
+                title = "编辑数据源信息";
+                //$('#database_type_code').attr("lay-verify", "required");
+                //$('#database_type_name').attr("lay-verify", "required");
+                //document.getElementById("seldatabasetypename").style.display = 'none';
+                document.getElementById("generatefield_btn").innerHTML = "立即修改";
+            }
+            generateLayer_field_index = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: true
+                , fixed: false
+                , area: ['800px', '600px']
+                , shade: 0.8
+                , id: 'LAY_layuiprofield' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 0 //拖拽模式，0或者1
+                , content: $('#generatefield_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , offset: ['10%', '3%']
+            });
+        }
+
+        function initFormValue(data) {
+            if (data == undefined) {
+                $("#datasource_type").val("")
+                $("#datasource_use").val("")
+                $("#databaseconnection_name").val("")
+                form.val("generate-form", {
+                    datasource_code: "",
+                    datasource_name: "",
+                })
+                return;
+            }
+            else {
+                $("#datasource_Id").val(data.dataSourceId)
+                $("#datasource_type").val(data.dataSourceType)
+                $("#datasource_use").val(data.dataSourceUse)
+                $("#databaseconnection_name").val(data.connectionId)
+                form.val("generate-form", {
+                    datasource_code: data.dataSourceCode,
+                    datasource_name: data.dataSourceName,
+                })
+            }
+        }
+        function initFieldFormValue(data) {
+            console.log("123132")
+            if (data == undefined) {
+                $('#datasource_ids').val("");
+                $('#field_type_id').val("");
+                $('#field_nullable').val("");
+                $('#field_key_flag').val("");
+                $('#dim_flag').val("");
+                $('#timestamp_flag').val("");
+                form.val("generatefield-form", {
+                    field_code: "",
+                    field_name: "",
+                    field_length: "",
+                    field_nullable: "",
+                    field_value: "",
+                    dim_table_name: "",
+                    dim_field_code: "",
+                    dim_field_name: "",
+                    ora_sequence_code: "",
+                })
+                return;
+            }
+            else {
+
+                $("#datasource_ids").val(data.datasourceId);
+                $("#field_type_id").val(data.fieldTypeId);
+                $("#field_nullable").val(data.fieldNullable);
+                $('#field_key_flag').val(data.fieldKeyFlag);
+                $('#dim_flag').val(data.dimFlag);
+                $('#timestamp_flag').val(data.timestampFlag);
+                form.val("generatefield-form", {
+                    field_code: data.fieldCode,
+                    field_name: data.fieldName,
+                    field_length: data.fieldLength,
+                    field_nullable: data.fieldNullable,
+                    field_value: data.fieldValue,
+                    dim_table_name: data.dimTableName,
+                    dim_field_code: data.dimFieldCode,
+                    dim_field_name: data.dimFieldName,
+                    ora_sequence_code: data.oraSequenceCode,
+                })
+            }
+        }
+        function showFieldLayers() {
+           
+            genratefieldLayer= layer.open({
+                type: 1
+                , title: "新增字段信息"
+                , closeBtn: true
+                , fixed: false
+                , area: ['800px', '600px']
+                , shade: 0.8
+                , id: 'loadField' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 0 //拖拽模式，0或者1
+                , content: '<div class="divtestTable"><table id="testTable"></table></div>'//这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , offset: ['10%', '3%'],
+                success: function (index,layero) {
+                    table.render({
+                        elem: '#testTable'
+                        , url: '/api/sysdatasourcefield/SelectNotDataSouceField/'
+                        , contentType: 'application/json'
+                        , method: 'post',
+                        where: { dataSourceId: $('#datasource_Id').val()},
+                        parseData: function (res) { //res 即为原始返回的数据
+                            return {
+                                "status": res.isSuccess,
+                                "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                                "msg": res.message, //解析提示文本
+                                "count": res.content.total, //解析数据长度
+                                "data": res.content.data //解析数据列表
+                            };
+                        }
+                        , cols: [[
+                            { type: 'checkbox', fixed: 'left', width: 40 }
+                            , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+                            //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+                            , { field: 'fieldCode', title: '字段代码', sort: true }
+                            , { field: 'fieldName', title: '字段名称', sort: true }
+                            , { field: 'fieldTypeName', title: '字段类型', sort: true }
+                            //, { field: 'datasourceName', title: '所属数据源', sort: true }
+                            , { field: 'fieldNullable', title: '是否可为空', sort: true }
+                            , { field: 'fieldLength', title: '字段长度', sort: true }
+                            //, { field: 'oraSequenceCode', title: '序列号', sort: true }
+                            , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
+                        ]]
+                        , id: 'testReloadNotExistsField'
+                        , page: true,
+                        //limits: [1, 2, 3, 4, 5],
+                        text: {
+                            none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+                        }
+                    })
+                    var str = "<div style='margin-left:600px' class='fieldevent'><a class='layui-btn layui-btn-xs' id='addfields'   lay-event='addfields' data-type='addfields' > 添加字段</a ><a class='layui-btn layui-btn-danger layui-btn-xs' id='closefield1' lay-event='closefield1'>关闭</a></div >"
+                    $('#testTable').append(str)
+                },
+            });
+           
+        }
+        function delFieldLayers() {
+            var checkStatus = table.checkStatus('testReloadField')
+                , data = checkStatus.data;
+            if (data.length == 0) {
+                layer.msg("请选中数据再进行删除！");
+                return;
+            } 
+            layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                layer.close(index);
+
+                let ids = [];
+                let parms = "?";
+                for (let i = 0; i < data.length; i++) {
+                    ids.push(data[i].dataSourceId);
+                    parms += "ids=" + data[i].dataSourceId + "&";
+                }
+                parms = parms.substring(0, parms.length - 1);
+                //layer.alert(JSON.stringify(data));
+                axios.delete("/api/sysdatasource/DeleteDatasourceField/" + parms)
+                    .then(function (response) {
+                        layer.msg(response.data.message);
+                        if (!response.data.isSuccess) {
+                            return;
+                        }
+
+                        //移除
+                        let tabledata = table.cache.testReload;
+                        //for (let i = 0; i < tabledata.length; i++) {
+                        //    for (let j = 0; j < ids.length; j++) {
+                        //        if (tabledata[i].connectionId == ids[j]) {
+                        //            tabledata.splice(i, 1);
+                        //        }
+                        //    }
+                        //}
+                        //console.log(tabledata);
+                        tableReload(tabledata);
+
+
+                    })
+                    .catch(function (error) {
+                        layer.msg("发生了预料之外的错误!");
+                        console.log(error);
+                    });
+            });
+
+        }
+        //添加多个字段
+        $('body').on('click','#addfields', function () {
+            var checkStatus = table.checkStatus('testReloadNotExistsField')
+                , data = checkStatus.data;
+            var arr = [];
+            if (data.length == 0) {
+                layer.msg("请选中数据再进行操作！");
+                return;
+            } else {
+                layer.confirm("确定添加" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+                    for (let i = 0; i < data.length; i++) {
+                        var obj = new Object();
+                        obj.DatasourceId = $('#datasource_Id').val();
+                        obj.FieldId = data[i].fieldId;
+                        obj.FieldCode = data[i].fieldCode;
+                        obj.FieldName = data[i].fieldName;
+                        obj.FieldLength = data[i].fieldLength;
+                        obj.FieldTypeId = data[i].fieldTypeId;
+                        obj.FieldNullable = data[i].fieldNullable == "是" ? 1 : 0;
+                        obj.FieldKeyFlag = data[i].fieldKeyFlag;
+                        obj.FieldIndexFlag = data[i].fieldIndexFlag =="是" ? 1 : 0;
+                        obj.FieldValue = data[i].fieldValue;
+                        obj.DimFlag = data[i].dimFlag == "是" ? 1 : 0;
+                        obj.TimestampFlag = data[i].timestampFlag== "是" ? 1 : 0;
+                        obj.DimTableName = data[i].dimTableName;
+                        obj.DimFieldCode = data[i].dimFieldCode;
+                        obj.DimFieldName = data[i].dimFieldName;
+                        obj.OraSequenceCode = data[i].oraSequenceCode;
+                        arr.push(obj);
+                    }
+                    console.log(JSON.stringify(arr));
+                    //$.ajax({
+                    //    url: "/api/SysDataSourceField/AddDataSourceField",
+                    //    method: "POST",
+                    //    data: { obj: JSON.stringify(model) },
+                    //    success: function () { alert("成功"); },
+                    //    error: function (msg) {alert("111") }
+                    //})
+
+                    axios({ url: "/api/SysDataSourceField/AddDataSourceField", method: "POST", data:  arr    })
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+
+                            layer.close(genratefieldLayer);
+                            table.reload('testReloadNotExistsField', {
+                                contentType: 'application/json',
+                                method: 'post'
+                            });
+                        })
+                        .catch(function (error) {
+
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+
+                });
+            }
+        })
+       //关闭事件
+        $('body').on('click','#closefield1', function () {
+          layer.close(genratefieldLayer)
+        })
+        //监听工具条
+        table.on('tool(sysuser2)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'delfield') {
+                let confirm_title = "确认删除数据源字段" + data.fieldName + "的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios.delete('/api/sysdatasourcefield/' + data.fieldId)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            obj.del();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
+            } else if (obj.event === 'editfield') {
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                fieldId = data.fieldId;
+                layFieldType = false;
+                showFieldLayer(data);
+            }
+        });
+
+        form.on('submit(submitfield)', function () {
+            let model = {
+                datasourceId: $('#datasource_ids'),
+                fieldCode: $('#field_code').val(),
+                fieldName: $('#field_name').val(),
+                fieldTypeId: $('#field_type_id option:selected').val(),
+                fieldLength: $('#field_length').val(),
+                fieldnullable: $('#field_nullable').val(),
+                fieldkeyflag: $('#field_key_flag option:selected').val(),
+                fieldvalue: $('#field_value').val(),
+                dimflag: $('#dim_flag option:selected').val(),
+                timestampflag: $('#timestamp_flag option:selected').val(),
+                dimtablename: $('#dim_table_name').val(),
+                dimfieldcode: $('#dim_field_code').val(),
+                dimfieldname: $('#dim_field_name').val(),
+                orasequencecode: $('#ora_sequence_code').val(),
+            };
+
+            let url = "/api/sysdatasourcefield";
+            let method = "POST";
+            if (layFieldType != true) {
+                url = "/api/sysdatasourcefield/" + fieldId;
+                method = "PUT";
+            }
+            axios({ url: url, method: method, data: model })
+                .then(function (response) {
+                    layer.msg(response.data.message);
+                    if (!response.data.isSuccess) {
+                        return;
+                    }
+                    let datatable = table.cache.tablefieldReload;
+                    if (layFieldType != true) {
+                        //修改
+                        for (let i = 0; i < datatable.length; i++) {
+                            if (datatable[i].fieldId == response.data.content.fieldId) {
+                                datatable.splice(i, 1, response.data.content);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        //新增
+                        console.log(response.content);
+                        datatable.unshift(response.content)
+
+                    }
+                    tablefieldReload(datatable)
+                    layer.close(generateLayer_field_index);
+                })
+                .catch(function (error) {
+
+                    layer.msg("发生了预料之外的错误!");
+                    console.log(error);
+                });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        }),
+            
+        
+           
+
+        function tablefieldReload(datatable) {
+            table.reload("testReload2", {
+                data: datatable
+            })
+            }
+        function tableReload(datatable) {
+            table.reload("testReload", {
+                data: datatable
+            })
+        }
+        function tableNotfieldReload(datatable) {
+            table.reload("testReloadNotExistsField", {
+                data: datatable
+            })
+        }
+    });
+    //获取数据库连接列表
+    function getConnectionName() {
+        axios.get('/api/sysdatasource/SelectConnection')
+            .then(function (response) {
+                var len = response.data.content.length;
+                var text = '<option value="">请选择</option>';
+                for (var i = 0; i < len; i++) {
+
+                    text += '<option value="' + response.data.content[i].connectionId + '">' + response.data.content[i].connectionName + '</option>'
+                }
+                $('#databaseconnection_name').append(text);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    //获取字段信息
+    function getFieldInfo() {
+        
+        axios.get('/api/sysdatasourcefield/SelectFieldInfo')
+            .then(function (response) {
+                var len = response.data.content.length;
+                var text = '<option value="">请选择</option>';
+                for (var i = 0; i < len; i++) {
+
+                    text += '<option value="' + response.data.content[i].fieldTypeId + '">' + response.data.content[i].fieldTypeName + '</option>'
+                }
+                $('#field_type').append(text);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+   
+</script>
+

@@ -11,9 +11,9 @@ namespace JiaHang.Projects.Admin.BLL.Relation
 {
     public class SysModuleRouteRelationBLL
     {
-        private readonly DataContext _context;
+        private readonly DAL.EntityFramework.DataContext _context;
 
-        public SysModuleRouteRelationBLL(DataContext dataContext)
+        public SysModuleRouteRelationBLL(DAL.EntityFramework.DataContext dataContext)
         {
             _context = dataContext;
         }
@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
         public async Task<FuncResult<List<ModuleRouteRelationResponseModel>>> Select()
         {
             var query = from a in _context.SysModule
-                        join b in _context.SysModuleRouteRelation
+                        join b in _context.SysModuleRoute
                         on a.Id equals b.ModuleId
                         into b_temp
                         from b_ifnull in b_temp.DefaultIfEmpty()
@@ -121,7 +121,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
 
 
             //一个controller 只能被一个模块绑定  一个模块可以绑定多个controller
-            if (_context.SysModuleRouteRelation.Count(q => data.Where(e => string.IsNullOrWhiteSpace(e.Id)).Select(c => c.ControllerId).Contains(q.ControllerRouteId)) > 0) {
+            if (_context.SysModuleRoute.Count(q => data.Where(e => string.IsNullOrWhiteSpace(e.Id)).Select(c => c.ControllerId).Contains(q.ControllerRouteId)) > 0) {
                 return new FuncResult() { IsSuccess = false, Message = "一个Controller只能绑定至一个模块上" };
             }
             //var list = _context.SysModuleRouteRelation.Where(e => data.Select(m => m.ModuleId).Contains(e.ModuleId)).ToList();
@@ -160,7 +160,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
             {
                 foreach (var add in adds)
                 {
-                    var add_entity = new SysModuleRouteRelation()
+                    var add_entity = new SysModuleRoute()
                     {
                         Id = Guid.NewGuid().ToString("N"),
                         ModuleId = add.ModuleId,
@@ -171,13 +171,13 @@ namespace JiaHang.Projects.Admin.BLL.Relation
                         LastUpdatedBy = currentUserId,
                         LastUpdateDate = DateTime.Now
                     };
-                    _context.SysModuleRouteRelation.Add(add_entity);
+                    _context.SysModuleRoute.Add(add_entity);
                 }
 
                 //更新
                 foreach (var modify in modifys)
                 {
-                    var modify_enity = _context.SysModuleRouteRelation.Find(modify.Id);
+                    var modify_enity = _context.SysModuleRoute.Find(modify.Id);
 
                     modify_enity.ModuleId = modify.ModuleId;
                     modify.ControllerId = modify.ControllerId;
@@ -185,7 +185,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
 
                     modify_enity.LastUpdatedBy = currentUserId;
                     modify_enity.LastUpdateDate = DateTime.Now;
-                    _context.SysModuleRouteRelation.Update(modify_enity);
+                    _context.SysModuleRoute.Update(modify_enity);
                 }
             });
 
@@ -212,7 +212,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
         public FuncResult NotBindRoute()
         {
             var controllers_raw = from a in _context.SysControllerRoute
-                              where string.IsNullOrWhiteSpace(a.AreaId) && !_context.SysModuleRouteRelation.Select(c=>c.ControllerRouteId).Contains(a.SysControllerRouteId)
+                              where string.IsNullOrWhiteSpace(a.AreaId) && !_context.SysModuleRoute.Select(c=>c.ControllerRouteId).Contains(a.SysControllerRouteId)
                               join b in _context.SysMethodRoute
                               on a.SysControllerRouteId equals b.ControllerId
                               into b_temp
@@ -252,7 +252,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
 
 
         public async Task<FuncResult> Delete(string id, string currentUserId) {
-            var entity = await _context.SysModuleRouteRelation.FindAsync(id);
+            var entity = await _context.SysModuleRoute.FindAsync(id);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "删除模块与Route绑定记录时，未能根据关联id找到对应的关联记录" };
@@ -261,7 +261,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
             entity.DeleteTime = DateTime.Now;
             entity.DeleteBy = currentUserId;
 
-            _context.SysModuleRouteRelation.Update(entity);
+            _context.SysModuleRoute.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "删除成功" };
 

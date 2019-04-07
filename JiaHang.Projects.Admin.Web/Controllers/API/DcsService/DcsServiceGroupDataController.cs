@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using JiaHang.Projects.Admin.BLL.DcsServiceGroupBLL;
+using JiaHang.Projects.Admin.BLL.DcsService;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.Model;
 using JiaHang.Projects.Admin.Model.DcsServiceGroup.RequestModel;
@@ -36,6 +36,21 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
                 model.page = 0;
 
             return DcsserviceBll.Select(model);
+        }
+
+        /// <summary>
+        /// 查询目录分类下的接口基本信息(仅需要service_group_id)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SearchRelateServiceInfo")]
+        [HttpPost]
+        public FuncResult SelectRelateServiceInfo([FromBody] SearchDesServiceGroup model)
+        {
+            model.page--; if (model.page < 0)
+                model.page = 0;
+
+            return DcsserviceBll.SelectRelateServiceInfo(model);
         }
 
         /// <summary>
@@ -88,6 +103,23 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
             FuncResult data = await DcsserviceBll.Update(id, model, HttpContext.CurrentUser(cache).Id);
             return data;
         }
+
+        /// <summary>
+        /// 获取目录分类
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GetServiceGroup")]
+        [HttpPost]
+        public dynamic GetServiceGroup()
+        {
+            return DcsserviceBll.GetServiceGroup();
+        }
+
+
+
+
+        //=================================================================================
 
         [HttpGet]
         [Route("Export")]

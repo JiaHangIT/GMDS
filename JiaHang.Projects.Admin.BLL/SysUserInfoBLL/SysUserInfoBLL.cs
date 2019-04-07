@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
 {
     public class SysUserInfoBLL
     {
-        private readonly DataContext _context;
-        public SysUserInfoBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysUserInfoBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -57,7 +57,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 CreationDate = e.CreationDate.ToString("yyyy-MM-dd")
             });
 
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
 
         /// <summary>
@@ -84,8 +84,6 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             {
                 return new FuncResult() { IsSuccess = false, Message = "用户ID错误!" };
             }
-
-
             entity.UserName = model.UserName;
             entity.UserPassword = model.UserPassword;
             entity.UserOrgId = model.UserOrgId;
@@ -97,7 +95,6 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             entity.UserIsLock = model.UserIsLock;
             entity.EffStartDate = model.EffStartDate;
             entity.EffEndDate = model.EffEndDate;
-
             entity.LastUpdatedBy = currentUserId;
             entity.LastUpdateDate = DateTime.Now;
 
@@ -155,6 +152,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
         {
             SysUserInfo entity = new SysUserInfo
             {
+                UserId=Guid.NewGuid().ToString(),
                 UserAccount = model.UserAccount,
                 UserName = model.UserName,
                 UserPassword = model.UserPassword,

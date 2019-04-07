@@ -14,5 +14,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public int? AccessExeTime { get; set; }
         public int? ReturnDataNum { get; set; }
         public DateTime? CreationDate { get; set; }
+        public int DeleteFlag { get; set; }
     }
 }

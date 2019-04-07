@@ -12,8 +12,8 @@ namespace JiaHang.Projects.Admin.BLL
 {
     public class DataConditionBLL
     {
-        private readonly DataContext _context;
-        public DataConditionBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public DataConditionBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -378,7 +378,7 @@ namespace JiaHang.Projects.Admin.BLL
                         into b_temp
                         from b_ifnull in b_temp.DefaultIfEmpty()
 
-                        join c in _context.SysModuleRouteRelation on b_ifnull.ModuleId equals c.ModuleId
+                        join c in _context.SysModuleRoute on b_ifnull.ModuleId equals c.ModuleId
 
                         into c_temp
                         from c_ifnull in c_temp.DefaultIfEmpty()
@@ -421,7 +421,7 @@ namespace JiaHang.Projects.Admin.BLL
                          into b_temp
                          from b_ifnull in b_temp.DefaultIfEmpty()
 
-                         join c in _context.SysModuleRouteRelation on b_ifnull.ModuleId equals c.ModuleId
+                         join c in _context.SysModuleRoute on b_ifnull.ModuleId equals c.ModuleId
 
                          into c_temp
                          from c_ifnull in c_temp.DefaultIfEmpty()

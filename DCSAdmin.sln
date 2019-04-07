@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiaHang.Projects.Admin.Web", "JiaHang.Projects.Admin.Web\JiaHang.Projects.Admin.Web.csproj", "{C03F8224-AC2B-4941-BB1A-E48F35DB1ED8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiaHang.Projects.Admin.Web", "JiaHang.Projects.Admin.Web\JiaHang.Projects.Admin.Web.csproj", "{C03F8224-AC2B-4941-BB1A-E48F35DB1ED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiaHang.Projects.Admin.BLL", "JiaHang.Projects.Admin.BLL\JiaHang.Projects.Admin.BLL.csproj", "{DF78D238-63AD-4173-832D-BA33311F957F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiaHang.Projects.Admin.BLL", "JiaHang.Projects.Admin.BLL\JiaHang.Projects.Admin.BLL.csproj", "{DF78D238-63AD-4173-832D-BA33311F957F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiaHang.Projects.Admin.DAL", "JiaHang.Projects.Admin.DAL\JiaHang.Projects.Admin.DAL.csproj", "{ABE1244D-146F-49ED-B49F-F9E7D88AC68D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiaHang.Projects.Admin.DAL", "JiaHang.Projects.Admin.DAL\JiaHang.Projects.Admin.DAL.csproj", "{ABE1244D-146F-49ED-B49F-F9E7D88AC68D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiaHang.Projects.Admin.Model", "JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj", "{AEC956C2-5578-4947-8F5D-BA0D216059BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiaHang.Projects.Admin.Model", "JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj", "{AEC956C2-5578-4947-8F5D-BA0D216059BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiaHang.Projects.Admin.Common", "JiaHang.Projects.Admin.Common\JiaHang.Projects.Admin.Common.csproj", "{2CB2FC87-4434-4341-B4C2-4A661B2FF987}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiaHang.Projects.Admin.Common", "JiaHang.Projects.Admin.Common\JiaHang.Projects.Admin.Common.csproj", "{2CB2FC87-4434-4341-B4C2-4A661B2FF987}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

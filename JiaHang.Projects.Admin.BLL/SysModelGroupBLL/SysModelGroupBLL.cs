@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
 {
     public class SysModelGroupBLL
     {
-        private readonly DataContext _context;
-        public SysModelGroupBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysModelGroupBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -137,6 +137,7 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
         {
             var entity = new SysModelGroup()
             {
+                ModelGroupId=Guid.NewGuid().ToString("N"),
                 ModelGroupCode = model.ModelGroupCode,
                 ModelGroupName = model.ModelGroupName,
                 ParentId = model.ParentId,

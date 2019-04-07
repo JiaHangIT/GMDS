@@ -12,7 +12,7 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         public int page { get; set; }
 
         /// <summary>
-        /// 分布大小
+        /// 分页大小
         /// </summary>
         public int limit { get; set; }
 

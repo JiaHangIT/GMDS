@@ -81,7 +81,6 @@
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-
             <div class="layui-inline">
                 <label class="layui-form-label">登录帐号</label>
                 <div class="layui-input-block">
@@ -271,7 +270,7 @@
                 let confirm_title = "确认删除账号" + data.user_Account + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/SysUserInfoData/' + data.user_Id)
+                    axios.delete('/api/sysuserinfodata/' + data.user_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -417,7 +416,7 @@
                 })
                 .catch(function (error) {
 
-                    layer.msg("发生了预料之外的错误!");
+                    layer.msg("发生了预料之外的错误 !");
                     console.log(error);
                 });
 

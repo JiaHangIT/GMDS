@@ -12,8 +12,8 @@ namespace JiaHang.Projects.Admin.BLL
 {
     public class SysRouteBLL
     {
-        private readonly DataContext _context;
-        public SysRouteBLL(DataContext dataContext)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysRouteBLL(DAL.EntityFramework.DataContext dataContext)
         {
             _context = dataContext;
         }
