@@ -1,7 +1,7 @@
 ﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.SysHelpType.RequestModel;
+using JiaHang.Projects.Admin.Model.SysProblemInfo.RequestModel;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -9,13 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
+namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
 {
-    public class SysHelpTypeBLL
+    public class SysProblemInfoBLL
     {
         private readonly DAL.EntityFramework.DataContext _context;
-        public SysHelpTypeBLL(DAL.EntityFramework.DataContext context)
+        public SysProblemInfoBLL(DAL.EntityFramework.DataContext context)
         {
+
             _context = context;
         }
         /// <summary>
@@ -23,25 +24,34 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(SearchSysHelpTypeModel model)
+        public FuncResult Select(SearchSysProblemInfo model)
         {
-            IOrderedQueryable<SysHelpType> query = _context.SysHelpType.
-                Where(a =>
-                (
-                (string.IsNullOrWhiteSpace(model.Help_Type_Name) || a.HelpTypeName.Contains(model.Help_Type_Name))
-                )
-                ).OrderByDescending(e => e.CreationDate);
+            IOrderedQueryable<SysProblemInfo> query = _context.SysProblemInfo.
+                 Where(a =>
+                 (
+                 (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+                 && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+                 && (model.Audit_Flag == null || a.AuditFlag == model.Audit_Flag)
+                 )
+                 ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
-
-                Help_Type_Id = e.HelpTypeId,
-                Help_Type_Name = e.HelpTypeName,
-                Creation_Date=e.CreationDate
+                Problem_Id = e.ProblemId,
+                Problem_Type_Id = e.ProblemTypeId,
+                Problem_Title = e.ProblemTitle,
+                Audit_Flag = e.AuditFlag,
+                Audited_Date = e.AuditedDate,
+                Audited_By = e.AuditedBy
+                //e.HelpId,
                 //e.HelpTypeId,
-                //e.HelpTypeName
+                //e.HelpTitle,
+                //e.ImportantFlag,
+                //e.AuditFlag,
+                //e.AuditedDate,
+                //e.AuditedBy
             });
-           return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
         /// 查询一条
@@ -50,7 +60,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <returns></returns>
         public async Task<FuncResult> Select(string id)
         {
-            SysHelpType entity = await _context.SysHelpType.FindAsync(id);
+            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(id);
 
             return new FuncResult() { IsSuccess = true, Content = entity };
         }
@@ -61,19 +71,23 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <param name="model"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Update(string id, SysHelpTypeModel model, string currentUserId)
+        public async Task<FuncResult> Update(string id, SysProblemInfoModel model, string currentUserId)
         {
-            SysHelpType entity = await _context.SysHelpType.FindAsync(id);
+            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "帮助类型ID错误!" };
+                return new FuncResult() { IsSuccess = false, Message = "公告ID错误!" };
             }
-           
-            entity.HelpTypeName = model.HelpTypeName;
-            entity.LastUpdateDate = DateTime.Now;
+            entity.ProblemTypeId = model.ProblemTypeId;
+            entity.ProblemTitle = model.ProblemTitle;
+            entity.ProblemContent = model.ProblemContent;
+            entity.AuditFlag = model.AuditFlag;
+            //entity.AuditedDate = model.AuditedDate;
+            //entity.AuditedBy = model.AuditedBy;
             entity.LastUpdatedBy = currentUserId;
+            entity.LastUpdateDate = DateTime.Now;
 
-            _context.SysHelpType.Update(entity);
+            _context.SysProblemInfo.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
         }
@@ -85,34 +99,33 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <returns></returns>
         public async Task<FuncResult> Delete(string id, string currentUserId)
         {
-            SysHelpType entity = await _context.SysHelpType.FindAsync(id);
+            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "帮助类型ID不存在!" };
+                return new FuncResult() { IsSuccess = false, Message = "公告ID不存在!" };
             }
             entity.DeleteFlag = 1;
             //entity.DeleteFlag = true;
-
             entity.DeleteBy = currentUserId;
             entity.DeleteDate = DateTime.Now;
-            _context.SysHelpType.Update(entity);
+            _context.SysProblemInfo.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "删除成功" };
         }
         public async Task<FuncResult> Delete(string[] ids, string currentUserId)
         {
-            IQueryable<SysHelpType> entitys = _context.SysHelpType.Where(e => ids.Contains(e.HelpTypeId));
+            IQueryable<SysProblemInfo> entitys = _context.SysProblemInfo.Where(e => ids.Contains(e.ProblemId));
             if (entitys.Count() != ids.Length)
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-            foreach (SysHelpType obj in entitys)
+            foreach (SysProblemInfo obj in entitys)
             {
                 obj.DeleteBy = currentUserId;
-                //obj.DeleteFlag = true;
                 obj.DeleteFlag = 1;
+                //obj.DeleteFlag = true;
                 obj.DeleteDate = DateTime.Now;
-                _context.SysHelpType.Update(obj);
+                _context.SysProblemInfo.Update(obj);
             }
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
             {
@@ -129,6 +142,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
                 }
             }
             return new FuncResult() { IsSuccess = true, Message = $"已成功删除{ids.Length}条记录" };
+
         }
         /// <summary>
         /// 新增
@@ -136,20 +150,24 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <param name="model"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Add(SysHelpTypeModel model, string currentUserId)
+        public async Task<FuncResult> Add(SysProblemInfoModel model, string currentUserId)
         {
-            SysHelpType entity = new SysHelpType
+            SysProblemInfo entity = new SysProblemInfo
             {
-                HelpTypeId = Guid.NewGuid().ToString(),
-                HelpTypeName = model.HelpTypeName,
-                
+                ProblemId = Guid.NewGuid().ToString(),
+                ProblemTypeId = model.ProblemTypeId,
+                ProblemTitle = model.ProblemTitle,
+                ProblemContent = model.ProblemContent,
+                AuditFlag = model.AuditFlag,
+
+
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
                 CreationDate = DateTime.Now,
-                CreatedBy = currentUserId,
-                DeleteBy="00000000000000000000000000000000"
+                CreatedBy = currentUserId
+
             };
-            await _context.SysHelpType.AddAsync(entity);
+            await _context.SysProblemInfo.AddAsync(entity);
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
             {
                 try
@@ -163,13 +181,39 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
                     return new FuncResult() { IsSuccess = false, Content = ex.Message };
                 }
             }
+
+
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
-        //public async Task<byte[]> GetUserListBytes()
+
+        //public FuncResult<SysUserInfo> CheckUserLDAP(string userAccount)
         //{
-        //    var comlumHeadrs = new[] { "帮助类型ID", "帮助类型名称" };
+        //    var result = new FuncResult<SysUserInfo>() { IsSuccess = false, Message = "不是LDAP" };
+
+        //    var entity = _context.SysHelpInfo.FirstOrDefault(e => e.User_Account == userAccount);
+        //    if (entity != null && entity.User_Is_Ldap == true)
+        //    {
+        //        result.Content = entity;
+        //        result.Message = "是LDAP";
+        //        result.IsSuccess = true;
+        //    }
+        //    else if (entity == null)
+        //    {
+        //        result.Content = null;
+        //        result.Message = "不存在该用户";
+        //        result.IsSuccess = false;
+        //    }
+        //    return result;
+        //}
+
+
+        //public async Task<byte[]> GetUserListBytes()
+
+        //{
+
+        //    var comlumHeadrs = new[] { "帮助ID", "帮助类型ID", "公告标题", "是否重要标志", "是否审核标志", "审核时间", "审核人"};
         //    byte[] result;
-        //    var data = _context.SysHelpType.ToList();
+        //    var data = _context.SysHelpInfo.ToList();
         //    var package = new ExcelPackage();
         //    var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
         //                                                               //First add the headers
@@ -186,15 +230,28 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         //        {
         //            var rt = obj.GetType();
         //            var rp = rt.GetProperties();
-        //            worksheet.Cells["A" + j].Value = obj.HelpTypeId;
-        //            worksheet.Cells["B" + j].Value = obj.HelpTypeName;
+
+        //            worksheet.Cells["A" + j].Value = obj.HelpId;
+        //            worksheet.Cells["B" + j].Value = obj.HelpTypeId;
+        //            worksheet.Cells["C" + j].Value = obj.HelpTitle;
+        //            worksheet.Cells["D" + j].Value = obj.ImportantFlag;
+        //            worksheet.Cells["E" + j].Value = obj.AuditFlag;
+        //            worksheet.Cells["F" + j].Value = obj.AuditedDate;
+        //            worksheet.Cells["G" + j].Value = obj.AuditedBy;
+
         //            j++;
         //        }
         //    });
+
         //    result = package.GetAsByteArray();
+
+
+
         //    return result;
         //}
 
-
     }
+
 }
+
+
