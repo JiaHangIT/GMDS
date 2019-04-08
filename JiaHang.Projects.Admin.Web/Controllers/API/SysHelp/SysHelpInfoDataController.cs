@@ -97,7 +97,21 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelp
             return await HelpInfoService.Delete(ids, HttpContext.CurrentUser(cache).Id);
 
         }
-
+        /// <summary>
+        /// 审核
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// 
+        [Route("UpdateExamine")]
+        [HttpPost]
+        public async Task<FuncResult> UpdateExamine([FromBody]SysHelpInfoModel model)
+        {
+            string MessageId = model.HelpTypeId;
+            FuncResult data = await HelpInfoService.UpdateExamine(MessageId, HttpContext.CurrentUser(cache).UserName);
+            return data;
+        }
         //[HttpGet]
         //[Route("Export")]
         //public async Task<IActionResult> Export()
