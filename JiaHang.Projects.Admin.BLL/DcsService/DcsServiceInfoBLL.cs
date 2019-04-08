@@ -44,7 +44,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 Service_Version = s.ServiceVersion,
                 Service_Tech = s.ServiceTech,
                 Service_Type = s.ServiceType,
-                Service_Status = s.ServiceStatus
+                Service_Status = s.ServiceStatus,
+                Datasource_Id = s.DatasourceId
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -242,6 +243,50 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 result.Message = ex.Message;
                 return result;
             }
+        }
+
+        /// <summary>
+        /// 返回接口基本信息视图
+        /// </summary>
+        /// <param name="serviceid"></param>
+        /// <returns></returns>
+        public FuncResult GetServiceInfoView(string serviceid)
+        {
+            FuncResult result = new FuncResult();
+            try
+            {
+                //接口基本信息
+                var serviceInfo = context.DcsServiceInfo.Find(serviceid);
+                if (serviceInfo == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = "主键参数异常！";
+                    return result;
+                }
+
+
+                //接口参数信息
+                var param = context.DcsServiceParams.Where(w=>w.ServiceId.Contains(serviceid));
+
+
+                //共享接口返回字段信息
+                var shareresult = context.DcsServiceSResults.Where(w => w.ServiceId.Contains(serviceid));
+
+
+                //采集接口返回字段信息
+                var collectresult = context.DcsServiceCResults.Where(w => w.ServiceId.Contains(serviceid));
+
+
+                result.IsSuccess = true; result.Content = new { ServiceInfo = serviceInfo, Params = param, ShareResult = shareresult, CollectResult = collectresult };
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = ex.Message;
+                return result;
+            }
+           
+            return result;
         }
     }
 }

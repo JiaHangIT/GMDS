@@ -88,6 +88,11 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// 是：1；否：0；
         /// </summary>
         public int? DataMultiFlag { get; set; }
+
+        /// <summary>
+        /// 数据源字段信息
+        /// </summary>
+        public string DatasourceId { get; set; }
     }
 
     public class DcsServiceInfoDeail
