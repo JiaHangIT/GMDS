@@ -34,8 +34,9 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemTypeBLL
             {
 
                 Problem_Type_Id = e.ProblemTypeId,
-                Problem_Type_Name = e.ProblemTypeName
-                
+                Problem_Type_Name = e.ProblemTypeName,
+                Creation_Date = e.CreationDate
+
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -161,5 +162,6 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemTypeBLL
             }
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
+
     }
 }

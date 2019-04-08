@@ -36,7 +36,8 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             {
 
                 Help_Type_Id = e.HelpTypeId,
-                Help_Type_Name = e.HelpTypeName
+                Help_Type_Name = e.HelpTypeName,
+                Creation_Date=e.CreationDate
                 //e.HelpTypeId,
                 //e.HelpTypeName
             });
