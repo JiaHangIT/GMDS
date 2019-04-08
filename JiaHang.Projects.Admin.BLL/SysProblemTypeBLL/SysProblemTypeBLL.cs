@@ -1,20 +1,18 @@
-﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
-using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
+﻿using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.SysHelpType.RequestModel;
-using OfficeOpenXml;
+using JiaHang.Projects.Admin.Model.SysProblemType.RequestModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
+namespace JiaHang.Projects.Admin.BLL.SysProblemTypeBLL
 {
-    public class SysHelpTypeBLL
+    public class SysProblemTypeBLL
     {
         private readonly DAL.EntityFramework.DataContext _context;
-        public SysHelpTypeBLL(DAL.EntityFramework.DataContext context)
+        public SysProblemTypeBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -23,24 +21,23 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(SearchSysHelpTypeModel model)
+        public FuncResult Select(SearchSysProblemTypeModel model)
         {
-            IOrderedQueryable<SysHelpType> query = _context.SysHelpType.
+            IOrderedQueryable<SysProblemType> query = _context.SysProblemType.
                 Where(a =>
                 (
-                (string.IsNullOrWhiteSpace(model.Help_Type_Name) || a.HelpTypeName.Contains(model.Help_Type_Name))
+                (string.IsNullOrWhiteSpace(model.Problem_Type_Name) || a.ProblemTypeName.Contains(model.Problem_Type_Name))
                 )
                 ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
             {
 
-                Help_Type_Id = e.HelpTypeId,
-                Help_Type_Name = e.HelpTypeName
-                //e.HelpTypeId,
-                //e.HelpTypeName
+                Problem_Type_Id = e.ProblemTypeId,
+                Problem_Type_Name = e.ProblemTypeName
+                
             });
-           return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
         /// 查询一条
@@ -49,7 +46,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <returns></returns>
         public async Task<FuncResult> Select(string id)
         {
-            SysHelpType entity = await _context.SysHelpType.FindAsync(id);
+            SysProblemType entity = await _context.SysProblemType.FindAsync(id);
 
             return new FuncResult() { IsSuccess = true, Content = entity };
         }
@@ -60,19 +57,19 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <param name="model"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Update(string id, SysHelpTypeModel model, string currentUserId)
+        public async Task<FuncResult> Update(string id, SysProblemTypeModel model, string currentUserId)
         {
-            SysHelpType entity = await _context.SysHelpType.FindAsync(id);
+            SysProblemType entity = await _context.SysProblemType.FindAsync(id);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "帮助类型ID错误!" };
             }
-           
-            entity.HelpTypeName = model.HelpTypeName;
+
+            entity.ProblemTypeName = model.ProblemTypeName;
             entity.LastUpdateDate = DateTime.Now;
             entity.LastUpdatedBy = currentUserId;
 
-            _context.SysHelpType.Update(entity);
+            _context.SysProblemType.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
         }
@@ -84,34 +81,34 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <returns></returns>
         public async Task<FuncResult> Delete(string id, string currentUserId)
         {
-            SysHelpType entity = await _context.SysHelpType.FindAsync(id);
+            SysProblemType entity = await _context.SysProblemType.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "帮助类型ID不存在!" };
+                return new FuncResult() { IsSuccess = false, Message = "问题类型ID不存在!" };
             }
             entity.DeleteFlag = 1;
             //entity.DeleteFlag = true;
 
             entity.DeleteBy = currentUserId;
             entity.DeleteDate = DateTime.Now;
-            _context.SysHelpType.Update(entity);
+            _context.SysProblemType.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "删除成功" };
         }
         public async Task<FuncResult> Delete(string[] ids, string currentUserId)
         {
-            IQueryable<SysHelpType> entitys = _context.SysHelpType.Where(e => ids.Contains(e.HelpTypeId));
+            IQueryable<SysProblemType> entitys = _context.SysProblemType.Where(e => ids.Contains(e.ProblemTypeId));
             if (entitys.Count() != ids.Length)
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-            foreach (SysHelpType obj in entitys)
+            foreach (SysProblemType obj in entitys)
             {
                 obj.DeleteBy = currentUserId;
                 //obj.DeleteFlag = true;
                 obj.DeleteFlag = 1;
                 obj.DeleteDate = DateTime.Now;
-                _context.SysHelpType.Update(obj);
+                _context.SysProblemType.Update(obj);
             }
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
             {
@@ -135,20 +132,20 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
         /// <param name="model"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Add(SysHelpTypeModel model, string currentUserId)
+        public async Task<FuncResult> Add(SysProblemTypeModel model, string currentUserId)
         {
-            SysHelpType entity = new SysHelpType
+            SysProblemType entity = new SysProblemType
             {
-                HelpTypeId = Guid.NewGuid().ToString(),
-                HelpTypeName = model.HelpTypeName,
-                
+                ProblemTypeId = Guid.NewGuid().ToString(),
+                ProblemTypeName = model.ProblemTypeName,
+
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
                 CreationDate = DateTime.Now,
                 CreatedBy = currentUserId,
-                DeleteBy="00000000000000000000000000000000"
+                DeleteBy = "00000000000000000000000000000000"
             };
-            await _context.SysHelpType.AddAsync(entity);
+            await _context.SysProblemType.AddAsync(entity);
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
             {
                 try
@@ -164,36 +161,5 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             }
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
-        //public async Task<byte[]> GetUserListBytes()
-        //{
-        //    var comlumHeadrs = new[] { "帮助类型ID", "帮助类型名称" };
-        //    byte[] result;
-        //    var data = _context.SysHelpType.ToList();
-        //    var package = new ExcelPackage();
-        //    var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
-        //                                                               //First add the headers
-        //    for (var i = 0; i < comlumHeadrs.Count(); i++)
-        //    {
-        //        worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
-        //    }
-        //    //Add values
-        //    var j = 2;
-        //    // var chars = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-        //    await Task.Run(() =>
-        //    {
-        //        foreach (var obj in data)
-        //        {
-        //            var rt = obj.GetType();
-        //            var rp = rt.GetProperties();
-        //            worksheet.Cells["A" + j].Value = obj.HelpTypeId;
-        //            worksheet.Cells["B" + j].Value = obj.HelpTypeName;
-        //            j++;
-        //        }
-        //    });
-        //    result = package.GetAsByteArray();
-        //    return result;
-        //}
-
-
     }
 }

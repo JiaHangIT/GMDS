@@ -84,13 +84,20 @@
 
     //共享返回字段行添加
     function shareresultcontentadd() {
-
-
+        $('#shareresultcontentdiv table').append($('#defaultloadhtml table')[1].innerHTML);
+        //刷新checkbox属性
+        var form = layui.form
         form.render('checkbox');
+        form.render('select');
     }
 
     //共享返回字段行删除
     function shareresultcontentdel(obj) {
+        var children = $('#shareresultcontentdiv table').children();
+        if (children && children.length == 1) {
+            layui.layer.msg('至少需要一条');
+            return false;
+        }
         $(obj).parent().parent().parent().parent().parent().remove();
     }
 
@@ -153,81 +160,80 @@
 <script type="text/html" id="parammodel">
     @*接口参数*@
 
-        {{#  layui.each(d.list, function(index, item){ }}
-        <tbody>
-            <tr>
-                <td class="layui-form-label">
-                    参数代码
-                </td>
-                <td class="layui-input-block">
-                    <input type="text" value={{item.modname}} autocomplete="off" placeholder="参数代码" class="layui-input">
-                </td>
-                <td class="layui-form-label">
-                    参数名称
-                </td>
-                <td class="layui-input-block">
-                    <input type="text" value={{item.modname}} autocomplete="off" placeholder="参数名称" class="layui-input">
-                </td>
-                <td class="layui-form-label">
-                    参数类型
-                </td>
-                <td class="layui-input-block">
-                    <select  class="layui-input paramtype" lay-filter="xmFilter">
-                        <option value={{item.modname}}>{{item.modname}}</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="layui-form-label">
-                    可以为空
-                </td>
-                <td class="layui-input-block">
-                    <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
-                </td>
+    {{#  layui.each(d, function(index, item){ }}
+    <tbody>
+        <tr>
+            <td class="layui-form-label">
+                参数代码
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value={{item.paramCode}} autocomplete="off" placeholder="参数代码" class="layui-input">
+            </td>
+            <td class="layui-form-label">
+                参数名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value={{item.paramName}} autocomplete="off" placeholder="参数名称" class="layui-input">
+            </td>
+            <td class="layui-form-label">
+                参数类型
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input paramtype" lay-filter="xmFilter">
+                    @*<option value="{{item.paramTypeId}}">{{item.paramTypeId}}</option>*@
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                可以为空
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" checked="checked" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
 
-                <td class="layui-form-label">
-                    是否时间戳参数
-                </td>
-                <td class="layui-input-block">
-                    <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
-                </td>
-               
+            <td class="layui-form-label">
+                是否时间戳参数
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
 
-                <td class="layui-form-label">
-                    关联字段ID
-                </td>
-                <td class="layui-input-block">
-                    <select class="layui-input paramrelate" lay-filter="xmFilter">
-                        <option value={{item.modname}}>{{item.modname}}</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="layui-form-label">
-                    参数说明
-                </td>
-                <td class="layui-input-block" colspan="3">
-                    <input type="text" value={{item.modname}} autocomplete="off" placeholder="参数说明" class="layui-input">
-                </td>
-                <td colspan="2">
-                    <fieldset class="layui-elem-field site-demo-button">
-                        <div class="layui-btn-group">
-                            <button id="paramadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                            <button id="paramdel" onclick="paramdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                        </div>
-                    </fieldset>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">
-                    <br />
-                </td>
-            </tr>
-        </tbody>
-        {{#  }); }}
-        {{#  if(d.list.length === 0){ }}
-        无数据
-        {{#  } }}
+            <td class="layui-form-label">
+                关联字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input paramrelate" lay-filter="xmFilter">
+                    <option value=''></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                参数说明
+            </td>
+            <td class="layui-input-block" colspan="3">
+                <input type="text" value={{item.paramDesc}} autocomplete="off" placeholder="参数说明" class="layui-input">
+            </td>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button id="paramadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button id="paramdel" onclick="paramdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    无数据
+    {{#  } }}
 
     @*</table>*@
 </script>
@@ -235,40 +241,37 @@
 <script type="text/html" id="sharemodel">
     @*共享接口返回*@
     <table id="shareresulttable">
-        {{#  layui.each(d.list, function(index, item){ }}
+        {{#  layui.each(d, function(index, item){ }}
         <tbody>
             <tr>
+                <td style="display:none"><input type="text" value={{item.modname}} /></td>
                 <td class="layui-form-label">
-                    返回字段名称
+                    字段ID
                 </td>
                 <td class="layui-input-block">
-                    <input type="text" value={{item.modname}} autocomplete="off" placeholder="参数代码" class="layui-input" >
-                </td>
-                <td class="layui-form-label">
-                    是否需要从维度表转换数据
-                </td>
-                <td class="layui-input-block">
-                    <input type="checkbox" value={{item.modname}} lay-skin="switch" lay-text="是|否">
+                    <select class="layui-input sharerelate" lay-filter="shareselected">
+                        <option value={{item.fieldId}}></option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     <fieldset class="layui-elem-field site-demo-button">
                         <div class="layui-btn-group">
-                            <button id="paramadd" onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                            <button id="paramdel" onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
                         </div>
                     </fieldset>
                 </td>
             </tr>
             <tr>
-                <td colspan="6">
+                <td colspan="2">
                     <br />
                 </td>
             </tr>
         </tbody>
         {{#  }); }}
-        {{#  if(d.list.length === 0){ }}
+        {{#  if(d.length === 0){ }}
         无数据
         {{#  } }}
 
@@ -279,9 +282,10 @@
 
     @*采集接口返回*@
     <table id="collectreturntable">
-        {{#  layui.each(d.list, function(index, item){ }}
+        {{#  layui.each(d, function(index, item){ }}
         <tbody>
             <tr>
+                <td style="display:none"><input type="text" value={{item.modname}} /></td>
                 <td class="layui-form-label">
                     返回字段名称
                 </td>
@@ -320,7 +324,7 @@
             </tr>
 
             {{#  }); }}
-            {{#  if(d.list.length === 0){ }}
+            {{#  if(d.length === 0){ }}
             无数据
             {{#  } }}
         </tbody>
@@ -371,7 +375,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">数据源</label>
                         <div class="layui-input-block">
-                            <select name="datasourceid" id="datasourceid" class="layui-input" lay-filter="xmFilter">
+                            <select name="datasourceid" id="datasourceid" class="layui-input" lay-filter="datasourceselected">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -489,6 +493,7 @@
     <table>
         <tbody>
             <tr>
+                <td style="display:none"><input type="text" /></td>
                 <td class="layui-form-label">
                     参数代码
                 </td>
@@ -565,44 +570,22 @@
     <table>
         <tbody>
             <tr>
+                <td style="display:none"><input type="text" /></td>
                 <td class="layui-form-label">
-                    参数代码
+                    字段ID
                 </td>
                 <td class="layui-input-block">
-                    <input type="text" name="paramcode" id="paramcode" autocomplete="off" placeholder="参数代码" class="layui-input" >
-                </td>
-                <td class="layui-form-label">
-                    参数名称
-                </td>
-                <td class="layui-input-block">
-                    <input type="text" name="paramname" id="paramname" autocomplete="off" placeholder="参数名称" class="layui-input" >
-                </td>
-                <td class="layui-form-label">
-                    参数说明
-                </td>
-                <td class="layui-input-block">
-                    <input type="text" name="paramremark" id="paramremark" autocomplete="off" placeholder="参数说明" class="layui-input" >
+                    <select class="layui-input sharerelate" lay-filter="shareselected">
+                        <option value=''></option>
+                    </select>
                 </td>
             </tr>
             <tr>
-                <td class="layui-form-label">
-                    可以为空
-                </td>
-                <td class="layui-input-block">
-                    <input type="checkbox" id="paramnullable" name="paramnullable" lay-skin="switch" lay-text="是|否">
-                </td>
-
-                <td class="layui-form-label">
-                    是否时间戳参数
-                </td>
-                <td class="layui-input-block">
-                    <input type="checkbox" id="timestampflag" name="timestampflag" lay-skin="switch" lay-text="是|否">
-                </td>
                 <td colspan="2">
                     <fieldset class="layui-elem-field site-demo-button">
                         <div class="layui-btn-group">
-                            <button id="shareresultadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                            <button id="shareresultdel" onclick="paramdel()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button id="shareresultadd" onclick="shareresultcontentadd" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button id="shareresultdel" onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
                         </div>
                     </fieldset>
                 </td>
@@ -614,6 +597,7 @@
     <table>
         <tbody>
             <tr>
+                <td style="display:none"><input type="text" /></td>
                 <td class="layui-form-label">
                     返回字段名称
                 </td>
@@ -628,12 +612,12 @@
                         <option value=''></option>
                     </select>
                 </td>
-             
+
                 <td colspan="2">
                     <fieldset class="layui-elem-field site-demo-button">
                         <div class="layui-btn-group">
-                            <button onclick="collectresultadd()"  class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                            <button onclick="collectresultdel(this)"  class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
                         </div>
                     </fieldset>
                 </td>
@@ -970,10 +954,42 @@
         //    });
         //});
 
+        //监听主要信息数据源select字段
+        form.on('select(datasourceselected)', function (data) {
+
+            //let datasourceid = jQuery('#datasourceid').val();//主要信息里的数据源字段值，记录用于帮助填充共享接口返回字段信息
+            let datasourceid = data.value;
+
+            //初始化 共享接口返回字段
+            //数据共享接口返回字段信息（FieldId）
+            $.ajax({
+                async: true,
+                url: "/api/dcsserviceinfodata/" + datasourceid,
+                type: 'get',
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
+        }),
+
+        //监听共享字段返回信息select字段
+            form.on('select(shareselected)', function (data) {
+            
+            if (data.value === "") {
+                layer.msg('请先选择主要信息内数据源信息');
+            }
+     
+        }),
+
         //提交监听
         form.on('submit(submit)', function () {
-            var params = [];//存放接口参数多表信息
-            var paramTbody = $('#paramcontent tbody');//接口参数信息
+
+
+            let params = [];//存放接口参数多表信息
+            let paramTbody = $('#paramcontent tbody');//接口参数信息
             if (paramTbody && paramTbody.length > 0) {
                 //有数据（一个tbody里有4个tr，最后一个tr为换行tr，循环里跳过，tr里有6个td，
                 //取class为layui - input - block里第一个children的值）
@@ -985,7 +1001,7 @@
                 $.each(paramTbody, function (index, item) {
                     var aInput = $(item).find('input');
                     //aInput[0].value;
-                    
+
                 })
             }
 
@@ -1009,7 +1025,7 @@
                 $.each(collectresultTbody, function (index, item) {
                     var aInput = $(item).find('input');
 
-                    
+
                 })
             }
 
@@ -1071,6 +1087,7 @@
         });
         function showLayer(data) {
             initFormValue(data);
+            loadSelect();
             let title = "新增基本信息";
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
@@ -1138,36 +1155,45 @@
                     servicereturn: '',
                     servicestatus: '',
                     datapageflag: '',
-                    datamultiflag: ''
+                    datamultiflag: '',
+                    datasourceId:''
                 })
                 return;
             }
             else {
                 
                 layui.use('laytpl', function () {
+                    //用于加载模板引擎数据
                     laytpl = layui.laytpl;
-                   
-                    var data = { //数据
-                        "title": "Layui常用模块"
-                        , "list": [{ "modname": "弹层", "alias": "layer", "site": "layer.layui.com" }, { "modname": "表单", "alias": "form" }]
-                    };
-                    var getTpl = document.getElementById('collectmodel').innerHTML
-                        , viewcollect = document.getElementById('collectresultcontent');
-                    laytpl(getTpl).render(data, function (html) {
-                        viewcollect.innerHTML = html;
-                    });
+                    //var data = {};
+                    jQuery.ajax({
+                        async: true,
+                        url: "/api/dcsserviceinfodata/getserviceinfoview?serviceid=" + serviceId,
+                        type: 'get',
+                        success: function (res) {
 
-                    var getTplparam = document.getElementById('parammodel').innerHTML
-                        , viewparam = document.getElementById('paramcontent');
-                    laytpl(getTplparam).render(data, function (html) {
-                        viewparam.innerHTML = html;
-                    });
+                            console.log(res.content)
+                            var getTpl = document.getElementById('collectmodel').innerHTML
+                                , viewcollect = document.getElementById('collectresultcontent');
+                            laytpl(getTpl).render(res.content.collectResult, function (html) {
+                                viewcollect.innerHTML = html;
+                            });
 
-                    var getTplshare = document.getElementById('sharemodel').innerHTML
-                        , viewshare = document.getElementById('shareresultcontent');
-                    laytpl(getTplshare).render(data, function (html) {
-                        viewshare.innerHTML = html;
-                    });
+                            var getTplparam = document.getElementById('parammodel').innerHTML
+                                , viewparam = document.getElementById('paramcontent');
+                            laytpl(getTplparam).render(res.content.params, function (html) {
+                                viewparam.innerHTML = html;
+                            });
+
+                            var getTplshare = document.getElementById('sharemodel').innerHTML
+                                , viewshare = document.getElementById('shareresultcontent');
+                            laytpl(getTplshare).render(res.content.shareResult, function (html) {
+                                viewshare.innerHTML = html;
+                            });
+
+                            layui.form.render();//重新渲染
+                        }
+                    })
 
                 });
 
@@ -1178,14 +1204,15 @@
                     serviceno: data.service_No,
                     servicecode: data.service_Code,
                     servicename: data.service_Name,
-                    servicedesc: data.Service_Desc,
+                    servicedesc: data.service_Desc,
                     serviceversion: data.service_Version,
                     servicetech: data.service_Tech,
                     servicetype: data.service_Type,
                     servicereturn: data.service_Return,
                     servicestatus: data.service_Status == '启用' ? true : false,
                     datapageflag: data.datapageflag == 1 ? true : false,
-                    datamultiflag: data.datamultiflag == 1 ? true : false
+                    datamultiflag: data.datamultiflag == 1 ? true : false,
+                    datasourceId: data.datasource_Id
                 });
             }
 
@@ -1197,75 +1224,81 @@
             })
         }
 
-        //目录分类
-        $.ajax({
-            async: true,
-            url: "/api/dcsservicegroupdata/GetServiceGroup",
-            type:'post',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('#servicegroupid').append(new Option(item.value,item.key));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
+       
 
-        //数据源
-        $.ajax({
-            async: true,
-            url: "/api/dcsserviceinfodata/getdatasource",
-            type: 'post',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('#datasourceid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
+        //加载select下拉
+        function loadSelect() {
+            //目录分类
+            $.ajax({
+                async: true,
+                url: "/api/dcsservicegroupdata/GetServiceGroup",
+                type: 'post',
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#servicegroupid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
+
+            //数据源
+            $.ajax({
+                async: true,
+                url: "/api/dcsserviceinfodata/getdatasource",
+                type: 'post',
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#datasourceid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
+
+            //参数类型SYS_FIELD_TYPE.FIELD_TYPE_ID(数据接口参数信息)
+            $.ajax({
+                async: true,
+                url: "/api/dcsserviceinfodata/getfieldtype",
+                type: 'post',
+                success: function (data) {
+
+                    $.each(data, function (index, item) {
+                        $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
 
 
+            //关联字段SYS_DATASOURCE_FIELD.FIELD_ID(数据接口参数信息)
+            $.ajax({
+                async: true,
+                url: "/api/dcsserviceinfodata/getrelafieldid",
+                type: 'post',
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
 
 
-        //参数类型SYS_FIELD_TYPE.FIELD_TYPE_ID(数据接口参数信息)
-        $.ajax({
-            async: true,
-            url: "/api/dcsserviceinfodata/getfieldtype",
-            type: 'post',
-            success: function (data) {
-                
-                $.each(data, function (index, item) {
-                    $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
+            //写入字段ID SYS_DATASOURCE_FIELD.FIELD_ID(数据采集接口返回字段信息)
+            $.ajax({
+                async: true,
+                url: "/api/dcsserviceinfodata/getrelafieldid",
+                type: 'post',
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('.collectto').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
+        }
 
 
-        //关联字段SYS_DATASOURCE_FIELD.FIELD_ID(数据接口参数信息)
-        $.ajax({
-            async: true,
-            url: "/api/dcsserviceinfodata/getrelafieldid",
-            type: 'post',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
-
-        //写入字段ID SYS_DATASOURCE_FIELD.FIELD_ID(数据采集接口返回字段信息)
-        $.ajax({
-            async: true,
-            url: "/api/dcsserviceinfodata/getrelafieldid",
-            type: 'post',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('.collectto').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
+       
 
     });
 
