@@ -166,5 +166,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                 return new FuncResult() { IsSuccess = false, Message = ex.Message };
             }
         }
+
+        /// <summary>
+        /// 返回接口基本信息视图
+        /// </summary>
+        /// <param name="serviceid"></param>
+        /// <returns></returns>
+        [Route("GetServiceInfoView")]
+        [HttpPost]
+        public FuncResult GetServiceInfoView(string serviceid)
+        {
+            return DcsServiceInfo.GetServiceInfoView(serviceid);
+        }
     }
 }

@@ -243,5 +243,49 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 return result;
             }
         }
+
+        /// <summary>
+        /// 返回接口基本信息视图
+        /// </summary>
+        /// <param name="serviceid"></param>
+        /// <returns></returns>
+        public FuncResult GetServiceInfoView(string serviceid)
+        {
+            FuncResult result = new FuncResult();
+            try
+            {
+                //接口基本信息
+                var serviceInfo = context.DcsServiceInfo.Find(serviceid);
+                if (serviceInfo == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = "主键参数异常！";
+                    return result;
+                }
+
+
+                //接口参数信息
+                var param = context.DcsServiceParams.Find(serviceInfo.ServiceId);
+
+
+                //共享接口返回字段信息
+                var shareresult = context.DcsServiceSResults.Find(serviceInfo.ServiceId);
+
+
+                //采集接口返回字段信息
+                var collectresult = context.DcsServiceCResults.Find(serviceInfo.ServiceId);
+
+
+                result.IsSuccess = true; result.Content = new { ServiceInfo = serviceInfo, Params = param, ShareResult = shareresult, CollectResult = shareresult };
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = ex.Message;
+                return result;
+            }
+           
+            return result;
+        }
     }
 }
