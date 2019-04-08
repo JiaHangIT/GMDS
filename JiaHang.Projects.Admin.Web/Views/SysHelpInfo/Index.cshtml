@@ -135,6 +135,7 @@
 
         <div class="layui-form-item">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+           
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
     </div>
@@ -147,6 +148,7 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
@@ -241,6 +243,33 @@
                 help_id = data.help_Id
                 layType = false;
                 showLayer(data);
+            } else if (obj.event === 'examine') {
+                console.log("审核");
+                console.log(data.help_Id);
+                console.log(data.help_Title);
+                let model = {
+                    HelpTypeId: data.help_Id
+                };
+                let url = "/api/syshelpinfodata/UpdateExamine";
+                let method = "POST";
+                let confirm_title = "确认审核产品名称为：【" + data.help_Title + "】的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios({ url: url, method: method, data: model })
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                                tableReload(datatable);
+                            }
+
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
             }
         });
 

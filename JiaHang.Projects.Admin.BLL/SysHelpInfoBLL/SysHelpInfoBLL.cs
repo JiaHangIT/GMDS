@@ -189,7 +189,29 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
 
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
+        /// <summary>
+        /// 审核
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<FuncResult> UpdateExamine(string MessageId, string currentuserId)
+        {
+            SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(MessageId);
+            if (entity == null)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
+            }
 
+            entity.AuditFlag = 1;
+            entity.AuditedDate = System.DateTime.Now;
+
+            entity.AuditedBy = currentuserId;
+            entity.LastUpdateDate = System.DateTime.Now;
+            entity.LastUpdatedBy = currentuserId;
+            _context.SysHelpInfo.Update(entity);
+            await _context.SaveChangesAsync();
+            return new FuncResult() { IsSuccess = true, Content = entity, Message = "审核成功" };
+        }
         //public FuncResult<SysUserInfo> CheckUserLDAP(string userAccount)
         //{
         //    var result = new FuncResult<SysUserInfo>() { IsSuccess = false, Message = "不是LDAP" };
