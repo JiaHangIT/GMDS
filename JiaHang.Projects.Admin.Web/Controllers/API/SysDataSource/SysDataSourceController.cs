@@ -109,7 +109,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSource
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        [Route("DeleteDatasourceField")]
+        [Route("DeleteDatasourceFields")]
         [HttpDelete]
         public async Task<FuncResult> DeleteDataSourceInfos(string[] ids) {
             return await dataSourceServers.DeleteDataSourceInfos(ids, HttpContext.CurrentUser(cache).Id);

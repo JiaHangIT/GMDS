@@ -37,13 +37,13 @@
                         <div class=" layui-col-md6 layui-col-xs6">
                             <label class="layui-form-label" style="width:150px">数据源代码：</label>
                             <div class="layui-inline">
-                                <input class="layui-input" name="search_connection_name" id="search_connection_name" autocomplete="off">
+                                <input class="layui-input" name="search_datasource_code" id="search_datasource_code" autocomplete="off">
                             </div>
                         </div>
                         <div class=" layui-col-md6 layui-col-xs6">
                             <label class="layui-form-label" style="width:150px">数据源名称：</label>
                             <div class="layui-inline">
-                                <input class="layui-input" name="search_connection_string" id="search_connection_string" autocomplete="off">
+                                <input class="layui-input" name="search_datasource_name" id="search_datasource_name" autocomplete="off">
                             </div>
                         </div>
                         <div class=" layui-col-md6 layui-col-xs6">
@@ -141,9 +141,10 @@
                         </div>
                         <div class="layui-tab-item">
                             <table class="layui-hide" id="test2" lay-filter="sysuser2"> </table>
-                            <div style="margin-left:600px">
+                            <div style="margin-left:500px">
                                 <a class="layui-btn layui-btn-xs" lay-event="addfield" data-type="addfield">添加字段</a>
                                 <a class="layui-btn layui-btn-danger layui-btn-xs" data-type="deltefield" lay-event="deltefield">删除字段</a>
+                                <a class="layui-btn layui-btn-danger layui-btn-xs" data-type="closetest2" lay-event="closetest2">取消</a>
                             </div>
                         </div>
                        
@@ -369,7 +370,7 @@
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
         });
-         table.render({
+        table.render({
             elem: '#test2'
             , url: '/api/sysdatasourcefield/SelectDataSourceFiled/'
             , contentType: 'application/json'
@@ -516,8 +517,8 @@
                     let ids = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        ids.push(data[i].dataSourceId);
-                        parms += "ids=" + data[i].dataSourceId + "&";
+                        ids.push(data[i].fieldId);
+                        parms += "ids=" + data[i].fieldId + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
@@ -556,8 +557,8 @@
                     page: 1,
                     Datasource_Code: $("#search_datasource_code").val(),
                     Datasource_Name: $("#search_datasource_name").val(),
-                    Search_Datasource_Type: $("#search_datasource_type option:selected").val(),
-                    Search_Datasource_Use: $("#search_datasource_use option:selected").val(),
+                    Datasource_Type: $("#search_datasource_type option:selected").val(),
+                    Datasource_Use: $("#search_datasource_use option:selected").val(),
                 }
                 //执行重载
                 table.reload('testReload', {
@@ -573,6 +574,9 @@
             closeGenerateLayer: function () {
                 layer.close(generateLayer_index);
             },
+            closetest2: function () {
+                layer.close(generateLayer_index);
+            },
             addfield: function () {
                 showFieldLayers();
 
@@ -581,7 +585,7 @@
                 delFieldLayers();
             },
             getFieldCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('testReload2')
+                var checkStatus = table.checkStatus('testReloadField')
                     , data = checkStatus.data;
                 if (data.length == 0) {
                     layer.msg("请选中数据再进行操作！");
@@ -627,21 +631,7 @@
 
 
             },
-            searchfield: function () {
-                let pars = {
-                    limit: 10,
-                    page: 1,
-                    Field_Code: $("#search_field_code").val(),
-                    Field_Name: $("#search_field_name").val(),
-                    Field_Type: $("#search_field_type option:selected").val(),
-                }
-                //执行重载
-                table.reload('testReload2', {
-                    where: pars,
-                    contentType: 'application/json',
-                    method: 'post'
-                });
-            },
+
             showGenerateFieldLayer: function () {
                 layFieldType = true;
                 showFieldLayer();
@@ -842,7 +832,7 @@
                 //, btn: ['火速围观', '残忍拒绝']
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
-                , content: '<div class="divtestTable"><table id="testTable"></table></div>'//这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , content: '<div class="divtestTable"><table id="testTable"></table></div>'
                 , offset: ['10%', '3%'],
                 success: function (index,layero) {
                     table.render({
@@ -883,6 +873,9 @@
                     })
                     var str = "<div style='margin-left:600px' class='fieldevent'><a class='layui-btn layui-btn-xs' id='addfields'   lay-event='addfields' data-type='addfields' > 添加字段</a ><a class='layui-btn layui-btn-danger layui-btn-xs' id='closefield1' lay-event='closefield1'>关闭</a></div >"
                     $('#testTable').append(str)
+                    var sel = " <div class='layui-row'><div class='layui-col-md6 layui-col-xs6'><label class='layui-form-label' style = 'width:150px' > 字段名称：</label ><div class='layui-inline'><input class='layui-input' name='search_field_name' id='search_field_name' autocomplete='off'></div></div></div><div class='layui-form-item' style='margin-top:15px;'><button class='layui-btn btn-search' id = 'selField' > 查询</button ></div>";
+                  
+                    $('#testTable').append(sel);
                 },
             });
            
@@ -900,20 +893,20 @@
                 let ids = [];
                 let parms = "?";
                 for (let i = 0; i < data.length; i++) {
-                    ids.push(data[i].dataSourceId);
-                    parms += "ids=" + data[i].dataSourceId + "&";
+                    ids.push(data[i].fieldId);
+                    parms += "ids=" + data[i].fieldId + "&";
                 }
+                console.log(parms);
                 parms = parms.substring(0, parms.length - 1);
                 //layer.alert(JSON.stringify(data));
-                axios.delete("/api/sysdatasource/DeleteDatasourceField/" + parms)
+                axios.delete("/api/SysDataSourceField/DeleteDataSourceFields/" + parms)
                     .then(function (response) {
                         layer.msg(response.data.message);
                         if (!response.data.isSuccess) {
                             return;
                         }
-
                         //移除
-                        let tabledata = table.cache.testReload;
+                        let tabledata = table.cache.testReloadField;
                         //for (let i = 0; i < tabledata.length; i++) {
                         //    for (let j = 0; j < ids.length; j++) {
                         //        if (tabledata[i].connectionId == ids[j]) {
@@ -995,6 +988,18 @@
        //关闭事件
         $('body').on('click','#closefield1', function () {
           layer.close(genratefieldLayer)
+        })
+        $('body').on('click', '#selField', function () {
+            let pars = {
+              
+                FieldName: $("#search_field_name").val(),
+            }
+            //执行重载
+            table.reload('testReloadField', {
+                where: pars,
+                contentType: 'application/json',
+                method: 'post'
+            });
         })
         //监听工具条
         table.on('tool(sysuser2)', function (obj) {
