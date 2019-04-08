@@ -95,42 +95,10 @@
     </div>
 </div>
 
-@*<div id="examine_layer" style="display:none; padding:40px;">
-<div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">系统公告ID</label>
-            <div class="layui-input-block">
-                <input type="text" name="Message_ID" id="Message_ID" autocomplete="off" placeholder="产品编号" class="layui-input" disabled>
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">公告标题</label>
-            <div class="layui-input-block">
-                <input type="text" name="MESSAGETITLE" id="MESSAGETITLE" autocomplete="off" placeholder="产品名称" class="layui-input" disabled>
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
 
-        
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">公告内容</label>
-            <div class="layui-input-block">
-                <textarea placeholder="请输入内容" name="MESSAGECONTENT" id="MESSAGECONTENT" class="layui-textarea" disabled></textarea>
-            </div>
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <button class="layui-btn" data-type="generate" id="examine_btn" lay-submit lay-filter="submit1">立即创建</button>
-        <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayerT">取消</button>
-    </div>
-</div>
-</div>*@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    @*<a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>*@
+    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
@@ -170,7 +138,7 @@
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
                 //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
-                , { field: 'messageId', title: '公告编号', sort: true, fixed: 'left' }
+                //, { field: 'messageId', title: '公告编号', sort: true, fixed: 'left' }
                 , { field: 'messageTitle', title: '公告名称', sort: true }
                 , { field: 'messageContent', title: '公告内容' }
                 , { field: 'importantFlag', width: 99, title: '是否重要', sort: true }
@@ -226,11 +194,31 @@
                 layType = false;
                 showLayer(data);
             } else if (obj.event === 'examine') {
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                console.log(data);
-                store_id = data.messageId;
-                layType = false;
-                examineLayer(data);
+                console.log("审核");
+                let model = {
+                    Message_ID: data.messageId
+                  
+                };
+                let url = "/api/SysMessageInfo/UpdateExamine";
+                let method = "POST";
+                let confirm_title = "确认审核产品名称为：【" + data.messageTitle + "】的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios({ url: url, method: method, data: model})
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                                tableReload(datatable);
+                            }
+                           
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
             }
         });
         var $ = layui.$, active = {
@@ -308,61 +296,7 @@
             },
 
         };
-        //form.on('submit(submit1)', function () {
-        //    console.log('save');
-        //    //alert($("#Message_ID").val());
-        //    let model = {
-        //        Message_ID: $("#Message_ID").val(),
-        //        //Message_title: $("#MESSAGETITLE").val(),
-        //        //Message_Content: $("#MESSAGECONTENT").val(),
-        //        //Important_Flag: $("#Important_Flag").val(),
-        //        //Audit_Flag: $("#colorName").val(),
-        //        //Audited_Date: $("#category").val(),
-        //        //Audited_By: $("#code").val(),
-        //        //Creation_Date: $("#name").val(),
-        //        //Creation_By: $("#price").val(),
-        //        //Last_Updata_Date: $("#cost").val(),
-        //        //Last_Updata_By: $("#colorName").val(),
-        //    };
-        //    alert(store_id);
-        //    console.log(model);         
-           
-        //    url = "/api/SysMessageInfo/UpdateExamine" + store_id;
-        //        method = "post";
-            
-        //    axios({ url: url, method: method, data: model })
-        //        .then(function (response) {
-        //            console.log(response);
-        //            layer.msg(response.data.message);
-        //            if (!response.data.isSuccess) {
-        //                return;
-        //            }
-        //            let datatable = table.cache.testReload;
-        //            console.log(datatable);                   
-        //                //审核
-        //                for (let i = 0; i < datatable.length; i++) {
-        //                    if (datatable[i].Message_ID == response.data.content.Message_ID) {
-        //                        datatable.splice(i, 1, response.data.content);
-        //                        break;
-        //                    }
-        //                }
-                    
-                    
-        //            tableReload(datatable)
-        //            layer.close(generateLayer_index);
-        //        })
-        //        .catch(function (error) {
-
-        //            layer.msg("发生了预料之外的错误!");
-        //            console.log(error);
-        //        });
-
-        //    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        //}),
-        //    $('.layui-btn').on('click', function () {
-        //        var type = $(this).data('type');
-        //        active[type] ? active[type].call(this) : '';
-        //    });
+        
         form.on('submit(submit)', function () {
             console.log('save');
             //alert($("#Message_ID").val());
