@@ -93,10 +93,44 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// 数据源字段信息
         /// </summary>
         public string DatasourceId { get; set; }
+
+        public List<DcsParamsModel> lsparam { get; set; }
+
+        public List<DcsShareModel> lsshare { get; set; }
+
+        public List<DcsCollectModel> lscollect { get; set; }
     }
 
-    public class DcsServiceInfoDeail
+    /// <summary>
+    /// 参数接收模型
+    /// </summary>
+    public class DcsParamsModel
     {
+        public string ParamId { get; set; }
+        public string ParamCode { get; set; }
+        public string ParamName { get; set; }
+        public int? ParamTypeId { get; set; }
+        public string ParamDesc { get; set; }
+        public int? ParamNullable { get; set; }
+        public int? TimestampFlag { get; set; }
+        public string RelaFieldId { get; set; }
+    }
 
+    /// <summary>
+    /// 共享返回接收模型
+    /// </summary>
+    public class DcsShareModel
+    {
+        public string FieldId { get; set; }
+    }
+
+    /// <summary>
+    /// 采集返回接收模型
+    /// </summary>
+    public class DcsCollectModel
+    {
+        public string ReFieldName { get; set; }
+        public string ToFieldId { get; set; }
+        //public int DimTransFlag { get; set; }
     }
 }

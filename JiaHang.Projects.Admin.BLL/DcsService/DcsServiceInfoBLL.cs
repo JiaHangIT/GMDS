@@ -1,4 +1,5 @@
-﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
+﻿using JiaHang.Projects.Admin.DAL;
+using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
 using JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel;
@@ -27,13 +28,13 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// <returns></returns>
         public FuncResult Select(SearchDcsServiceInfo model)
         {
-            List<DcsServiceInfo> query = context.DcsServiceInfo.OrderByDescending(o => o.CreationDate).DefaultIfEmpty().ToList();
+            List<DcsServiceInfo> query = context.DcsServiceInfo.Where(s =>
+                                        (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceName.Contains(model.ServiceName)) &&
+                                        (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceNo.Contains(model.ServiceNo)) &&
+                                        (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
 
             int total = query.Count();
-            var data = query.Where(s => (string.IsNullOrWhiteSpace(model.ServiceCode) || s.ServiceCode.Contains(model.ServiceCode)) &&
-            (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceCode.Contains(model.ServiceName)) &&
-            (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceCode.Contains(model.ServiceNo))
-            ).Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
+            var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
             {
                 //需要的列
                 Service_Id = s.ServiceId,
@@ -102,6 +103,64 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             };
 
             await context.DcsServiceInfo.AddAsync(entity);
+
+            await Task.Run(() => 
+            {
+                foreach (var param in model.lsparam)
+                {
+                    var pEntity = new DcsServiceParams()
+                    {
+                        ParamId = Guid.NewGuid().ToString("N").ToUpper(),
+                        ServiceId = model.ServiceId,
+                        ParamCode = param.ParamCode,
+                        ParamName = param.ParamName,
+                        ParamDesc = param.ParamDesc,
+                        ParamNullable = param.ParamNullable,
+                        TimestampFlag = param.TimestampFlag,
+                        RelaFieldId = param.RelaFieldId,
+
+                        CreationDate = DateTime.Now,
+                        CreatedBy = currentuserid,
+                        LastUpdateDate = DateTime.Now,
+                        LastUpdatedBy = currentuserid,
+                        DeleteFlag = 0
+                    };
+                    context.DcsServiceParams.Add(pEntity);
+                }
+
+                foreach (var share in model.lsshare)
+                {
+                    var sEntity = new DcsServiceSResults()
+                    {
+                        FieldId = share.FieldId,
+                        ServiceId = model.ServiceId,
+
+                        CreationDate = DateTime.Now,
+                        CreatedBy = currentuserid,
+                        LastUpdateDate = DateTime.Now,
+                        LastUpdatedBy = currentuserid,
+                        DeleteFlag = 0
+                    };
+                    context.DcsServiceSResults.Add(sEntity);
+                }
+
+                foreach (var collect in model.lscollect)
+                {
+                    var cEntity = new DcsServiceCResults()
+                    {
+                        ServiceId = model.ServiceId,
+                        ToFieldId = collect.ToFieldId,
+                        //DimTransFlag = collect.DimTransFlag,
+
+                        CreationDate = DateTime.Now,
+                        CreatedBy = currentuserid,
+                        LastUpdateDate = DateTime.Now,
+                        LastUpdatedBy = currentuserid,
+                        DeleteFlag = 0
+                    };
+                    context.DcsServiceCResults.Add(cEntity);
+                }
+            });
 
             using (IDbContextTransaction trans = context.Database.BeginTransaction())
             {
@@ -287,6 +346,35 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             }
            
             return result;
+        }
+
+        /// <summary>
+        /// 根据DataSourceId获取到FieldId（从SYS_DATASOURCE_FIELD表获取）
+        /// </summary>
+        /// <param name="datasourceid"></param>
+        /// <returns></returns>
+        public dynamic GetFieldIdByDataSourceId(string datasourceid)
+        {
+            try
+            {
+                //string sql = string.Format("select FIELD_ID AS key ,FIELD_NAME as value  from SYS_DATASOURCE_FIELD  where DATASOURCE_ID='{0}'", datasourceid);
+                //var query = OracleDbHelper.Query(sql);
+                //return null;
+
+                var query = from a in context.SysDatasourceField
+                            where a.DatasourceId.Contains(datasourceid)
+                            select new
+                            {
+                                key = a.FieldId,
+                                value = a.FieldName
+                            };
+                return query;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        
         }
     }
 }
