@@ -49,8 +49,8 @@
                 <div class="layui-inline">
                     <select name="interest" id="search_audit_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="0" selected="">是</option>
-                        <option value="1">否</option>
+                        <option value="1" selected="">是</option>
+                        <option value="0">否</option>
                     </select>
                 </div>
             </div>
@@ -138,6 +138,7 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    @*<a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>*@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
@@ -178,7 +179,7 @@
             , cols: [[
 
                 { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//里的toolbar值是模板元素的选择器
 
                 , { field: 'problem_Type_Id', width: 200, title: '常见问题类型', sort: true, fixed: 'left' }
                 //, { field: 'problem_Type_Id', title: '帮助类型' }
@@ -229,9 +230,35 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                problem_id = data.problem_Id
+                problem_Id = data.problem_Id
                 layType = false;
                 showLayer(data);
+            //} else if (obj.event === 'examine') {
+            //    console.log("审核");
+            //    let model = {
+            //        problem_id: data.problemId,    
+
+            //    };
+            //    let url = "/api/sysproblemInfodata/UpdateExamine";
+            //    let method = "POST";
+            //    let confirm_title = "确认审核产品名称为：【" + data.problemTitle + "】的记录么";
+            //    layer.confirm(confirm_title, function (index) {
+            //        layer.close(index);
+            //        axios({ url: url, method: method, data: model })
+            //            .then(function (response) {
+            //                console.log(response);
+            //                layer.msg(response.data.message);
+            //                if (!response.data.isSuccess) {
+            //                    return;
+            //                    tableReload(datatable);
+            //                }
+
+            //            })
+            //            .catch(function (error) {
+            //                console.log(error);
+            //            });
+
+            //    });
             }
         });
 
@@ -435,15 +462,3 @@
 
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
