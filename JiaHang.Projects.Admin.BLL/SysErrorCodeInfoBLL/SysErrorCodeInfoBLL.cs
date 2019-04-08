@@ -46,12 +46,13 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
                         )).Skip(model.limit * model.page).Take(model.limit).ToList();
                 var data = result.Select(e => new
                 {
+                   
                     errorCodeId = e.ErrorCodeId,
                     errorCodeCode = e.ErrorCodeCode ?? "",
                     errorCodeName = e.ErrorCodeName ?? "",
                     errorCodeDesc = e.ErrorCodeDesc ?? "",
-                    importantFlag = e.ImportantFlag.ToString() ?? "",
-                    auditFlag = e.AuditFlag,
+                    importantFlag = e.ImportantFlag > 0 ? "是" : "否",
+                    auditFlag = e.AuditFlag > 0 ? "是" : "否",
                     auditedDate = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
                     auditedBy = e.AuditedBy ?? "",
                     creationDate = e.CreationDate != null ? Convert.ToDateTime(e.CreationDate).ToString("yyyy-MM-dd") : "",

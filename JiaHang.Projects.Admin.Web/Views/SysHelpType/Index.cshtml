@@ -29,7 +29,7 @@
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">类型：</label>
+                <label class="layui-form-label">类型名称：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_help_type_name" autocomplete="off">
                 </div>
@@ -106,8 +106,8 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'help_Type_Id', width: 300, title: 'ID', sort: true, fixed: 'left' }
-                , { field: 'help_Type_Name', width: 300, title: '帮助类型名称' }
+                , { field: 'help_Type_Name', width: 300, title: '帮助类型名称', sort: true, fixed: 'left' }
+                , { field: 'creation_Date', width: 300, title: '创建时间' }
             ]]
             , id: 'testReload'
             , page: true,
@@ -300,14 +300,15 @@
             if (data == undefined) {
 
                 form.val("generate-form", {
-                    help_type_id: "",
+                    creation_date: "",
                     help_type_name: "",
-
+                    help_type_id:"",
                 })
                 return;
             }
             form.val("generate-form", {
                 help_type_id: data.help_Type_Id,
+                creation_date: data.creation_Date,
                 help_type_name: data.help_Type_Name,
 
             })
