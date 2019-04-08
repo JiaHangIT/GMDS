@@ -44,7 +44,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 Service_Version = s.ServiceVersion,
                 Service_Tech = s.ServiceTech,
                 Service_Type = s.ServiceType,
-                Service_Status = s.ServiceStatus
+                Service_Status = s.ServiceStatus,
+                Datasource_Id = s.DatasourceId
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -265,18 +266,18 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
 
 
                 //接口参数信息
-                var param = context.DcsServiceParams.Find(serviceInfo.ServiceId);
+                var param = context.DcsServiceParams.Where(w=>w.ServiceId.Contains(serviceid));
 
 
                 //共享接口返回字段信息
-                var shareresult = context.DcsServiceSResults.Find(serviceInfo.ServiceId);
+                var shareresult = context.DcsServiceSResults.Where(w => w.ServiceId.Contains(serviceid));
 
 
                 //采集接口返回字段信息
-                var collectresult = context.DcsServiceCResults.Find(serviceInfo.ServiceId);
+                var collectresult = context.DcsServiceCResults.Where(w => w.ServiceId.Contains(serviceid));
 
 
-                result.IsSuccess = true; result.Content = new { ServiceInfo = serviceInfo, Params = param, ShareResult = shareresult, CollectResult = shareresult };
+                result.IsSuccess = true; result.Content = new { ServiceInfo = serviceInfo, Params = param, ShareResult = shareresult, CollectResult = collectresult };
             }
             catch (Exception ex)
             {

@@ -173,10 +173,30 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         /// <param name="serviceid"></param>
         /// <returns></returns>
         [Route("GetServiceInfoView")]
-        [HttpPost]
+        [HttpGet]
         public FuncResult GetServiceInfoView(string serviceid)
         {
             return DcsServiceInfo.GetServiceInfoView(serviceid);
+        }
+
+        /// <summary>
+        /// 根据DataSourceId获取到FieldId（从SYS_DATASOURCE_FIELD表获取）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{datasourceid}")]
+        public dynamic GetFieldIdByDataSourceId(string datasourceid)
+        {
+            try
+            {
+                var query = context.SysDatasourceField.DefaultIfEmpty()
+              .Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
+                return query;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message) ;
+            }
+          
         }
     }
 }
