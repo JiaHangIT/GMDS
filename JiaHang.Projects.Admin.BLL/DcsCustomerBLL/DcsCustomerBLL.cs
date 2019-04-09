@@ -26,9 +26,9 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
         public FuncResult Select(int pageSize, int currentPage, string customerName, string customerMobile)
         {
             var query = _context.DcsCustomerInfo
-                .Where(e=>string.IsNullOrWhiteSpace(customerName) || e.CustomerName.Contains(customerName))
-                .Where(e=>string.IsNullOrWhiteSpace(customerMobile)|| e.ContactMobile.Contains(customerMobile))
-                        .OrderByDescending(e => e.CreationDate).ToList();
+                .Where(e => string.IsNullOrWhiteSpace(customerName) || e.CustomerName.Contains(customerName))
+                .Where(e => string.IsNullOrWhiteSpace(customerMobile) || e.ContactMobile.Contains(customerMobile))
+                        .OrderByDescending(e => e.CreationDate);
             int total = query.Count();
             var data = query.Skip(pageSize * currentPage).Take(pageSize);
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };

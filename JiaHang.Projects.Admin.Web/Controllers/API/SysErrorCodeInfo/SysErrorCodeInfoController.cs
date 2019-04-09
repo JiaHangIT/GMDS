@@ -111,8 +111,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
         [HttpPost]
         public async Task<FuncResult> UpdateExamine([FromBody]SysErrorCodeInfoModel model)
         {
-            string MessageId = model.ErrorCodeId;
-            FuncResult data = await storeService.UpdateExamine(MessageId, HttpContext.CurrentUser(cache).UserName);
+            
+            FuncResult data = await storeService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
     }

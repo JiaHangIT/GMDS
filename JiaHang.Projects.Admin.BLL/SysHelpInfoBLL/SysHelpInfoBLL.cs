@@ -26,34 +26,54 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         /// <returns></returns>
         public FuncResult Select(SearchSysHelpInfo model)
         {
-            IOrderedQueryable<SysHelpInfo> query = _context.SysHelpInfo.
-                 Where(a =>
-                 (
-                 (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-                 && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
-                 && (model.Audit_Flag == null || a.AuditFlag==model.Audit_Flag)
-                 && (model.Important_Flag == null || a.ImportantFlag == model.Important_Flag)
-                 )
-                 ).OrderByDescending(e => e.CreationDate);
-            int total = query.Count();
-            var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
+            try
             {
-                Help_Id = e.HelpId,
-                Help_Type_Id = e.HelpTypeId,
-                Help_Title = e.HelpTitle,
-                Important_Flag = e.ImportantFlag,
-                Audit_Flag = e.AuditFlag,
-                Audited_Date = e.AuditedDate,
-                Audited_By = e.AuditedBy
-                //e.HelpId,
-                //e.HelpTypeId,
-                //e.HelpTitle,
-                //e.ImportantFlag,
-                //e.AuditFlag,
-                //e.AuditedDate,
-                //e.AuditedBy
-            });
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+
+                int total = _context.SysHelpInfo.
+                       Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                        && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
+                        && (a.DeleteFlag != 1)
+                        )
+                        ).Count();
+                var result = _context.SysHelpInfo.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                        && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
+                        && (a.DeleteFlag != 1)
+                        )
+                        ).Skip(model.limit * model.page).Take(model.limit).ToList();
+                var data = result.Select(e => new
+                {
+                    Help_Id = e.HelpId,
+                    Help_Type_Id = e.HelpTypeId ?? "",
+                    Help_Title = e.HelpTitle ?? "",
+                    Important_Flag = e.ImportantFlag > 0 ? "是" : "否",
+                    Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
+                    Audited_Date = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
+                    Audited_By = e.AuditedBy
+                    //e.HelpId,
+                    //e.HelpTypeId,
+                    //e.HelpTitle,
+                    //e.ImportantFlag,
+                    //e.AuditFlag,
+                    //e.AuditedDate,
+                    //e.AuditedBy
+                });
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+
         }
         /// <summary>
         /// 查询一条
@@ -126,7 +146,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             {
                 obj.DeleteBy = currentUserId;
                 obj.DeleteFlag = 1;
-               //obj.DeleteFlag = true;
+                //obj.DeleteFlag = true;
                 obj.DeleteDate = DateTime.Now;
                 _context.SysHelpInfo.Update(obj);
             }
@@ -163,7 +183,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                 HelpContent = model.HelpContent,
                 ImportantFlag = model.ImportantFlag,
                 AuditFlag = model.AuditFlag,
-               
+
 
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
@@ -194,15 +214,15 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<FuncResult> UpdateExamine(string MessageId, string currentuserId)
+        public async Task<FuncResult> UpdateExamine(SysHelpInfoModel model, string currentuserId)
         {
-            SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(MessageId);
+            SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(model.HelpTypeId);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
 
-            entity.AuditFlag = 1;
+            entity.AuditFlag = model.AuditFlag;
             entity.AuditedDate = System.DateTime.Now;
 
             entity.AuditedBy = currentuserId;

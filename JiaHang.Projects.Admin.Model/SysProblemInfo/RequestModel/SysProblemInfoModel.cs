@@ -8,7 +8,8 @@ namespace JiaHang.Projects.Admin.Model.SysProblemInfo.RequestModel
     public class SysProblemInfoModel
     {
 
-
+        [StringLength(40)]
+        public string ProblemId { get; set; }
 
         /// <summary>
         /// 常见问题类型ID
