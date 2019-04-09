@@ -131,6 +131,6 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
     {
         public string ReFieldName { get; set; }
         public string ToFieldId { get; set; }
-        //public int DimTransFlag { get; set; }
+        public int DimTransFlag { get; set; }
     }
 }
