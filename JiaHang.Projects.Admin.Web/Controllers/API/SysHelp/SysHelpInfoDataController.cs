@@ -108,8 +108,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelp
         [HttpPost]
         public async Task<FuncResult> UpdateExamine([FromBody]SysHelpInfoModel model)
         {
-            string MessageId = model.HelpTypeId;
-            FuncResult data = await HelpInfoService.UpdateExamine(MessageId, HttpContext.CurrentUser(cache).UserName);
+            
+            FuncResult data = await HelpInfoService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
         //[HttpGet]

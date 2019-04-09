@@ -236,9 +236,20 @@
                 };
                 let url = "/api/sysproblemInfodata/UpdateExamine";
                 let method = "POST";
-                let confirm_title = "确认审核产品名称为：【" + data.problem_Title + "】的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
+                let confirm_title = "确认审核 ：【" + data.problem_Title + "】的记录么";
+                layer.confirm(confirm_title, {
+                    btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
+
+                        layer.close(index);
+
+                    }
+
+
+                }, function (index, layero) {
+                    let model = {
+                        ProblemId: data.problem_Id,
+                        AuditFlag: 1
+                    };
                     axios({ url: url, method: method, data: model })
                         .then(function (response) {
                             console.log(response);
@@ -252,8 +263,27 @@
                         .catch(function (error) {
                             console.log(error);
                         });
+                }, function (index) {
+                    //alert("不通过");
+                    let model = {
+                        ProblemId: data.problem_Id,
+                        AuditFlag: 0
+                    };
+                    axios({ url: url, method: method, data: model })
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                                tableReload(datatable);
+                            }
 
-                });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+                );
             }
         });
 

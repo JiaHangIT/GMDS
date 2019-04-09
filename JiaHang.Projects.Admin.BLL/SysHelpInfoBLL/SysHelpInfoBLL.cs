@@ -214,15 +214,15 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<FuncResult> UpdateExamine(string MessageId, string currentuserId)
+        public async Task<FuncResult> UpdateExamine(SysHelpInfoModel model, string currentuserId)
         {
-            SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(MessageId);
+            SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(model.HelpTypeId);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
 
-            entity.AuditFlag = 1;
+            entity.AuditFlag = model.AuditFlag;
             entity.AuditedDate = System.DateTime.Now;
 
             entity.AuditedBy = currentuserId;
