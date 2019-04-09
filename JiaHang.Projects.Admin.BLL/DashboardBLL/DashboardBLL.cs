@@ -1,6 +1,7 @@
 ﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,13 +43,13 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
                                 select new
                                 {
                                     b.ServiceName,
-                                    AccessResultFlag= a.AccessResultFlag==1?"成功":"失败",
+                                    AccessResultFlag = a.AccessResultFlag == 1 ? "成功" : "失败",
                                     AccessDate = a.AccessDate.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-                                    AccessExeTime= a.AccessExeTime+" 毫秒",
+                                    AccessExeTime = a.AccessExeTime + " 毫秒",
                                     c.CustomerName
                                 };
-
-            return new FuncResult() { IsSuccess = true, Content = new { totalCount, todayCount, serviceCount, customerCount, chart1data , chart2data, recentlogdata } };
+            var chart3data = Chart3Data();
+            return new FuncResult() { IsSuccess = true, Content = new { totalCount, todayCount, serviceCount, customerCount, chart1data, chart2data, recentlogdata , chart3data } };
         }
         private object Chart1Data(List<DcsCustsveAccessInfo> todaydata)
         {
@@ -76,21 +77,21 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
         {
             var serviceids = todaydata.Select(e => e.ServiceId).Distinct().ToList();
             var serviceinfo = (from a in _context.DcsServiceInfo
-                              where serviceids.Contains(a.ServiceId)
-                              join b in _context.DcsServiceGroup
-                              on a.ServiceGroupId equals b.ServiceGroupId
-                              select new
-                              {
-                                  a.ServiceId,
-                                  b.ServiceGroupId,
-                                  b.ServiceGroupName
-                              }).ToList();
+                               where serviceids.Contains(a.ServiceId)
+                               join b in _context.DcsServiceGroup
+                               on a.ServiceGroupId equals b.ServiceGroupId
+                               select new
+                               {
+                                   a.ServiceId,
+                                   b.ServiceGroupId,
+                                   b.ServiceGroupName
+                               }).ToList();
 
             var servicelog = from a in todaydata
                              join b in serviceinfo
                              on a.ServiceId equals b.ServiceId
                              select new
-                             {                                 
+                             {
                                  b.ServiceGroupId,
                                  b.ServiceGroupName
                              };
@@ -104,13 +105,35 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
             var tops = groups.OrderByDescending(e => e.count).Take(5);
             var categories = new List<string>();
             var counts = new List<int>();
-            foreach (var obj in tops) {
+            foreach (var obj in tops)
+            {
                 categories.Add(obj.ServiceGroupName);
                 counts.Add(obj.count);
             }
-            return (categories,counts);
+            return (categories, counts);
         }
 
-
+        /// <summary>
+        /// 统计用户访问次数  最多的前五个用户
+        /// </summary>
+        /// <returns></returns>
+        public object Chart3Data()
+        {
+            var groups = _context.DcsCustsveAccessInfo.GroupBy(e => e.CustomerId).Select(c => new
+            {
+                c.Key,
+                count = c.Count()
+            }).OrderByDescending(e => e.count).Take(5).ToList();
+            var total = _context.DcsCustomerLogInfo.Count();
+            var data = from a in groups
+                       join b in _context.DcsCustomerInfo on a.Key equals b.CustomerId
+                       select new
+                       {
+                           b.CustomerName,
+                           perc=a.count/total
+                       };
+            return data;
+        }
     }
+
 }

@@ -1,183 +1,177 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<link rel="stylesheet" type="text/css" href="~/layui/larryms/larry/css/larry.css" media="all">
-<link rel="stylesheet" type="text/css" href="~/layui/larryms/css/base.css" media="all">
-<link rel="stylesheet" type="text/css" href="~/layui/larryms/css/admin/console.css">
-<link href="~/layui/larryms/layer.css" rel="stylesheet" />
 <link id="layuicss-atalicdncomtfont_477590_n82storgbjcss" rel="stylesheet" href="//at.alicdn.com/t/font_477590_n82storgbj.css" media="all">
-<script src="https://hm.baidu.com/hm.js?f5c8995c598a04b7c21960a6896a6344"></script>>
-<style>
-</style>
 
-
-
-<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-<!--[if lt IE 9]>
-  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-<div  id="app">
-
-        <div class="layui-row layui-col-space15 larryms-data-top">
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
-                <section class="layui-card">
-                    <div class="layui-card-body countup">
-                        <div class="left a">
-                            <i class="larry-icon larry-gouwucheman"></i>
-                            <p>累计接口调用数量</p>
+<div id="app">
+    <el-main>
+        <el-row :gutter="15">
+            <el-col :span="6">
+                <div style="color:#7683AC;background-color:#fff;padding-top:30px;height:100%;overflow:hidden;zoom:1;">
+                    <div style="float:left;text-align:center;font-size:16px;line-height:50px;width:50%;">
+                        <div style="width:50px;height:50px;background-color:#26A0FA;border-radius:50px; margin:0 auto;">
+                            <i class="larry-icon larry-gouwucheman" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <div class="right">
-                            @*<i class="larry-icon larry-xiangxiajiantoushixin"></i>*@
-                            <div class="p">
-                                <h3 id="orderCounter">{{data.totalCount}}</h3>
-                                @*<cite>+18%同比增长</cite>*@
-                            </div>
+                        <p style="">累计接口调用数量</p>
+                    </div>
+                    <div style="float:left;text-align:center;line-height:50px;width:50%;">
+                        <div class="p">
+                            <h3 id="orderCounter" style="font-size:30px;">{{data.totalCount}}</h3>
                         </div>
                     </div>
-                </section>
-            </div>
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
-                <section class="layui-card">
-                    <div class="layui-card-body countup">
-                        <div class="left b">
-                            <i class="larry-icon larry-shouru"></i>
-                            <p>今日接口调用数量</p>
+                </div>
+
+            </el-col>
+            <el-col :span="6">
+                <div style="color:#7683AC;background-color:#fff;padding-top:30px;height:100%;overflow:hidden;zoom:1;">
+                    <div style="float:left;text-align:center;font-size:16px;line-height:50px;width:50%;">
+                        <div style="width:50px;height:50px;background-color:#FA6332;border-radius:50px; margin:0 auto;">
+                            <i class="larry-icon larry-shouru" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <div class="right">
-                            @*<i class="larry-icon larry-xiangshang2"></i>*@
-                            <div class="p">
-                                <h3 id="incomeCounter">{{data.todayCount}}</h3>
-                                @*<cite>+50%同比增长</cite>*@
-                            </div>
+                        <p style="">今日接口调用数量</p>
+                    </div>
+                    <div style="float:left;text-align:center;line-height:50px;width:50%;">
+                        <div class="p">
+                            <h3 id="orderCounter" style="font-size:30px;">{{data.todayCount}}</h3>
                         </div>
                     </div>
-                </section>
-            </div>
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
-                <section class="layui-card">
-                    <div class="layui-card-body countup">
-                        <div class="left c">
-                            <i class="larry-icon larry-laofangke"></i>
-                            <p>接口数量</p>
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <div style="color:#7683AC;background-color:#fff;padding-top:30px;height:100%;overflow:hidden;zoom:1;">
+                    <div style="float:left;text-align:center;font-size:16px;line-height:50px;width:50%;">
+                        <div style="width:50px;height:50px;background-color:#68C381;border-radius:50px; margin:0 auto;">
+                            <i class="larry-icon larry-laofangke" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <div class="right">
-                            @*<i class="larry-icon larry-xiangshang2"></i>*@
-                            <div class="p">
-                                <h3 id="UVcounter">{{data.serviceCount}}</h3>
-                                <cite>@*+35%环比增长*@</cite>
-                            </div>
+                        <p style="">接口数量</p>
+                    </div>
+                    <div style="float:left;text-align:center;line-height:50px;width:50%;">
+                        <div class="p">
+                            <h3 id="orderCounter" style="font-size:30px;">{{data.serviceCount}}</h3>
                         </div>
                     </div>
-                </section>
-            </div>
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-hide-md layui-show-lg-inline-block layui-col-lg3">
-                <section class="layui-card">
-                    <div class="layui-card-body countup">
-                        <div class="left d">
-                            <i class="larry-icon larry-zhifumaijia"></i>
-                            <p>用户数量</p>
+                </div>
+
+            </el-col>
+            <el-col :span="6">
+                <div style="color:#7683AC;background-color:#fff;padding-top:30px;height:100%;overflow:hidden;zoom:1;">
+                    <div style="float:left;text-align:center;font-size:16px;line-height:50px;width:50%;">
+                        <div style="width:50px;height:50px;background-color:#FFB800;border-radius:50px; margin:0 auto;">
+                            <i class="larry-icon larry-zhifumaijia" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <div class="right">
-                            @*<i class="larry-icon larry-xiangshang2"></i>*@
-                            <div class="p">
-                                <h3 id="userCounter">{{data.customerCount}}</h3>
-                                @*<cite>+30%同比增长</cite>*@
-                            </div>
+                        <p style="">用户数量</p>
+                    </div>
+                    <div style="float:left;text-align:center;line-height:50px;width:50%;">
+                        <div class="p">
+                            <h3 id="orderCounter" style="font-size:30px;">{{data.customerCount}}</h3>
                         </div>
                     </div>
-                </section>
-            </div>
-        </div>
+                </div>
 
-
-
-        <div class="layui-row  layui-col-space15 larryms-count-demo">
-            <div class="layui-col-xs12 layui-col-sm12 layui-col-md8 layui-col-lg8">
-                <section class="layui-card">
-                    @*<div class="larryms-card-head">最新接口</div>*@
-                    <div class="layui-card-body" id="container1">
-
-                    </div>
-                </section>
-            </div>
-            <div class="layui-col-xs12 layui-col-sm12 layui-col-md4 layui-col-lg4">
-                <section class="layui-card">
-                    @*<div class="larryms-card-head"></div>*@
-                    <div class="layui-card-body" id="container2">
-
-                    </div>
-                </section>
-            </div>
-        </div>
-
-        <div class="layui-row  layui-col-space15 larryms-count-demo">
-            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 layui-col-lg12">
-                <section class="layui-card">
-                    <div class="larryms-card-head">最新接口</div>
-                    <div class="layui-card-body">
-                        <el-table :data="data.recentlogdata" border style="width: 100%">
-                            <el-table-column prop="serviceName" label="接口名称"></el-table-column>
-                            <el-table-column prop="customerName" label="用户名称"></el-table-column>
-                            <el-table-column prop="accessExeTime" label="执行所用时间"></el-table-column>
-                            <el-table-column prop="accessResultFlag" label="调用结果"></el-table-column>
-                            <el-table-column prop="accessDate" label="调用时间"></el-table-column>
+            </el-col>
+        </el-row>
+        <el-row :gutter="15" style="margin-top:15px;">
+            <el-col :span="16">
+                <div id="container1"></div>
+            </el-col>
+            <el-col :span="8">
+                <div id="container2"></div>
+            </el-col>
+        </el-row>
+        <el-row :gutter="15" style="margin-top:15px;">
+            <el-col :span="24">
+                <el-table :data="data.recentlogdata" border style="width: 100%">
+                    <el-table-column prop="serviceName" label="接口名称"></el-table-column>
+                    <el-table-column prop="customerName" label="用户名称"></el-table-column>
+                    <el-table-column prop="accessExeTime" label="执行所用时间"></el-table-column>
+                    <el-table-column prop="accessResultFlag" label="调用结果"></el-table-column>
+                    <el-table-column prop="accessDate" label="调用时间"></el-table-column>
+                </el-table>
+            </el-col>
+        </el-row>
+        <el-row :gutter="15" style="margin-top:15px;">
+            <el-col :span="12">
+                <div>
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span>用户访问量占比</span>
+                        </div>
+                        <el-table :data="tableData" stripe style="width: 100%">
+                            <el-table-column prop="date" label="日期" width="180"></el-table-column>
                         </el-table>
-                        @*<table class="layui-table larryms-order-demo" lay-skin="nob">
-                            <colgroup>
-                                <col width="20%">
-                                <col width="20%">
-                                <col width="15%">
-                                <col width="20%">
-                                <col>
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>接口号</th>
-                                    <th>缩略图</th>
-                                    <th>产品</th>
-                                    <th>买家</th>
-                                    <th class="layui-hide-xs">交易状态</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>mobileABC001</td>
-                                    <td><img src="../../../larryms/images/product/iwatch.png" alt=""></td>
-                                    <td>iWatch</td>
-                                    <td>吕**</td>
-                                    <td class="layui-hide-xs"><span class="label label-success font-weight-100">已完成</span></td>
-                                </tr>
-                                <tr>
-                                    <td>mobileABC002</td>
-                                    <td><img src="../../../larryms/images/product/iphone.png" alt=""></td>
-                                    <td>iphone</td>
-                                    <td>江**</td>
-                                    <td class="layui-hide-xs"><span class="label label-success font-weight-100">已完成</span></td>
-                                </tr>
-                                <tr>
-                                    <td>mobileABC003</td>
-                                    <td><img src="../../../larryms/images/product/xsq.jpg" alt=""></td>
-                                    <td>AOC</td>
-                                    <td>李**</td>
-                                    <td class="layui-hide-xs"><span class="label label-warning font-weight-100">待发货</span></td>
-                                </tr>
-                                <tr>
-                                    <td>mobileABC004</td>
-                                    <td><img src="../../../larryms/images/product/bjb.jpg" alt=""></td>
-                                    <td>Mac Pro</td>
-                                    <td>高**</td>
-                                    <td class="layui-hide-xs"><span class="label label-default font-weight-100">已取消</span></td>
-                                </tr>
-                            </tbody>
-                        </table>*@
-                    </div>
-                </section>
-            </div>
+                        @*<el-row>
+            <el-col :span="12">
+                <span>风暴恶趣味</span>
+            </el-col>
+            <el-col :span="12">
+                <el-progress :percentage="70"></el-progress>
+            </el-col>
+        </el-row>*@
+                    </el-card>
+                </div>
+            </el-col>
+            <el-col :span="12">
+                <div>
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span>接口访问量占比</span>
+                        </div>
+                        <el-row>
+                            <el-col :span="12">
+                                <span>风暴恶趣味</span>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-progress :percentage="70"></el-progress>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </div>
+            </el-col>
+        </el-row>
 
-        </div>
- 
+        <el-row :gutter="15" style="margin-top:15px;">
+            <el-col :span="12">
+                <div>
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span>用户接口日访问量</span>
+                        </div>
+                        <el-row>
+                            <el-col :span="12">
+                                <span>风暴恶趣味</span>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-progress :percentage="70"></el-progress>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </div>
+            </el-col>
+            <el-col :span="12">
+                <div>
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span>用户接口月访问量</span>
+                        </div>
+                        <el-row>
+                            <el-col :span="12">
+                                <span>风暴恶趣味</span>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-progress :percentage="70"></el-progress>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </div>
+            </el-col>
+        </el-row>
+
+
+    </el-main>
+
+
+
+
 </div>
 <script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
 <script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
@@ -189,7 +183,24 @@
         el: "#app",
         data: function () {
             return {
-                data: {}
+                data: {},
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1519 弄'
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                }]
             }
         },
         methods: {
