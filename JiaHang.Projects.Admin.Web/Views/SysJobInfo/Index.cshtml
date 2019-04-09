@@ -7,31 +7,41 @@
 <h2>Index</h2>
 
 <div id="app">
-
-    <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px" class="demo-dynamic">
-        <el-form-item prop="email"
-                      label="邮箱"
-                      :rules="[
+    <el-button type="text" @@click="dialogVisible = true">点击打开 Dialog</el-button>
+    <el-dialog title="提示"
+               :visible.sync="dialogVisible"
+               width="30%"
+               :before-close="handleClose">
+        <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px" class="demo-dynamic">
+            <el-form-item prop="email"
+                          label="邮箱"
+                          :rules="[
       { required: true, message: '请输入邮箱地址', trigger: 'blur' },
       { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
     ]">
-            <el-input v-model="dynamicValidateForm.email"></el-input>
-        </el-form-item>
-        <el-form-item v-for="(domain, index) in dynamicValidateForm.domains"
-                      :label="'域名' + index"
-                      :key="domain.key"
-                      :prop="'domains.' + index + '.value'"
-                      :rules="{
+                <el-input v-model="dynamicValidateForm.email"></el-input>
+            </el-form-item>
+            <el-form-item v-for="(domain, index) in dynamicValidateForm.domains"
+                          :label="'域名' + index"
+                          :key="domain.key"
+                          :prop="'domains.' + index + '.value'"
+                          :rules="{
       required: true, message: '域名不能为空', trigger: 'blur'
     }">
-            <el-input v-model="domain.value"></el-input><el-button @@click.prevent="removeDomain(domain)">删除</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="submitForm('dynamicValidateForm')">提交</el-button>
-            <el-button @@click="addDomain">新增域名</el-button>
-            <el-button @@click="resetForm('dynamicValidateForm')">重置</el-button>
-        </el-form-item>
-    </el-form>
+                <el-input v-model="domain.value"></el-input><el-button @@click.prevent="removeDomain(domain)">删除</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="submitForm('dynamicValidateForm')">提交</el-button>
+                <el-button @@click="addDomain">新增域名</el-button>
+                <el-button @@click="resetForm('dynamicValidateForm')">重置</el-button>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @@click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @@click="dialogVisible = false">确 定</el-button>
+        </span>
+    </el-dialog>
+
 </div>
 <script>
     layui.use(['element', 'layer'], function () {
@@ -45,42 +55,50 @@
     new Vue({
         el: "#app",
         data: function () {
-            
-                return {
-                    dynamicValidateForm: {
-                        domains: [{
-                            value: ''
-                        }],
-                        email: ''
-                    }
-                };
-            },
-            methods: {
-                submitForm(formName) {
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            alert('submit!');
-                        } else {
-                            console.log('error submit!!');
-                            return false;
-                        }
-                    });
-                },
-                resetForm(formName) {
-                    this.$refs[formName].resetFields();
-                },
-                removeDomain(item) {
-                    var index = this.dynamicValidateForm.domains.indexOf(item)
-                    if (index !== -1) {
-                        this.dynamicValidateForm.domains.splice(index, 1)
-                    }
-                },
-                addDomain() {
-                    this.dynamicValidateForm.domains.push({
-                        value: '',
-                        key: Date.now()
-                    });
+
+            return {
+                dialogVisible: false,
+                dynamicValidateForm: {
+                    domains: [{
+                        value: ''
+                    }],
+                    email: ''
                 }
-            }       
+            };
+        },
+        methods: {
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => { });
+            },
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            removeDomain(item) {
+                var index = this.dynamicValidateForm.domains.indexOf(item)
+                if (index !== -1) {
+                    this.dynamicValidateForm.domains.splice(index, 1)
+                }
+            },
+            addDomain() {
+                this.dynamicValidateForm.domains.push({
+                    value: '',
+                    key: Date.now()
+                });
+            }
+        }
     });
 </script>

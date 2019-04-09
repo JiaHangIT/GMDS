@@ -39,14 +39,14 @@
                 </select>
             </div>
             @*<div class="layui-inline">
-            <label class="layui-form-label">审核时间</label>
-            <div class="layui-input-block">
-                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+                    <label class="layui-form-label">审核时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
 
-            </div>
-        </div>*@
+                    </div>
+                </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
+            <button class="layui-btn" data-type="showGenerateLayer" style="width:120px">新增错误代码</button>
         </div>
         @*<div class="layui-form-item" style="margin-top:30px;">
 
@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label" >错误代码代码</label>
+                <label class="layui-form-label">错误代码代码</label>
                 <div class="layui-input-block">
                     <input type="text" name="ErrorCodeCode" id="ErrorCodeCode" autocomplete="off" placeholder="错误代码代码" class="layui-input">
                 </div>
@@ -98,16 +98,19 @@
                     </select>
                 </div>
             </div>
-            
+
         </div>
 
         <div class="layui-form-item">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+            @*<button class="layui-btn" data-type="generate" id="examine_btn" lay-submit lay-filter="submit">审核通过</button>
+            <button class="layui-btn" data-type="generate" id="examine_btnT" lay-submit lay-filter="submit">审核通过</button>*@
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
     </div>
 </div>
-
+@*<div id="shenhe_layer" style="display:none; padding:40px;">
+</div>*@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -132,7 +135,7 @@
             elem: '#stCloseDate'
         });
 
-        
+
         table.render({
             elem: '#test'
             , url: '/api/SysErrorCodeInfo/search/'
@@ -212,30 +215,60 @@
             } else if (obj.event === 'examine') {
                 console.log("审核");
                 console.log(data.errorCodeId);
-                let model = {
-                    ErrorCodeId: data.errorCodeId
-
-                };
+               
                 let url = "/api/SysErrorCodeInfo/UpdateExamine";
                 let method = "POST";
-                let confirm_title = "确认审核产品名称为：【" + data.errorCodeName + "】的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios({ url: url, method: method, data: model })
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                                tableReload(datatable);
-                            }
+                let confirm_title = "错误名称为：【" + data.errorCodeName + "】";
 
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
 
-                });
+
+                layer.confirm(confirm_title, {
+                    btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
+
+                        layer.close(index);
+
+                    }
+                      
+
+                }, function (index, layero) {
+                    let model = {
+                        ErrorCodeId: data.errorCodeId,
+                        AuditFlag:1
+                    };
+                     axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                console.log(response);
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                    tableReload(datatable);
+                                }
+
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }, function (index) {
+                        //alert("不通过");
+                        let model = {
+                            ErrorCodeId: data.errorCodeId,
+                            AuditFlag: 0
+                        };
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                console.log(response);
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                    tableReload(datatable);
+                                }
+
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }
+                );
             }
         });
         var $ = layui.$, active = {
@@ -313,7 +346,7 @@
             },
 
         };
-        
+
         form.on('submit(submit)', function () {
             console.log('save');
             //alert($("#Message_ID").val());
@@ -331,7 +364,7 @@
                 //Last_Updata_Date: $("#cost").val(),
                 //Last_Updata_By: $("#colorName").val(),
             };
-            
+
             console.log(model);
             let url = "/api/SysErrorCodeInfo/add";
             let method = "POST";
@@ -376,102 +409,80 @@
                 var type = $(this).data('type');
                 active[type] ? active[type].call(this) : '';
             });
-        //function examineLayer(data) {
+        
+            
 
-        //    console.log(table);
-        //    console.log(table.cache);
-        //    initFormValue(data);
+            function showLayer(data) {
 
-        //        let title = "审核";
-        //        document.getElementById("Message_ID").disabled = true;
-        //        document.getElementById("examine_btn").innerHTML = "立即审核";
+                console.log(table);
+                console.log(table.cache);
+                initFormValue(data);
+                let title = "新增";
+                document.getElementById("ErrorCodeId").disabled = false;
+                document.getElementById("generate_btn").innerHTML = "立即创建";
+                if (layType != true) {
+                    title = "编辑";
+                    document.getElementById("ErrorCodeId").disabled = true;
+                    document.getElementById("generate_btn").innerHTML = "立即修改";
+                }
+                generateLayer_index = layer.open({
+                    type: 1
+                    , title: title //不显示标题栏
+                    , closeBtn: false
+                    , area: ['50%', '60%']
+                    , closeBtn: 2
+                    , shade: 0.8
+                    , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    //, btn: ['火速围观', '残忍拒绝']
+                    , btnAlign: 'c'
+                    , moveType: 1 //拖拽模式，0或者1
+                    , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
 
-        //    generateLayer_indexT = layer.open({
-        //        type: 1
-        //        , title: "审核" //不显示标题栏
-        //        , closeBtn: false
-        //        , area: ['50%', '60%']
-        //        , shade: 0.8
-        //        , id: 'LAY_examine' //设定一个id，防止重复弹出
-        //        //, btn: ['火速围观', '残忍拒绝']
-        //        , btnAlign: 'c'
-        //        , moveType: 1 //拖拽模式，0或者1
-        //        , content: $('#examine_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                });
+            };
+            function initFormValue(data) {
+                if (data == undefined) {
 
-        //    });
-        //};
-
-        function showLayer(data) {
-
-            console.log(table);
-            console.log(table.cache);
-            initFormValue(data);
-            let title = "新增";
-            document.getElementById("ErrorCodeId").disabled = false;
-            document.getElementById("generate_btn").innerHTML = "立即创建";
-            if (layType != true) {
-                title = "编辑";
-                document.getElementById("ErrorCodeId").disabled = true;
-                document.getElementById("generate_btn").innerHTML = "立即修改";
-            }
-            generateLayer_index = layer.open({
-                type: 1
-                , title: title //不显示标题栏
-                , closeBtn: false
-                , area: ['50%', '60%']
-                , closeBtn: 2
-                , shade: 0.8
-                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 1 //拖拽模式，0或者1
-                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-
-            });
-        };
-        function initFormValue(data) {
-            if (data == undefined) {
-
+                    form.val("generate-form", {
+                        ErrorCodeId: "",
+                        ErrorCodeCode: "",
+                        ErrorCodeName: "",
+                        ErrorCodeDesc: "",
+                        Important_Flag: "",
+                        //colorName: "",
+                        //category: ""
+                    })
+                    return;
+                }
                 form.val("generate-form", {
-                    ErrorCodeId: "",
-                    ErrorCodeCode: "",
-                    ErrorCodeName: "",
-                    ErrorCodeDesc: "",
-                    Important_Flag: "",
-                    //colorName: "",
-                    //category: ""
+                    ErrorCodeId: data.errorCodeId,
+                    ErrorCodeCode: data.errorCodeCode,
+                    ErrorCodeName: data.errorCodeName,
+                    ErrorCodeDesc: data.errorCodeDesc,
+                    Important_Flag: data.importantFlag
+                    //colorName: data.dish_Color,
+                    //category: data.category
                 })
-                return;
             }
-            form.val("generate-form", {
-                ErrorCodeId: data.errorCodeId,
-                ErrorCodeCode: data.errorCodeCode,
-                ErrorCodeName: data.errorCodeName,
-                ErrorCodeDesc: data.errorCodeDesc,
-                Important_Flag: data.importantFlag
-                //colorName: data.dish_Color,
-                //category: data.category
-            })
-        }
-        function tableReload(datatable) {
-            console.log(datatable);
-            table.reload("testReload", {
-                data: datatable
-            })
-        }
+            function tableReload(datatable) {
+                console.log(datatable);
+                table.reload("testReload", {
+                    data: datatable
+                })
+            }
 
 
-        ////色蝶
-        //$.ajax({
-        //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
-        //    success: function (data) {
-        //        $.each(data, function (index, item) {
-        //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
-        //        });
-        //        layui.form.render("select");
-        //    }
-        //});
+            ////色蝶
+            //$.ajax({
+            //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
+            //    success: function (data) {
+            //        $.each(data, function (index, item) {
+            //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
+            //        });
+            //        layui.form.render("select");
+            //    }
+            //});
 
-    });
+        });
 </script>
 

@@ -109,8 +109,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
         [HttpPost]
         public async Task<FuncResult> UpdateExamine([FromBody]SysMessageInfoModel model)
         {
-            string MessageId = model.Message_ID;
-            FuncResult data = await storeService.UpdateExamine(MessageId, HttpContext.CurrentUser(cache).UserName);
+            FuncResult data = await storeService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
 

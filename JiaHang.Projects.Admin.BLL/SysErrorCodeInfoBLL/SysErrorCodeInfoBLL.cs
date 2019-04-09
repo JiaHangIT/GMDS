@@ -52,7 +52,7 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
                     errorCodeName = e.ErrorCodeName ?? "",
                     errorCodeDesc = e.ErrorCodeDesc ?? "",
                     importantFlag = e.ImportantFlag > 0 ? "是" : "否",
-                    auditFlag = e.AuditFlag > 0 ? "是" : "否",
+                    auditFlag = e.AuditFlag > 0 ? "通过审核" : "未通过审核",
                     auditedDate = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
                     auditedBy = e.AuditedBy ?? "",
                     creationDate = e.CreationDate != null ? Convert.ToDateTime(e.CreationDate).ToString("yyyy-MM-dd") : "",
@@ -215,15 +215,15 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<FuncResult> UpdateExamine(string MessageId, string currentuserId)
+        public async Task<FuncResult> UpdateExamine(SysErrorCodeInfoModel model, string currentuserId)
         {
-            SysErrorCodeInfo entity = await _context.SysErrorCodeInfo.FindAsync(MessageId);
+            SysErrorCodeInfo entity = await _context.SysErrorCodeInfo.FindAsync(model.ErrorCodeId);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
 
-            entity.AuditFlag = 1;
+            entity.AuditFlag = model.AuditFlag;
             entity.AuditedDate = System.DateTime.Now;
 
             entity.AuditedBy = currentuserId;
@@ -231,7 +231,7 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
             entity.LastUpdatedBy = currentuserId;
             _context.SysErrorCodeInfo.Update(entity);
             await _context.SaveChangesAsync();
-            return new FuncResult() { IsSuccess = true, Content = entity, Message = "审核成功" };
+            return new FuncResult() { IsSuccess = true, Content = entity, Message = "处理成功！" };
         }
     }
 }
