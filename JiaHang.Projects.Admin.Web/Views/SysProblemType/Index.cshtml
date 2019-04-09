@@ -29,149 +29,65 @@
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
             <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">帮助类型：</label>
+                <label class="layui-form-label">类型：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_help_type_id" autocomplete="off">
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">公告标题：</label>
-                <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_help_title" autocomplete="off">
-                </div>
-            </div>
-
-            @*</div>
-                <div class="layui-row">*@
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 是否重要：</label>
-                <div class="layui-inline">
-                    <select name="interest" id="search_important_flag" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="0" selected="">是</option>
-                        <option value="1">否</option>
-                    </select>
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 是否审核：</label>
-                <div class="layui-inline">
-                    <select name="interest" id="search_audit_flag" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="0" selected="">是</option>
-                        <option value="1">否</option>
-                    </select>
+                    <input class="layui-input" name="id" id="search_problem_type_name" autocomplete="off">
                 </div>
             </div>
         </div>
+
         <div class="layui-form-item" style="margin-top:15px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增信息</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增帮助</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-            @*<a class="layui-btn" href="/api/syshelpinfodata/export">导出所有</a>*@
+            @*<a class="layui-btn" href="/api/sysproblemtypedata/export">导出所有</a>*@
         </div>
-
     </div>
-    <table class="layui-hide" id="test" lay-filter="syshelp"> </table>
-
+    <table class="layui-hide" id="test" lay-filter="sysproblem"> </table>
 </div>
-
-
-
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-
             <div class="layui-inline">
-                <label class="layui-form-label">帮助类型</label>
+                <label class="layui-form-label">帮助类型名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="help_type_id" id="help_type_id" autocomplete="off" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">公告标题</label>
-                <div class="layui-input-block">
-                    <input type="text" name="help_title" id="help_title" autocomplete="off" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-
-        </div>
-        <div class="layui-form-item">
-
-            <div class="layui-inline">
-                <label class="layui-form-label">是否重要</label>
-                <div class="layui-input-block">
-                    <select name="interest" id="important_flag" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="0" selected="">否</option>
-                        <option value="1">是</option>
-
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">是否审核</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" disabled="" name="interest" id="audit_flag" lay-filter="aihao" readOnly="ture">
-
-                        <option value="0" selected="">否</option>
-                        <option value="1">是</option>
-
-                    </select>
-                </div>
-            </div>
-
-
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">公告内容</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
+                    <input type="text" name="problem_type_name" id="problem_type_name" autocomplete="off" placeholder="帮助类型名称" class="layui-input" lay-verify="required">
                 </div>
             </div>
         </div>
-
         <div class="layui-form-item">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-           
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
     </div>
-
-
 </div>
-
-
-
-
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
 
-    layui.use(['table', 'element', 'layer', 'layedit', 'form', 'laydate'], function () {
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
         var table = layui.table;
         var element = layui.element;
         var layer = layui.layer;
         var form = layui.form;
         var laydate = layui.laydate;
-        var layedit = layui.layedit
         var generateLayer_index = 0;
         var layType = true;//true 新增  false 编辑
-        var help_id = 0;
+        var problem_id = 0;
         //日期
         //laydate.render({
-        //    elem: '#audited_date'
+        //    elem: '#eff_start_date'
+        //});
+        //laydate.render({
+        //    elem: '#eff_end_date'
         //});
 
 
         table.render({
             elem: '#test'
-            , url: '/api/syshelpinfodata/search/'
+            , url: '/api/sysproblemtypedata/search/'
             , contentType: 'application/json'
             , method: 'post'
             , parseData: function (res) { //res 即为原始返回的数据
@@ -185,25 +101,13 @@
             }
 
 
-
             , cols: [[
 
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'help_Type_Id', width: 80, title: '帮助类型', sort: true, fixed: 'left' }
-                //, { field: 'help_Type_Id', title: '帮助类型' }
-                , { field: 'help_Title', title: '公告标题', sort: true }
-                //, { field: 'user_Org_Id', title: '用户组别', }
-                , { field: 'important_Flag', title: '是否重要', sort: true }
-                , { field: 'audit_Flag', title: '是否审核' }
-                //, { field: 'user_Mobile_No', title: '手机号', sort: true }
-                , { field: 'audited_Date', title: '审核时间', sort: true }
-                //, { field: 'language_Code', title: '默认语言', sort: true }
-                , { field: 'audited_By', title: '审核人', sort: true }
-                //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }
-                //, { field: 'eff_End_Date', title: '有效结束日期', sort: true }
-
+                , { field: 'problem_Type_Name', width: 300, title: '帮助类型名称', sort: true, fixed: 'left' }
+                , { field: 'creation_Date', width: 300, title: '创建时间' }
             ]]
             , id: 'testReload'
             , page: true,
@@ -213,19 +117,19 @@
         });
 
 
-        table.on('checkbox(syshelp)', function (obj) {
+        table.on('checkbox(sysproblem)', function (obj) {
         });
         //监听工具条
-        table.on('tool(syshelp)', function (obj) {
+        table.on('tool(sysproblem)', function (obj) {
             debugger;
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
             } else if (obj.event === 'del') {
-                let confirm_title = "确认删除" + data.help_Title + "的记录么";
+                let confirm_title = "确认删除" + data.problem_Type_Name + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
-                    axios.delete('/api/syshelpinfodata/' + data.help_Id)
+                    axios.delete('/api/sysproblemtypedata/' + data.problem_Type_Id)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -240,38 +144,13 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                help_id = data.help_Id
+                problem_type_id = data.problem_Type_Id
                 layType = false;
                 showLayer(data);
-            } else if (obj.event === 'examine') {
-                console.log("审核");
-                console.log(data.help_Id);
-                console.log(data.help_Title);
-                let model = {
-                    HelpTypeId: data.help_Id
-                };
-                let url = "/api/syshelpinfodata/UpdateExamine";
-                let method = "POST";
-                let confirm_title = "确认审核产品名称为：【" + data.help_Title + "】的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios({ url: url, method: method, data: model })
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                                tableReload(datatable);
-                            }
-
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-
-                });
             }
         });
+
+
 
 
         var $ = layui.$, active = {
@@ -286,12 +165,12 @@
                     let ids = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        ids.push(data[i].help_Id);
-                        parms += "ids=" + data[i].help_Id + "&";
+                        ids.push(data[i].problem_Type_Id);
+                        parms += "ids=" + data[i].problem_Type_Id + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/syshelpinfodata/batchdelete/" + parms)
+                    axios.delete("/api/sysproblemtypedata/batchdelete/" + parms)
                         .then(function (response) {
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
@@ -317,31 +196,24 @@
                             console.log(error);
                         });
                 });
-
-
             },
             search: function () {
                 let pars = {
                     limit: 10,
                     page: 1,
-                    help_Type_Id: $("#search_help_type_id").val(),
-                    help_Title: $("#search_help_title").val(),
-                    important_Flag: 0,
-                    audit_Flag: 0,
+                    problem_Type_Name: $("#search_problem_type_name").val(),
+
                 }
-                if ($("#search_important_flag").val() != "") {
-                    pars.Important_Flag = $("#search_important_flag").val();
-                }
-                if ($("#search_audit_flag").val() != "") {
-                    pars.Audit_Flag = $("#search_audit_flag").val();
-                }
+                //if ($("#search_user_ower").val() != "") {
+                //    pars.User_Ower = Number($("#search_user_ower").val());
+                //}
+
                 //执行重载
                 table.reload('testReload', {
                     where: pars,
                     contentType: 'application/json',
                     method: 'post'
                 });
-
             },
             showGenerateLayer: function () {
                 layType = true;
@@ -353,36 +225,27 @@
 
         };
         form.on('submit(submit)', function () {
-            //alert($("#help_type_id").val());
             let model = {
-                helptypeid: $("#help_type_id").val(),
-                helptitle: $("#help_title").val(),
-                helpcontent: $("#help_content").val(),
-                importantflag: $("#important_flag").val(),
-                auditflag: $("#audit_flag").val(),
-                //auditeddate: $("#audited_date").val(),
-                //auditedby: $("#audited_by").val()
+                problemtypename: $("#problem_type_name").val(),
+
             };
-            
-            let url = "/api/syshelpinfodata";
+            let url = "/api/sysproblemtypedata";
             let method = "POST";
             if (layType != true) {
-                url = "/api/syshelpinfodata/" + help_id;
+                url = "/api/sysproblemtypedata/" + problem_type_id;
                 method = "PUT";
             }
             axios({ url: url, method: method, data: model })
                 .then(function (response) {
-
                     layer.msg(response.data.message);
                     if (!response.data.isSuccess) {
-
                         return;
                     }
                     let datatable = table.cache.testReload;
                     if (layType != true) {
                         //修改
                         for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].help_Id == response.data.content.help_Id) {
+                            if (datatable[i].problem_Type_Id == response.data.content.problem_Type_Id) {
                                 datatable.splice(i, 1, response.data.content);
                                 break;
                             }
@@ -411,11 +274,11 @@
         function showLayer(data) {
             initFormValue(data);
             let title = "新增";
-            document.getElementById("help_title").disabled = false;
+            document.getElementById("problem_type_name").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
                 title = "编辑";
-                document.getElementById("help_title").disabled = false;
+                document.getElementById("problem_type_name").disabled = false;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -437,27 +300,17 @@
             if (data == undefined) {
 
                 form.val("generate-form", {
-                    help_id: "",
-                    help_type_id: "",
-                    help_title: "",
-                    help_contant: "",
-                    important_flag: "",
-                    audit_flag: "",
-                    //audited_Date: "",
-                    //audited_By: "",
-
+                    problem_type_id:"",
+                    creation_date: "",
+                    problem_type_name: "",
                 })
                 return;
             }
             form.val("generate-form", {
-                help_id: data.help_Id,
-                help_type_id: data.help_Type_Id,
-                help_title: data.help_Title,
-                help_contant: data.help_Contant,
-                important_flag: data.important_Flag,
-                audit_flag: data.audit_Flag,
-                //audited_Date: data.audited_Date,
-                //audited_By: data.audited_By,
+                problem_type_id: data.problem_Type_Id,
+                creation_date: data.creation_Date,
+                problem_type_name: data.problem_Type_Name,
+
             })
         }
 
@@ -473,15 +326,3 @@
 
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
