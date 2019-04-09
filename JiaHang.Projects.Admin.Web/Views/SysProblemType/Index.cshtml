@@ -26,36 +26,36 @@
 <div>
 
 
-    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px;">
         <div class="layui-row">
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label">类型：</label>
+            <div class=" layui-col-md6 layui-col-xs6" style="margin-top:4px;">
+                <label class="layui-form-label">问题类型：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_problem_type_name" autocomplete="off">
                 </div>
             </div>
         </div>
 
-        <div class="layui-form-item" style="margin-top:15px;">
+        <div class="layui-form-item" style="margin-top:8px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增帮助</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
             @*<a class="layui-btn" href="/api/sysproblemtypedata/export">导出所有</a>*@
         </div>
     </div>
-    <table class="layui-hide" id="test" lay-filter="sysproblem"> </table>
+    <table class="layui-hide" id="test" lay-filter="sysproblem" style="margin-top:8px;"> </table>
 </div>
-<div id="generate_layer" style="display:none;position:relative;padding:15px;">
+<div id="generate_layer" style="display:none;position:relative;padding-left:15px;margin-top:4px">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">帮助类型名称</label>
+                <label class="layui-form-label">常见问题类型名称</label>
                 <div class="layui-input-block">
                     <input type="text" name="problem_type_name" id="problem_type_name" autocomplete="off" placeholder="帮助类型名称" class="layui-input" lay-verify="required">
                 </div>
             </div>
         </div>
-        <div class="layui-form-item">
+        <div class="layui-form-item" style="margin-left:100PX">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
@@ -99,14 +99,12 @@
                     "data": res.content.data //解析数据列表
                 };
             }
-
-
             , cols: [[
 
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'problem_Type_Name', width: 300, title: '帮助类型名称', sort: true, fixed: 'left' }
+                , { field: 'problem_Type_Name', width: 300, title: '常见问题类型名称', sort: true, fixed: 'left' }
                 , { field: 'creation_Date', width: 300, title: '创建时间' }
             ]]
             , id: 'testReload'
@@ -149,10 +147,7 @@
                 showLayer(data);
             }
         });
-
-
-
-
+        
         var $ = layui.$, active = {
             getCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload')
@@ -286,14 +281,14 @@
                 , title: title //不显示标题栏
                 , closeBtn: false
                 , fixed: false
-                , area: ['800px', '600px']
+                , area: ['400px', '180px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '3%']
+                , offset: ['20%', '23%']
             });
         };
         function initFormValue(data) {

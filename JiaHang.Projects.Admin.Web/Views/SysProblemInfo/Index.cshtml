@@ -26,15 +26,15 @@
 <div>
 
 
-    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px;">
         <div class="layui-row">
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md6 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label">问题类型：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_problem_type_id" autocomplete="off">
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md6 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label">常见问题标题：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_problem_title" autocomplete="off">
@@ -44,18 +44,18 @@
             @*</div>
                 <div class="layui-row">*@
           
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md6 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label"> 是否审核：</label>
                 <div class="layui-inline">
                     <select name="interest" id="search_audit_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="1" selected="">是</option>
+                        <option value="1">是</option>
                         <option value="0">否</option>
                     </select>
                 </div>
             </div>
         </div>
-        <div class="layui-form-item" style="margin-top:15px;">
+        <div class="layui-form-item" style="margin-top:8px" >
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增信息</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
@@ -63,16 +63,12 @@
         </div>
 
     </div>
-    <table class="layui-hide" id="test" lay-filter="sysproblem"> </table>
+    <table class="layui-hide" id="test" lay-filter="sysproblem" style="margin-top:8px"> </table>
 
 </div>
-
-
-
-<div id="generate_layer" style="display:none;position:relative;padding:15px;">
+<div id="generate_layer" style="display:none;position:relative;padding-left:15px;margin-top:4px">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-
             <div class="layui-inline">
                 <label class="layui-form-label">问题类型</label>
                 <div class="layui-input-block">
@@ -86,20 +82,20 @@
                 </div>
             </div>
 
-        </div>
-        <div class="layui-form-item">
+
+
 
             @*<div class="layui-inline">
-                <label class="layui-form-label">是否重要</label>
-                <div class="layui-input-block">
-                    <select name="interest" id="important_flag" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="0" selected="">否</option>
-                        <option value="1">是</option>
+            <label class="layui-form-label">是否重要</label>
+            <div class="layui-input-block">
+                <select name="interest" id="important_flag" lay-filter="aihao">
+                    <option value=""></option>
+                    <option value="0" selected="">否</option>
+                    <option value="1">是</option>
 
-                    </select>
-                </div>
-            </div>*@
+                </select>
+            </div>
+        </div>*@
             <div class="layui-inline">
                 <label class="layui-form-label">是否审核</label>
                 <div class="layui-input-block">
@@ -111,20 +107,17 @@
                     </select>
                 </div>
             </div>
-
-
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">常见问题内容</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" id="problem_content" class="layui-textarea"></textarea>
+            <div class="layui-form-item">
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">常见问题内容</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容" id="problem_content" class="layui-textarea"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="layui-form-item">
+        </div>
+        <div class="layui-form-item" style="margin-left:280PX">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
@@ -138,7 +131,7 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    @*<a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>*@
+    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
@@ -233,32 +226,34 @@
                 problem_Id = data.problem_Id
                 layType = false;
                 showLayer(data);
-            //} else if (obj.event === 'examine') {
-            //    console.log("审核");
-            //    let model = {
-            //        problem_id: data.problemId,    
+            } else if (obj.event === 'examine') {
+                console.log("审核");
+                console.log(data.problem_Id);
+                console.log(data.problem_Title);
+                let model = {
+                    ProblemId: data.problem_Id,    
 
-            //    };
-            //    let url = "/api/sysproblemInfodata/UpdateExamine";
-            //    let method = "POST";
-            //    let confirm_title = "确认审核产品名称为：【" + data.problemTitle + "】的记录么";
-            //    layer.confirm(confirm_title, function (index) {
-            //        layer.close(index);
-            //        axios({ url: url, method: method, data: model })
-            //            .then(function (response) {
-            //                console.log(response);
-            //                layer.msg(response.data.message);
-            //                if (!response.data.isSuccess) {
-            //                    return;
-            //                    tableReload(datatable);
-            //                }
+                };
+                let url = "/api/sysproblemInfodata/UpdateExamine";
+                let method = "POST";
+                let confirm_title = "确认审核产品名称为：【" + data.problem_Title + "】的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios({ url: url, method: method, data: model })
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                                tableReload(datatable);
+                            }
 
-            //            })
-            //            .catch(function (error) {
-            //                console.log(error);
-            //            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
 
-            //    });
+                });
             }
         });
 
@@ -316,14 +311,14 @@
                     problem_Type_Id: $("#search_problem_type_id").val(),
                     problem_Title: $("#search_problem_title").val(),
                     //important_Flag: 0,
-                    audit_Flag: 0,
+                    audit_Flag: $("#search_audit_flag").val(),
                 }
                 //if ($("#search_important_flag").val() != "") {
                 //    pars.Important_Flag = $("#search_important_flag").val();
                 //}
-                if ($("#search_audit_flag").val() != "") {
-                    pars.Audit_Flag = $("#search_audit_flag").val();
-                }
+                //if ($("#search_audit_flag").val() != "") {
+                //    pars.Audit_Flag = $("#search_audit_flag").val();
+                //}
                 //执行重载
                 table.reload('testReload', {
                     where: pars,
@@ -412,14 +407,14 @@
                 , title: title //不显示标题栏
                 , closeBtn: false
                 , fixed: false
-                , area: ['800px', '600px']
+                , area: ['800px', '350px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '3%']
+                , offset: ['10%', '13%']
             });
         };
         function initFormValue(data) {

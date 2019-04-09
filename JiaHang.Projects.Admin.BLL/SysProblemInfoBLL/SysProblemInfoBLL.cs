@@ -26,32 +26,50 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
         /// <returns></returns>
         public FuncResult Select(SearchSysProblemInfo model)
         {
-            IOrderedQueryable<SysProblemInfo> query = _context.SysProblemInfo.
-                 Where(a =>
-                 (
-                 (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
-                 && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
-                 && (model.Audit_Flag == null || a.AuditFlag == model.Audit_Flag)
-                 )
-                 ).OrderByDescending(e => e.CreationDate);
-            int total = query.Count();
-            var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(e => new
+            try
             {
-                Problem_Id = e.ProblemId,
-                Problem_Type_Id = e.ProblemTypeId,
-                Problem_Title = e.ProblemTitle,
-                Audit_Flag = e.AuditFlag>0?"是":"否",
-                Audited_Date = e.AuditedDate,
-                Audited_By = e.AuditedBy
-                //e.HelpId,
-                //e.HelpTypeId,
-                //e.HelpTitle,
-                //e.ImportantFlag,
-                //e.AuditFlag,
-                //e.AuditedDate,
-                //e.AuditedBy
-            });
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+                int total = _context.SysProblemInfo.
+                     Where(a =>
+                     (
+                     (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+                     && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                     && (a.DeleteFlag != 1)
+                     )
+                     ).Count();
+                var result = _context.SysProblemInfo.
+                     Where(a =>
+                     (
+                     (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+                     && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                     && (a.DeleteFlag != 1)
+                     )
+                     ).Skip(model.limit * model.page).Take(model.limit).ToList();
+                var data = result.Select(e => new
+                {
+                    Problem_Id = e.ProblemId,
+                    Problem_Type_Id = e.ProblemTypeId,
+                    Problem_Title = e.ProblemTitle,
+                    Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
+                    Audited_Date = e.AuditedDate,
+                    Audited_By = e.AuditedBy
+                    //e.HelpId,
+                    //e.HelpTypeId,
+                    //e.HelpTitle,
+                    //e.HelpTitle,
+                    //e.ImportantFlag,
+                    //e.AuditFlag,
+                    //e.AuditedDate,
+                    //e.AuditedBy
+                });
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
         }
         /// <summary>
         /// 查询一条
@@ -190,15 +208,15 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<FuncResult> UpdateExamine(string problemId, string currentuserId)
+        public async Task<FuncResult> UpdateExamine(string MessageId, string currentuserId)
         {
-            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(problemId);
+            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(MessageId);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "常见问题编号错误!" };
             }
 
-            entity.AuditFlag = 0;
+            entity.AuditFlag = 1;
             entity.AuditedDate = System.DateTime.Now;
 
             entity.AuditedBy = currentuserId;

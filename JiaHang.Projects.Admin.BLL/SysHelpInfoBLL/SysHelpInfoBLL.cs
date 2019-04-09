@@ -30,25 +30,25 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             {
 
                 int total = _context.SysHelpInfo.
-                    Where(a =>
-                     (
-                     (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-                     && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
-                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
-                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
-                     && (a.DeleteFlag != 1)
-                     )
-                     ).Count();
+                       Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                        && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
+                        && (a.DeleteFlag != 1)
+                        )
+                        ).Count();
                 var result = _context.SysHelpInfo.
-                     Where(a =>
-                     (
-                     (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-                     && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
-                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
-                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
-                     && (a.DeleteFlag != 1)
-                     )
-                     ).Skip(model.limit * model.page).Take(model.limit).ToList();
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                        && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
+                        && (a.DeleteFlag != 1)
+                        )
+                        ).Skip(model.limit * model.page).Take(model.limit).ToList();
                 var data = result.Select(e => new
                 {
                     Help_Id = e.HelpId,
