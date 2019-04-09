@@ -124,7 +124,7 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
                 c.Key,
                 count = c.Count()
             }).OrderByDescending(e => e.count).Take(5).ToList();
-            var total = _context.DcsCustomerLogInfo.Count();
+            var total = _context.DcsCustsveAccessInfo.Count();
             var data = from a in groups
                        join b in _context.DcsCustomerInfo on a.Key equals b.CustomerId
                        select new
