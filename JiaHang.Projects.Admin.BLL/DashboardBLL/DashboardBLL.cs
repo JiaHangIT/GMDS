@@ -32,6 +32,7 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
 
             var serviceCount = _context.DcsServiceInfo.Count();//接口数量
             var customerCount = _context.DcsCustomerInfo.Count();//用户数量
+     
 
             var chart1data = Chart1Data(todayData);
             var chart2data = Chart2Data(todayData);
@@ -48,8 +49,12 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
                                     AccessExeTime = a.AccessExeTime + " 毫秒",
                                     c.CustomerName
                                 };
-            var chart3data = Chart3Data();
-            return new FuncResult() { IsSuccess = true, Content = new { totalCount, todayCount, serviceCount, customerCount, chart1data, chart2data, recentlogdata , chart3data } };
+            var total = _context.DcsCustsveAccessInfo.Where(e => e.ServiceId != null || e.ServiceId != "").Count();//总共调用历史记录数量
+            var chart3data = Chart3Data(total);
+            var chart4data = Chart4Data(total);
+            var chart5data = Chart5Data(todayData,total);
+            var chart6data = Chart6Data(total);
+            return new FuncResult() { IsSuccess = true, Content = new { totalCount, todayCount, serviceCount, customerCount, chart1data, chart2data, recentlogdata, chart3data, chart4data, chart5data, chart6data } };
         }
         private object Chart1Data(List<DcsCustsveAccessInfo> todaydata)
         {
@@ -117,21 +122,90 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
         /// 统计用户访问次数  最多的前五个用户
         /// </summary>
         /// <returns></returns>
-        public object Chart3Data()
+        public object Chart3Data(int total)
         {
             var groups = _context.DcsCustsveAccessInfo.GroupBy(e => e.CustomerId).Select(c => new
             {
                 c.Key,
                 count = c.Count()
-            }).OrderByDescending(e => e.count).Take(5).ToList();
-            var total = _context.DcsCustsveAccessInfo.Count();
+            }).OrderByDescending(e => e.count).Take(5).ToList();         
             var data = from a in groups
                        join b in _context.DcsCustomerInfo on a.Key equals b.CustomerId
                        select new
                        {
                            b.CustomerName,
-                           perc=a.count/total
+                           perc = Math.Round(((double)a.count / (double)total) * 100, 2)
                        };
+            return data;
+        }
+
+        /// <summary>
+        /// 每个接口访问次数最多的前五个
+        /// </summary>
+        /// <returns></returns>
+        public object Chart4Data(int total)
+        {
+
+            var groups = _context.DcsCustsveAccessInfo.GroupBy(e => e.ServiceId).Select(c => new
+            {
+                c.Key,
+                count = c.Count()
+            }).ToList();
+            var data = (from a in groups
+                        join b in _context.DcsServiceInfo on a.Key equals b.ServiceId
+                        select new
+                        {
+                            b.ServiceName,
+                            perc = Math.Round(((double)a.count / (double)total) * 100, 2)
+                        }).OrderByDescending(e => e.perc).Take(5);
+            return data;
+        }
+        /// <summary>
+        /// 用户当天访问接口次数最多的前五个用户
+        /// </summary>
+        /// <returns></returns>
+        public object Chart5Data(List<DcsCustsveAccessInfo> todaydata,int total)
+        {
+            var groups = todaydata.GroupBy(e => new { e.CustomerId, e.ServiceId }).Select(c => new
+            {
+                c.Key.CustomerId,
+                c.Key.ServiceId,
+                count = c.Count()
+            }).OrderByDescending(e => e.count);
+            var data = from a in groups
+                       join b in _context.DcsCustomerInfo on a.CustomerId equals b.CustomerId
+                       join c in _context.DcsServiceInfo on a.ServiceId equals c.ServiceId
+                       select new
+                       {
+                           b.CustomerName,
+                           c.ServiceName,
+                           perc = Math.Round(((double)a.count / (double)total) * 100, 2)
+                       };
+            return data;
+        }
+        /// <summary>
+        /// 用户当月访问接口次数最多的前五个用户
+        /// </summary>
+        /// <returns></returns>
+        public object Chart6Data(int total)
+        {
+
+            var sameMonth = _context.DcsCustsveAccessInfo.Where(e => e.AccessDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1));
+            var groups = sameMonth.GroupBy(e => new { e.CustomerId, e.ServiceId }).Select(c => new
+            {
+                c.Key.CustomerId,
+                c.Key.ServiceId,
+                count = c.Count()
+            }).OrderByDescending(e => e.count);
+            var data = (from a in groups
+                        join b in _context.DcsCustomerInfo on a.CustomerId equals b.CustomerId
+                        join c in _context.DcsServiceInfo on a.ServiceId equals c.ServiceId
+                        select new
+                        {
+                            b.CustomerName,
+                            c.ServiceName,
+                            perc = Math.Round(((double)a.count / (double)total) * 100, 2)
+                        }).OrderByDescending(e => e.perc).Take(5);
             return data;
         }
     }
