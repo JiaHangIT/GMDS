@@ -112,7 +112,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                             DatabaseTypeName=b_ifnull.DatabaseTypeName
                         };
             int total = query.Count();
-            var data = query.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
+            var data = query.Skip(model.limit * model.page).Take(model.limit).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
@@ -122,11 +122,16 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
         /// <returns></returns>
         public FuncResult SelectDataSourceFiled(SerchByDatasourceId model) {
             var querys = from a in _context.SysDatasourceField where (model.dataSourceId == a.DatasourceId)
-                        select new{
+                         join b in _context.SysFieldType on a.FieldTypeId equals b.FieldTypeId
+                           into a_temp
+                         from a_ifnull in a_temp.DefaultIfEmpty()
+                         select new{
                             FieldId = a.FieldId,
                             FieldCode = a.FieldCode,
                             FieldName = a.FieldName,
                             FieldLength = a.FieldLength,
+                            FieldTypeName=a_ifnull.FieldTypeName,
+                             FieldTypeId =a_ifnull.FieldTypeId.ToString() ?? null,
                             FieldNullable = a.FieldNullable == 1 ? "否" : "是",
                             FieldKeyFlag = a.FieldKeyFlag,
                             FieldIndexFlag = a.FieldIndexFlag == 1 ? "否" : "是",

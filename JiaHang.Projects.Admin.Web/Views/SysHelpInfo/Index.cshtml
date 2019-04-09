@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="layui-row">
-                <div class=" layui-col-md4 layui-col-xs6"  style="margin-top:4px"   >
+                <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
                     <label class="layui-form-label"> 是否审核：</label>
                     <div class="layui-inline">
                         <select name="interest" id="search_audit_flag" lay-filter="aihao">
@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        
+
         <div class="layui-form-item" style="margin-top:8px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增信息</button>
@@ -106,7 +106,8 @@
             <div class="layui-form-item" style="padding-top:4px;z-index:10">
                 <script id="editor" type="text/plain" style="width:960px;height:200px;">
                 </script>
-
+                
+                
                 <div class="layui-form-item layui-form-text" hidden="hidden">
                     <label class="layui-form-label">公告内容</label>
                     <div class="layui-input-block">
@@ -229,7 +230,7 @@
                 console.log("审核");
                 console.log(data.help_Id);
                 console.log(data.help_Title);
-                
+
                 let url = "/api/syshelpinfodata/UpdateExamine";
                 let method = "POST";
                 let confirm_title = "帮助信息名称为：【" + data.help_Title + "】";
@@ -367,10 +368,15 @@
         };
         form.on('submit(submit)', function () {
             //alert($("#help_type_id").val());
+           //实例化
+            var ue = UE.getEditor('editor');
+            //获取纯文本内容
+            var txt = ue.getContentTxt();
+            
             let model = {
                 helptypeid: $("#help_type_id").val(),
                 helptitle: $("#help_title").val(),
-                helpcontent: $("#help_content").val(),
+                helpcontent: txt,
                 importantflag: $("#important_flag").val(),
                 auditflag: $("#audit_flag").val(),
                 //auditeddate: $("#audited_date").val(),

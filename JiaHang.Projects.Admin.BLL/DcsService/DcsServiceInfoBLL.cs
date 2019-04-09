@@ -1,4 +1,5 @@
-﻿using JiaHang.Projects.Admin.DAL;
+﻿using JiaHang.Projects.Admin.Common;
+using JiaHang.Projects.Admin.DAL;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
@@ -46,7 +47,11 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 Service_Tech = s.ServiceTech,
                 Service_Type = s.ServiceType,
                 Service_Status = s.ServiceStatus,
-                Datasource_Id = s.DatasourceId
+                Datasource_Id = s.DatasourceId,
+                Service_Desc = s.ServiceDesc,
+                Service_Return = s.ServiceReturn,
+                DataPageFlag = s.DataPageFlag,
+                DataMultiFlag=s.DataMultiFlag
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -93,8 +98,10 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 ServiceType = model.ServiceType,
                 ServiceReturn = model.ServiceReturn,
                 ServiceStatus = model.ServiceStatus,
+                ServiceVersion = model.ServiceVersion,
                 DataPageFlag = model.DataPageFlag,
                 DataMultiFlag = model.DataMultiFlag,
+                DatasourceId = model.DatasourceId,
 
                 CreationDate = DateTime.Now,
                 CreatedBy = currentuserid,
@@ -111,14 +118,14 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                     var pEntity = new DcsServiceParams()
                     {
                         ParamId = Guid.NewGuid().ToString("N").ToUpper(),
-                        ServiceId = model.ServiceId,
+                        ServiceId = entity.ServiceId,
                         ParamCode = param.ParamCode,
                         ParamName = param.ParamName,
                         ParamDesc = param.ParamDesc,
                         ParamNullable = param.ParamNullable,
                         TimestampFlag = param.TimestampFlag,
                         RelaFieldId = param.RelaFieldId,
-
+                        ParamTypeId = param.ParamTypeId,
                         CreationDate = DateTime.Now,
                         CreatedBy = currentuserid,
                         LastUpdateDate = DateTime.Now,
@@ -133,7 +140,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                     var sEntity = new DcsServiceSResults()
                     {
                         FieldId = share.FieldId,
-                        ServiceId = model.ServiceId,
+                        ServiceId = entity.ServiceId,
 
                         CreationDate = DateTime.Now,
                         CreatedBy = currentuserid,
@@ -148,10 +155,10 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 {
                     var cEntity = new DcsServiceCResults()
                     {
-                        ServiceId = model.ServiceId,
+                        ServiceId = entity.ServiceId,
                         ToFieldId = collect.ToFieldId,
-                        //DimTransFlag = collect.DimTransFlag,
-
+                        DimTransFlag = collect.DimTransFlag,
+                        ReFieldName = collect.ReFieldName,
                         CreationDate = DateTime.Now,
                         CreatedBy = currentuserid,
                         LastUpdateDate = DateTime.Now,
@@ -205,7 +212,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         }
 
         /// <summary>
-        /// 删除（批）
+        /// 删除（批）（还需要删除接口下面数据）
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="currentuserid"></param>
@@ -256,52 +263,173 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         public async Task<FuncResult> Update(string id,DcsServiceInfoModel model, string currentuserid)
         {
             FuncResult result = new FuncResult();
-            try
-            {
-                if (string .IsNullOrEmpty(id))
-                {
-                    result.IsSuccess = false;
-                    result.Message = "主键参数为空";
-                    return result;
-                }
-
-                DcsServiceInfo entity = await context.DcsServiceInfo.FindAsync(id);
-                if (entity == null)
-                {
-                    result.IsSuccess = false;
-                    result.Message = "主键ID错误";
-                    return result;
-                }
-
-                entity.ServiceGroupId = model.ServiceGroupId;
-                entity.ServiceNo = model.ServiceNo;
-                entity.ServiceCode = model.ServiceCode;
-                entity.ServiceName = model.ServiceName;
-                entity.ServiceDesc = model.ServiceDesc;
-                entity.ServiceTech = model.ServiceTech;
-                entity.ServiceType = model.ServiceType;
-                entity.ServiceReturn = model.ServiceReturn;
-                entity.ServiceStatus = model.ServiceStatus;
-                entity.DataPageFlag = model.DataPageFlag;
-                entity.DataMultiFlag = model.DataMultiFlag;
-
-                entity.LastUpdateDate = DateTime.Now;
-                entity.LastUpdatedBy = currentuserid;
-
-                context.DcsServiceInfo.Update(entity);
-                await context.SaveChangesAsync();
-
-                result.IsSuccess = true;
-                result.Content = entity;
-                result.Message = "更新成功";
-                return result;
-            }
-            catch (Exception ex)
+            if (string.IsNullOrEmpty(id))
             {
                 result.IsSuccess = false;
-                result.Message = ex.Message;
+                result.Message = "主键参数为空";
                 return result;
             }
+
+            DcsServiceInfo entity = await context.DcsServiceInfo.FindAsync(id);
+            if (entity == null)
+            {
+                result.IsSuccess = false;
+                result.Message = "主键ID错误";
+                return result;
+            }
+
+            entity.ServiceGroupId = model.ServiceGroupId;
+            entity.ServiceNo = model.ServiceNo;
+            entity.ServiceCode = model.ServiceCode;
+            entity.ServiceName = model.ServiceName;
+            entity.ServiceDesc = model.ServiceDesc;
+            entity.ServiceTech = model.ServiceTech;
+            entity.ServiceType = model.ServiceType;
+            entity.ServiceReturn = model.ServiceReturn;
+            entity.ServiceStatus = model.ServiceStatus;
+            entity.ServiceVersion = model.ServiceVersion;
+            entity.DataPageFlag = model.DataPageFlag;
+            entity.DataMultiFlag = model.DataMultiFlag;
+            entity.DatasourceId = model.DatasourceId;
+
+            entity.LastUpdateDate = DateTime.Now;
+            entity.LastUpdatedBy = currentuserid;
+
+            context.DcsServiceInfo.Update(entity);
+
+            //更新从表信息需和数据库内信息作对比，本次更新可能存在被删除的数据
+
+            if (model.lsparam!=null && model.lsparam.Count > 0)
+            {
+                //数据库内已存在的
+                var existInData = context.DcsServiceParams.Where(w => w.ServiceId == entity.ServiceId );
+
+                //再找出本次更新主要不在existInData内的数据,做删除操作
+                var needDeleteData = existInData.Where(w => !model.lsparam.Select(s => s.ParamId).Contains(w.ParamId));
+                if (needDeleteData != null && needDeleteData.Count() > 0)
+                {
+                    foreach (var deleteP in needDeleteData)
+                    {
+                        deleteP.DeleteFlag = 1;
+                        deleteP.LastUpdateDate = DateTime.Now;
+                        deleteP.LastUpdatedBy = currentuserid;
+                        context.DcsServiceParams.Update(deleteP);
+                    }
+                }
+
+                foreach (var param in model.lsparam)
+                {
+                    if (string.IsNullOrEmpty(param.ParamId))
+                    {
+                        //本条为新增的
+                        param.ParamId = Guid.NewGuid().ToString("N").ToUpper();
+                        DcsServiceParams entityP = MappingHelper.Mapping(new DcsServiceParams(), param);
+
+                        context.DcsServiceParams.Add(entityP);
+                    }
+                    else
+                    {
+                        //本条为更新的
+                        DcsServiceParams existP = context.DcsServiceParams.Find(param.ParamId);
+                        DcsServiceParams entityP1 = MappingHelper.Mapping(existP, param);
+                        context.DcsServiceParams.Update(existP);
+                    }
+                }
+            }
+
+            if (model.lsshare != null && model.lsshare.Count > 0)
+            {
+                //FIELD_ID, SERVICE_ID 组合主键
+
+                //数据库内已存在的
+                var existInData = context.DcsServiceSResults.Where(w => w.ServiceId == entity.ServiceId);
+
+                //再找出本次更新主要不在existInData内的数据,做删除操作
+                var needDeleteData = existInData.Where(w => !(model.lsshare.Select(s=>s.FieldId).Contains(w.FieldId)));
+                if (needDeleteData != null && needDeleteData.Count() > 0)
+                {
+                    foreach (var deleteP in needDeleteData)
+                    {
+                        deleteP.DeleteFlag = 1;
+                        deleteP.LastUpdateDate = DateTime.Now;
+                        deleteP.LastUpdatedBy = currentuserid;
+                        context.DcsServiceSResults.Update(deleteP);
+                    }
+                }
+
+                foreach (var share in model.lsshare)
+                {
+                    DcsServiceSResults current = context.DcsServiceSResults.Where(w => (w.ServiceId == model.ServiceId && w.FieldId == share.FieldId)).FirstOrDefault();
+                    if (current == null)
+                    {
+                        //数据库内不存在，本次为新增
+                        DcsServiceSResults entityS = MappingHelper.Mapping(new DcsServiceSResults(), share);
+                        context.DcsServiceSResults.Add(entityS);
+                    }
+                    else
+                    {
+                        DcsServiceSResults entityS1 = MappingHelper.Mapping(current, share);
+                        context.DcsServiceSResults.Update(entityS1);
+                    }
+                }
+            }
+
+            if (model.lscollect != null && model.lscollect.Count > 0)
+            {
+                //SERVICE_ID, RE_FIELD_NAME组合主键
+
+                //数据库内已存在的
+                var existInData = context.DcsServiceCResults.Where(w => w.ServiceId == entity.ServiceId);
+
+                //再找出本次更新主要不在existInData内的数据,做删除操作
+                var needDeleteData = existInData.Where(w => !(model.lscollect.Select(s => s.ReFieldName).Contains(w.ReFieldName)));
+                if (needDeleteData != null && needDeleteData.Count() > 0)
+                {
+                    foreach (var deleteP in needDeleteData)
+                    {
+                        deleteP.DeleteFlag = 1;
+                        deleteP.LastUpdateDate = DateTime.Now;
+                        deleteP.LastUpdatedBy = currentuserid;
+                        context.DcsServiceCResults.Update(deleteP);
+                    }
+                }
+
+                foreach (var collect in model.lscollect)
+                {
+                    DcsServiceCResults current = context.DcsServiceCResults.Where(w => (w.ServiceId == model.ServiceId && w.ReFieldName == collect.ReFieldName)).FirstOrDefault();
+                    if (current == null)
+                    {
+                        //数据库内不存在，本次为新增
+                        DcsServiceCResults entityC = MappingHelper.Mapping(new DcsServiceCResults(), collect);
+                        context.DcsServiceCResults.Add(entityC);
+                    }
+                    else
+                    {
+                        DcsServiceCResults entityC1 = MappingHelper.Mapping(current, collect);
+                        context.DcsServiceCResults.Update(entityC1);
+                    }
+                }
+            }
+
+
+            using (IDbContextTransaction trans = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await context.SaveChangesAsync();
+                    trans.Commit();
+                    result.IsSuccess = true;
+                    result.Content = entity;
+                    result.Message = "更新成功";
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    result.IsSuccess = false;
+                    result.Message = ex.Message;
+                }
+            }
+            return result;
         }
 
         /// <summary>

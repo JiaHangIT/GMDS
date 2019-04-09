@@ -196,7 +196,7 @@
                            
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item" style="margin-left:200px">
                         <button class="layui-btn" data-type="addgenerate" id="generateadd_btn" lay-submit lay-filter="addsubmit">添加</button>
                         <button class="layui-btn layui-layer-btn1" lay-filter="demo" data-type="closeaddGenerateLayer">取消</button>
                     </div>
@@ -316,6 +316,117 @@
         </div>
     </div>
 </div>
+<div id="edit_generate_fieldInfo" style="display:none;position:relative;padding:15px;">
+    <div>
+        <div class="layui-form layui-form-pane" action="" lay-filter="editfield-form" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+            <div class="layui-row">
+                <div class="layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">字段代码：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_field_code" id="edit_field_code" placeholder="字段代码" autocomplete="off" lay-verify="required">
+                    </div>
+                </div>
+                <div class="layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">字段名称：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_field_name" id="edit_field_name" placeholder="字段名称" autocomplete="off" lay-verify="required">
+                    </div>
+                </div>
+                <div class="layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">字段类型：</label>
+                    <div class="layui-inline">
+                        <select name="edit_field_types" id="edit_field_types" lay-filter="edit_field_types"></select>
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">是否可为空：</label>
+                    <div class="layui-inline">
+                        <select name="edit_field_nullable" id="edit_field_nullable">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">是否主键：</label>
+                    <div class="layui-inline">
+                        <select name="edit_field_key_flag" id="edit_field_key_flag">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">字段长度：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_field_length" id="edit_field_length" placeholder="字段长度" autocomplete="off" lay-verify="required">
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">是否唯一索引：</label>
+                    <div class="layui-inline">
+                        <select name="edit_field_index_flag" id="edit_field_index_flag">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">字段默认值：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_field_value" id="edit_field_value" placeholder="字段默认值" autocomplete="off">
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">是否维度字段：</label>
+                    <div class="layui-inline">
+                        <select name="edit_dim_flag" id="edit_dim_flag">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">是否时间戳字段：</label>
+                    <div class="layui-inline">
+                        <select name="edit_timestamp_flag" id="edit_timestamp_flag">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">维度字段表名：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_dim_table_name" id="edit_dim_table_name" placeholder="维度字段表名" autocomplete="off">
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">维度字段代码：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_dim_field_code" id="edit_dim_field_code" placeholder="维度字段代码" autocomplete="off">
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">维度字段名称：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_dim_field_name" id="edit_dim_field_name" placeholder="维度字段名称" autocomplete="off">
+                    </div>
+                </div>
+                <div class=" layui-col-md6 layui-col-xs6">
+                    <label class="layui-form-label" style="width:150px">序列代码：</label>
+                    <div class="layui-inline">
+                        <input class="layui-input" name="edit_ora_sequence_code" id="edit_ora_sequence_code" placeholder="序列代码" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-left:200px;">
+                <button class="layui-btn" lay-submit="" lay-filter="submiteditfield">立即修改</button>
+                <button class="layui-btn" data-type="closeedtifield">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script type="text/html" id="barDemo">
@@ -336,7 +447,7 @@
         var form = layui.form;
         var laydate = layui.laydate;
         var generateLayer_index = 0;
-        var generateLayer_field_index = 1;
+        var generateLayer_field_edit = 1;
         var genratefieldLayer = 2;
         var generate_fieldInfo = 3;
         var generateaddLayer_index = 4;
@@ -377,49 +488,12 @@
             ]]
             , id: 'testReload'
             , page: true,
-            limits: [1, 2, 3, 4, 5],
 
             text: {
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
         });
-        table.render({
-            elem: '#test2'
-            , url: '/api/sysdatasourcefield/SelectDataSourceFiled/'
-            , contentType: 'application/json'
-            , method: 'post',
-            parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
-            }
-
-            , cols: [[
-
-                { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-
-                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                , { field: 'fieldCode', title: '字段代码', sort: true }
-                , { field: 'fieldName', title: '字段名称', sort: true }
-                , { field: 'fieldTypeName', title: '字段类型', sort: true }
-                //, { field: 'datasourceName', title: '所属数据源', sort: true }
-                , { field: 'fieldNullable', title: '是否可为空', sort: true }
-                , { field: 'fieldLength', title: '字段长度', sort: true }
-                //, { field: 'oraSequenceCode', title: '序列号', sort: true }
-                , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
-            ]]
-            , id: 'testReloadField'
-            , page: true,
-            //limits: [1, 2, 3, 4, 5],
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
+        
 
         element.on('tab(tabtest)', function (data) {
             if (data.index == 0) {
@@ -461,15 +535,79 @@
 
                 });
             } else if (obj.event === 'edit') {
+                table.render({
+                    elem: '#test2'
+                    , url: '/api/sysdatasourcefield/SelectDataSourceFiled/'
+                    , contentType: 'application/json'
+                    , method: 'post',
+                    parseData: function (res) { //res 即为原始返回的数据
+                        return {
+                            "status": res.isSuccess,
+                            "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                            "msg": res.message, //解析提示文本
+                            "count": res.content.total, //解析数据长度
+                            "data": res.content.data //解析数据列表
+                        };
+                    }
+
+                    , cols: [[
+
+                        { type: 'checkbox', fixed: 'left', width: 40 }
+                        , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+
+                        //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+                        , { field: 'fieldCode', title: '字段代码', sort: true }
+                        , { field: 'fieldName', title: '字段名称', sort: true }
+                        , { field: 'fieldTypeName', title: '字段类型', sort: true }
+                        //, { field: 'datasourceName', title: '所属数据源', sort: true }
+                        , { field: 'fieldNullable', title: '是否可为空', sort: true }
+                        , { field: 'fieldLength', title: '字段长度', sort: true }
+                        //, { field: 'oraSequenceCode', title: '序列号', sort: true }
+                        , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
+                    ]]
+                    , id: 'testReloadField'
+                    , page: true,
+                    //limits: [1, 2, 3, 4, 5],
+                    text: {
+                        none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+                    }
+                });
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                connectionId = data.connectionId;
-                dataSourceId = data.dataSourceId;
+                fieldId = data.fieldId;
+               
                 showLayer(data);
+            }
+        });
+        //监听工具条
+        table.on('tool(sysuser2)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'delfield') {
+                let confirm_title = "确认删除字段信息" + data.fieldName + "的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios.delete('/api/SysDataSourceField/' + data.fieldId)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            obj.del();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
+            } else if (obj.event === 'editfield') {
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                fieldId = data.fieldId;
+                showEditFieldLayer(data);
             }
         });
 
         var $ = layui.$, active = {
-
             getCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload')
                     , data = checkStatus.data;
@@ -479,7 +617,6 @@
                 }
                 layer.confirm("确认删除" + data.length + "条记录么", function (index) {
                     layer.close(index);
-
                     let ids = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
@@ -519,8 +656,8 @@
             },
             search: function () {
                 let pars = {
-                    limit: 10,
                     page: 1,
+                    limit:10,
                     Datasource_Code: $("#search_datasource_code").val(),
                     Datasource_Name: $("#search_datasource_name").val(),
                     Datasource_Type: $("#search_datasource_type option:selected").val(),
@@ -545,6 +682,9 @@
             },
             closetest2: function () {
                 layer.close(generateLayer_index);
+            },
+            closeedtifield: function () {
+                layer.close(generateLayer_field_edit);
             },
             addfield: function () {
                 form.render("select");
@@ -583,9 +723,10 @@
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '3%']
+                , offset: ['10%', '13%']
             });
         };
+        //添加数据源
         function showLayerAdd() {
             let title = "添加数据源";
             document.getElementById("generateadd_btn").innerHTML = "立即添加";
@@ -601,12 +742,11 @@
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer_add') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '3%']
+                , offset: ['10%', '13%']
             });
         };
-
+        //添加字段信息
         function showFieldLayers() {
-
             genratefieldLayer = layer.open({
                 type: 1
                 , title: "新增字段信息"
@@ -619,10 +759,92 @@
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_fieldInfo')
-                , offset: ['10%', '3%'],
+                , offset: ['10%', '13%'],
             });
 
         }
+        //编辑字段信息
+        function showEditFieldLayer(data) {
+            $('#edit_field_types').val(data.fieldTypeId);
+            $('#edit_field_nullable').val(data.fieldNullable == "否" ? 0 : 1);
+            $('#edit_field_key_flag').val(data.fieldKeyFlag == "否" ? 0 : 1);
+            $('#edit_field_index_flag').val(data.fieldIndexFlag=="否" ?0:1);
+            $('#edit_dim_flag').val(data.dimFlag == "否" ? 0 : 1);
+            $('#edit_timestamp_flag').val(data.timestampFlag == "否" ? 0 : 1);
+            form.val("editfield-form", {
+                edit_field_code: data.fieldCode,
+                edit_field_name: data.fieldName,
+                edit_field_length: data.fieldLength,
+                edit_field_value: data.fieldValue,
+                edit_dim_table_name: data.dimTableName,
+                edit_dim_field_code: data.dimFieldCode,
+                edit_dim_field_name: data.dimFieldName,
+                edit_ora_sequence_code: data.oraSequenceCode,
+            })
+
+            let title = "编辑字段信息";
+            document.getElementById("generate_btn").innerHTML = "立即修改";
+            generateLayer_field_edit = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: false
+                , fixed: false
+                , area: ['800px', '600px']
+                , shade: 0.8
+                , id: 'LAY_layuieditpro' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 0 //拖拽模式，0或者1
+                , content: $('#edit_generate_fieldInfo') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , offset: ['10%', '13%']
+            });
+        };
+        form.on("submit(submiteditfield)", function () {
+            let model = {
+                dataSourceId: $('#datasource_Id').val(),
+                fieldId: fieldId,
+                fieldCode: $('#edit_field_code').val(),
+                fieldName: $('#edit_field_name').val(),
+                fieldTypeId: $('#edit_field_types option:selected').val(),
+                fieldLength: $('#edit_field_length').val(),
+                fieldnullable: $('#edit_field_nullable').val(),
+                fieldkeyflag: $('#edit_field_key_flag option:selected').val(),
+                fieldindexflag: $('#edit_field_index_flag option:selected').val(),
+                fieldvalue: $('#edit_field_value').val(),
+                dimflag: $('#edit_dim_flag option:selected').val(),
+                timestampflag: $('#edit_timestamp_flag option:selected').val(),
+                dimtablename: $('#edit_dim_table_name').val(),
+                dimfieldcode: $('#edit_dim_field_code').val(),
+                dimfieldname: $('#edit_dim_field_name').val(),
+                orasequencecode: $('#edit_ora_sequence_code').val(),
+            };
+            let url = "/api/SysDataSourceField/" + fieldId;
+            let method = "PUT";
+             axios({ url: url, method: method, data: model })
+                .then(function (response) {
+                    layer.msg(response.data.message);
+                    if (!response.data.isSuccess) {
+                        return;
+                    }
+                    let datatable = table.cache.testReload;
+                    //修改
+                    for (let i = 0; i < datatable.length; i++) {
+                        if (datatable[i].dataSourceId == response.data.content.dataSourceId) {
+                            datatable.splice(i, 1, response.data.content);
+                            break;
+                        }
+                    }
+                    tableReload(datatable)
+                    layer.close(generateLayer_field_edit);
+                })
+                .catch(function (error) {
+
+                    layer.msg("发生了预料之外的错误!");
+                    console.log(error);
+                });
+
+            return false; 
+        })
         function delFieldLayers() {
             var checkStatus = table.checkStatus('testReloadField')
                 , data = checkStatus.data;
@@ -757,7 +979,7 @@
                 datasourceUse: $("#add_datasource_use").val(),
                 connectionId: $('#add_databaseconnection_name').val(),
             };
-            let url = "/api/sysdatasourcefield";
+                let url = "/api/SysDataSource";
             let method = "POST";
             axios({ url: url, method: method, data: model })
                 .then(function (response) {
@@ -768,7 +990,7 @@
                     let datatable = table.cache.testReload;
                     datatable.unshift(response.content)
                     tableReload(datatable)
-                    layer.close(generateLayer_index);
+                    layer.close(generateaddLayer_index);
                 })
                 .catch(function (error) {
 
@@ -791,11 +1013,6 @@
                 data: datatable
             })
         }
-        function tableNotfieldReload(datatable) {
-            table.reload("testReloadNotExistsField", {
-                data: datatable
-            })
-        }
     });
     //获取数据库连接列表
     function getConnectionName() {
@@ -804,8 +1021,10 @@
                 var len = response.data.content.length;
                 var text = '<option value="">请选择</option>';
                 $('#add_databaseconnection_name').append(text);
+                $('#databaseconnection_name').append(text);
                 for (var i = 0; i < len; i++) {
                     $('#add_databaseconnection_name').append(new Option(response.data.content[i].connectionName, response.data.content[i].connectionId))
+                    $('#databaseconnection_name').append(new Option(response.data.content[i].connectionName, response.data.content[i].connectionId))
                 }
             })
             .catch(function (error) {
@@ -819,8 +1038,10 @@
                 var len = response.data.content.length;
                 var text = '<option value="">请选择</option>';
                 $('#field_types').append(text);
+                $('#edit_field_types').append(text);
                 for (var i = 0; i < len; i++) {
-                    $('#field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId))
+                    $('#field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId));
+                    $('#edit_field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId))
                     //text += '<option value="' + response.data.content[i].fieldTypeId + '">' + response.data.content[i].fieldTypeName + '</option>'
                 }
                 //$('#field_types').append(text);
