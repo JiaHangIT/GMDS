@@ -42,7 +42,7 @@
                     </div>
                 </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增公告</button>
         </div>
         @*<div class="layui-form-item" style="margin-top:30px;">
 
@@ -69,7 +69,6 @@
             </div>
         </div>
         <div class="layui-form-item">
-
             <div class="layui-inline">
                 <label class="layui-form-label">是否重要标志</label>
                 <div class="layui-inline">
@@ -80,6 +79,8 @@
                     </select>
                 </div>
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">公告内容</label>
                 <div class="layui-input-block">
@@ -139,10 +140,10 @@
                 { type: 'checkbox', fixed: 'left' }
                 //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
                 //, { field: 'messageId', title: '公告编号', sort: true, fixed: 'left' }
-                , { field: 'messageTitle', title: '公告名称', sort: true }
-                , { field: 'messageContent', title: '公告内容' }
+                , { field: 'messageTitle', width: 180, title: '公告名称', sort: true }
+                //, { field: 'messageContent', title: '公告内容' }
                 , { field: 'importantFlag', width: 99, title: '是否重要', sort: true }
-                , { field: 'auditFlag', width: 99, title: '是否审核', sort: true }
+                , { field: 'auditFlag', width: 130, title: '是否审核', sort: true }
                 , { field: 'auditedDate', title: '审核时间', sort: true }
                 , { field: 'auditedBy', title: '审核人', sort: true }
                 , { field: 'creationDate', title: '建立时间', sort: true }
@@ -195,16 +196,25 @@
                 showLayer(data);
             } else if (obj.event === 'examine') {
                 console.log("审核");
-                let model = {
-                    Message_ID: data.messageId
-                  
-                };
+               
                 let url = "/api/SysMessageInfo/UpdateExamine";
                 let method = "POST";
-                let confirm_title = "确认审核产品名称为：【" + data.messageTitle + "】的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios({ url: url, method: method, data: model})
+                let confirm_title = "公告名称为：【" + data.messageTitle + "】";
+
+                layer.confirm(confirm_title, {
+                    btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
+
+                        layer.close(index);
+
+                    }
+
+
+                }, function (index, layero) {
+                    let model = {
+                        Message_ID: data.messageId,
+                        AuditFlag: 1
+                    };
+                    axios({ url: url, method: method, data: model })
                         .then(function (response) {
                             console.log(response);
                             layer.msg(response.data.message);
@@ -212,13 +222,32 @@
                                 return;
                                 tableReload(datatable);
                             }
-                           
+
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
+                }, function (index) {
+                    //alert("不通过");
+                    let model = {
+                        Message_ID: data.messageId,
+                        AuditFlag: 0
+                    };
+                    axios({ url: url, method: method, data: model })
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                                tableReload(datatable);
+                            }
 
-                });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+                );
             }
         });
         var $ = layui.$, active = {
