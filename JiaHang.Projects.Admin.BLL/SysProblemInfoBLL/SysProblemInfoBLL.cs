@@ -208,15 +208,15 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<FuncResult> UpdateExamine(string MessageId, string currentuserId)
+        public async Task<FuncResult> UpdateExamine(SysProblemInfoModel model, string currentuserId)
         {
-            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(MessageId);
+            SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(model.ProblemId);
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "常见问题编号错误!" };
             }
 
-            entity.AuditFlag = 1;
+            entity.AuditFlag = model.AuditFlag;
             entity.AuditedDate = System.DateTime.Now;
 
             entity.AuditedBy = currentuserId;
