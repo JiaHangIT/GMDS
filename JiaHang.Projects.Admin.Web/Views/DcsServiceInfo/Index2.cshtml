@@ -190,7 +190,7 @@
                 可以为空
             </td>
             <td class="layui-input-block">
-                <input type="checkbox"  lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
             </td>
 
             <td class="layui-form-label">
@@ -233,7 +233,77 @@
     </tbody>
     {{#  }); }}
     {{#  if(d.length === 0){ }}
-    无数据
+    @*无数据*@
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value={{item.paramId}} /></td>
+            <td class="layui-form-label">
+                参数代码
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value='' autocomplete="off" placeholder="参数代码" class="layui-input">
+            </td>
+            <td class="layui-form-label">
+                参数名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value='' autocomplete="off" placeholder="参数名称" class="layui-input">
+            </td>
+            <td class="layui-form-label">
+                参数类型
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-form layui-input paramtype" lay-filter="xmFilter">
+                    <option value=""></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                可以为空
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+
+            <td class="layui-form-label">
+                是否时间戳参数
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+
+            <td class="layui-form-label">
+                关联字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input paramrelate" lay-filter="">
+                    <option value=''></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                参数说明
+            </td>
+            <td class="layui-input-block" colspan="3">
+                <input type="text" value='' autocomplete="off" placeholder="参数说明" class="layui-input">
+            </td>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button id="paramadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button id="paramdel" onclick="paramdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <br />
+            </td>
+        </tr>
+    </tbody>
     {{#  } }}
 
     @*</table>*@
@@ -241,95 +311,157 @@
 
 <script type="text/html" id="sharemodel">
     @*共享接口返回*@
-    <table id="shareresulttable">
-        {{#  layui.each(d, function(index, item){ }}
-        <tbody>
-            <tr>
-                <td style="display:none"><input type="text" value='' /></td>
-                <td class="layui-form-label">
-                    字段ID
-                </td>
-                <td class="layui-input-block">
-                    <select class="layui-input sharerelate" lay-filter="shareselected">
-                        <option value=''></option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <fieldset class="layui-elem-field site-demo-button">
-                        <div class="layui-btn-group">
-                            <button onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                            <button onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                        </div>
-                    </fieldset>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <br />
-                </td>
-            </tr>
-        </tbody>
-        {{#  }); }}
-        {{#  if(d.length === 0){ }}
-        无数据
-        {{#  } }}
+    {{#  layui.each(d, function(index, item){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input sharerelate" lay-filter="shareselected">
+                    <option value=''></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input sharerelate" lay-filter="shareselected">
+                    <option value=''></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  } }}
 
-    </table>
 </script>
 
 <script id="collectmodel" type="text/html">
 
     @*采集接口返回*@
-    <table id="collectreturntable">
-        {{#  layui.each(d, function(index, item){ }}
-        <tbody>
-            <tr>
-                <td style="display:none"><input type="text" value='' /></td>
-                <td class="layui-form-label">
-                    返回字段名称
-                </td>
-                <td class="layui-input-block">
-                    <input type="text" value={{item.reFieldName}} autocomplete="off" placeholder="返回字段名称" class="layui-input">
-                </td>
+    {{#  layui.each(d, function(index, item){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                返回字段名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value={{item.reFieldName}} autocomplete="off" placeholder="返回字段名称" class="layui-input">
+            </td>
 
-                <td class="layui-form-label">
-                    写入字段ID
-                </td>
-                <td class="layui-input-block">
-                    <select class="layui-input collectto" lay-filter="xmFilter">
-                        <option value=''></option>
-                    </select>
-                </td>
+            <td class="layui-form-label">
+                写入字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input collectto" lay-filter="xmFilter">
+                    <option value=''></option>
+                </select>
+            </td>
 
-                <td colspan="2">
-                    <fieldset class="layui-elem-field site-demo-button">
-                        <div class="layui-btn-group">
-                            <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                            <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
-                        </div>
-                    </fieldset>
-                </td>
-            </tr>
-            <tr>
-                <td class="layui-form-label" colspan="4">
-                    是否需要从维度表转换数据
-                </td>
-                <td class="layui-input-block" colspan="2">
-                    <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6"><br /></td>
-            </tr>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label" colspan="4">
+                是否需要从维度表转换数据
+            </td>
+            <td class="layui-input-block" colspan="2">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6"><br /></td>
+        </tr>
+    </tbody>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                返回字段名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value='' autocomplete="off" placeholder="返回字段名称" class="layui-input">
+            </td>
 
-            {{#  }); }}
-            {{#  if(d.length === 0){ }}
-            无数据
-            {{#  } }}
-        </tbody>
-    </table>
+            <td class="layui-form-label">
+                写入字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input collectto" lay-filter="xmFilter">
+                    <option value=''></option>
+                </select>
+            </td>
+
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label" colspan="4">
+                是否需要从维度表转换数据
+            </td>
+            <td class="layui-input-block" colspan="2">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6"><br /></td>
+        </tr>
+    </tbody>
+    {{#  } }}
+
 </script>
 
 <script src="~/layui/layui.js"></script>
@@ -604,7 +736,7 @@
                 <td colspan="2">
                     <fieldset class="layui-elem-field site-demo-button">
                         <div class="layui-btn-group">
-                            <button id="shareresultadd" onclick="shareresultcontentadd" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button id="shareresultadd" onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
                             <button id="shareresultdel" onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
                         </div>
                     </fieldset>
