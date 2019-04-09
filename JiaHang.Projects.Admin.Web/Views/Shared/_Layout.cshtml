@@ -30,9 +30,8 @@
         @await Html.PartialAsync("_side")
 
         <div class="layui-body" style="bottom:0px;">
-
             <!-- 内容主体区域 -->
-            <div style="padding: 15px;background-color: #f1f1f1;height:100%;">
+            <div style="padding: 15px;background-color: #f1f1f1;">
                 @await Html.PartialAsync("_breadcrumb")
                 @RenderBody()
             </div>
