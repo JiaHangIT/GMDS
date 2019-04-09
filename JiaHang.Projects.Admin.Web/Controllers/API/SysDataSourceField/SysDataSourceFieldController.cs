@@ -21,17 +21,18 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
             dataSourceServers = new SysDataSourceBLL(dataContext);
             this.cache = cache;
         }
-        /// <summary>
-        /// 添加(数据源字段信息)
+        /// 添加
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route("AddDataSourceField")]
         [HttpPost]
-        public async Task<FuncResult> AddDataSourceField([FromBody] List<AddFieldInfoParm> model)
+        public async Task<FuncResult> Add([FromBody] AddFieldInfoParm model)
         {
-           
-            return await dataSourceServers.AddDataSourceField(model, HttpContext.CurrentUser(cache).Id);
+            if (!ModelState.IsValid)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
+            }
+            return await dataSourceServers.Add(model, HttpContext.CurrentUser(cache).Id);
         }
         /// <summary>
         /// 修改(数据源字段信息)
@@ -95,21 +96,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
             return dataSourceServers.SelectDataSourceFiled(model); ;
 
         }
-        
-        /// <summary>
-        ///查询数据源没有的字段
-        /// </summary>
-        /// <returns></returns>
-        [Route("SelectNotDataSouceField")]
-        [HttpPost]
-        public FuncResult SelectNotDataSouceField([FromBody]SerchByDatasourceId model)
-        {
-            model.page--; if (model.page < 0)
-            {
-                model.page = 0;
-            }
-            return dataSourceServers.SelectNotDataSouceField(model); ;
 
-        }
     }
 }

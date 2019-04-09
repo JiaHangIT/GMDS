@@ -23,48 +23,49 @@
         width: 182px;
     }
 </style>
+<script src="~/utf8-asp/ueditor.config.js"></script>
+<script src="~/utf8-asp/ueditor.all.js"></script>
+
 <div>
-
-
-    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px">
         <div class="layui-row">
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs6"  style="margin-top:4px">
                 <label class="layui-form-label">帮助类型：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_help_type_id" autocomplete="off">
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label">公告标题：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_help_title" autocomplete="off">
                 </div>
             </div>
-
-            @*</div>
-                <div class="layui-row">*@
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label"> 是否重要：</label>
                 <div class="layui-inline">
                     <select name="interest" id="search_important_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="0" selected="">是</option>
-                        <option value="1">否</option>
-                    </select>
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"> 是否审核：</label>
-                <div class="layui-inline">
-                    <select name="interest" id="search_audit_flag" lay-filter="aihao">
-                        <option value=""></option>
-                        <option value="0" selected="">是</option>
-                        <option value="1">否</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
                     </select>
                 </div>
             </div>
         </div>
-        <div class="layui-form-item" style="margin-top:15px;">
+
+        <div class="layui-row">
+            <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
+                <label class="layui-form-label"> 是否审核：</label>
+                <div class="layui-inline">
+                    <select name="interest" id="search_audit_flag" lay-filter="aihao">
+                        <option value=""></option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top:8px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增信息</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
@@ -75,10 +76,7 @@
     <table class="layui-hide" id="test" lay-filter="syshelp"> </table>
 
 </div>
-
-
-
-<div id="generate_layer" style="display:none;position:relative;padding:15px;">
+<div id="generate_layer" style="display:none;position:relative;margin-top:4px;padding-left:15px">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
 
@@ -94,48 +92,32 @@
                     <input type="text" name="help_title" id="help_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
-
-        </div>
-        <div class="layui-form-item">
-
             <div class="layui-inline">
                 <label class="layui-form-label">是否重要</label>
                 <div class="layui-input-block">
                     <select name="interest" id="important_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="0" selected="">否</option>
                         <option value="1">是</option>
-
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">是否审核</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" disabled="" name="interest" id="audit_flag" lay-filter="aihao" readOnly="ture">
-
-                        <option value="0" selected="">否</option>
-                        <option value="1">是</option>
-
+                        <option value="0">否</option>
                     </select>
                 </div>
             </div>
 
+            <div class="layui-form-item">
+                <script id="editor" type="text/plain" style="width:1024px;height:500px;">
+                </script>
 
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">公告内容</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">公告内容</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="layui-form-item">
+        <div class="layui-form-item" style="margin-left:280PX">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-           
+
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
     </div>
@@ -189,9 +171,9 @@
             , cols: [[
 
                 { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
+                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'help_Type_Id', width: 80, title: '帮助类型', sort: true, fixed: 'left' }
+                , { field: 'help_Type_Id', width: 120, title: '帮助类型', sort: true, fixed: 'left' }
                 //, { field: 'help_Type_Id', title: '帮助类型' }
                 , { field: 'help_Title', title: '公告标题', sort: true }
                 //, { field: 'user_Org_Id', title: '用户组别', }
@@ -326,15 +308,17 @@
                     page: 1,
                     help_Type_Id: $("#search_help_type_id").val(),
                     help_Title: $("#search_help_title").val(),
-                    important_Flag: 0,
-                    audit_Flag: 0,
+                    //important_Flag: 0,
+                    //audit_Flag: 0,
+                    Audit_Flag: $("#search_audit_flag").val(),
+                    Important_Flag: $("#search_important_flag").val(),
                 }
-                if ($("#search_important_flag").val() != "") {
-                    pars.Important_Flag = $("#search_important_flag").val();
-                }
-                if ($("#search_audit_flag").val() != "") {
-                    pars.Audit_Flag = $("#search_audit_flag").val();
-                }
+                //if ($("#search_important_flag").val() != "") {
+                //    pars.Important_Flag = $("#search_important_flag").val();
+                //}
+                //if ($("#search_audit_flag").val() != "") {
+                //    pars.Audit_Flag = $("#search_audit_flag").val();
+                //}
                 //执行重载
                 table.reload('testReload', {
                     where: pars,
@@ -363,7 +347,7 @@
                 //auditeddate: $("#audited_date").val(),
                 //auditedby: $("#audited_by").val()
             };
-            
+
             let url = "/api/syshelpinfodata";
             let method = "POST";
             if (layType != true) {
@@ -423,14 +407,14 @@
                 , title: title //不显示标题栏
                 , closeBtn: false
                 , fixed: false
-                , area: ['800px', '600px']
+                , area: ['800px', '350px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '3%']
+                , offset: ['10%', '13%']
             });
         };
         function initFormValue(data) {
@@ -473,6 +457,7 @@
 
 
 </script>
+
 
 
 

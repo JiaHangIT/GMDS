@@ -52,9 +52,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-            await Task.Run(() => {   });
-            return new FuncResult() { IsSuccess = true, Message = "添加成功" };
-            //return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
+
+            return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
         }
 
         /// <summary>
@@ -188,9 +187,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var query = context.SysDatasourceField.DefaultIfEmpty()
-              .Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
-                return query;
+                return DcsServiceInfo.GetFieldIdByDataSourceId(datasourceid);
+              //  var query = context.SysDatasourceField.DefaultIfEmpty()
+              //.Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
+              //  return query;
             }
             catch (Exception ex)
             {
