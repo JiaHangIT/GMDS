@@ -11,26 +11,28 @@
 <style>
 </style>
 
+
+
 <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 <!--[if lt IE 9]>
   <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
   <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-<div class="layui-fluid">
-    <div class="larry-container">
+<div  id="app">
+
         <div class="layui-row layui-col-space15 larryms-data-top">
             <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
                 <section class="layui-card">
                     <div class="layui-card-body countup">
                         <div class="left a">
                             <i class="larry-icon larry-gouwucheman"></i>
-                            <p>累计接口量</p>
+                            <p>累计接口调用数量</p>
                         </div>
                         <div class="right">
-                            <i class="larry-icon larry-xiangxiajiantoushixin"></i>
+                            @*<i class="larry-icon larry-xiangxiajiantoushixin"></i>*@
                             <div class="p">
-                                <h3 id="orderCounter">922233544</h3>
-                                <cite>+18%同比增长</cite>
+                                <h3 id="orderCounter">{{data.totalCount}}</h3>
+                                @*<cite>+18%同比增长</cite>*@
                             </div>
                         </div>
                     </div>
@@ -41,13 +43,13 @@
                     <div class="layui-card-body countup">
                         <div class="left b">
                             <i class="larry-icon larry-shouru"></i>
-                            <p>今日接口量</p>
+                            <p>今日接口调用数量</p>
                         </div>
                         <div class="right">
-                            <i class="larry-icon larry-xiangshang2"></i>
+                            @*<i class="larry-icon larry-xiangshang2"></i>*@
                             <div class="p">
-                                <h3 id="incomeCounter">20,000</h3>
-                                <cite>+50%同比增长</cite>
+                                <h3 id="incomeCounter">{{data.todayCount}}</h3>
+                                @*<cite>+50%同比增长</cite>*@
                             </div>
                         </div>
                     </div>
@@ -61,10 +63,10 @@
                             <p>接口数量</p>
                         </div>
                         <div class="right">
-                            <i class="larry-icon larry-xiangshang2"></i>
+                            @*<i class="larry-icon larry-xiangshang2"></i>*@
                             <div class="p">
-                                <h3 id="UVcounter">33,568</h3>
-                                <cite>+35%环比增长</cite>
+                                <h3 id="UVcounter">{{data.serviceCount}}</h3>
+                                <cite>@*+35%环比增长*@</cite>
                             </div>
                         </div>
                     </div>
@@ -78,10 +80,10 @@
                             <p>用户数量</p>
                         </div>
                         <div class="right">
-                            <i class="larry-icon larry-xiangshang2"></i>
+                            @*<i class="larry-icon larry-xiangshang2"></i>*@
                             <div class="p">
-                                <h3 id="userCounter">3,168</h3>
-                                <cite>+30%同比增长</cite>
+                                <h3 id="userCounter">{{data.customerCount}}</h3>
+                                @*<cite>+30%同比增长</cite>*@
                             </div>
                         </div>
                     </div>
@@ -94,15 +96,15 @@
         <div class="layui-row  layui-col-space15 larryms-count-demo">
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md8 layui-col-lg8">
                 <section class="layui-card">
-                    <div class="larryms-card-head">最新接口</div>
+                    @*<div class="larryms-card-head">最新接口</div>*@
                     <div class="layui-card-body" id="container1">
-               
+
                     </div>
                 </section>
             </div>
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md4 layui-col-lg4">
                 <section class="layui-card">
-                    <div class="larryms-card-head"><span>收入统计汇总图表</span></div>
+                    @*<div class="larryms-card-head"></div>*@
                     <div class="layui-card-body" id="container2">
 
                     </div>
@@ -115,7 +117,14 @@
                 <section class="layui-card">
                     <div class="larryms-card-head">最新接口</div>
                     <div class="layui-card-body">
-                        <table class="layui-table larryms-order-demo" lay-skin="nob">
+                        <el-table :data="data.recentlogdata" border style="width: 100%">
+                            <el-table-column prop="serviceName" label="接口名称"></el-table-column>
+                            <el-table-column prop="customerName" label="用户名称"></el-table-column>
+                            <el-table-column prop="accessExeTime" label="执行所用时间"></el-table-column>
+                            <el-table-column prop="accessResultFlag" label="调用结果"></el-table-column>
+                            <el-table-column prop="accessDate" label="调用时间"></el-table-column>
+                        </el-table>
+                        @*<table class="layui-table larryms-order-demo" lay-skin="nob">
                             <colgroup>
                                 <col width="20%">
                                 <col width="20%">
@@ -162,13 +171,13 @@
                                     <td class="layui-hide-xs"><span class="label label-default font-weight-100">已取消</span></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table>*@
                     </div>
                 </section>
             </div>
-           
+
         </div>
-    </div>
+ 
 </div>
 <script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
 <script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
@@ -176,158 +185,193 @@
 <script src="https://img.highcharts.com.cn/highcharts/modules/oldie.js"></script>
 <script src="https://img.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 <script>
-    var chart1 = null;
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: {}
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                axios.get('/api/DashboardData/Statistics')
+                    .then(function (response) {
+                        console.log(response.data);
+                        vm.data = response.data.content;
+                        vm.initChart1(vm.data.chart1data);
+                        vm.initChart2(vm.data.chart2data);
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            initChart1: function (data) {
 
-
-    $.getJSON('https://data.jianshukeji.com/jsonp?filename=json/usdeur.json&callback=?', function (data) {
-         chart1 = Highcharts.chart('container1', {
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                text: '美元兑欧元汇率走势图'
-            },
-            subtitle: {
-                text: document.ontouchstart === undefined ?
-                    '鼠标拖动可以进行缩放' : '手势操作进行缩放'
-            },
-            xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: {
-                    millisecond: '%H:%M:%S.%L',
-                    second: '%H:%M:%S',
-                    minute: '%H:%M',
-                    hour: '%H:%M',
-                    day: '%m-%d',
-                    week: '%m-%d',
-                    month: '%Y-%m',
-                    year: '%Y'
-                }
-            },
-            tooltip: {
-                dateTimeLabelFormats: {
-                    millisecond: '%H:%M:%S.%L',
-                    second: '%H:%M:%S',
-                    minute: '%H:%M',
-                    hour: '%H:%M',
-                    day: '%Y-%m-%d',
-                    week: '%m-%d',
-                    month: '%Y-%m',
-                    year: '%Y'
-                }
-            },
-            yAxis: {
-                title: {
-                    text: '汇率'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
+                var chart1 = Highcharts.chart('container1', {
+                    chart: {
+                        zoomType: 'x'
                     },
-                    marker: {
-                        radius: 2
+                    title: {
+                        text: '当天接口调用情况'
                     },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
+                    subtitle: {
+                        text: document.ontouchstart === undefined ?
+                            '鼠标拖动可以进行缩放' : '手势操作进行缩放'
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        dateTimeLabelFormats: {
+                            millisecond: '%H:%M:%S.%L',
+                            second: '%H:%M:%S',
+                            minute: '%H:%M',
+                            hour: '%H:%M',
+                            day: '%m-%d',
+                            week: '%m-%d',
+                            month: '%Y-%m',
+                            year: '%Y'
                         }
                     },
-                    threshold: null
-                }
+                    tooltip: {
+                        dateTimeLabelFormats: {
+                            //    millisecond: '%H:%M:%S.%L',
+                            //    second: '%H:%M:%S',
+                            //    minute: '%H:%M',
+                            hour: '%H:%M',
+                            //    day: '%Y-%m-%d',
+                            //    week: '%m-%d',
+                            //    month: '%Y-%m',
+                            //    year: '%Y'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: '调用数量'
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    credits: {
+
+                        enabled: false
+
+                    },
+                    plotOptions: {
+                        area: {
+                            fillColor: {
+                                linearGradient: {
+                                    x1: 0,
+                                    y1: 0,
+                                    x2: 0,
+                                    y2: 1
+                                },
+                                stops: [
+                                    [0, Highcharts.getOptions().colors[0]],
+                                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                ]
+                            },
+                            marker: {
+                                radius: 2
+                            },
+                            lineWidth: 1,
+                            states: {
+                                hover: {
+                                    lineWidth: 1
+                                }
+                            },
+                            threshold: null
+                        }
+                    },
+                    series: [{
+                        type: 'area',
+                        name: '当前时间段内调用数量',
+                        data: data
+                    }]
+                });
             },
-            series: [{
-                type: 'area',
-                name: '美元兑欧元',
-                data: data
-            }]
-        });
+            initChart2: function (data) { 
+
+                var chart2 = Highcharts.chart('container2', {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: '接口分类当天调用汇总'
+                    },
+                    subtitle: {
+                        //text: '数据来源: Wikipedia.org'
+                    },
+                    xAxis: {
+                        categories: data.item1,
+                        title: {
+                            text: null
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '',
+                            align: 'high'
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: ' 百万'
+                    },
+                    credits: {
+
+                        enabled: false
+
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: false,
+                                allowOverlap: false // 允许数据标签重叠
+                            }
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -40,
+                        y: 100,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                        shadow: false,
+                        enabled: false
+                    },
+                    //series: [973, 914, 4054, 732, 34]
+                    series: [{
+                        //name: '2008 年',
+                        data: data.item2
+                    }]
+                });
+            }
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
 
     
-    });
 
-    var chart2 = Highcharts.chart('container2', {
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: '各洲不同时间的人口条形图'
-        },
-        subtitle: {
-            text: '数据来源: Wikipedia.org'
-        },
-        xAxis: {
-            categories: ['非洲', '美洲', '亚洲', '欧洲', '大洋洲'],
-            title: {
-                text: null
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: '人口总量 (百万)',
-                align: 'high'
-            },
-            labels: {
-                overflow: 'justify'
-            }
-        },
-        tooltip: {
-            valueSuffix: ' 百万'
-        },
-        plotOptions: {
-            bar: {
-                dataLabels: {
-                    enabled: true,
-                    allowOverlap: true // 允许数据标签重叠
-                }
-            }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -40,
-            y: 100,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-            shadow: true
-        },
-        series: [{
-            name: '1800 年',
-            data: [107, 31, 635, 203, 2]
-        }, {
-            name: '1900 年',
-            data: [133, 156, 947, 408, 6]
-        }, {
-            name: '2008 年',
-            data: [973, 914, 4054, 732, 34]
-        }]
-    });
+   
 </script>
 <script>
 
-    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
-        var table = layui.table;
+    layui.use(['element', 'layer'], function () {
         var element = layui.element;
         var layer = layui.layer;
-        var form = layui.form;
-        var laydate = layui.laydate;
+
 
     });
 
