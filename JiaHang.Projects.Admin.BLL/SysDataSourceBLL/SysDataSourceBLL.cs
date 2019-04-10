@@ -87,14 +87,14 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                          && (string.IsNullOrWhiteSpace(model.DataSource_Name) || a.DatasourceName.Contains(model.DataSource_Name))
                          && (string.IsNullOrWhiteSpace(model.DataSource_Type) || a.DatasourceType.Contains(model.DataSource_Type))
                          && (string.IsNullOrWhiteSpace(model.DataSource_Use) || a.DatasourceUse.Contains(model.DataSource_Use))
-                         && a.DeleteFlag == 0
+                         
                                )
                         join b in _context.SysConnectionInfo on a.ConnectionId equals b.ConnectionId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
                         join c in _context.SysDatabaseType on a_ifnull.DatabaseTypeId equals c.DatabaseTypeId
                         into b_temp
-                        from b_ifnull in b_temp.DefaultIfEmpty()
+                        from b_ifnull in b_temp.DefaultIfEmpty() orderby a.CreationDate descending
                         select new
                         {
                             DataSourceId=a.DatasourceId,
@@ -132,12 +132,12 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                             FieldLength = a.FieldLength,
                             FieldTypeName=a_ifnull.FieldTypeName,
                              FieldTypeId =a_ifnull.FieldTypeId.ToString() ?? null,
-                            FieldNullable = a.FieldNullable == 1 ? "否" : "是",
+                            FieldNullable = a.FieldNullable == 0 ? "否" : "是",
                             FieldKeyFlag = a.FieldKeyFlag,
-                            FieldIndexFlag = a.FieldIndexFlag == 1 ? "否" : "是",
+                            FieldIndexFlag = a.FieldIndexFlag == 0 ? "否" : "是",
                             FieldValue = a.FieldValue,
-                            DimFlag = a.DimFlag == 1 ? "否" : "是",
-                            TimestampFlag = a.TimestampFlag == 1 ? "否" : "是",
+                            DimFlag = a.DimFlag == 0 ? "否" : "是",
+                            TimestampFlag = a.TimestampFlag == 0 ? "否" : "是",
                             DimTableName = a.DimTableName,
                             DimFieldCode = a.DimFieldCode,
                             DimFieldName = a.DimFieldName,

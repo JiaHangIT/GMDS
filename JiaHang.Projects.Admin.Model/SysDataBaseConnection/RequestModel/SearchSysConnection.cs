@@ -8,10 +8,8 @@ namespace JiaHang.Projects.Admin.Model.SysConnection.RequestModel
     {
         public int limit { get; set; }
         public int page { get; set; }
-        public string Connection_Name { get; set; }
-        public string Connection_String { get; set; }
-        public string Database_Type_Code { get; set; }
-        public string Database_Type_Name { get; set; }
-        public string deleteflag { get; set; }
+        public string ConnectionName { get; set; }
+        public string ConnectionString { get; set; }
+        public string DataBaseTypeId { get; set; }
     }
 }
