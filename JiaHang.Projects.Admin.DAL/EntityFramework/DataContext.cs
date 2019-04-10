@@ -546,11 +546,11 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .IsUnique();
 
                 entity.Property(e => e.ReFieldName)
-                    .HasColumnName("RE_FIELD_NAME")
+                    .HasColumnName("RE_FIELD_NAME").IsConcurrencyToken()
                     .HasMaxLength(80);
 
                 entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
+                    .HasColumnName("SERVICE_ID").IsConcurrencyToken()
                     .HasMaxLength(80);
 
                 entity.Property(e => e.CreatedBy)

@@ -102,13 +102,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = context.SysDatasourceInfo.Select(s => new
-                {
-                    key = s.DatasourceId,
-                    value = s.DatasourceName
-                });
-
+                var data = from a in context.SysDatasourceInfo
+                           select new
+                           {
+                               key = a.DatasourceId,
+                               value = a.DatasourceName
+                           };
                 return data;
+                //var data = context.SysDatasourceInfo.Select(s => new
+                //{
+                //    key = s.DatasourceId,
+                //    value = s.DatasourceName
+                //});
+
+                //return data;
             }
             catch (Exception ex)
             {
@@ -127,13 +134,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = context.SysFieldType.Select(s => new
-                {
-                    key = s.FieldTypeId,
-                    value = s.FieldTypeName
-                });
-
+                var data = from a in context.SysFieldType select 
+                           new
+                           {
+                               key = a.FieldTypeId,
+                               value = a.FieldTypeName
+                           };
                 return data;
+                //var data = context.SysFieldType.Select(s => new
+                //{
+                //    key = s.FieldTypeId,
+                //    value = s.FieldTypeName
+                //});
+
+                //return data;
             }
             catch (Exception ex)
             {
@@ -152,13 +166,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = context.SysDatasourceField.Select(s => new
-                {
-                    key = s.FieldId,
-                    value = s.FieldName
-                });
-
+                var data = from a in context.SysDatasourceField select 
+                           new
+                           {
+                               key = a.FieldId,
+                               value = a.FieldName
+                           };
                 return data;
+                //var data = context.SysDatasourceField.Select(s => new
+                //{
+                //    key = s.FieldId,
+                //    value = s.FieldName
+                //});
+
+                               //return data;
             }
             catch (Exception ex)
             {
@@ -187,6 +208,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
+                if (datasourceid == "0")
+                {
+                    var query = from a in context.SysDatasourceField
+                                select new
+                                {
+                                    key = a.FieldId,
+                                    value = a.FieldName,
+                                    datasourceid = a.DatasourceId
+                                };
+                    return query;
+                }
                 return DcsServiceInfo.GetFieldIdByDataSourceId(datasourceid);
               //  var query = context.SysDatasourceField.DefaultIfEmpty()
               //.Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
