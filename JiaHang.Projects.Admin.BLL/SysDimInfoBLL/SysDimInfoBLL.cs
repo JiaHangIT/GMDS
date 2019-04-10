@@ -89,7 +89,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
-            entity.DimTypeCode = model.Dim_Type_Code;
+            entity.DimTypeCode = DimTypeCode;
             entity.DimName = model.Dime_Name;
             entity.DimValue = model.Dim_Value;
             entity.LastUpdateDate = System.DateTime.Now;
@@ -166,7 +166,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
             }
             SysDimInfo entity = new SysDimInfo
             {
-                DimId=model.Dim_Id,
+                DimId= Guid.NewGuid().ToString(),
                 DimTypeCode = model.Dim_Type_Code,
                 DimName = model.Dime_Name,
                 DimValue = model.Dim_Value,           

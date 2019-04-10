@@ -106,8 +106,8 @@
             <div class="layui-form-item" style="padding-top:4px;z-index:10">
                 <script id="editor" type="text/plain" style="width:960px;height:200px;">
                 </script>
-                
-                
+
+
                 <div class="layui-form-item layui-form-text" hidden="hidden">
                     <label class="layui-form-label">公告内容</label>
                     <div class="layui-input-block">
@@ -116,15 +116,17 @@
                 </div>
             </div>
         </div>
+
         <div class="layui-form-item" style="margin-left:385PX">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-
+           
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
     </div>
 
 
 </div>
+
 
 
 
@@ -368,11 +370,11 @@
         };
         form.on('submit(submit)', function () {
             //alert($("#help_type_id").val());
-           //实例化
+            //实例化
             var ue = UE.getEditor('editor');
             //获取纯文本内容
             var txt = ue.getContentTxt();
-            
+
             let model = {
                 helptypeid: $("#help_type_id").val(),
                 helptitle: $("#help_title").val(),
@@ -537,7 +539,7 @@
     function setContent(isAppendTo) {
         var arr = [];
         arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
-        UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
+        UE.getEditor('editor').setContent(data.help_content);
         alert(arr.join("\n"));
     }
     function setDisabled() {
@@ -606,6 +608,7 @@
         UE.getEditor('editor').execCommand("clearlocaldata");
         alert("已清空草稿箱")
     }
+
 </script>
 
 
