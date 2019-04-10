@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
 {
     public class SysMessageInfoBLL
     {
-        private readonly DataContext _context;
-        public SysMessageInfoBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysMessageInfoBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }

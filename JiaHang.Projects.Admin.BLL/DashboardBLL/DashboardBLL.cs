@@ -11,8 +11,8 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
 {
     public class DashboardBLL
     {
-        private readonly DataContext _context;
-        public DashboardBLL(DataContext dataContext)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public DashboardBLL(DAL.EntityFramework.DataContext dataContext)
         {
             _context = dataContext;
         }

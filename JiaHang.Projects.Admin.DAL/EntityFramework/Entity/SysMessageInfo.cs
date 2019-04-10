@@ -8,8 +8,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string MessageId { get; set; }
         public string MessageTitle { get; set; }
         public string MessageContent { get; set; }
-        public int? ImportantFlag { get; set; }
-        public int? AuditFlag { get; set; }
+        public decimal? ImportantFlag { get; set; }
+        public decimal? AuditFlag { get; set; }
         public DateTime? AuditedDate { get; set; }
         public string AuditedBy { get; set; }
         public DateTime? CreationDate { get; set; }
