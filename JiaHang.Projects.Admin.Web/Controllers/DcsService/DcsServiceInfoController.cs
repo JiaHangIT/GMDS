@@ -17,5 +17,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.Catelog
         {
             return View();
         }
+
+        public IActionResult Index3()
+        {
+            return View();
+        }
     }
 }

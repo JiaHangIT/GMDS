@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.Web
         }
 
         public IConfiguration Configuration { get; }
-
+       
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -34,6 +34,7 @@ namespace JiaHang.Projects.Admin.Web
             string oracle_connection = Configuration.GetConnectionString("OracleConnection");
             //注入缓存服务
             services.AddMemoryCache();
+            
 
             services.AddDbContext<DataContext>(options =>
             {
@@ -44,7 +45,7 @@ namespace JiaHang.Projects.Admin.Web
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

@@ -1082,6 +1082,7 @@
             },
             closeGenerateLayer: function () {
                 layer.close(generateLayer_index);
+                $('#datasourceid').empty();
             },
             //导出
             export: function () {
@@ -1093,18 +1094,6 @@
                 window.location.href = url;
             }
         };
-        //监听指定开关
-        //form.on('switch(switchTest)', function (data) {
-        //    if (this.checked == 'true') {
-        //        this.checked = 'false';
-        //    }
-        //    else {
-        //        this.checked = 'true';
-        //    }
-        //    layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
-        //        offset: '6px'
-        //    });
-        //});
 
         //监听主要信息数据源select字段
         form.on('select(datasourceselected)', function (data) {
@@ -1112,13 +1101,22 @@
             //let datasourceid = jQuery('#datasourceid').val();//主要信息里的数据源字段值，记录用于帮助填充共享接口返回字段信息
             let datasourceid = data.value;
 
+
+
             //初始化 共享接口返回字段
             //数据共享接口返回字段信息（FieldId）
+
+            ;//从这里面查找
+            //var tarData = jQuery.parseJSON(window.localStorage.getItem('getshareresult'));
+
             $.ajax({
                 async: true,
                 url: "/api/dcsserviceinfodata/" + datasourceid,
                 type: 'get',
                 success: function (data) {
+                    //先清空option
+                    $('.sharerelate').empty();
+
                     $.each(data, function (index, item) {
                         $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
                     });
@@ -1214,6 +1212,8 @@
                     }
                     //obj.tofieldid = jQuery(aInput[2]).find("option:selected").val();
                     obj.tofieldid = jQuery(aSelect[0]).find("option:selected").val();
+
+                    obj.dimtransflag = aInput[3].checked == true ? 1 : 0;
                     collectrestults.push(obj);
                 })
             }
@@ -1308,6 +1308,11 @@
         function initFormValue(data) {
             if (data == undefined) {
 
+
+                //如果共享返回字段的select有属性，则清空
+                $('.sharerelate').empty();
+                layui.form.render('select');
+
                 //将各个块里的tbody清空
                 //若#paramdiv table里有tbody,先清空tbody
 
@@ -1366,7 +1371,7 @@
                         url: "/api/dcsserviceinfodata/getserviceinfoview?serviceid=" + serviceId,
                         type: 'get',
                         success: function (res) {
-
+                            $('.sharerelate').empty();
                             console.log(res.content)
                             var getTpl = document.getElementById('collectmodel').innerHTML
                                 , viewcollect = document.getElementById('collectresultcontent');
@@ -1404,8 +1409,10 @@
                                 jQuery.each(paramTbody, function (index, item) {
                                     var aSelect = $(item).find('select');
                                     if (aSelect && aSelect.length > 0) {
-                                        jQuery(aSelect[0]).val(res.content.params[index].paramTypeId)
-                                        jQuery(aSelect[1]).val(res.content.params[index].relaFieldId)
+                                        jQuery(aSelect[0]).val(res.content.params[index].paramTypeId);
+                                        jQuery(aSelect[1]).val(res.content.params[index].relaFieldId);
+
+                                        //alert(jQuery(aSelect[1]).val());
                                     }
 
                                     //paramNullable  timestampFlag
@@ -1418,12 +1425,28 @@
 
                             let shareresultTbody = $('#shareresultcontent tbody');//共享接口返回字段信息
                             if (shareresultTbody && shareresultTbody.length > 0) {
+
+                                let datasourceid = jQuery('#datasourceid').val();
+                                if (datasourceid && datasourceid != '') {
+                                    $.ajax({
+                                        async: false,
+                                        url: "/api/dcsserviceinfodata/" + datasourceid,
+                                        type: 'get',
+                                        success: function (data) {
+                                            $.each(data, function (index, item) {
+                                                $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                                            });
+                                            layui.form.render("select");
+
+                                        }
+                                    });
+                                }
+                                
                                 jQuery.each(shareresultTbody, function (index, item) {
                                     var aSelect = $(item).find('select');
                                     if (aSelect && aSelect.length > 0) {
+                                        
                                         jQuery(aSelect[0]).val(res.content.shareResult[index].fieldId)
-
-
                                     }
                                 })
                             }
@@ -1493,7 +1516,7 @@
                     //    $('#servicegroupid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
                     //});
                     //layui.form.render("select");
-
+                    window.localStorage.setItem('catelog', JSON.stringify(data));
                     catelogdata = data;
                 }
             });
@@ -1504,11 +1527,7 @@
                 url: "/api/dcsserviceinfodata/getdatasource",
                 type: 'post',
                 success: function (data) {
-                    //$.each(data, function (index, item) {
-                    //    $('#datasourceid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                    //});
-                    //layui.form.render("select");
-
+                    window.localStorage.setItem('datasource', JSON.stringify(data));
                     datasource = data;
                 }
             });
@@ -1519,12 +1538,7 @@
                 url: "/api/dcsserviceinfodata/getfieldtype",
                 type: 'post',
                 success: function (data) {
-
-                    //$.each(data, function (index, item) {
-                    //    $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                    //});
-                    //layui.form.render("select");
-
+                    window.localStorage.setItem('fieldtype', JSON.stringify(data));
                     paramdata = data;
                 }
             });
@@ -1534,11 +1548,7 @@
                 url: "/api/dcsserviceinfodata/getrelafieldid",
                 type: 'post',
                 success: function (data) {
-                    //$.each(data, function (index, item) {
-                    //    $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                    //});
-                    //layui.form.render("select");
-
+                    window.localStorage.setItem('relateinfo', JSON.stringify(data));
                     relateinfo = data;
                 }
             });
@@ -1549,23 +1559,21 @@
                 url: "/api/dcsserviceinfodata/getrelafieldid",
                 type: 'post',
                 success: function (data) {
-                    //$.each(data, function (index, item) {
-                    //    $('.collectto').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-                    //});
-                    //layui.form.render("select");
-
+                    window.localStorage.setItem('collecttofile', JSON.stringify(data));
                     collecttofile = data;
                 }
             });
 
 
-
-            $.each(catelogdata, function (index, item) {
+            $('#servicegroupid').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('catelog')), function (index, item) {
                 $('#servicegroupid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
             });
             layui.form.render("select");
 
-            $.each(datasource, function (index, item) {
+
+            $('#datasourceid').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('datasource')), function (index, item) {
                 $('#datasourceid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
             });
             layui.form.render("select");
@@ -1575,92 +1583,37 @@
 
         //加载select下拉
         function loadSelect() {
-            //目录分类
-            //$.ajax({
-            //    async: true,
-            //    url: "/api/dcsservicegroupdata/GetServiceGroup",
-            //    type: 'post',
-            //    success: function (data) {
-            //        $.each(data, function (index, item) {
-            //            $('#servicegroupid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-            //        });
-            //        layui.form.render("select");
-            //    }
+
+
+
+            $('.paramtype').empty();
+            //$.each(paramdata, function (index, item) {
+            //    $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
             //});
-
-  
-
-            //数据源
-            //$.ajax({
-            //    async: true,
-            //    url: "/api/dcsserviceinfodata/getdatasource",
-            //    type: 'post',
-            //    success: function (data) {
-            //        $.each(data, function (index, item) {
-            //            $('#datasourceid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-            //        });
-            //        layui.form.render("select");
-            //    }
-            //});
-            
-      
-
-            //参数类型SYS_FIELD_TYPE.FIELD_TYPE_ID(数据接口参数信息)
-            //$.ajax({
-            //    async: true,
-            //    url: "/api/dcsserviceinfodata/getfieldtype",
-            //    type: 'post',
-            //    success: function (data) {
-
-            //        $.each(data, function (index, item) {
-            //            $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-            //        });
-            //        layui.form.render("select");
-            //    }
-            //});
-            
-            $.each(paramdata, function (index, item) {
+            $.each(jQuery.parseJSON(window.localStorage.getItem('fieldtype')), function (index, item) {
                 $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
             });
             layui.form.render("select");
 
 
-            //关联字段SYS_DATASOURCE_FIELD.FIELD_ID(数据接口参数信息)
-            //$.ajax({
-            //    async: true,
-            //    url: "/api/dcsserviceinfodata/getrelafieldid",
-            //    type: 'post',
-            //    success: function (data) {
-            //        $.each(data, function (index, item) {
-            //            $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-            //        });
-            //        layui.form.render("select");
-            //    }
-            //});
-            
-            $.each(relateinfo, function (index, item) {
+        
+
+            $('.paramrelate').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('relateinfo')), function (index, item) {
                 $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
             });
             layui.form.render("select");
 
-            //写入字段ID SYS_DATASOURCE_FIELD.FIELD_ID(数据采集接口返回字段信息)
-            //$.ajax({
-            //    async: true,
-            //    url: "/api/dcsserviceinfodata/getrelafieldid",
-            //    type: 'post',
-            //    success: function (data) {
-            //        $.each(data, function (index, item) {
-            //            $('.collectto').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-            //        });
-            //        layui.form.render("select");
-            //    }
-            //});
-            
-            $.each(collecttofile, function (index, item) {
+           
+
+            $('.collectto').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('collecttofile')), function (index, item) {
                 $('.collectto').append(new Option(item.value, item.key));// 下拉菜单里添加元素
             });
 
             layui.form.render("select");
+
+           
         }
 
 

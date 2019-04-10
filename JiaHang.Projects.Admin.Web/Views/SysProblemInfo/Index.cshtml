@@ -23,8 +23,8 @@
         width: 182px;
     }
 </style>
-<script src="~/utf8-asp/ueditor.config.js"></script>
-<script src="~/utf8-asp/ueditor.all.js"></script>
+@*<script src="~/utf8-asp/ueditor.config.js"></script>
+<script src="~/utf8-asp/ueditor.all.js"></script>*@
 <div>
 
 
@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
-                <label class="layui-form-label">常见问题标题：</label>
+                <label class="layui-form-label">问题标题：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_problem_title" autocomplete="off">
                 </div>
@@ -78,44 +78,19 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">常见问题标题</label>
+                <label class="layui-form-label">问题标题</label>
                 <div class="layui-input-block">
                     <input type="text" name="problem_title" id="problem_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
-
-
-
-
-            @*<div class="layui-inline">
-                    <label class="layui-form-label">是否重要</label>
-                    <div class="layui-input-block">
-                        <select name="interest" id="important_flag" lay-filter="aihao">
-                            <option value=""></option>
-                            <option value="0" selected="">否</option>
-                            <option value="1">是</option>
-
-                        </select>
-                    </div>
-                </div>*@
-            @*<div class="layui-inline">
-                <label class="layui-form-label">是否审核</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" disabled="" name="interest" id="audit_flag" lay-filter="aihao" readOnly="ture">
-
-                        <option value="0" selected="">否</option>
-                        <option value="1">是</option>
-
-                    </select>
-                </div>
-            </div>*@
-            <div class="layui-form-item">
-                <script id="editor" type="text/plain" style="width:595px;height:200px;">
-                </script>
-                <div class="layui-form-item layui-form-text" hidden="hidden">
+    
+            <div class="layui-form-item" style="padding-right:20px">
+                @*<script id="editor" type="text/plain" style="width:595px;height:180px;">
+                </script>*@
+                <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">常见问题内容</label>
                     <div class="layui-input-block">
-                        <textarea placeholder="请输入内容" id="problem_content" class="layui-textarea"></textarea>
+                        <textarea placeholder="请输入内容" id="problem_content" name="problem_content" class="layui-textarea"></textarea>
                     </div>
                 </div>
             </div>
@@ -139,7 +114,6 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
-
     layui.use(['table', 'element', 'layer', 'layedit', 'form', 'laydate'], function () {
         var table = layui.table;
         var element = layui.element;
@@ -178,16 +152,16 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//里的toolbar值是模板元素的选择器
 
-                , { field: 'problem_Type_Id', width: 200, title: '常见问题类型', sort: true, fixed: 'left' }
+                , { field: 'problem_Type_Id', width: 200, title: '常见问题类型',/* sort: true, */fixed: 'left' }
                 //, { field: 'problem_Type_Id', title: '帮助类型' }
-                , { field: 'problem_Title', width: 200, title: '常见问题标题', sort: true }
+                , { field: 'problem_Title', width: 200, title: '常见问题标题',/* sort: true,*/ fixed: 'left'}
                 //, { field: 'user_Org_Id', title: '用户组别', }
                 //, { field: 'important_Flag', title: '是否重要', sort: true }
                 , { field: 'audit_Flag', title: '是否审核' }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
                 , { field: 'audited_Date', title: '审核时间', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
-                , { field: 'audited_By', title: '审核人', sort: true }
+                , { field: 'audited_By', title: '审核人', /*sort: true */}
                 //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }
                 //, { field: 'eff_End_Date', title: '有效结束日期', sort: true }
 
@@ -204,7 +178,8 @@
         });
         //监听工具条
         table.on('tool(sysproblem)', function (obj) {
-            debugger;
+            //debugger;
+            //为什么会是审核的值
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
@@ -227,6 +202,8 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                console.log(data);
+                
                 problem_Id = data.problem_Id
                 layType = false;
                 showLayer(data);
@@ -335,14 +312,12 @@
                             console.log(error);
                         });
                 });
-
-
             },
             search: function () {
                 let pars = {
                     limit: 10,
                     page: 1,
-                    problem_Type_Id: $("#search_problem_type_id").val(),
+                    //problem_Type_Id: $("#search_problem_type_id").val(),
                     problem_Title: $("#search_problem_title").val(),
                     //important_Flag: 0,
                     audit_Flag: $("#search_audit_flag").val(),
@@ -372,25 +347,29 @@
         };
         form.on('submit(submit)', function () {
             //alert($("#problem_type_id").val());
+            //实例化
+            
+            //var ue = UE.getEditor('editor');
+            ////获取纯文本内容
+            //var txt = ue.getContentTxt();
             let model = {
                 problemtypeid: $("#problem_type_id").val(),
                 problemtitle: $("#problem_title").val(),
-                problemcontent: $("#problem_content").val(),
+                problemcontent: $("#problem_contant").val(),
                 importantflag: $("#important_flag").val(),
                 auditflag: $("#audit_flag").val(),
                 //auditeddate: $("#audited_date").val(),
                 //auditedby: $("#audited_by").val()
             };
-
             let url = "/api/sysprobleminfodata";
-            let method = "POST";
+            let method = "POST"
             if (layType != true) {
-                url = "/api/sysprobleminfodata/" + problem_id;
+                url = "/api/sysprobleminfodata/" + problem_Id;
                 method = "PUT";
             }
+            console.log(url);
             axios({ url: url, method: method, data: model })
                 .then(function (response) {
-
                     layer.msg(response.data.message);
                     if (!response.data.isSuccess) {
 
@@ -409,7 +388,6 @@
                     else {
                         //新增
                         datatable.unshift(response.content)
-
                     }
                     tableReload(datatable)
                     layer.close(generateLayer_index);
@@ -427,6 +405,7 @@
                 active[type] ? active[type].call(this) : '';
             });
         function showLayer(data) {
+            console.log(data);
             initFormValue(data);
             let title = "新增";
             document.getElementById("problem_title").disabled = false;
@@ -441,24 +420,25 @@
                 , title: title //不显示标题栏
                 , closeBtn: false
                 , fixed: false
-                , area: ['650px', '500px']
+                , area: ['630px', '300px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['8%', '18%']
+                , offset: ['13%', '18%']
             });
         };
         function initFormValue(data) {
+            console.log(data);
             if (data == undefined) {
-
                 form.val("generate-form", {
                     problem_id: "",
                     problem_type_id: "",
                     problem_title: "",
                     problem_contant: "",
+                    editor: "",
                     //important_flag: "",
                     audit_flag: "",
                     //audited_Date: "",
@@ -472,6 +452,7 @@
                 problem_type_id: data.problem_Type_Id,
                 problem_title: data.problem_Title,
                 problem_contant: data.problem_Contant,
+                //editor: data.problem_Contant,
                 //important_flag: data.important_Flag,
                 audit_flag: data.audit_Flag,
                 //audited_Date: data.audited_Date,
@@ -489,7 +470,7 @@
     });
     
 </script>
-<script type="text/javascript">
+@*<script type="text/javascript">
 
     //实例化编辑器
     //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
@@ -601,7 +582,7 @@
         UE.getEditor('editor').execCommand("clearlocaldata");
         alert("已清空草稿箱")
     }
-</script>
+</script>*@
 
 
 

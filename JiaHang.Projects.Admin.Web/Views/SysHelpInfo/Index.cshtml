@@ -23,18 +23,18 @@
         width: 182px;
     }
 </style>
-<script src="~/utf8-asp/ueditor.config.js"></script>
-<script src="~/utf8-asp/ueditor.all.js"></script>
+@*<script src="~/utf8-asp/ueditor.config.js"></script>
+<script src="~/utf8-asp/ueditor.all.js"></script>*@
 
 <div>
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px">
         <div class="layui-row" style="margin-top:4px">
             <div class=" layui-col-md4 layui-col-xs6">
-                <label class="layui-form-label">帮助类型：</label>
-                <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_help_type_id" autocomplete="off">
-                </div>
+            <label class="layui-form-label">帮助类型：</label>
+            <div class="layui-inline">
+                <input class="layui-input" name="id" id="search_help_type_id" autocomplete="off">
             </div>
+        </div>
             <div class=" layui-col-md4 layui-col-xs6">
                 <label class="layui-form-label">公告标题：</label>
                 <div class="layui-inline">
@@ -51,7 +51,17 @@
                     </select>
                 </div>
             </div>
-            <div class="layui-row">
+            <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
+                <label class="layui-form-label"> 是否审核：</label>
+                <div class="layui-inline">
+                    <select name="interest" id="search_audit_flag" lay-filter="aihao">
+                        <option value=""></option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            @*<div class="layui-row">
                 <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
                     <label class="layui-form-label"> 是否审核：</label>
                     <div class="layui-inline">
@@ -62,7 +72,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div>*@
         </div>
 
 
@@ -92,7 +102,7 @@
                     <input type="text" name="help_title" id="help_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
-            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:15px;z-index:9999999">
+            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:13px;"  >
                 <label class="layui-form-label">是否重要</label>
                 <div class="layui-input-block">
                     <select name="interest" id="important_flag" lay-filter="aihao">
@@ -103,12 +113,12 @@
                 </div>
             </div>
 
-            <div class="layui-form-item" style="padding-top:4px;z-index:10">
-                <script id="editor" type="text/plain" style="width:960px;height:200px;">
-                </script>
-
-
-                <div class="layui-form-item layui-form-text" hidden="hidden">
+            <div class="layui-form-item" style="padding-top:4px;padding-right:21px">
+                @*<script id="editor" type="text/plain" style="width:960px;height:200px;">
+                </script>*@
+                
+                
+                <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">公告内容</label>
                     <div class="layui-input-block">
                         <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
@@ -116,17 +126,15 @@
                 </div>
             </div>
         </div>
-
         <div class="layui-form-item" style="margin-left:385PX">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-           
+
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
     </div>
 
 
 </div>
-
 
 
 
@@ -176,19 +184,18 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'help_Type_Id', width: 120, title: '帮助类型', sort: true, fixed: 'left' }
+                , { field: 'help_Type_Id', width: 120, title: '帮助类型',/* sort:  true, */fixed: 'left' }
                 //, { field: 'help_Type_Id', title: '帮助类型' }
-                , { field: 'help_Title', title: '公告标题', sort: true }
+                , { field: 'help_Title', title: '公告标题',/* sort: true,*/ fixed: 'left' }
                 //, { field: 'user_Org_Id', title: '用户组别', }
-                , { field: 'important_Flag', title: '是否重要', sort: true }
+                , { field: 'important_Flag', title: '是否重要',/* sort: true*/ }
                 , { field: 'audit_Flag', title: '是否审核' }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
                 , { field: 'audited_Date', title: '审核时间', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
-                , { field: 'audited_By', title: '审核人', sort: true }
+                , { field: 'audited_By', title: '审核人', /*sort: true*/ }
                 //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }
                 //, { field: 'eff_End_Date', title: '有效结束日期', sort: true }
-
             ]]
             , id: 'testReload'
             , page: true,
@@ -196,8 +203,6 @@
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
         });
-
-
         table.on('checkbox(syshelp)', function (obj) {
         });
         //监听工具条
@@ -221,7 +226,6 @@
                         .catch(function (error) {
                             console.log(error);
                         });
-
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
@@ -232,19 +236,14 @@
                 console.log("审核");
                 console.log(data.help_Id);
                 console.log(data.help_Title);
-
                 let url = "/api/syshelpinfodata/UpdateExamine";
                 let method = "POST";
                 let confirm_title = "帮助信息名称为：【" + data.help_Title + "】";
 
                 layer.confirm(confirm_title, {
                     btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
-
                         layer.close(index);
-
                     }
-
-
                 }, function (index, layero) {
                     let model = {
                         HelpTypeId: data.help_Id,
@@ -258,7 +257,6 @@
                                 return;
                                 tableReload(datatable);
                             }
-
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -277,7 +275,6 @@
                                 return;
                                 tableReload(datatable);
                             }
-
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -323,16 +320,12 @@
                             //}
                             //console.log(tabledata);
                             tableReload(tabledata);
-
-
                         })
                         .catch(function (error) {
                             layer.msg("发生了预料之外的错误!");
                             console.log(error);
                         });
                 });
-
-
             },
             search: function () {
                 let pars = {
@@ -357,7 +350,6 @@
                     contentType: 'application/json',
                     method: 'post'
                 });
-
             },
             showGenerateLayer: function () {
                 layType = true;
@@ -369,16 +361,17 @@
 
         };
         form.on('submit(submit)', function () {
-            //alert($("#help_type_id").val());
-            //实例化
-            var ue = UE.getEditor('editor');
-            //获取纯文本内容
-            var txt = ue.getContentTxt();
-
+           // //alert($("#help_type_id").val());
+           // console.log(data);
+           ////实例化
+           // var ue = UE.getEditor('editor');
+           // //获取纯文本内容
+           // var txt = ue.getContentTxt();
+            
             let model = {
                 helptypeid: $("#help_type_id").val(),
                 helptitle: $("#help_title").val(),
-                helpcontent: txt,
+                helpcontent: $("#help_contant").val(),
                 importantflag: $("#important_flag").val(),
                 auditflag: $("#audit_flag").val(),
                 //auditeddate: $("#audited_date").val(),
@@ -444,14 +437,14 @@
                 , title: title //不显示标题栏
                 , closeBtn: false
                 , fixed: false
-                , area: ['1000px', '480px']
+                , area: ['980px', '310px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['8%', '6%']
+                , offset: ['10%', '6%']
             });
         };
 
@@ -496,7 +489,7 @@
 
 </script>
 
-<script type="text/javascript">
+@*<script type="text/javascript">
 
     //实例化编辑器
     //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
@@ -539,7 +532,7 @@
     function setContent(isAppendTo) {
         var arr = [];
         arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
-        UE.getEditor('editor').setContent(data.help_content);
+        UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
         alert(arr.join("\n"));
     }
     function setDisabled() {
@@ -608,8 +601,7 @@
         UE.getEditor('editor').execCommand("clearlocaldata");
         alert("已清空草稿箱")
     }
-
-</script>
+</script>*@
 
 
 
