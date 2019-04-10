@@ -51,7 +51,7 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
                     errorCodeCode = e.ErrorCodeCode ?? "",
                     errorCodeName = e.ErrorCodeName ?? "",
                     errorCodeDesc = e.ErrorCodeDesc ?? "",
-                    importantFlag = e.ImportantFlag > 0 ? "是" : "否",
+                    importantFlag = e.ImportantFlag,
                     auditFlag = e.AuditFlag > 0 ? "通过审核" : "未通过审核",
                     auditedDate = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
                     auditedBy = e.AuditedBy ?? "",
@@ -92,7 +92,7 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
-            entity.ErrorCodeId = model.ErrorCodeId;
+            entity.ErrorCodeId = MessageId;
             entity.ErrorCodeCode = model.ErrorCodeCode;
             entity.ErrorCodeName = model.ErrorCodeName;
             entity.ErrorCodeDesc = model.ErrorCodeDesc;
@@ -175,7 +175,7 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
             }
             SysErrorCodeInfo entity = new SysErrorCodeInfo
             {
-                ErrorCodeId = model.ErrorCodeId,
+                ErrorCodeId = Guid.NewGuid().ToString(),
                 ErrorCodeCode = model.ErrorCodeCode,
                 ErrorCodeName = model.ErrorCodeName,
                 ErrorCodeDesc = model.ErrorCodeDesc,
