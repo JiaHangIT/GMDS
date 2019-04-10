@@ -30,14 +30,14 @@
 
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px;">
         <div class="layui-row">
-            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
+            @*<div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label">问题类型：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_problem_type_id" autocomplete="off">
                 </div>
-            </div>
+            </div>*@
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
-                <label class="layui-form-label">常见问题标题：</label>
+                <label class="layui-form-label">问题标题：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_problem_title" autocomplete="off">
                 </div>
@@ -71,14 +71,14 @@
 <div id="generate_layer" style="display:none;position:relative;padding-left:15px;margin-top:4px">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-            <div class="layui-inline" >
+            @*<div class="layui-inline" >
                 <label class="layui-form-label">问题类型</label>
                 <div class="layui-input-block">
                     <input type="text" name="problem_type_id" id="problem_type_id" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
-            </div>
+            </div>*@
             <div class="layui-inline">
-                <label class="layui-form-label">常见问题标题</label>
+                <label class="layui-form-label">问题标题</label>
                 <div class="layui-input-block">
                     <input type="text" name="problem_title" id="problem_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
@@ -178,9 +178,9 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//里的toolbar值是模板元素的选择器
 
-                , { field: 'problem_Type_Id', width: 200, title: '常见问题类型', sort: true, fixed: 'left' }
+                //, { field: 'problem_Type_Id', width: 200, title: '常见问题类型', sort: true, fixed: 'left' }
                 //, { field: 'problem_Type_Id', title: '帮助类型' }
-                , { field: 'problem_Title', width: 200, title: '常见问题标题', sort: true }
+                , { field: 'problem_Title', width: 200, title: '常见问题标题', sort: true, fixed: 'left'}
                 //, { field: 'user_Org_Id', title: '用户组别', }
                 //, { field: 'important_Flag', title: '是否重要', sort: true }
                 , { field: 'audit_Flag', title: '是否审核' }
@@ -227,6 +227,8 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                console.log(data);
+                
                 problem_Id = data.problem_Id
                 layType = false;
                 showLayer(data);
@@ -342,7 +344,7 @@
                 let pars = {
                     limit: 10,
                     page: 1,
-                    problem_Type_Id: $("#search_problem_type_id").val(),
+                    //problem_Type_Id: $("#search_problem_type_id").val(),
                     problem_Title: $("#search_problem_title").val(),
                     //important_Flag: 0,
                     audit_Flag: $("#search_audit_flag").val(),
@@ -372,20 +374,25 @@
         };
         form.on('submit(submit)', function () {
             //alert($("#problem_type_id").val());
+            //实例化
+            
+            var ue = UE.getEditor('editor');
+            //获取纯文本内容
+            var txt = ue.getContentTxt();
             let model = {
-                problemtypeid: $("#problem_type_id").val(),
+                //problemtypeid: $("#problem_type_id").val(),
                 problemtitle: $("#problem_title").val(),
-                problemcontent: $("#problem_content").val(),
+                problemcontent: txt,
                 importantflag: $("#important_flag").val(),
                 auditflag: $("#audit_flag").val(),
                 //auditeddate: $("#audited_date").val(),
                 //auditedby: $("#audited_by").val()
             };
-
+            
             let url = "/api/sysprobleminfodata";
             let method = "POST";
             if (layType != true) {
-                url = "/api/sysprobleminfodata/" + problem_id;
+                url = "/api/sysprobleminfodata/" + problem_Id;
                 method = "PUT";
             }
             axios({ url: url, method: method, data: model })
@@ -456,7 +463,7 @@
 
                 form.val("generate-form", {
                     problem_id: "",
-                    problem_type_id: "",
+                    //problem_type_id: "",
                     problem_title: "",
                     problem_contant: "",
                     //important_flag: "",
@@ -469,7 +476,7 @@
             }
             form.val("generate-form", {
                 problem_id: data.problem_Id,
-                problem_type_id: data.problem_Type_Id,
+                //problem_type_id: data.problem_Type_Id,
                 problem_title: data.problem_Title,
                 problem_contant: data.problem_Contant,
                 //important_flag: data.important_Flag,

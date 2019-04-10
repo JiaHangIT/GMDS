@@ -31,8 +31,8 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                 int total = _context.SysProblemInfo.
                      Where(a =>
                      (
-                     (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
-                     && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+                     //(string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+                     (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
                      && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
                      && (a.DeleteFlag != 1)
                      )
@@ -40,8 +40,8 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                 var result = _context.SysProblemInfo.
                      Where(a =>
                      (
-                     (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
-                     && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+                     //(string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+                      (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
                      && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
                      && (a.DeleteFlag != 1)
                      )
@@ -49,7 +49,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                 var data = result.Select(e => new
                 {
                     Problem_Id = e.ProblemId,
-                    Problem_Type_Id = e.ProblemTypeId,
+                    //Problem_Type_Id = e.ProblemTypeId,
                     Problem_Title = e.ProblemTitle,
                     Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
                     Audited_Date = e.AuditedDate,
@@ -96,7 +96,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告ID错误!" };
             }
-            entity.ProblemTypeId = model.ProblemTypeId;
+            //entity.ProblemTypeId = model.ProblemTypeId;
             entity.ProblemTitle = model.ProblemTitle;
             entity.ProblemContent = model.ProblemContent;
             entity.AuditFlag = model.AuditFlag;
