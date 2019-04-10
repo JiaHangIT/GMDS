@@ -12,11 +12,11 @@
                         <div style="width:50px;height:50px;background-color:#26A0FA;border-radius:50px; margin:0 auto;">
                             <i class="larry-icon larry-gouwucheman" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <p style="">累计接口调用数量</p>
+                        <p style="">累计接口调用</p>
                     </div>
                     <div style="float:left;text-align:center;line-height:50px;width:50%;">
                         <div class="p">
-                            <h3 id="orderCounter" style="font-size:30px;">{{data.totalCount}}</h3>
+                            <h3 id="orderCounter" style="font-size:18px;">{{data.totalCount}} 次</h3>
                         </div>
                     </div>
                 </div>
@@ -28,11 +28,11 @@
                         <div style="width:50px;height:50px;background-color:#FA6332;border-radius:50px; margin:0 auto;">
                             <i class="larry-icon larry-shouru" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <p style="">今日接口调用数量</p>
+                        <p style="">今日接口调用</p>
                     </div>
                     <div style="float:left;text-align:center;line-height:50px;width:50%;">
                         <div class="p">
-                            <h3 id="orderCounter" style="font-size:30px;">{{data.todayCount}}</h3>
+                            <h3 id="orderCounter" style="font-size:18px;">{{data.todayCount}} 次</h3>
                         </div>
                     </div>
                 </div>
@@ -43,11 +43,11 @@
                         <div style="width:50px;height:50px;background-color:#68C381;border-radius:50px; margin:0 auto;">
                             <i class="larry-icon larry-laofangke" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <p style="">接口数量</p>
+                        <p style="">接口总数</p>
                     </div>
                     <div style="float:left;text-align:center;line-height:50px;width:50%;">
                         <div class="p">
-                            <h3 id="orderCounter" style="font-size:30px;">{{data.serviceCount}}</h3>
+                            <h3 id="orderCounter" style="font-size:18px;">{{data.serviceCount}} 个接口</h3>
                         </div>
                     </div>
                 </div>
@@ -59,11 +59,11 @@
                         <div style="width:50px;height:50px;background-color:#FFB800;border-radius:50px; margin:0 auto;">
                             <i class="larry-icon larry-zhifumaijia" style="font-size:22px;color:#fff;"></i>
                         </div>
-                        <p style="">用户数量</p>
+                        <p style="">用户总数</p>
                     </div>
                     <div style="float:left;text-align:center;line-height:50px;width:50%;">
                         <div class="p">
-                            <h3 id="orderCounter" style="font-size:30px;">{{data.customerCount}}</h3>
+                            <h3 id="orderCounter" style="font-size:18px;">{{data.customerCount}} 位用户</h3>
                         </div>
                     </div>
                 </div>
@@ -89,80 +89,79 @@
                 </el-table>
             </el-col>
         </el-row>
-        <el-row :gutter="15" style="margin-top:15px;">
-            <el-col :span="12">
-                <div>
-                    <el-card class="box-card">
+        <el-row :gutter="15" style="margin-top:15px; height:386px;">
+            <el-col :span="12" style="height:100%;">                
+                    <el-card class="box-card" style="height:100%;">
                         <div slot="header" class="clearfix">
                             <span>用户访问量占比</span>
                         </div>
-                        <el-table :data="tableData" stripe style="width: 100%">
-                            <el-table-column prop="date" label="日期" width="180"></el-table-column>
+                        <el-table :data="data.chart3data" stripe style="width: 100%">
+                            <el-table-column type="index" label="排名" width="180"></el-table-column>
+                            <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
+                            <el-table-column prop="perc" label="占比">
+                                <template slot-scope="scope">
+                                    <el-progress :percentage="scope.row.perc"></el-progress>
+                                </template>
+                            </el-table-column>
                         </el-table>
-                        @*<el-row>
-            <el-col :span="12">
-                <span>风暴恶趣味</span>
+                    </el-card>              
             </el-col>
-            <el-col :span="12">
-                <el-progress :percentage="70"></el-progress>
-            </el-col>
-        </el-row>*@
-                    </el-card>
-                </div>
-            </el-col>
-            <el-col :span="12">
-                <div>
-                    <el-card class="box-card">
+            <el-col :span="12" style="height:100%;" >                
+                    <el-card class="box-card" style="height:100%;"> 
                         <div slot="header" class="clearfix">
                             <span>接口访问量占比</span>
                         </div>
-                        <el-row>
-                            <el-col :span="12">
-                                <span>风暴恶趣味</span>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-progress :percentage="70"></el-progress>
-                            </el-col>
-                        </el-row>
-                    </el-card>
-                </div>
+                        <el-table :data="data.chart4data" stripe style="width: 100%">
+                            <el-table-column type="index" label="排名" width="180"></el-table-column>
+                            <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
+                            <el-table-column prop="perc" label="占比">
+                                <template slot-scope="scope">
+                                    <el-progress :percentage="scope.row.perc"></el-progress>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-card>               
             </el-col>
         </el-row>
 
-        <el-row :gutter="15" style="margin-top:15px;">
-            <el-col :span="12">
-                <div>
-                    <el-card class="box-card">
+        <el-row :gutter="15" style="margin-top:15px;height:386px;">
+            <el-col :span="12" style="height:100%;">
+             
+                    <el-card class="box-card" style="height:100%;">
                         <div slot="header" class="clearfix">
                             <span>用户接口日访问量</span>
                         </div>
-                        <el-row>
-                            <el-col :span="12">
-                                <span>风暴恶趣味</span>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-progress :percentage="70"></el-progress>
-                            </el-col>
-                        </el-row>
+                        <el-table :data="data.chart5data" stripe style="width: 100%">
+                            <el-table-column type="index" label="排名" width="180"></el-table-column>
+                            <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
+                            <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
+                            <el-table-column prop="perc" label="占比">
+                                <template slot-scope="scope">
+                                    <el-progress :percentage="scope.row.perc"></el-progress>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </el-card>
-                </div>
+                
             </el-col>
-            <el-col :span="12">
-                <div>
-                    <el-card class="box-card">
+            <el-col :span="12"  style="height:100%;">
+           
+                    <el-card class="box-card"  style="height:100%;">
                         <div slot="header" class="clearfix">
                             <span>用户接口月访问量</span>
                         </div>
-                        <el-row>
-                            <el-col :span="12">
-                                <span>风暴恶趣味</span>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-progress :percentage="70"></el-progress>
-                            </el-col>
-                        </el-row>
+                        <el-table :data="data.chart6data" stripe style="width: 100%">
+                            <el-table-column type="index" label="排名" width="180"></el-table-column>
+                            <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
+                            <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
+                            <el-table-column prop="perc" label="占比">
+                                <template slot-scope="scope">
+                                    <el-progress :percentage="scope.row.perc"></el-progress>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </el-card>
-                </div>
+      
             </el-col>
         </el-row>
 

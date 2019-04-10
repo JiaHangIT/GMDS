@@ -32,8 +32,8 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                 int total = _context.SysHelpInfo.
                        Where(a =>
                         (
-                        (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-                        && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                        //(string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                         (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
                         && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
                         && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
                         && (a.DeleteFlag != 1)
@@ -42,8 +42,8 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                 var result = _context.SysHelpInfo.
                         Where(a =>
                         (
-                        (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-                        && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                        //(string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                         (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
                         && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
                         && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
                         && (a.DeleteFlag != 1)
@@ -52,7 +52,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                 var data = result.Select(e => new
                 {
                     Help_Id = e.HelpId,
-                    Help_Type_Id = e.HelpTypeId ?? "",
+                    //Help_Type_Id = e.HelpTypeId ?? "",
                     Help_Title = e.HelpTitle ?? "",
                     Important_Flag = e.ImportantFlag > 0 ? "是" : "否",
                     Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
@@ -100,7 +100,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告ID错误!" };
             }
-            entity.HelpTypeId = model.HelpTypeId;
+            //entity.HelpTypeId = model.HelpTypeId;
             entity.HelpTitle = model.HelpTitle;
             entity.HelpContent = model.HelpContent;
             entity.ImportantFlag = model.ImportantFlag;
