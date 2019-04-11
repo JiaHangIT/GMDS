@@ -30,11 +30,14 @@
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px">
         <div class="layui-row" style="margin-top:4px">
             <div class=" layui-col-md4 layui-col-xs6">
-            <label class="layui-form-label">帮助类型：</label>
-            <div class="layui-inline">
-                <input class="layui-input" name="id" id="search_help_type_id" autocomplete="off">
+                <label class="layui-form-label">帮助类型：</label>
+                <div class="layui-inline">
+                    <select name="search_help_type_id" id="search_help_type_id" lay-verify="required" lay-filter="xmFilter">
+                        <option value=""></option>
+
+                    </select>
+                </div>
             </div>
-        </div>
             <div class=" layui-col-md4 layui-col-xs6">
                 <label class="layui-form-label">公告标题：</label>
                 <div class="layui-inline">
@@ -329,8 +332,7 @@
             },
             search: function () {
                 let pars = {
-                    limit: 10,
-                    page: 1,
+                 
                     help_Type_Id: $("#search_help_type_id").val(),
                     help_Title: $("#search_help_title").val(),
                     //important_Flag: 0,
@@ -482,7 +484,7 @@
                 data: datatable
             })
         }
-
+       
     });
 
 
