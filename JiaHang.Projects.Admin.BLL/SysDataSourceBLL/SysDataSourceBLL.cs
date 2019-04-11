@@ -31,7 +31,6 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
 && (string.IsNullOrWhiteSpace(model.DataSource_Name) || model.DataSource_Name.Contains(model.DataSource_Name))
 && (string.IsNullOrWhiteSpace(model.DataSource_Type) || model.DataSource_Type.Contains(model.DataSource_Type))
 && (string.IsNullOrWhiteSpace(model.DataSource_Use) || model.DataSource_Use.Contains(model.DataSource_Use))
-&& a.DeleteFlag == 0
 )
                          join b in _context.SysDatasourceInfo on a.DatasourceId equals b.DatasourceId
                        into a_temp
