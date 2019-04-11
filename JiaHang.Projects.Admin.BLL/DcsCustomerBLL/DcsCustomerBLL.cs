@@ -12,8 +12,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
 {
     public class DcsCustomerBLL
     {
-        private readonly DataContext _context;
-        public DcsCustomerBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public DcsCustomerBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }

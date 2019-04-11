@@ -8,7 +8,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string CustomerId { get; set; }
         public string ServiceId { get; set; }
         public string DataRightId { get; set; }
-        public int? DataLevel { get; set; }
+        public decimal? DataLevel { get; set; }
         public string DataRightColumn1 { get; set; }
         public string DataRightColumn2 { get; set; }
         public string DataRightColumn3 { get; set; }

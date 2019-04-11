@@ -5,7 +5,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
     public partial class SysDatabaseType
     {
-        public int DatabaseTypeId { get; set; }
+        public decimal DatabaseTypeId { get; set; }
         public string DatabaseTypeName { get; set; }
         public DateTime? CreationDate { get; set; }
         public string CreatedBy { get; set; }

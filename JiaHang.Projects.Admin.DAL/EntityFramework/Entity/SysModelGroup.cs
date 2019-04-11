@@ -10,8 +10,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string ModelGroupName { get; set; }
         public string ParentId { get; set; }
         public string ParentIdTree { get; set; }
-        public int? SortKey { get; set; }
-        public int? EnableFlag { get; set; }
+        public decimal? SortKey { get; set; }
+        public decimal? EnableFlag { get; set; }
         public string ImageUrl { get; set; }
         public DateTime CreationDate { get; set; }
         public string CreatedBy { get; set; }

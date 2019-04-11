@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
 {
     public class Sys_Dim_TypeBLL
     {
-        private readonly DataContext _context;
-        public Sys_Dim_TypeBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public Sys_Dim_TypeBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -89,7 +89,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
-            entity.DimTypeCode = model.Dim_Type_Code;
+            entity.DimTypeCode = DimTypeCode;
             entity.DimTypeName = model.Dim_Type_Name;
             entity.LastUpdateDate = System.DateTime.Now;
             entity.LastUpdatedBy = currentuserId;
@@ -166,7 +166,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
             }
             SysDimType entity = new SysDimType
             {
-                DimTypeCode = model.Dim_Type_Code,
+                DimTypeCode = Guid.NewGuid().ToString(),
                 DimTypeName = model.Dim_Type_Name,
                 CreationDate = System.DateTime.Now,
                 CreatedBy = currentUserId,
