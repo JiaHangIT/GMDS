@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "客户信息管理";
+    ViewData["Title"] = "客户接口授权";
 }
 
 
@@ -13,6 +13,17 @@
     }
 </style>
 <div id="app">
+
+    <div>
+        <el-collapse accordion  v-model="activeNames">
+            <p style="height: 48px; line-height: 48px; background-color: #fff;border-bottom: 1px solid #EBEEF5;">控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</p>           
+            <el-collapse-item title="已授权接口" name="1">
+                <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
+                <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+            </el-collapse-item>
+        </el-collapse>
+    </div>
+
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item label="客户名称">
             <el-input placeholder="客户手机号" v-model="searchCustomerName"></el-input>
@@ -169,6 +180,7 @@
                 dialogTitle: '',
                 labelPosition: 'left',
                 IsCreate: true,//是否新增
+                activeNames: ['1'],
             }
         },
         methods: {

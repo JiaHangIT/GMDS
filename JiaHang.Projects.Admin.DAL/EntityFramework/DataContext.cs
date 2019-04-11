@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
+using System.Linq.Expressions;
 
 namespace JiaHang.Projects.Admin.DAL.EntityFramework
 {
@@ -3302,6 +3303,26 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("USER_ROUTE_ID")
                     .HasColumnType("NVARCHAR2(36)");
             });
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+               //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
+               )
+            {
+                //foreach (var property in entityType.GetProperties()) {
+                //    property.Relational().ColumnName = property.Name.ToUpper();
+                //}
+
+                modelBuilder.Entity(entityType.ClrType).Property<int>("DeleteFlag");
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var body = Expression.Equal(
+                    Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(int) }, parameter, Expression.Constant("DeleteFlag")),
+                Expression.Constant(0));
+
+
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
+            }
+
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
