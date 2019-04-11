@@ -632,6 +632,7 @@
                     //layer.alert(JSON.stringify(data));
                     axios.delete("/api/sysdatasource/DeleteDataSourceInfos/" + parms)
                         .then(function (response) {
+                            console.log("12312");
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
