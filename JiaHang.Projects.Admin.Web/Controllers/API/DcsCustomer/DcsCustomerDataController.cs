@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsCustomer
+namespace JiaHang.Projects.Admin.Web.Controllers.API
 {
   
     [Route("api/[controller]")]
