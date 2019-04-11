@@ -5,125 +5,43 @@
 
 
 <style>
-    .v-modal {
-        display:none;
-    }
-    #app {
-        margin-top:30px;
-    }
+    .v-modal { display: none; }
+    #app { margin-top: 15px; padding: 15px; background-color: #fff; }
 </style>
 <div id="app">
 
-    <div>
-        <el-collapse accordion  v-model="activeNames">
-            <p style="height: 48px; line-height: 48px; background-color: #fff;border-bottom: 1px solid #EBEEF5;">控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</p>           
-            <el-collapse-item title="已授权接口" name="1">
-                <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-                <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-            </el-collapse-item>
-        </el-collapse>
-    </div>
 
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item label="客户名称">
-            <el-input placeholder="客户手机号" v-model="searchCustomerName"></el-input>
-        </el-form-item>
-        <el-form-item label="客户手机号">
-            <el-input placeholder="客户手机号" v-model="searchCustomerMobile"></el-input>            
-        </el-form-item>        
-    </el-form>
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item>
-            <el-button type="primary" @@click="fetchList">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="handleAdd">添加</el-button>            
-        </el-form-item>
-        <el-form-item>           
-            <el-button type="danger"  @@click="batchDelete">批量删除</el-button>
-        </el-form-item>
+    <el-collapse accordion v-model="activeNames">
+        <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;">
+            <el-col :span="16">
+                <p>用户名称</p>
+            </el-col>
+            <el-col :span="8" style="text-align: right;">
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;">添加其它接口</span>
+                <span style="color:#67C23A;cursor:pointer;">保存本次修改</span>
+            </el-col>
+        </el-row>
 
-    </el-form>
-    <el-table ref="multipleTable"
-              :data="data"
-              :border="true"
-              tooltip-effect="dark"
-              style="width: 100%"
-              @@selection-change="handleSelectionChange">
-        <el-table-column type="selection"
-                         width="55">
-        </el-table-column>
-        <el-table-column label="客户名称"
-                         prop="customerName">
-        </el-table-column>
-        <el-table-column label="客户登录账号"
-                         prop="loginAccount">
-        </el-table-column>
-        <el-table-column label="客户登录密码"
-                         prop="loginPassword">
-        </el-table-column>
-        <el-table-column label="客户手机号码"
-                         prop="contactMobile">
-        </el-table-column>
-        <el-table-column label="客户邮箱"
-                         prop="contactEmail">
-        </el-table-column>
-        <el-table-column label="创建时间"
-                         prop="creationDate">
-        </el-table-column>
-        <el-table-column label="操作">
-
-            <template slot-scope="scope">
-                <el-button size="mini"
-                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="mini"
-                           type="danger"
-                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
-        </el-table-column>
-    </el-table>
-
-
-    <el-pagination @@size-change="handleSizeChange"
-                   @@current-change="handleCurrentChange"
-                   :current-page="currentPage"
-                   :page-sizes="[10, 20, 30, 40]"
-                   :page-size="pageSize"
-                   layout="total, sizes, prev, pager, next, jumper"
-                   :total="total">
-    </el-pagination>
-    <div style="margin-top: 20px">
-        <el-button @@click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
-        <el-button @@click="toggleSelection()">取消选择</el-button>
-    </div>
-    <el-dialog :title="dialogTitle"
-               :visible.sync="centerDialogVisible"
-               width="30%"
-               center>
-        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
-            <el-form-item label="客户名称" prop="customerName">
-                <el-input v-model="form.customerName"></el-input>
-            </el-form-item>
-            <el-form-item label="客户手机号码" prop="contactMobile">
-                <el-input v-model="form.contactMobile"></el-input>
-            </el-form-item>
-            <el-form-item label="客户邮箱" prop="contactEmail">
-                <el-input v-model="form.contactEmail"></el-input>
-            </el-form-item>
-            <el-form-item label="客户登录账号" prop="loginAccount">
-                <el-input v-model="form.loginAccount"></el-input>
-            </el-form-item>
-            <el-form-item label="客户登录密码" prop="loginPassword">
-                <el-input v-model="form.loginPassword"></el-input>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button v-on:click="dialogCancel()">取 消</el-button>
-            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
-        </div>
-    </el-dialog>
-
+        <el-collapse-item title="已授权接口" name="1" class="author_checkboxs">
+            <el-row style="padding:15px;background-color:#ECF5FF;">
+                <el-col :span="18">
+                    <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @@change="handleCheckAllChange"> <span>接口名称</span>(<small>jiekoubianma</small> ) </el-checkbox>
+                </el-col>
+                <el-col :span="6" style="text-align: right;">
+                    <span type="danger" style="color:#F56C6C;cursor:pointer;">移除此接口授权</span>
+                </el-col>
+            </el-row>
+            <div style="padding:15px;">
+                <el-checkbox-group v-model="checkedCities" @@change="handleCheckedCitiesChange">
+                    <el-checkbox v-for="city in cities" :label="city" :key="city">
+                        <span>{{city}}</span>(<small>daima</small> )
+                    </el-checkbox>
+                </el-checkbox-group>
+            </div>
+        </el-collapse-item>
+    </el-collapse>
 </div>
+
 <script>
     layui.use(['element', 'layer'], function () {
         var layer = layui.layer
@@ -138,227 +56,36 @@
         data: function () {
             return {
                 data: [],
-                centerDialogVisible: false,
-                currentPage: 1,
-                pageSize: 10,
-                total: 0,
-                multipleSelection: [],//获取批量选择的数据
-                searchCustomerName: '',
-                searchCustomerMobile:'',
-
-                form: {   
-                    customerName:'',
-                    contactMobile: '',
-                    contactEmail: '',   
-                    customerId: '',
-                    loginAccount: '',
-                    loginPassword:''
-                },
-                rules: {
-                    customerName: [
-                        { required: true, message: '客户名称不能为空', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
-                    ],
-                    contactMobile: [
-                        { required: true,  message: '输入正确手机号码', trigger: 'blur' }
-                    ],
-                    loginAccount: [
-                        { required: true, message: '输入正确登录账号', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
-                    ],
-                    loginPassword: [
-                        { required: true, message: '输入正确登录密码', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
-                    ],
-                    contactEmail: [
-                        { required: true, type: 'email', message: '输入正确邮箱', trigger: 'blur' }
-                    ],
-                   
-                    
-                },        
-                formLabelWidth: '160px',
-                dialogTitle: '',
-                labelPosition: 'left',
-                IsCreate: true,//是否新增
                 activeNames: ['1'],
+                checkAll: false,
+                checkedCities: ['上海', '北京'],
+                cities: ['上海', '北京', '广州', '深圳'],
+                isIndeterminate: true
             }
         },
         methods: {
             fetchList: function () {
                 let vm = this
-                
+
                 axios.get(`/api/DcsCustomerData/${vm.pageSize}/${vm.currentPage}?customerName=${vm.searchCustomerName}&customerMobile=${vm.searchCustomerMobile}`)
                     .then(function (response) {
                         console.log(response.data);
-                        vm.data = response.data.content.data;
-                        vm.total = response.data.content.total;
+
                     })
                     .catch(function (error) {
                         console.log(error)
                     });
             },
-            handleEdit: function (index,row) {
-                //编辑
-                let vm = this
-                let rowstr = JSON.stringify(row)
-                let formdata = JSON.parse(rowstr)
-                vm.IsCreate = false
-                vm.dialogTitle = "编辑客户信息"
-                vm.form = formdata;
-                vm.centerDialogVisible = true
+            handleCheckAllChange(val) {
+                this.checkedCities = val ? this.cities : [];
+                this.isIndeterminate = false;
             },
-            handleDelete: function (index,row) {
-                let vm = this
-                //删除
-
-                //弹出确认框
-                
-                this.$confirm('此操作将删除该客户信息, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    axios.delete('/api/DcsCustomerData/' + row.customerId)
-                        .then(function (response) {
-                            if (!response.data.isSuccess) {
-                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
-                                return;
-                            }
-                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
-                            vm.fetchList();
-                            vm.centerDialogVisible = false
-                        })
-                        .catch(function (error) {
-                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
-                            console.log(error);
-                        });
-                    
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-
-            },
-            handleAdd: function () {
-                let vm = this
-                vm.IsCreate = true
-                vm.resetForm()
-                vm.dialogTitle="添加客户信息"
-                vm.centerDialogVisible = true
-                //添加
-            },
-            dialogCancel: function () {
-                let vm = this;
-
-                vm.centerDialogVisible = false
-            },
-            dialogSave: function (formName) {
-                let vm = this;
-                vm.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        let url = "/api/DcsCustomerData";
-                        let method = "POST";
-                        if (vm.IsCreate != true) {
-                            url = `/api/DcsCustomerData/${vm.form.customerId}`;
-                            method = "PUT";
-                        }
-                        axios({ url: url, method: method, data: vm.form })
-                            .then(function (response) {
-                                if (!response.data.isSuccess) {
-                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
-                                    return;
-                                }
-                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
-                                vm.fetchList();
-                                vm.centerDialogVisible = false
-                            })
-                            .catch(function (error) {
-                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
-                                console.log(error);
-                            });
-
-                    } else {
-                        console.log('error submit!!');
-                        return ;
-                    }
-                });
-
-               
-
-            },
-            resetForm() {
-                let vm = this;
-                vm.form.customerName= ''
-                vm.form.contactMobile = ''
-                vm.form.contactEmail = ''
-                vm.form.customerId = ''
-                vm.form.loginAccount= ''
-                vm.form.loginPassword=''
-            },
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-                this.pageSize = val;
-                this.fetchList();
-            },
-            handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
-                this.currentPage = val;
-                this.fetchList();
-            },
-            toggleSelection(rows) {
-                if (rows) {
-                    rows.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-            },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-                
-            },
-            batchDelete() {
-                let batchdatas = this.multipleSelection;
-                if (batchdatas.length == 0) {
-                    return;
-                }
-                let ids = '';
-                for (let i = 0; i < batchdatas.length;i++) {               
-                    ids += `&ids=${batchdatas[i].customerId}`;
-                };
-                ids = ids.substring(1, ids.length)
-                let vm=this
-                vm.$confirm(`此操作将删除${batchdatas.length}条客户信息, 是否继续?`, '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    axios.delete('/api/DcsCustomerData/BatchDelete?'+ids)
-                        .then(function (response) {
-                            if (!response.data.isSuccess) {
-                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
-                                return;
-                            }
-                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
-                            vm.fetchList();
-                            vm.centerDialogVisible = false
-                        })
-                        .catch(function (error) {
-                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
-                            console.log(error);
-                        });
-
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-                console.log(this.multipleSelection);
+            handleCheckedCitiesChange(value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.cities.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
             }
+
         },
         mounted: function () {
             let vm = this
