@@ -248,7 +248,7 @@
                 关联字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input paramrelate" lay-filter="" lay-verify="required">
+                <select class="layui-input paramrelate" lay-filter="paramrelateselected" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -321,7 +321,7 @@
                 关联字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input paramrelate" lay-filter="" lay-verify="required">
+                <select class="layui-input paramrelate" lay-filter="paramrelateselected" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -722,7 +722,7 @@
                     关联字段ID
                 </td>
                 <td class="layui-input-block">
-                    <select class="layui-input paramrelate" lay-filter="xmFilter" lay-verify="required">
+                    <select class="layui-input paramrelate" lay-filter="paramrelateselected" lay-verify="required">
                         <option value=''></option>
                     </select>
                 </td>
@@ -1128,6 +1128,9 @@
 
                     $.each(data, function (index, item) {
                         $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+
+
+                        $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
                     });
                     layui.form.render("select");
                 }
@@ -1140,6 +1143,14 @@
             if (data.value === "") {
                 layer.msg('请先选择主要信息内数据源信息');
             }
+
+            }),
+
+            form.on('select(paramrelateselected)', function (data) {
+
+                if (data.value === "") {
+                    layer.msg('请先选择主要信息内数据源信息');
+                }
 
             }),
 
@@ -1664,11 +1675,11 @@
 
 
 
-            $('.paramrelate').empty();
-            $.each(jQuery.parseJSON(window.localStorage.getItem('relateinfo')), function (index, item) {
-                $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
-            });
-            layui.form.render("select");
+            //$('.paramrelate').empty();
+            //$.each(jQuery.parseJSON(window.localStorage.getItem('relateinfo')), function (index, item) {
+            //    $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            //});
+            //layui.form.render("select");
 
 
 
