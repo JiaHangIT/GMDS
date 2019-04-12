@@ -16,33 +16,38 @@
 </style>
 <div>
 
-    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
-        <div class="layui-form-item">
-            公告标题：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchMESSAGE_TITLE" id="searchMESSAGE_TITLE" autocomplete="off">
+    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
+        <div class="layui-row">
+            <div class=" layui-col-md4 layui-col-xs6">
+                <label class="layui-form-label">接口编号：</label>
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="search_service_no" autocomplete="off">
+                </div>
             </div>
-            建立人：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchCreated_By" id="searchCreated_By" autocomplete="off">
+            <div class=" layui-col-md4 layui-col-xs6">
+                <label class="layui-form-label">接口代码：</label>
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="search_service_code" autocomplete="off">
+                </div>
             </div>
-            是否审核：
-            <div class="layui-inline">
-                <select name="searchauditFlag" id="searchauditFlag" lay-verify="required" lay-filter="xmFilter">
-                    <option value="">请选择</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
-                </select>
+            <div class=" layui-col-md4 layui-col-xs6">
+                <label class="layui-form-label">接口名称：</label>
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="search_service_name" autocomplete="off">
+                </div>
             </div>
-            <button class="layui-btn" data-type="search">条件查询</button>
         </div>
+        <div class="layui-form-item" style="margin-top:15px;">
+            <button class="layui-btn btn-search" data-type="search">条件查询</button>
+        </div>
+
     </div>
     <table class="layui-hide" id="test" lay-filter="decservice"> </table>
 </div>
 
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
+    <a class="layui-btn layui-btn-xs" lay-event="auditservice">审核</a>
 </script>
 
 
@@ -120,7 +125,13 @@
         //监听工具条
         table.on('tool(decservice)', function (obj) {
             var data = obj.data;
-            if (obj.event === 'examine') {
+            if (obj.event === 'auditservice') {
+
+                //已审核过的不能再审核
+                if (data.audit_Flag) {
+                    layer.msg('已审核接口不能再次审核!')
+                    return false;
+                }
 
                 let url = "/api/DcsServiceAuditAndPubData/Audit";
                 let method = "POST";
@@ -215,9 +226,9 @@
             search: function () {
                 console.log('reload');
                 let pars = {
-                    Message_title: $("#searchMESSAGE_TITLE").val(),
-                    Created_By: $("#searchCreated_By").val(),
-                    Audit_Flag: $("#searchauditFlag").val(),
+                    ServiceNo: $('#search_service_no').val(),
+                    ServiceCode: $('#search_service_code').val(),
+                    ServiceName: $('#search_service_name').val()
                 }
                 //执行重载
                 console.log(pars);

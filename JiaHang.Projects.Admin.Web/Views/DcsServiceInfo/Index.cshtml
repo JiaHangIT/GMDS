@@ -1075,6 +1075,10 @@
             ;//从这里面查找
             //var tarData = jQuery.parseJSON(window.localStorage.getItem('getshareresult'));
 
+
+            //var a = [];
+            //a.find(function (item) { return item.type = '1' });
+
             $.ajax({
                 async: true,
                 url: "/api/dcsserviceinfodata/" + datasourceid,
@@ -1127,11 +1131,11 @@
                     }
 
                     var t = $(aInput[3]).find("option");
-                    //obj.paramtypeid = $(aInput[3]).find("option:selected").val();
+
                     obj.paramtypeid = jQuery(aSelect[0]).find('option:selected').val();
                     obj.paramnullable = aInput[4].checked == true ? 1 : 0;
                     obj.timestampflag = aInput[5].checked == true ? 1 : 0;
-                    //obj.relafieldid = jQuery(aInput[6]).find("option:selected").val();
+
                     obj.relafieldid = jQuery(aSelect[1]).find('option:selected').val();
 
                     obj.paramdesc = aInput[7].value;
@@ -1151,7 +1155,7 @@
                     var aSelect = $(item).find('select');
 
                     var obj = new Object();
-                    //obj.fieldid = jQuery(aInput[1]).find("option:selected").val();
+
                     obj.fieldid = jQuery(aSelect[0]).find("option:selected").val();
                     if (obj.fieldid == '') {
                         return false;
@@ -1176,7 +1180,7 @@
                     if (obj.refieldname == '') {
                         return false;
                     }
-                    //obj.tofieldid = jQuery(aInput[2]).find("option:selected").val();
+
                     obj.tofieldid = jQuery(aSelect[0]).find("option:selected").val();
 
                     obj.dimtransflag = aInput[3].checked == true ? 1 : 0;
@@ -1289,7 +1293,7 @@
                         //可能有编辑过的，全部清空，现重新添加一个全新的tbody
                         paramtbody[i].remove();
                     }
-                    //paramadd();
+
                 }
 
                 var shareresultbody = $('#shareresultcontentdiv table').children();
@@ -1306,7 +1310,7 @@
                         //可能有编辑过的，全部清空，现重新添加一个全新的tbody
                         pcollectresulttbody[i].remove();
                     }
-                    //paramadd();
+
                 }
 
                 defaultload();
@@ -1343,29 +1347,25 @@
                         success: function (res) {
 
                             $('.sharerelate').empty();
-                            //console.log(res.content)
                             var getTpl = document.getElementById('collectmodel').innerHTML
                                 , viewcollect = document.getElementById('collectresultcontent');
                             laytpl(getTpl).render(res.content.collectResult, function (html) {
                                 viewcollect.innerHTML = html;
-
-                                //给collect块的select赋值
+                                
                             });
 
                             var getTplparam = document.getElementById('parammodel').innerHTML
                                 , viewparam = document.getElementById('paramcontent');
                             laytpl(getTplparam).render(res.content.params, function (html) {
                                 viewparam.innerHTML = html;
-
-                                //给param块的select赋值
+                                
                             });
 
                             var getTplshare = document.getElementById('sharemodel').innerHTML
                                 , viewshare = document.getElementById('shareresultcontent');
                             laytpl(getTplshare).render(res.content.shareResult, function (html) {
                                 viewshare.innerHTML = html;
-
-                                //给share块的select赋值
+                                
                             });
 
 
@@ -1380,10 +1380,12 @@
                                 jQuery.each(paramTbody, function (index, item) {
                                     var aSelect = $(item).find('select');
                                     if (aSelect && aSelect.length > 0) {
+                                        if (res.content.params[index] == null) {
+                                            return false;
+                                        }
                                         jQuery(aSelect[0]).val(res.content.params[index].paramTypeId);
                                         jQuery(aSelect[1]).val(res.content.params[index].relaFieldId);
-
-                                        //alert(jQuery(aSelect[1]).val());
+                                        
                                     }
 
                                     //paramNullable  timestampFlag
@@ -1416,7 +1418,9 @@
                                 jQuery.each(shareresultTbody, function (index, item) {
                                     var aSelect = $(item).find('select');
                                     if (aSelect && aSelect.length > 0) {
-
+                                        if (res.content.shareResult[index] == null) {
+                                            return false;
+                                        }
                                         jQuery(aSelect[0]).val(res.content.shareResult[index].fieldId)
                                     }
                                 })
@@ -1429,6 +1433,9 @@
                                 jQuery.each(collectresultTbody, function (index, item) {
                                     var aSelect = $(item).find('select');
                                     if (aSelect && aSelect.length > 0) {
+                                        if (res.content.collectResult[index] == null) {
+                                            return false;
+                                        }
                                         jQuery(aSelect[0]).val(res.content.collectResult[index].toFieldId)
                                     }
                                     var aInput = $(item).find('input');
