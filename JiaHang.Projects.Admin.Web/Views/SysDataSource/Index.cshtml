@@ -133,10 +133,10 @@
             </div>
             <div class="layui-tab-item">
                 <table class="layui-hide" id="test2" lay-filter="fieldoperation"> </table>
-                <div style="margin-left:400px">
-                    <a class="layui-btn layui-btn-xs" lay-event="addfield" data-type="addfield">添加字段</a>
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" data-type="deltefield" lay-event="deltefield">删除字段</a>
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" data-type="closetest2" lay-event="closetest2">取消</a>
+                <div style="margin-left:200px">
+                    <button class="layui-btn" lay-event="addfield" data-type="addfield">添加字段</button>
+                    <button class="layui-btn layui-btn-danger" data-type="deltefield" lay-event="deltefield">删除字段</button>
+                    <button class="layui-btn" data-type="closetest2" lay-event="closetest2">取消</button>
                 </div>
             </div>
 
@@ -529,21 +529,7 @@
             }
         });
 
-        //element.on('tab(tabtest)', function (data) {
-        //    if (data.index == 0) {
-        //        tabIndex = 0;
-        //    } else {
-        //        tabIndex = 1;
-                //let par = {
-                //    dataSourceId: $('#datasource_Id').val(),
-                //};
-                //table.reload('testReloadField', {
-                //    where: par,
-                //    contentType: 'application/json',
-                //    method: 'post'
-                //});
-        //    }
-        //})
+       
         //监听工具条
         table.on('tool(sysuser)', function (obj) {
             var data = obj.data;
@@ -632,7 +618,6 @@
                     //layer.alert(JSON.stringify(data));
                     axios.delete("/api/sysdatasource/DeleteDataSourceInfos/" + parms)
                         .then(function (response) {
-                            console.log("12312");
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
@@ -704,14 +689,14 @@
                 datasource_name: data.dataSourceName,
             })
             
-               let title = "编辑字段信息";
+               let title = "编辑基础和字段信息";
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             generateLayer_index = layer.open({
                 type: 1
                 , title: title //不显示标题栏
-                , closeBtn: false
+                , closeBtn: 2
                 , fixed: false
-                , area: ['60%', '100%']
+                , area: ['800px', '600px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
@@ -728,7 +713,7 @@
             generateaddLayer_index = layer.open({
                 type: 1
                 , title: title //不显示标题栏
-                , closeBtn: false
+                , closeBtn: 2
                 , fixed: false
                 , area: ['800px', '600px']
                 , shade: 0.8
@@ -745,7 +730,7 @@
             genratefieldLayer = layer.open({
                 type: 1
                 , title: "新增字段信息"
-                , closeBtn: true
+                , closeBtn: 2
                 , fixed: false
                 , area: ['800px', '600px']
                 , shade: 0.8
@@ -782,7 +767,7 @@
             generateLayer_field_edit = layer.open({
                 type: 1
                 , title: title //不显示标题栏
-                , closeBtn: false
+                , closeBtn: 2
                 , fixed: false
                 , area: ['800px', '600px']
                 , shade: 0.8
