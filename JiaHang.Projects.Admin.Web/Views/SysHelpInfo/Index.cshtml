@@ -31,11 +31,9 @@
         <div class="layui-row" style="margin-top:4px">
             <div class=" layui-col-md4 layui-col-xs6">
                 <label class="layui-form-label">帮助类型：</label>
+        
                 <div class="layui-inline">
-                    <select name="search_help_type_id" id="search_help_type_id" lay-verify="required" lay-filter="xmFilter">
-                        <option value=""></option>
-
-                    </select>
+                    <select name="search_help_type_id" id="search_help_type_id"></select>
                 </div>
             </div>
             <div class=" layui-col-md4 layui-col-xs6">
@@ -90,22 +88,22 @@
     <table class="layui-hide" id="test" lay-filter="syshelp"> </table>
 
 </div>
-<div id="generate_layer" style="display:none;position:relative;margin-top:4px;padding-left:15px">
+<div id="generate_layer" style="display:none;position:relative;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;">
+            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:15px">
                 <label class="layui-form-label">帮助类型</label>
                 <div class="layui-input-block">
-                    <input type="text" name="help_type_id" id="help_type_id" autocomplete="off" class="layui-input" lay-verify="required">
+                    <select name="help_type_id" id="help_type_id"></select>
                 </div>
             </div>
-            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:15px;">
+            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;">
                 <label class="layui-form-label">公告标题</label>
                 <div class="layui-input-block">
                     <input type="text" name="help_title" id="help_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
-            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:13px;"  >
+            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:23px;"  >
                 <label class="layui-form-label">是否重要</label>
                 <div class="layui-input-block">
                     <select name="interest" id="important_flag" lay-filter="aihao">
@@ -116,18 +114,14 @@
                 </div>
             </div>
 
-            <div class="layui-form-item" style="padding-top:4px;padding-right:21px">
-                @*<script id="editor" type="text/plain" style="width:960px;height:200px;">
-                </script>*@
-                
-                
-                <div class="layui-form-item layui-form-text">
+          
+                <div class="layui-form-item layui-form-text" style="padding-top:4px;padding-left:15px;padding-right:16px">
                     <label class="layui-form-label">公告内容</label>
                     <div class="layui-input-block">
                         <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
                     </div>
                 </div>
-            </div>
+            
         </div>
         <div class="layui-form-item" style="margin-left:385PX">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
@@ -159,11 +153,9 @@
         var generateLayer_index = 0;
         var layType = true;//true 新增  false 编辑
         var help_id = 0;
-        //日期
-        //laydate.render({
-        //    elem: '#audited_date'
-        //});
-
+        
+        //初始化问题类型下拉框
+        helpType()
 
         table.render({
             elem: '#test'
@@ -187,7 +179,7 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'help_Type_Id', width: 120, title: '帮助类型',/* sort:  true, */fixed: 'left' }
+                , { field: 'help_Type_Name', width: 120, title: '帮助类型',/* sort:  true, */fixed: 'left' }
                 //, { field: 'help_Type_Id', title: '帮助类型' }
                 , { field: 'help_Title', title: '公告标题',/* sort: true,*/ fixed: 'left' }
                 //, { field: 'user_Org_Id', title: '用户组别', }
@@ -484,7 +476,24 @@
                 data: datatable
             })
         }
-       
+        function helpType() {
+            axios.get('/api/SysHelpInfoData/SelectHelpType')
+                .then(function (response) {
+                    var len = response.data.content.length;
+                    console.log();
+                    var text = '<option value="">请选择</option>';
+                    $('#search_help_type_id').append(text);
+                    $('#help_type_id').append(text);
+                    for (var i = 0; i < len; i++) {
+                        $('#search_help_type_id').append(new Option(response.data.content[i].helpTypaName, response.data.content[i].helpTypeId));
+                        $('#help_type_id').append(new Option(response.data.content[i].helpTypaName, response.data.content[i].helpTypeId));
+                    }
+                    form.render("select");
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
     });
 
 

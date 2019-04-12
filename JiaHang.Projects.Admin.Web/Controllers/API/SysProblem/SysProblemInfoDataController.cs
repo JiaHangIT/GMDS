@@ -112,6 +112,18 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysProblem
             FuncResult data = await ProblemInfoService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
+        
+        /// <summary>
+        ///查询数据源字段类型
+        /// </summary>
+        /// <returns></returns>
+        [Route("SelectProblemType")]
+        [HttpGet]
+        public async Task<FuncResult> SelectProblemType()
+        {
+            return await ProblemInfoService.SelectProblemType();
+
+        }
         //[HttpGet]
         //[Route("Export")]
         //public async Task<IActionResult> Export()
