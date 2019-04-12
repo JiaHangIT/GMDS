@@ -34,7 +34,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpPost]
         public FuncResult Select([FromBody] SearchDcsServiceInfo model)
         {
-            model.page--;if (model.page < 0)
+            model.page--; if (model.page < 0)
                 model.page = 0;
 
             return DcsServiceInfo.Select(model);
@@ -54,6 +54,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             }
             try
             {
+                if (model.ServiceType == "SHARE")
+                {
+                    model.lscollect = new List<DcsCollectModel>();
+                }
+                else
+                {
+                    model.lsshare = new List<DcsShareModel>();
+                }
                 return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
             }
             catch (Exception ex)
@@ -79,9 +87,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
             }
-          
+
         }
-        
+
         /// <summary>
         /// 删除（批）
         /// </summary>
@@ -99,7 +107,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
             }
-          
+
         }
 
         /// <summary>
@@ -113,6 +121,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
+                if (model.ServiceType == "SHARE")
+                {
+                    model.lscollect = new List<DcsCollectModel>();
+                }
+                else
+                {
+                    model.lsshare = new List<DcsShareModel>();
+                }
                 var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
                 return data;
             }
@@ -120,7 +136,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
             }
-      
+
         }
 
         /// <summary>
@@ -158,12 +174,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = from a in context.SysFieldType select 
-                           new
-                           {
-                               key = a.FieldTypeId,
-                               value = a.FieldTypeName
-                           };
+                var data = from a in context.SysFieldType
+                           select
+                            new
+                            {
+                                key = a.FieldTypeId,
+                                value = a.FieldTypeName
+                            };
                 return data;
                 //var data = context.SysFieldType.Select(s => new
                 //{
@@ -190,12 +207,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = from a in context.SysDatasourceField select 
-                           new
-                           {
-                               key = a.FieldId,
-                               value = a.FieldName
-                           };
+                var data = from a in context.SysDatasourceField
+                           select
+                            new
+                            {
+                                key = a.FieldId,
+                                value = a.FieldName
+                            };
                 return data;
                 //var data = context.SysDatasourceField.Select(s => new
                 //{
@@ -203,7 +221,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                 //    value = s.FieldName
                 //});
 
-                               //return data;
+                //return data;
             }
             catch (Exception ex)
             {
@@ -244,15 +262,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                     return query;
                 }
                 return DcsServiceInfo.GetFieldIdByDataSourceId(datasourceid);
-              //  var query = context.SysDatasourceField.DefaultIfEmpty()
-              //.Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
-              //  return query;
+                //  var query = context.SysDatasourceField.DefaultIfEmpty()
+                //.Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
+                //  return query;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message) ;
+                throw new Exception(ex.Message);
             }
-          
+
         }
     }
 }

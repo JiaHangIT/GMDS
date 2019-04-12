@@ -30,5 +30,20 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// 接口名称
         /// </summary>
         public string ServiceName { get; set; }
+
+        /// <summary>
+        /// 技术类型
+        /// </summary>
+        public string ServiceTech { get; set; }
+
+        /// <summary>
+        /// 业务类型
+        /// </summary>
+        public string ServiceType { get; set; }
+
+        /// <summary>
+        /// 接口状态
+        /// </summary>
+        public string ServiceStatus { get; set; }
     }
 }
