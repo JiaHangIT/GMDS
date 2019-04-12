@@ -8,7 +8,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers
 {
    
 
-    public class DcsCustomerServiceAuthorController : Controller
+    public class DcsCustomerServiceAuthorizeController : Controller
     {
         public IActionResult Index()
         {

@@ -5,13 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JiaHang.Projects.Admin.Common\JiaHang.Projects.Admin.Common.csproj" />
-    <ProjectReference Include="..\JiaHang.Projects.Admin.DAL\JiaHang.Projects.Admin.DAL.csproj" />
-    <ProjectReference Include="..\JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj" />
+    <Compile Remove="DcsServiceGroupBLL\**" />
+    <EmbeddedResource Remove="DcsServiceGroupBLL\**" />
+    <None Remove="DcsServiceGroupBLL\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DcsServiceGroupBLL\" />
+    <ProjectReference Include="..\JiaHang.Projects.Admin.Common\JiaHang.Projects.Admin.Common.csproj" />
+    <ProjectReference Include="..\JiaHang.Projects.Admin.DAL\JiaHang.Projects.Admin.DAL.csproj" />
+    <ProjectReference Include="..\JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj" />
   </ItemGroup>
 
 </Project>
