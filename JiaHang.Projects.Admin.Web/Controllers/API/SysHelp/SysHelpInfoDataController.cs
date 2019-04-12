@@ -112,6 +112,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelp
             FuncResult data = await HelpInfoService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
+        /// <summary>
+        ///查询数据源字段类型
+        /// </summary>
+        /// <returns></returns>
+        [Route("SelectHelpType")]
+        [HttpGet]
+        public async Task<FuncResult> SelectHelpType()
+        {
+            return await HelpInfoService.SelectHelpType();
+
+        }
         //[HttpGet]
         //[Route("Export")]
         //public async Task<IActionResult> Export()

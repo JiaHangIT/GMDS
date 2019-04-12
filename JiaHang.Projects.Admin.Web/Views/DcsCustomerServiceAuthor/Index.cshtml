@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewData["Title"] = "客户接口授权";
+}
+
+
+<style>
+    .v-modal { display: none; }
+    #app { margin-top: 15px; padding: 15px; background-color: #fff; overflow: hidden; zoom: 1; }
+    .span-tag { margin-right: 20px; margin-top: 9px; margin-bottom: 9px; padding: 0px 10px; cursor: pointer; color: #606266; border: 1px solid rgba(64,158,255,.2); height: 32px; line-height: 30px; border-radius: 4px; display: inline-block; }
+    .el-tag { margin-right: 20px; margin-top: 9px; margin-bottom: 9px; }
+    .el-dialog__body{padding:15px;}
+</style>
+<div id="app">
+
+
+    <el-collapse accordion v-model="activeNames">
+        <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;">
+            <el-col :span="16">
+                <p>用户名称</p>
+            </el-col>
+            <el-col :span="8" style="text-align: right;">
+                <span type="danger" style="color:#F56C6C;cursor:pointer;padding-right:15px;">取消此次接口操作</span>
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="centerDialogVisible = true">添加其它接口</span>
+                <span style="color:#67C23A;cursor:pointer;">保存本次修改</span>
+            </el-col>
+        </el-row>
+
+        <el-collapse-item title="已授权接口" name="1" class="author_checkboxs">
+            <div>
+                <el-row style="padding:15px;background-color:#ECF5FF;">
+                    <el-col :span="12">
+                        <span>接口名称</span>(<small>jiekoubianma</small> )
+                    </el-col>
+                    <el-col :span="12" style="text-align: right;">
+
+                        <span type="danger" style="color:#F56C6C;cursor:pointer;">移除此接口授权</span>
+                    </el-col>
+                </el-row>
+                <div style="padding-left:15px;padding-right:15px;">
+                    <div style="padding-top:10px;"><span>已授权字段</span></div>
+                    <el-tag v-for="city in cities" :label="city" :disable-transitions="false" closable>
+                        {{ city }}
+                    </el-tag>
+                    <div style="border-top: 1px solid #EBEEF5;padding-top:10px;margin-top:10px;"><span>未授权字段</span></div>
+
+                    <span v-for="city in cities" class="span-tag" href="#">{{ city}}</span>
+                </div>
+            </div>
+
+        </el-collapse-item>
+    </el-collapse>
+    <div style="width:1690px;">
+        <el-dialog title="给用户授权新接口" :visible.sync="centerDialogVisible" width="68%" style="font-size:15px" modal-append-to-body="false" close-on-click-modal="false">
+            <div style="margin-bottom:10px;margin-top:10px;">
+                <el-row style="padding:15px;background-color:#ECF5FF;">
+                    <el-col :span="18">
+                        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @@change="handleCheckAllChange"> <span>接口名称</span>(<small>jiekoubianma</small> ) </el-checkbox>
+                    </el-col>
+                </el-row>
+                <div style="padding:15px 15px 0px 15px;">
+                    <el-checkbox-group v-model="checkedCities" @@change="handleCheckedCitiesChange">
+                        <el-checkbox v-for="city in cities" :label="city" :key="city" style="margin:9px 15px 9px 0px;">
+                            <span>{{city}}</span>(<small>daima</small> )
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </div>
+            </div>
+            <div style="margin-bottom:10px;margin-top:10px;">
+                <el-row style="padding:15px;background-color:#ECF5FF;">
+                    <el-col :span="18">
+                        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @@change="handleCheckAllChange"> <span>接口名称</span>(<small>jiekoubianma</small> ) </el-checkbox>
+                    </el-col>
+                </el-row>
+                <div style="padding:15px 15px 0px 15px;">
+                    <el-checkbox-group v-model="checkedCities" @@change="handleCheckedCitiesChange">
+                        <el-checkbox v-for="city in cities" :label="city" :key="city" style="margin:9px 15px 9px 0px;">
+                            <span>{{city}}</span>(<small>daima</small> )
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @@click="centerDialogVisible= false">取 消</el-button>
+                <el-button type="primary" @@click="centerDialogVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+    
+</div>
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                activeNames: ['1'],
+                checkAll: false,
+                checkedCities: [],
+                cities: ['字段1', '字段2', '字段3', '字段4', '字段5', '字段6', '字段7', '字段8', '字段9', '字段10', '字段11', '字段12'],
+                cities1: ['字段1', '字段2', '字段3', '字段4', '字段5', '字段6', '字段7', '字段8', '字段9', '字段10', '字段11', '字段12'],
+                isIndeterminate: false,
+                centerDialogVisible: false
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+
+                axios.get(`/api/DcsCustomerData/${vm.pageSize}/${vm.currentPage}?customerName=${vm.searchCustomerName}&customerMobile=${vm.searchCustomerMobile}`)
+                    .then(function (response) {
+                        console.log(response.data);
+
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleCheckAllChange(val) {
+                this.checkedCities = val ? this.cities : [];
+                this.isIndeterminate = false;
+            },
+            handleCheckedCitiesChange(value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.cities.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+            }
+
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>

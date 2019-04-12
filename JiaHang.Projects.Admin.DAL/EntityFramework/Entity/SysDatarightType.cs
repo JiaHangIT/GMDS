@@ -9,7 +9,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string DatarightTypeCode { get; set; }
         public string DatarightTypeName { get; set; }
         public string DatasourceCode { get; set; }
-        public int? HaveDataLevel { get; set; }
+        public decimal? HaveDataLevel { get; set; }
         public string DataLevelColumn { get; set; }
         public string RootLevelValue { get; set; }
         public string RightValueColumnId1 { get; set; }
@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string RightValueColumnId3 { get; set; }
         public string RightValueColumnCode3 { get; set; }
         public string RightValueColumnName3 { get; set; }
-        public int? EnableFlag { get; set; }
+        public decimal? EnableFlag { get; set; }
         public DateTime? CreationDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }

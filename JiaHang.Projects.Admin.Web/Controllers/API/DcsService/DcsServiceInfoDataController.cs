@@ -34,7 +34,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpPost]
         public FuncResult Select([FromBody] SearchDcsServiceInfo model)
         {
-            model.page--;if (model.page < 0)
+            model.page--; if (model.page < 0)
                 model.page = 0;
 
             return DcsServiceInfo.Select(model);
@@ -52,8 +52,23 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
+            try
+            {
+                if (model.ServiceType == "SHARE")
+                {
+                    model.lscollect = new List<DcsCollectModel>();
+                }
+                else
+                {
+                    model.lsshare = new List<DcsShareModel>();
+                }
+                return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
 
-            return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
         }
 
         /// <summary>
@@ -64,9 +79,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpDelete("{id}")]
         public async Task<FuncResult> Delete([FromRoute] string id)
         {
-            return await DcsServiceInfo.Delete(id, HttpContext.CurrentUser(cache).Id);
+            try
+            {
+                return await DcsServiceInfo.Delete(id, HttpContext.CurrentUser(cache).Id);
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+
         }
-        
+
         /// <summary>
         /// 删除（批）
         /// </summary>
@@ -76,7 +99,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpDelete]
         public async Task<FuncResult> Delete(string[] ids)
         {
-            return await DcsServiceInfo.Delete(ids,HttpContext.CurrentUser(cache).Id);
+            try
+            {
+                return await DcsServiceInfo.Delete(ids, HttpContext.CurrentUser(cache).Id);
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+
         }
 
         /// <summary>
@@ -88,8 +119,24 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpPut("{id}")]
         public async Task<FuncResult> Update(string id, [FromBody]DcsServiceInfoModel model)
         {
-            var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
-            return data;
+            try
+            {
+                if (model.ServiceType == "SHARE")
+                {
+                    model.lscollect = new List<DcsCollectModel>();
+                }
+                else
+                {
+                    model.lsshare = new List<DcsShareModel>();
+                }
+                var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+
         }
 
         /// <summary>
@@ -109,13 +156,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                                value = a.DatasourceName
                            };
                 return data;
-                //var data = context.SysDatasourceInfo.Select(s => new
-                //{
-                //    key = s.DatasourceId,
-                //    value = s.DatasourceName
-                //});
-
-                //return data;
             }
             catch (Exception ex)
             {
@@ -134,12 +174,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = from a in context.SysFieldType select 
-                           new
-                           {
-                               key = a.FieldTypeId,
-                               value = a.FieldTypeName
-                           };
+                var data = from a in context.SysFieldType
+                           select
+                            new
+                            {
+                                key = a.FieldTypeId,
+                                value = a.FieldTypeName
+                            };
                 return data;
                 //var data = context.SysFieldType.Select(s => new
                 //{
@@ -166,12 +207,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         {
             try
             {
-                var data = from a in context.SysDatasourceField select 
-                           new
-                           {
-                               key = a.FieldId,
-                               value = a.FieldName
-                           };
+                var data = from a in context.SysDatasourceField
+                           select
+                            new
+                            {
+                                key = a.FieldId,
+                                value = a.FieldName
+                            };
                 return data;
                 //var data = context.SysDatasourceField.Select(s => new
                 //{
@@ -179,7 +221,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                 //    value = s.FieldName
                 //});
 
-                               //return data;
+                //return data;
             }
             catch (Exception ex)
             {
@@ -220,15 +262,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                     return query;
                 }
                 return DcsServiceInfo.GetFieldIdByDataSourceId(datasourceid);
-              //  var query = context.SysDatasourceField.DefaultIfEmpty()
-              //.Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
-              //  return query;
+                //  var query = context.SysDatasourceField.DefaultIfEmpty()
+                //.Where(w => w.DatasourceId.Contains(datasourceid)).Select(s => new { key = s.FieldId, value = s.FieldName }).ToList();
+                //  return query;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message) ;
+                throw new Exception(ex.Message);
             }
-          
+
         }
     }
 }

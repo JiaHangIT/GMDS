@@ -94,6 +94,11 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// </summary>
         public string DatasourceId { get; set; }
 
+        /// <summary>
+        /// 排序值
+        /// </summary>
+        public int? SortKey { get; set; }
+
         public List<DcsParamsModel> lsparam { get; set; }
 
         public List<DcsShareModel> lsshare { get; set; }
@@ -109,10 +114,10 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         public string ParamId { get; set; }
         public string ParamCode { get; set; }
         public string ParamName { get; set; }
-        public int? ParamTypeId { get; set; }
+        public decimal? ParamTypeId { get; set; }
         public string ParamDesc { get; set; }
-        public int? ParamNullable { get; set; }
-        public int? TimestampFlag { get; set; }
+        public decimal? ParamNullable { get; set; }
+        public decimal? TimestampFlag { get; set; }
         public string RelaFieldId { get; set; }
     }
 
@@ -131,6 +136,22 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
     {
         public string ReFieldName { get; set; }
         public string ToFieldId { get; set; }
-        public int DimTransFlag { get; set; }
+        public decimal DimTransFlag { get; set; }
+    }
+
+    /// <summary>
+    /// 接口审核接收参数实体
+    /// </summary>
+    public class ServiceAudit
+    {
+        /// <summary>
+        /// 接口主键
+        /// </summary>
+        public string ServiceId { get; set; }
+
+        /// <summary>
+        /// 审核通过标致
+        /// </summary>
+        public int AuditFlag { get; set; }
     }
 }

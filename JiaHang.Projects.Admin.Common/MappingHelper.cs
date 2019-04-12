@@ -19,14 +19,23 @@ namespace JiaHang.Projects.Admin.Common
         /// <param name="source"></param>
         public static R Mapping<R, T>(R target,T source)
         {
-            R result = target;
-            foreach (PropertyInfo info in typeof(R).GetProperties())
+            try
             {
-                PropertyInfo pro = typeof(T).GetProperty(info.Name);
-                if (pro != null)
-                    info.SetValue(result, pro.GetValue(source));
+                R result = target;
+                foreach (PropertyInfo info in typeof(R).GetProperties())
+                {
+                    PropertyInfo pro = typeof(T).GetProperty(info.Name);
+                    if (pro != null)
+                        info.SetValue(result, pro.GetValue(source));
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
         }
     }
 }

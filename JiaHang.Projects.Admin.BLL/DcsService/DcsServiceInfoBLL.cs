@@ -31,9 +31,12 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         public FuncResult Select(SearchDcsServiceInfo model)
         {
             List<DcsServiceInfo> query = context.DcsServiceInfo.Where(s =>
-                                        (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceName.Contains(model.ServiceName)) &&
-                                        (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceNo.Contains(model.ServiceNo)) &&
-                                        (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+                                           (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceName.Contains(model.ServiceName)) &&
+                                           (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceNo.Contains(model.ServiceNo)) &&
+                                            (string.IsNullOrWhiteSpace(model.ServiceTech) || s.ServiceTech.Contains(model.ServiceTech)) &&
+                                           (string.IsNullOrWhiteSpace(model.ServiceStatus) || s.ServiceStatus.Contains(model.ServiceStatus)) &&
+                                            (string.IsNullOrWhiteSpace(model.ServiceType) || s.ServiceType.Contains(model.ServiceType)) &&
+                                           (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
 
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
@@ -52,7 +55,9 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 Service_Desc = s.ServiceDesc,
                 Service_Return = s.ServiceReturn,
                 DataPageFlag = s.DataPageFlag,
-                DataMultiFlag=s.DataMultiFlag
+                DataMultiFlag=s.DataMultiFlag,
+                SortKey = s.SortKey,
+                Audit_Flag = s.AuditFlag
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -103,6 +108,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 DataPageFlag = model.DataPageFlag,
                 DataMultiFlag = model.DataMultiFlag,
                 DatasourceId = model.DatasourceId,
+                SortKey = model.SortKey,
 
                 CreationDate = DateTime.Now,
                 CreatedBy = currentuserid,
@@ -240,7 +246,58 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             entity.DeleteFlag = 1;
 
             context.DcsServiceInfo.Update(entity);
-            await context.SaveChangesAsync();
+            //await context.SaveChangesAsync();
+            //也要删除对应的接口参数，共享接口返回信息，采集接口返回信息
+            var lsParams = context.DcsServiceParams.Where(w => w.ServiceId == entity.ServiceId);
+            if (lsParams != null)
+            {
+                foreach (DcsServiceParams param in lsParams)
+                {
+                    param.DeleteFlag = 1;
+                    param.LastUpdatedBy = currentuserid;
+                    param.LastUpdateDate = DateTime.Now;
+                    context.DcsServiceParams.Update(param);
+                }
+            }
+
+            //共享接口返回字段信息
+            var lsShare = context.DcsServiceSResults.Where(w => w.ServiceId == entity.ServiceId);
+            if (lsShare != null)
+            {
+                foreach (DcsServiceSResults share in lsShare)
+                {
+                    share.DeleteFlag = 1;
+                    share.LastUpdatedBy = currentuserid;
+                    share.LastUpdateDate = DateTime.Now;
+                    context.DcsServiceSResults.Update(share);
+                }
+            }
+
+            //采集接口返回字段信息
+            var lsCollect = context.DcsServiceCResults.Where(w => w.ServiceId == entity.ServiceId);
+            if (lsCollect != null)
+            {
+                foreach (DcsServiceCResults collect in lsCollect)
+                {
+                    collect.DeleteFlag = 1;
+                    collect.LastUpdatedBy = currentuserid;
+                    collect.LastUpdateDate = DateTime.Now;
+                    context.DcsServiceCResults.Update(collect);
+                }
+            }
+
+            try
+            {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    await context.SaveChangesAsync();
+                    trans.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.Message };
+            }
 
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "删除成功" };
         }
@@ -258,7 +315,10 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-
+            //先大概过滤数据，以免后面每次循环需要大量过滤数据
+            var tagParams = context.DcsServiceParams.Where(w => ids.Contains(w.ServiceId));
+            var tagShare = context.DcsServiceSResults.Where(w => ids.Contains(w.ServiceId)); ;
+            var tagCollect = context.DcsServiceCResults.Where(w => ids.Contains(w.ServiceId)); ;
             await Task.Run(() =>
             {
                 foreach (DcsServiceInfo obj in entities)
@@ -267,6 +327,45 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                     obj.DeleteDate = DateTime.Now;
                     obj.DeleteFlag = 1;
                     context.DcsServiceInfo.Update(obj);
+
+                    //也要删除对应的接口参数，共享接口返回信息，采集接口返回信息
+                    var lsParams = tagParams.Where(w => w.ServiceId == obj.ServiceId);
+                    if (lsParams != null)
+                    {
+                        foreach (DcsServiceParams param in lsParams)
+                        {
+                            param.DeleteFlag = 1;
+                            param.LastUpdatedBy = currentuserid;
+                            param.LastUpdateDate = DateTime.Now;
+                            context.DcsServiceParams.Update(param);
+                        }
+                    }
+
+                    //共享接口返回字段信息
+                    var lsShare = tagShare.Where(w => w.ServiceId == obj.ServiceId);
+                    if (lsShare != null)
+                    {
+                        foreach (DcsServiceSResults share in lsShare)
+                        {
+                            share.DeleteFlag = 1;
+                            share.LastUpdatedBy = currentuserid;
+                            share.LastUpdateDate = DateTime.Now;
+                            context.DcsServiceSResults.Update(share);
+                        }
+                    }
+
+                    //采集接口返回字段信息
+                    var lsCollect = tagCollect.Where(w => w.ServiceId == obj.ServiceId);
+                    if (lsCollect != null)
+                    {
+                        foreach (DcsServiceCResults collect in lsCollect)
+                        {
+                            collect.DeleteFlag = 1;
+                            collect.LastUpdatedBy = currentuserid;
+                            collect.LastUpdateDate = DateTime.Now;
+                            context.DcsServiceCResults.Update(collect);
+                        }
+                    }
                 }
             });
 
@@ -345,6 +444,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
             entity.DataPageFlag = model.DataPageFlag;
             entity.DataMultiFlag = model.DataMultiFlag;
             entity.DatasourceId = model.DatasourceId;
+            entity.SortKey = model.SortKey;
 
             entity.LastUpdateDate = DateTime.Now;
             entity.LastUpdatedBy = currentuserid;
@@ -399,11 +499,11 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         DcsServiceParams entityP1 = MappingHelper.Mapping(existP, param);
                         entityP1.LastUpdateDate = DateTime.Now;
                         entityP1.LastUpdatedBy = currentuserid;
-                        var existUniqueData = tagParam.Where(w =>w.ParamId != entityP1.ParamId && w.ServiceId == entityP1.ServiceId && w.ParamCode == entityP1.ParamCode);
-                        if (existUniqueData != null && existUniqueData.Count() > 0)
-                        {
-                            continue;
-                        }
+                        //var existUniqueData = tagParam.Where(w =>w.ParamId != entityP1.ParamId && w.ServiceId == entityP1.ServiceId && w.ParamCode == entityP1.ParamCode);
+                        //if (existUniqueData != null && existUniqueData.Count() > 0)
+                        //{
+                        //    continue;
+                        //}
                         context.DcsServiceParams.Update(existP);
                     }
                 }
@@ -443,11 +543,11 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         entityS.LastUpdateDate = DateTime.Now;
                         entityS.LastUpdatedBy = currentuserid;
                         entityS.DeleteFlag = 0;
-                        var existUniqueData = tagShare.Where(w => w.ServiceId == entityS.ServiceId && w.FieldId == entityS.FieldId);
-                        if (existUniqueData != null && existUniqueData.Count() > 0)
-                        {
-                            continue;
-                        }
+                        //var existUniqueData = tagShare.Where(w => w.ServiceId == entityS.ServiceId && w.FieldId == entityS.FieldId);
+                        //if (existUniqueData != null && existUniqueData.Count() > 0)
+                        //{
+                        //    continue;
+                        //}
                         await context.DcsServiceSResults.AddAsync(entityS);
                     }
                     else
@@ -455,11 +555,17 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         DcsServiceSResults entityS1 = MappingHelper.Mapping(current, share);
                         entityS1.LastUpdateDate = DateTime.Now;
                         entityS1.LastUpdatedBy = currentuserid;
-                        var existUniqueData = tagShare.Where(w => w.ServiceId == entityS1.ServiceId && w.FieldId == entityS1.FieldId);
-                        if (existUniqueData != null && existUniqueData.Count() > 0)
-                        {
-                            continue;
-                        }
+                        //var existUniqueData = tagShare.Where(w => w.ServiceId == entityS1.ServiceId && w.FieldId == entityS1.FieldId);
+                        //if (existUniqueData != null && existUniqueData.Count() > 0)
+                        //{
+                        //    //if (existUniqueData.FirstOrDefault().DeleteFlag == 1)
+                        //    //{
+                        //    //    existUniqueData.FirstOrDefault().DeleteFlag = 0;
+                        //    //    tagShare.Update(existUniqueData.FirstOrDefault());
+                        //    //}
+                         
+                        //    continue;
+                        //}
                         context.DcsServiceSResults.Update(entityS1);
                     }
                 }
@@ -503,6 +609,12 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                             var existUniqueData = tagCollect.Where(w => w.ServiceId == entityC.ServiceId && w.ReFieldName == entityC.ReFieldName);
                             if (existUniqueData != null && existUniqueData.Count() > 0)
                             {
+                                if (existUniqueData.FirstOrDefault().DeleteFlag == 1)
+                                {
+                                    existUniqueData.FirstOrDefault().DeleteFlag = 0;
+                                    tagCollect.Update(existUniqueData.FirstOrDefault());
+                                }
+
                                 continue;
                             }
                             await context.DcsServiceCResults.AddAsync(entityC);
@@ -520,11 +632,18 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         entityC1.LastUpdateDate = DateTime.Now;
                         entityC1.LastUpdatedBy = currentuserid;
                         var existUniqueData = tagCollect.Where(w => w.ServiceId == entityC1.ServiceId && w.ReFieldName == entityC1.ReFieldName);
+                        
                         if (existUniqueData != null && existUniqueData.Count() > 0)
                         {
+                            if (existUniqueData.FirstOrDefault().DeleteFlag == 1)
+                            {
+                                existUniqueData.FirstOrDefault().DeleteFlag = 0;
+                                tagCollect.Update(existUniqueData.FirstOrDefault());
+                            }
+
                             continue;
                         }
-                        context.DcsServiceCResults.Update(entityC1);
+                        tagCollect.Update(entityC1);
                     }
                 }
             }
@@ -535,6 +654,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 try
                 {
                     await context.SaveChangesAsync();
+
                     trans.Commit();
                     result.IsSuccess = true;
                     result.Content = entity;
@@ -542,80 +662,89 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
+                    //让客户端决定状态----让项的原始值设置为从数据库中获取的值：
+                    ex.Entries.Single().OriginalValues.SetValues(ex.Entries.Single().GetDatabaseValues());
+
+                    //让客户端决定状态----用存储中的值刷新新实体值：
+                    //ex.Entries.Single().Reload();
+                    trans.Commit();
+                    result.IsSuccess = true;
+                    result.Content = entity;
+                    result.Message = "更新成功";
 
 
-                    foreach (var entry in ex.Entries)
-                    {
-                        if (entry.Entity is DcsServiceSResults)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //foreach (var entry in ex.Entries)
+                    //{
+                    //    if (entry.Entity is DcsServiceSResults)
+                    //    {
+                    //        var proposedValues = entry.CurrentValues;
+                    //        var databaseValues = entry.GetDatabaseValues();
 
-                            foreach (var property in proposedValues.Properties)
-                            {
-                                var proposedValue = proposedValues[property];
-                                var databaseValue = databaseValues[property];
+                    //        foreach (var property in proposedValues.Properties)
+                    //        {
+                    //            var proposedValue = proposedValues[property];
+                    //            var databaseValue = databaseValues[property];
 
-                                // TODO: decide which value should be written to database
-                                // proposedValues[property] = <value to be saved>;
-                            }
+                    //            // TODO: decide which value should be written to database
+                    //            // proposedValues[property] = <value to be saved>;
+                    //        }
 
-                            // Refresh original values to bypass next concurrency check
-                            entry.OriginalValues.SetValues(databaseValues);
-                            trans.Commit();
-                            result.IsSuccess = true;
-                            result.Content = entity;
-                            result.Message = "更新成功";
-                        }
-                        else if (entry.Entity is DcsServiceParams)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //        // Refresh original values to bypass next concurrency check
+                    //        entry.OriginalValues.SetValues(databaseValues);
+                    //        trans.Commit();
+                    //        result.IsSuccess = true;
+                    //        result.Content = entity;
+                    //        result.Message = "更新成功";
+                    //    }
+                    //    else if (entry.Entity is DcsServiceParams)
+                    //    {
+                    //        var proposedValues = entry.CurrentValues;
+                    //        var databaseValues = entry.GetDatabaseValues();
 
-                            foreach (var property in proposedValues.Properties)
-                            {
-                                var proposedValue = proposedValues[property];
-                                var databaseValue = databaseValues[property];
+                    //        foreach (var property in proposedValues.Properties)
+                    //        {
+                    //            var proposedValue = proposedValues[property];
+                    //            var databaseValue = databaseValues[property];
 
-                                // TODO: decide which value should be written to database
-                                // proposedValues[property] = <value to be saved>;
-                            }
+                    //            // TODO: decide which value should be written to database
+                    //            // proposedValues[property] = <value to be saved>;
+                    //        }
 
-                            // Refresh original values to bypass next concurrency check
-                            entry.OriginalValues.SetValues(databaseValues);
-                            trans.Commit();
-                            result.IsSuccess = true;
-                            result.Content = entity;
-                            result.Message = "更新成功";
-                        }
-                        else if (entry.Entity is DcsServiceCResults)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //        // Refresh original values to bypass next concurrency check
+                    //        entry.OriginalValues.SetValues(databaseValues);
+                    //        trans.Commit();
+                    //        result.IsSuccess = true;
+                    //        result.Content = entity;
+                    //        result.Message = "更新成功";
+                    //    }
+                    //    else if (entry.Entity is DcsServiceCResults)
+                    //    {
+                    //        var proposedValues = entry.CurrentValues;
+                    //        var databaseValues = entry.GetDatabaseValues();
 
-                            foreach (var property in proposedValues.Properties)
-                            {
-                                var proposedValue = proposedValues[property];
-                                var databaseValue = databaseValues[property];
+                    //        foreach (var property in proposedValues.Properties)
+                    //        {
+                    //            var proposedValue = proposedValues[property];
+                    //            var databaseValue = databaseValues[property];
 
-                                // TODO: decide which value should be written to database
-                                // proposedValues[property] = <value to be saved>;
-                            }
+                    //            // TODO: decide which value should be written to database
+                    //            // proposedValues[property] = <value to be saved>;
+                    //        }
 
-                            // Refresh original values to bypass next concurrency check
-                            entry.OriginalValues.SetValues(databaseValues);
-                            trans.Commit();
-                            result.IsSuccess = true;
-                            result.Content = entity;
-                            result.Message = "更新成功";
-                        }
-                        else
-                        {
-                            throw new NotSupportedException(
-                                "Don't know how to handle concurrency conflicts for "
-                                + entry.Metadata.Name);
-                        }
-                    }
+                    //        // Refresh original values to bypass next concurrency check
+                    //        entry.OriginalValues.SetValues(databaseValues);
+                    //        trans.Commit();
+                    //        result.IsSuccess = true;
+                    //        result.Content = entity;
+                    //        result.Message = "更新成功";
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new NotSupportedException(
+                    //            "Don't know how to handle concurrency conflicts for "
+                    //            + entry.Metadata.Name);
+                    //    }
+                    //}
 
 
 
@@ -648,15 +777,15 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
 
 
                 //接口参数信息
-                var param = context.DcsServiceParams.Where(w=>w.ServiceId.Contains(serviceid));
+                var param = context.DcsServiceParams.Where(w=>w.ServiceId.Contains(serviceid) && w.DeleteFlag == 0);
 
 
                 //共享接口返回字段信息
-                var shareresult = context.DcsServiceSResults.Where(w => w.ServiceId.Contains(serviceid));
+                var shareresult = context.DcsServiceSResults.Where(w => w.ServiceId.Contains(serviceid) && w.DeleteFlag == 0);
 
 
                 //采集接口返回字段信息
-                var collectresult = context.DcsServiceCResults.Where(w => w.ServiceId.Contains(serviceid));
+                var collectresult = context.DcsServiceCResults.Where(w => w.ServiceId.Contains(serviceid) && w.DeleteFlag == 0);
 
 
                 result.IsSuccess = true; result.Content = new { ServiceInfo = serviceInfo, Params = param, ShareResult = shareresult, CollectResult = collectresult };

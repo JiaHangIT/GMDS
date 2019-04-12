@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
 {
     public class SysErrorCodeInfoBLL
     {
-        private readonly DataContext _context;
-        public SysErrorCodeInfoBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysErrorCodeInfoBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }

@@ -9,14 +9,14 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string DatasourceId { get; set; }
         public string FieldCode { get; set; }
         public string FieldName { get; set; }
-        public int? FieldTypeId { get; set; }
-        public int? FieldLength { get; set; }
-        public int? FieldNullable { get; set; }
-        public int? FieldKeyFlag { get; set; }
-        public int? FieldIndexFlag { get; set; }
+        public decimal? FieldTypeId { get; set; }
+        public decimal? FieldLength { get; set; }
+        public decimal? FieldNullable { get; set; }
+        public decimal? FieldKeyFlag { get; set; }
+        public decimal? FieldIndexFlag { get; set; }
         public string FieldValue { get; set; }
-        public int? DimFlag { get; set; }
-        public int? TimestampFlag { get; set; }
+        public decimal? DimFlag { get; set; }
+        public decimal? TimestampFlag { get; set; }
         public string DimTableName { get; set; }
         public string DimFieldCode { get; set; }
         public string DimFieldName { get; set; }

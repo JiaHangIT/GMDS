@@ -24,7 +24,7 @@
     }
 </style>
 @*<script src="~/utf8-asp/ueditor.config.js"></script>
-<script src="~/utf8-asp/ueditor.all.js"></script>*@
+    <script src="~/utf8-asp/ueditor.all.js"></script>*@
 <div>
 
 
@@ -33,7 +33,7 @@
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label">问题类型：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_problem_type_id" autocomplete="off">
+                    <select name="search_problem_type_id" id="search_problem_type_id"></select>
                 </div>
             </div>
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
@@ -71,29 +71,33 @@
 <div id="generate_layer" style="display:none;position:relative;padding-left:15px;margin-top:4px">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-            <div class="layui-inline" >
-                <label class="layui-form-label">问题类型</label>
-                <div class="layui-input-block">
-                    <input type="text" name="problem_type_id" id="problem_type_id" autocomplete="off" class="layui-input" lay-verify="required">
-                </div>
-            </div>
+
             <div class="layui-inline">
+                <label class="layui-form-label">问题类型</label>
+                @*<div class="layui-input-block">
+                        <input type="text" name="problem_type_id" id="problem_type_id" autocomplete="off" class="layui-input" lay-verify="required">
+                    </div>*@
+                <div class="layui-input-block">
+                    <select name="problem_type_id" id="problem_type_id"></select>
+                </div>
+
+            </div>
+
+
+            <div class="layui-inline" style="padding-left:20px">
                 <label class="layui-form-label">问题标题</label>
                 <div class="layui-input-block">
                     <input type="text" name="problem_title" id="problem_title" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
-    
-            <div class="layui-form-item" style="padding-right:20px">
-                @*<script id="editor" type="text/plain" style="width:595px;height:180px;">
-                </script>*@
-                <div class="layui-form-item layui-form-text">
+
+           
+                <div class="layui-form-item layui-form-text" style="padding-right:20px">
                     <label class="layui-form-label">常见问题内容</label>
                     <div class="layui-input-block">
-                        <textarea placeholder="请输入内容" id="problem_content" name="problem_content" class="layui-textarea"></textarea>
+                        <textarea placeholder="请输入内容" id="problem_contant" name="problem_contant" class="layui-textarea"></textarea>
                     </div>
                 </div>
-            </div>
 
         </div>
         <div class="layui-form-item" style="margin-left:210PX">
@@ -124,11 +128,10 @@
         var generateLayer_index = 0;
         var layType = true;//true 新增  false 编辑
         var problem_id = 0;
-        //日期
-        //laydate.render({
-        //    elem: '#audited_date'
-        //});
 
+        //初始化问题类型下拉框
+
+        problemType()
 
         table.render({
             elem: '#test'
@@ -152,16 +155,16 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 180 }//里的toolbar值是模板元素的选择器
 
-                , { field: 'problem_Type_Id', width: 200, title: '常见问题类型',/* sort: true, */fixed: 'left' }
+                , { field: 'problem_Type_Name', width: 200, title: '常见问题类型',/* sort: true, */fixed: 'left' }
                 //, { field: 'problem_Type_Id', title: '帮助类型' }
-                , { field: 'problem_Title', width: 200, title: '常见问题标题',/* sort: true,*/ fixed: 'left'}
+                , { field: 'problem_Title', width: 200, title: '常见问题标题',/* sort: true,*/ fixed: 'left' }
                 //, { field: 'user_Org_Id', title: '用户组别', }
                 //, { field: 'important_Flag', title: '是否重要', sort: true }
                 , { field: 'audit_Flag', title: '是否审核' }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
                 , { field: 'audited_Date', title: '审核时间', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
-                , { field: 'audited_By', title: '审核人', /*sort: true */}
+                , { field: 'audited_By', title: '审核人', /*sort: true */ }
                 //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }
                 //, { field: 'eff_End_Date', title: '有效结束日期', sort: true }
 
@@ -174,8 +177,6 @@
         });
 
 
-        table.on('checkbox(sysproblem)', function (obj) {
-        });
         //监听工具条
         table.on('tool(sysproblem)', function (obj) {
             //debugger;
@@ -202,8 +203,8 @@
                 });
             } else if (obj.event === 'edit') {
                 // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                console.log(data);
-                
+
+
                 problem_Id = data.problem_Id
                 layType = false;
                 showLayer(data);
@@ -315,8 +316,7 @@
             },
             search: function () {
                 let pars = {
-                    limit: 10,
-                    page: 1,
+
                     //problem_Type_Id: $("#search_problem_type_id").val(),
                     problem_Title: $("#search_problem_title").val(),
                     //important_Flag: 0,
@@ -348,7 +348,7 @@
         form.on('submit(submit)', function () {
             //alert($("#problem_type_id").val());
             //实例化
-            
+
             //var ue = UE.getEditor('editor');
             ////获取纯文本内容
             //var txt = ue.getContentTxt();
@@ -420,7 +420,7 @@
                 , title: title //不显示标题栏
                 , closeBtn: false
                 , fixed: false
-                , area: ['630px', '300px']
+                , area: ['670px', '310px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
@@ -432,6 +432,7 @@
         };
         function initFormValue(data) {
             console.log(data);
+
             if (data == undefined) {
                 form.val("generate-form", {
                     problem_id: "",
@@ -448,10 +449,12 @@
                 return;
             }
             form.val("generate-form", {
+
                 problem_id: data.problem_Id,
                 problem_type_id: data.problem_Type_Id,
                 problem_title: data.problem_Title,
                 problem_contant: data.problem_Contant,
+
                 //editor: data.problem_Contant,
                 //important_flag: data.important_Flag,
                 audit_flag: data.audit_Flag,
@@ -465,124 +468,142 @@
             table.reload("testReload", {
                 data: datatable
             })
-        }
 
+        }
+        function problemType() {
+            axios.get('/api/SysProblemInfoData/SelectProblemType')
+                .then(function (response) {
+                    var len = response.data.content.length;
+                    console.log();
+                    var text = '<option value="">请选择</option>';
+                    $('#search_problem_type_id').append(text);
+                    $('#problem_type_id').append(text);
+                    for (var i = 0; i < len; i++) {
+                        $('#search_problem_type_id').append(new Option(response.data.content[i].problemTypaName, response.data.content[i].problemTypeId));
+                        $('#problem_type_id').append(new Option(response.data.content[i].problemTypaName, response.data.content[i].problemTypeId));
+                    }
+                    form.render("select");
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
     });
-    
+
 </script>
 @*<script type="text/javascript">
 
-    //实例化编辑器
-    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
-    var ue = UE.getEditor('editor');
+        //实例化编辑器
+        //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+        var ue = UE.getEditor('editor');
 
 
-    function isFocus(e) {
-        alert(UE.getEditor('editor').isFocus());
-        UE.dom.domUtils.preventDefault(e)
-    }
-    function setblur(e) {
-        UE.getEditor('editor').blur();
-        UE.dom.domUtils.preventDefault(e)
-    }
-    function insertHtml() {
-        var value = prompt('插入html代码', '');
-        UE.getEditor('editor').execCommand('insertHtml', value)
-    }
-    function createEditor() {
-        enableBtn();
-        UE.getEditor('editor');
-    }
-    function getAllHtml() {
-        alert(UE.getEditor('editor').getAllHtml())
-    }
-    function getContent() {
-        var arr = [];
-        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
-        arr.push("内容为：");
-        arr.push(UE.getEditor('editor').getContent());
-        alert(arr.join("\n"));
-    }
-    function getPlainTxt() {
-        var arr = [];
-        arr.push("使用editor.getPlainTxt()方法可以获得编辑器的带格式的纯文本内容");
-        arr.push("内容为：");
-        arr.push(UE.getEditor('editor').getPlainTxt());
-        alert(arr.join('\n'))
-    }
-    function setContent(isAppendTo) {
-        var arr = [];
-        arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
-        UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
-        alert(arr.join("\n"));
-    }
-    function setDisabled() {
-        UE.getEditor('editor').setDisabled('fullscreen');
-        disableBtn("enable");
-    }
+        function isFocus(e) {
+            alert(UE.getEditor('editor').isFocus());
+            UE.dom.domUtils.preventDefault(e)
+        }
+        function setblur(e) {
+            UE.getEditor('editor').blur();
+            UE.dom.domUtils.preventDefault(e)
+        }
+        function insertHtml() {
+            var value = prompt('插入html代码', '');
+            UE.getEditor('editor').execCommand('insertHtml', value)
+        }
+        function createEditor() {
+            enableBtn();
+            UE.getEditor('editor');
+        }
+        function getAllHtml() {
+            alert(UE.getEditor('editor').getAllHtml())
+        }
+        function getContent() {
+            var arr = [];
+            arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+            arr.push("内容为：");
+            arr.push(UE.getEditor('editor').getContent());
+            alert(arr.join("\n"));
+        }
+        function getPlainTxt() {
+            var arr = [];
+            arr.push("使用editor.getPlainTxt()方法可以获得编辑器的带格式的纯文本内容");
+            arr.push("内容为：");
+            arr.push(UE.getEditor('editor').getPlainTxt());
+            alert(arr.join('\n'))
+        }
+        function setContent(isAppendTo) {
+            var arr = [];
+            arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
+            UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
+            alert(arr.join("\n"));
+        }
+        function setDisabled() {
+            UE.getEditor('editor').setDisabled('fullscreen');
+            disableBtn("enable");
+        }
 
-    function setEnabled() {
-        UE.getEditor('editor').setEnabled();
-        enableBtn();
-    }
+        function setEnabled() {
+            UE.getEditor('editor').setEnabled();
+            enableBtn();
+        }
 
-    function getText() {
-        //当你点击按钮时编辑区域已经失去了焦点，如果直接用getText将不会得到内容，所以要在选回来，然后取得内容
-        var range = UE.getEditor('editor').selection.getRange();
-        range.select();
-        var txt = UE.getEditor('editor').selection.getText();
-        alert(txt)
-    }
+        function getText() {
+            //当你点击按钮时编辑区域已经失去了焦点，如果直接用getText将不会得到内容，所以要在选回来，然后取得内容
+            var range = UE.getEditor('editor').selection.getRange();
+            range.select();
+            var txt = UE.getEditor('editor').selection.getText();
+            alert(txt)
+        }
 
-    function getContentTxt() {
-        var arr = [];
-        arr.push("使用editor.getContentTxt()方法可以获得编辑器的纯文本内容");
-        arr.push("编辑器的纯文本内容为：");
-        arr.push(UE.getEditor('editor').getContentTxt());
-        alert(arr.join("\n"));
-    }
-    function hasContent() {
-        var arr = [];
-        arr.push("使用editor.hasContents()方法判断编辑器里是否有内容");
-        arr.push("判断结果为：");
-        arr.push(UE.getEditor('editor').hasContents());
-        alert(arr.join("\n"));
-    }
-    function setFocus() {
-        UE.getEditor('editor').focus();
-    }
-    function deleteEditor() {
-        disableBtn();
-        UE.getEditor('editor').destroy();
-    }
-    function disableBtn(str) {
-        var div = document.getElementById('btns');
-        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
-        for (var i = 0, btn; btn = btns[i++];) {
-            if (btn.id == str) {
-                UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
-            } else {
-                btn.setAttribute("disabled", "true");
+        function getContentTxt() {
+            var arr = [];
+            arr.push("使用editor.getContentTxt()方法可以获得编辑器的纯文本内容");
+            arr.push("编辑器的纯文本内容为：");
+            arr.push(UE.getEditor('editor').getContentTxt());
+            alert(arr.join("\n"));
+        }
+        function hasContent() {
+            var arr = [];
+            arr.push("使用editor.hasContents()方法判断编辑器里是否有内容");
+            arr.push("判断结果为：");
+            arr.push(UE.getEditor('editor').hasContents());
+            alert(arr.join("\n"));
+        }
+        function setFocus() {
+            UE.getEditor('editor').focus();
+        }
+        function deleteEditor() {
+            disableBtn();
+            UE.getEditor('editor').destroy();
+        }
+        function disableBtn(str) {
+            var div = document.getElementById('btns');
+            var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+            for (var i = 0, btn; btn = btns[i++];) {
+                if (btn.id == str) {
+                    UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+                } else {
+                    btn.setAttribute("disabled", "true");
+                }
             }
         }
-    }
-    function enableBtn() {
-        var div = document.getElementById('btns');
-        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
-        for (var i = 0, btn; btn = btns[i++];) {
-            UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+        function enableBtn() {
+            var div = document.getElementById('btns');
+            var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+            for (var i = 0, btn; btn = btns[i++];) {
+                UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+            }
         }
-    }
 
-    function getLocalData() {
-        alert(UE.getEditor('editor').execCommand("getlocaldata"));
-    }
+        function getLocalData() {
+            alert(UE.getEditor('editor').execCommand("getlocaldata"));
+        }
 
-    function clearLocalData() {
-        UE.getEditor('editor').execCommand("clearlocaldata");
-        alert("已清空草稿箱")
-    }
-</script>*@
+        function clearLocalData() {
+            UE.getEditor('editor').execCommand("clearlocaldata");
+            alert("已清空草稿箱")
+        }
+    </script>*@
 
 
 

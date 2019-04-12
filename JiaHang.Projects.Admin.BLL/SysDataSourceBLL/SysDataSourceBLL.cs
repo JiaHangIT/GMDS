@@ -31,7 +31,6 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
 && (string.IsNullOrWhiteSpace(model.DataSource_Name) || model.DataSource_Name.Contains(model.DataSource_Name))
 && (string.IsNullOrWhiteSpace(model.DataSource_Type) || model.DataSource_Type.Contains(model.DataSource_Type))
 && (string.IsNullOrWhiteSpace(model.DataSource_Use) || model.DataSource_Use.Contains(model.DataSource_Use))
-&& a.DeleteFlag == 0
 )
                          join b in _context.SysDatasourceInfo on a.DatasourceId equals b.DatasourceId
                        into a_temp
@@ -132,12 +131,12 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                             FieldLength = a.FieldLength,
                             FieldTypeName=a_ifnull.FieldTypeName,
                              FieldTypeId =a_ifnull.FieldTypeId.ToString() ?? null,
-                            FieldNullable = a.FieldNullable == 0 ? "否" : "是",
+                            FieldNullable = a.FieldNullable == 1? "是" : "否",
                             FieldKeyFlag = a.FieldKeyFlag,
-                            FieldIndexFlag = a.FieldIndexFlag == 0 ? "否" : "是",
+                            FieldIndexFlag = a.FieldIndexFlag == 1  ? "是" : "否",
                             FieldValue = a.FieldValue,
-                            DimFlag = a.DimFlag == 0 ? "否" : "是",
-                            TimestampFlag = a.TimestampFlag == 0 ? "否" : "是",
+                            DimFlag = a.DimFlag == 1 ? "是" : "否",
+                            TimestampFlag = a.TimestampFlag == 1 ? "是" : "否",
                             DimTableName = a.DimTableName,
                             DimFieldCode = a.DimFieldCode,
                             DimFieldName = a.DimFieldName,

@@ -26,43 +26,66 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
         /// <returns></returns>
         public FuncResult Select(SearchSysProblemInfo model)
         {
-            try
-            {
-                int total = _context.SysProblemInfo.
-                     Where(a =>
-                     (
-                     (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
-                     &&(string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
-                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
-                     && (a.DeleteFlag != 1)
-                     )
-                     ).Count();
-                var result = _context.SysProblemInfo.
-                     Where(a =>
-                     (
-                     (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
-                     && (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
-                     && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
-                     && (a.DeleteFlag != 1)
-                     )
-                     ).Skip(model.limit * model.page).Take(model.limit).ToList();
-                var data = result.Select(e => new
-                {
-                    Problem_Id = e.ProblemId,
-                    Problem_Type_Id = e.ProblemTypeId,
-                    Problem_Title = e.ProblemTitle,
-                    Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
-                    Audited_Date = e.AuditedDate,
-                    Audited_By = e.AuditedBy,
-                    problem_Contant = e.ProblemContent
-                });
-                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
-            }
-            catch (Exception ex)
-            {
-                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
-                throw ex;
-            }
+            //try
+            //{
+            //    int total = _context.SysProblemInfo.
+            //         Where(a =>
+            //         (
+            //         (string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+            //         &&(string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+            //         && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+            //         && (a.DeleteFlag != 1)
+            //         )
+            //         ).Count();
+            //    var result = _context.SysProblemInfo.
+            //         Where(a =>
+            //         (
+            //(string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a.ProblemTypeId.Contains(model.Problem_Type_Id))
+            //&& (string.IsNullOrWhiteSpace(model.Problem_Title) || a.ProblemTitle.Contains(model.Problem_Title))
+            //&& (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+            //&& (a.DeleteFlag != 1)
+            //         )
+            //         ).Skip(model.limit * model.page).Take(model.limit).ToList();
+            //    var data = result.Select(e => new
+            //    {
+            //Problem_Id = e.ProblemId,
+            //        Problem_Type_Id = e.ProblemTypeId,
+            //        Problem_Title = e.ProblemTitle,
+            //        Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
+            //        Audited_Date = e.AuditedDate,
+            //        Audited_By = e.AuditedBy,
+            //        problem_Contant = e.ProblemContent
+            //    });
+            //    return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            //}
+            //catch (Exception ex)
+            //{
+            //    return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+            //    throw ex;
+            //}
+            var query = from a in _context.SysProblemType
+                        join b in _context.SysProblemInfo on
+                        a.ProblemTypeId equals b.ProblemTypeId
+                        into a_temp
+                        from a_ifnull in a_temp.DefaultIfEmpty()
+                        where ((string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a_ifnull.ProblemTypeId.Contains(model.Problem_Type_Id))
+                               && (string.IsNullOrWhiteSpace(model.Problem_Title) || a_ifnull.ProblemTitle.Contains(model.Problem_Title))
+                               && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
+                        )
+                        select new {
+                            Problem_Id = a_ifnull.ProblemId,
+                            Problem_Type_Id = a_ifnull.ProblemTypeId,
+                            Problem_Title = a_ifnull.ProblemTitle,
+                            Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
+                            Audited_Date = a_ifnull.AuditedDate,
+                            Audited_By = a_ifnull.AuditedBy,
+                            problem_Contant = a_ifnull.ProblemContent,
+                            problem_Type_Name=a.ProblemTypeName,
+                            
+                        };
+            int total = query.Count();
+            var data = query.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>
         /// 查询一条
@@ -218,6 +241,25 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             _context.SysProblemInfo.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "审核成功" };
+        }
+        /// <summary>
+        /// 查询问题类型
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FuncResult> SelectProblemType()
+        {
+            var query = from a in _context.SysProblemType
+                        select new
+                        {
+                          problemTypeId=a.ProblemTypeId,
+                          problemTypaName=a.ProblemTypeName
+                        };
+            object data = null;
+            await Task.Run(() =>
+            {
+                data = query.ToList();
+            });
+            return new FuncResult() { IsSuccess = true, Content = data };
         }
         //public FuncResult<SysUserInfo> CheckUserLDAP(string userAccount)
         //{

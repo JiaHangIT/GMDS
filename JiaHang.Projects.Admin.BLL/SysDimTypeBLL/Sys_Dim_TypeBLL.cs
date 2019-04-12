@@ -13,8 +13,8 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
 {
     public class Sys_Dim_TypeBLL
     {
-        private readonly DataContext _context;
-        public Sys_Dim_TypeBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public Sys_Dim_TypeBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }

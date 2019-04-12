@@ -162,19 +162,19 @@
                 参数代码
             </td>
             <td class="layui-input-block">
-                <input type="text" value={{item.paramCode}} autocomplete="off" placeholder="参数代码" class="layui-input">
+                <input type="text" value={{item.paramCode}} autocomplete="off" placeholder="参数代码" class="layui-input" lay-verify="required">
             </td>
             <td class="layui-form-label">
                 参数名称
             </td>
             <td class="layui-input-block">
-                <input type="text" value={{item.paramName}} autocomplete="off" placeholder="参数名称" class="layui-input">
+                <input type="text" value={{item.paramName}} autocomplete="off" placeholder="参数名称" class="layui-input" lay-verify="required">
             </td>
             <td class="layui-form-label">
                 参数类型
             </td>
             <td class="layui-input-block">
-                <select class="layui-form layui-input paramtype" lay-filter="xmFilter">
+                <select class="layui-form layui-input paramtype" lay-filter="xmFilter" lay-verify="required">
                     <option value=""></option>
                 </select>
             </td>
@@ -198,7 +198,7 @@
                 关联字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input paramrelate" lay-filter="">
+                <select class="layui-input paramrelate" lay-filter="" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -235,19 +235,19 @@
                 参数代码
             </td>
             <td class="layui-input-block">
-                <input type="text" value='' autocomplete="off" placeholder="参数代码" class="layui-input">
+                <input type="text" value='' autocomplete="off" placeholder="参数代码" class="layui-input" lay-verify="required">
             </td>
             <td class="layui-form-label">
                 参数名称
             </td>
             <td class="layui-input-block">
-                <input type="text" value='' autocomplete="off" placeholder="参数名称" class="layui-input">
+                <input type="text" value='' autocomplete="off" placeholder="参数名称" class="layui-input" lay-verify="required">
             </td>
             <td class="layui-form-label">
                 参数类型
             </td>
             <td class="layui-input-block">
-                <select class="layui-form layui-input paramtype" lay-filter="xmFilter">
+                <select class="layui-form layui-input paramtype" lay-filter="xmFilter" lay-verify="required">
                     <option value=""></option>
                 </select>
             </td>
@@ -271,7 +271,7 @@
                 关联字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input paramrelate" lay-filter="">
+                <select class="layui-input paramrelate" lay-filter="" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -313,7 +313,7 @@
                 字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input sharerelate" lay-filter="shareselected">
+                <select class="layui-input sharerelate" lay-filter="shareselected" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -343,7 +343,7 @@
                 字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input sharerelate" lay-filter="shareselected">
+                <select class="layui-input sharerelate" lay-filter="shareselected" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -379,14 +379,14 @@
                 返回字段名称
             </td>
             <td class="layui-input-block">
-                <input type="text" value={{item.reFieldName}} autocomplete="off" placeholder="返回字段名称" class="layui-input">
+                <input type="text" value={{item.reFieldName}} autocomplete="off" placeholder="返回字段名称" class="layui-input" lay-verify="required">
             </td>
 
             <td class="layui-form-label">
                 写入字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input collectto" lay-filter="xmFilter">
+                <select class="layui-input collectto" lay-filter="xmFilter" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -421,14 +421,14 @@
                 返回字段名称
             </td>
             <td class="layui-input-block">
-                <input type="text" value='' autocomplete="off" placeholder="返回字段名称" class="layui-input">
+                <input type="text" value='' autocomplete="off" placeholder="返回字段名称" class="layui-input" lay-verify="required">
             </td>
 
             <td class="layui-form-label">
                 写入字段ID
             </td>
             <td class="layui-input-block">
-                <select class="layui-input collectto" lay-filter="xmFilter">
+                <select class="layui-input collectto" lay-filter="xmFilter" lay-verify="required">
                     <option value=''></option>
                 </select>
             </td>
@@ -471,25 +471,25 @@
         </ul>
         <div class="layui-form layui-form-pane layui-tab-content " action="" lay-filter="generate-form">
             <div class="layui-tab-item layui-show">
-                
+
                 <div style="margin-bottom:20px">
 
                     <div class="layui-inline">
                         <label class="layui-form-label">接口代码</label>
                         <div class="layui-input-block">
-                            <input type="text" name="servicecode" id="servicecode" autocomplete="off" placeholder="接口代码" class="layui-input">
+                            <input type="text" name="servicecode" id="servicecode" autocomplete="off" placeholder="接口代码" class="layui-input" lay-verify="required">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">接口名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="servicename" id="servicename" autocomplete="off" placeholder="接口名称" class="layui-input">
+                            <input type="text" name="servicename" id="servicename" autocomplete="off" placeholder="接口名称" class="layui-input" lay-verify="required">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">接口编号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="serviceno" id="serviceno" autocomplete="off" placeholder="接口编号" class="layui-input">
+                            <input type="text" name="serviceno" id="serviceno" autocomplete="off" placeholder="接口编号" class="layui-input" lay-verify="required">
                         </div>
                     </div>
 
@@ -498,22 +498,22 @@
                 <div style="margin-bottom:20px">
                     <div class="layui-inline">
                         <label class="layui-form-label">目录分类</label>
-                        <div class="layui-input-block" >
-                            <select name="servicegroupid" id="servicegroupid" class="layui-input" lay-filter="xmFilter">
+                        <div class="layui-input-block">
+                            <select name="servicegroupid" id="servicegroupid" class="layui-input" lay-filter="xmFilter" lay-verify="required">
                                 <option value=""></option>
                             </select>
                         </div>
                     </div>
-                    <div class="layui-inline" >
+                    <div class="layui-inline">
                         <label class="layui-form-label">接口版本</label>
                         <div class="layui-input-block">
-                            <input type="text" name="serviceversion" id="serviceversion" autocomplete="off" placeholder="接口版本" class="layui-input">
+                            <input type="text" name="serviceversion" id="serviceversion" autocomplete="off" placeholder="接口版本" class="layui-input" lay-verify="required">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">数据源</label>
                         <div class="layui-input-block">
-                            <select name="datasourceid" id="datasourceid" class="layui-input" lay-filter="datasourceselected">
+                            <select name="datasourceid" id="datasourceid" class="layui-input" lay-filter="datasourceselected" lay-verify="required">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -535,7 +535,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">业务类型</label>
                         <div class="layui-input-block">
-                            <select name="servicetype" id="servicetype" class="layui-input" lay-filter="xmFilter" >
+                            <select name="servicetype" id="servicetype" class="layui-input" lay-filter="xmFilter">
                                 <option value="SHARE">共享</option>
                                 <option value="COLLECT">采集</option>
                             </select>
@@ -554,10 +554,18 @@
                 </div>
 
                 <div style="margin-bottom:20px;">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">排序值</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="sortkey" id="sortkey" class="layui-input" lay-filter="xmFilter" lay-verify="required">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom:20px;">
                     <div>
                         <label class="layui-form-label">接口说明</label>
                         <div class="layui-input-block select">
-                            <textarea name="servicedesc" id="servicedesc" placeholder="接口说明" class="layui-textarea"></textarea>
+                            <textarea name="servicedesc" id="servicedesc" placeholder="接口说明" class="layui-textarea" lay-verify="required"></textarea>
                         </div>
                     </div>
                 </div>
@@ -582,35 +590,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-form-item" >
+                <div class="layui-form-item">
                     <div style="text-align:center">
                         <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
                         <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
                     </div>
-                 
+
                 </div>
             </div>
 
-            <div class="layui-tab-item">
-                <div id="paramdiv">
-                    <table id="paramcontent"></table>
-                    
-                </div>
-            </div>
-            <div class="layui-tab-item" style="display:none">
-                <div id="shareresultcontentdiv">
-                   <table id="shareresultcontent"></table>
-                </div>
-            </div>
-           
-            <div class="layui-tab-item" style="display:none">
-                <div id="collectresultcontentdiv">
-                    <table id="collectresultcontent">
+                <div class="layui-tab-item">
+                    <div id="paramdiv">
+                        <table id="paramcontent"></table>
 
-                    </table>
+                    </div>
+                </div>
+                <div class="layui-tab-item" style="display:none">
+                    <div id="shareresultcontentdiv">
+                        <table id="shareresultcontent"></table>
+                    </div>
+                </div>
+
+                <div class="layui-tab-item" style="display:none">
+                    <div id="collectresultcontentdiv">
+                        <table id="collectresultcontent"></table>
+                    </div>
                 </div>
             </div>
-        </div>
 
     </div>
 </div>
@@ -630,19 +636,19 @@
                     参数代码
                 </td>
                 <td class="layui-input-block">
-                    <input type="text" name="paramcode" id="paramcode" autocomplete="off" placeholder="参数代码" class="layui-input">
+                    <input type="text" name="paramcode" id="paramcode" autocomplete="off" placeholder="参数代码" class="layui-input" lay-verify="required">
                 </td>
                 <td class="layui-form-label">
                     参数名称
                 </td>
                 <td class="layui-input-block">
-                    <input type="text" name="paramname" id="paramname" autocomplete="off" placeholder="参数名称" class="layui-input">
+                    <input type="text" name="paramname" id="paramname" autocomplete="off" placeholder="参数名称" class="layui-input" lay-verify="required">
                 </td>
                 <td class="layui-form-label">
                     参数类型
                 </td>
                 <td class="layui-form ayui-input-block">
-                    <select class="layui-input paramtype" lay-filter="xmFilter">
+                    <select class="layui-input paramtype" lay-filter="xmFilter" lay-verify="required">
                         <option value=''></option>
                     </select>
                 </td>
@@ -666,7 +672,7 @@
                     关联字段ID
                 </td>
                 <td class="layui-input-block">
-                    <select class="layui-input paramrelate" lay-filter="xmFilter">
+                    <select class="layui-input paramrelate" lay-filter="xmFilter" lay-verify="required">
                         <option value=''></option>
                     </select>
                 </td>
@@ -677,7 +683,7 @@
                     参数说明
                 </td>
                 <td class="layui-input-block" colspan="3">
-                    <input type="text" name="paramremark" id="paramremark" autocomplete="off" placeholder="参数说明" class="layui-input">
+                    <input type="text" name="paramremark" id="paramremark" autocomplete="off" placeholder="参数说明" class="layui-input" lay-verify="required">
                 </td>
                 <td colspan="4">
                     <fieldset class="layui-elem-field site-demo-button">
@@ -707,7 +713,7 @@
                     字段ID
                 </td>
                 <td class="layui-input-block">
-                    <select class="layui-input sharerelate" lay-filter="shareselected">
+                    <select class="layui-input sharerelate" lay-filter="shareselected" lay-verify="required">
                         <option value=''></option>
                     </select>
                 </td>
@@ -734,13 +740,13 @@
                     返回字段名称
                 </td>
                 <td class="layui-input-block">
-                    <input type="text" name="refieldname" id="refieldname" autocomplete="off" placeholder="返回字段名称" class="layui-input">
+                    <input type="text" name="refieldname" id="refieldname" autocomplete="off" placeholder="返回字段名称" class="layui-input" lay-verify="required">
                 </td>
                 <td class="layui-form-label">
                     写入字段ID
                 </td>
                 <td class="layui-input-block">
-                    <select class="layui-input collectto" lay-filter="xmFilter">
+                    <select class="layui-input collectto" lay-filter="xmFilter" lay-verify="required">
                         <option value=''></option>
                     </select>
                 </td>
@@ -828,10 +834,6 @@
 
                             { type: 'checkbox', fixed: 'left', width: 40 }
                             , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-                            //, {
-                            //    field: 'service_Id', width: 340, title: 'Service_Id', sort: true, fixed: 'left',
-                            //    templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Id + '</a>'; }
-                            //  }
                             , { field: 'service_No', title: '接口编号' }
                             , { field: 'service_Code', title: '接口代码', sort: true }
                             , { field: 'service_Name', title: '接口名', sort: true }
@@ -841,40 +843,6 @@
                             , { field: 'service_Status', title: '接口状态', sort: true }
                         ]],
                         page:true
-                    },
-                    //...2
-                    {
-                        url: '/api/dcsservicegroupdata/search/',
-                        unresize: true,
-                        cols: [
-                            [
-
-                                {
-                                    field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left',
-                                    templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Group_Id + '</a>'; }
-                                }
-                                , { field: 'service_Group_Code', title: '接口分类编号' }
-                                , { field: 'service_Group_Name', title: '接口分类名', sort: true }
-                                , { field: 'image_Url', title: '接口图片地址', sort: true }
-                            ]
-                        ]
-                    },
-                    //...3
-                    {
-                        url: '/api/dcsservicegroupdata/search/',
-                        unresize: true,
-                        cols: [
-                            [
-
-                                {
-                                    field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left',
-                                    templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Group_Id + '</a>'; }
-                                }
-                                , { field: 'service_Group_Code', title: '接口分类编号' }
-                                , { field: 'service_Group_Name', title: '接口分类名', sort: true }
-                                , { field: 'image_Url', title: '接口图片地址', sort: true }
-                            ]
-                        ]
                     }
                 ],
             ]
@@ -924,10 +892,10 @@
                 if (obj.event === 'detail') {
                     layer.msg('ID：' + data.id + ' 的查看操作');
                 } else if (obj.event === 'del') {
-                    let confirm_title = "确认删除账号" + data.service_Id + "的记录么";
+                    let confirm_title = "确认删除主键" + data.service_Id + "的记录么";
                     layer.confirm(confirm_title, function (index) {
                         layer.close(index);
-                        axios.delete('/api/dcsserviceinfodata/' + data.service_Group_Id)
+                        axios.delete('/api/dcsserviceinfodata/' + data.service_Id)
                             .then(function (response) {
                                 layer.msg(response.data.message);
                                 if (!response.data.isSuccess) {
@@ -1212,6 +1180,7 @@
                 datapageflag: $("#datapageflag")[0].checked == true ? 1 : 0,
                 datamultiflag: $("#datamultiflag")[0].checked == true ? 1 : 0,
                 datasourceid: $('#datasourceid').val(),
+                sortkey: $('#sortkey').val(),
                 lsparam: params,
                 lsshare: shareresults,
                 lscollect: collectrestults
@@ -1336,7 +1305,8 @@
                     servicestatus: '',
                     datapageflag: '',
                     datamultiflag: '',
-                    datasourceId:''
+                    datasourceId: '',
+                    sortkey:''
                 })
                 return;
             }
@@ -1345,14 +1315,17 @@
                 layui.use('laytpl', function () {
                     //用于加载模板引擎数据
                     laytpl = layui.laytpl;
-                    //var data = {};
+
+                    var loadflag;//定义加载提示
                     jQuery.ajax({
                         async: true,
                         url: "/api/dcsserviceinfodata/getserviceinfoview?serviceid=" + serviceId,
                         type: 'get',
+                        beforeSend: function (XMLHttpRequest) { loadflag = layer.msg('正在加载数据...', { offset: ['400px', '650px']}) },
                         success: function (res) {
+                          
                             $('.sharerelate').empty();
-                            console.log(res.content)
+                            //console.log(res.content)
                             var getTpl = document.getElementById('collectmodel').innerHTML
                                 , viewcollect = document.getElementById('collectresultcontent');
                             laytpl(getTpl).render(res.content.collectResult, function (html) {
@@ -1449,6 +1422,9 @@
 
 
                             layui.form.render();//重新渲染
+                        },
+                        complete: function () {
+                            layer.close(loadflag)//关闭
                         }
                     })
 
@@ -1467,7 +1443,8 @@
                     servicestatus:( data.service_Status == '启用' || data.service_Status == 'Y') ? true : false,
                     datapageflag: data.dataPageFlag == 1 ? true : false,
                     datamultiflag: data.dataMultiFlag == 1 ? true : false,
-                    datasourceid: data.datasource_Id
+                    datasourceid: data.datasource_Id,
+                    sortkey: data.sortKey
                 });
             }
 
@@ -1519,7 +1496,7 @@
                 type: 'post',
                 success: function (data) {
                     window.localStorage.setItem('fieldtype', JSON.stringify(data));
-                    paramdata = data;
+                    //paramdata = data;
                 }
             });
 
@@ -1529,7 +1506,7 @@
                 type: 'post',
                 success: function (data) {
                     window.localStorage.setItem('relateinfo', JSON.stringify(data));
-                    relateinfo = data;
+                    //relateinfo = data;
                 }
             });
 
@@ -1540,7 +1517,7 @@
                 type: 'post',
                 success: function (data) {
                     window.localStorage.setItem('collecttofile', JSON.stringify(data));
-                    collecttofile = data;
+                    //collecttofile = data;
                 }
             });
 

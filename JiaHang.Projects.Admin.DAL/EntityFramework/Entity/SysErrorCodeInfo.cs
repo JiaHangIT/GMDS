@@ -9,8 +9,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string ErrorCodeCode { get; set; }
         public string ErrorCodeName { get; set; }
         public string ErrorCodeDesc { get; set; }
-        public int? ImportantFlag { get; set; }
-        public int? AuditFlag { get; set; }
+        public decimal? ImportantFlag { get; set; }
+        public decimal? AuditFlag { get; set; }
         public DateTime? AuditedDate { get; set; }
         public string AuditedBy { get; set; }
         public DateTime? CreationDate { get; set; }
