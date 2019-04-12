@@ -10,7 +10,7 @@
     }
 
     .layui-select-title input {
-        width: 180px;
+        width: 195px;
     }
 
     .layui-row .layui-col-md4 {
@@ -22,31 +22,115 @@
     }
 
     .layui-form-pane .layui-form-select {
-        width: 182px;
+        width: 196px;
     }
 
     .tbs-a {
         color: blue;
     }
+
+    .paramtype {
+    }
+
+    .paramrelate {
+    }
+
+    .collectto {
+    }
 </style>
+<script type="text/javascript">
+
+    var htmlparam = '';
+    var htmlshare = '';
+    var htmlcollect = '';
+
+    //点新增的时候往每个块里添加一个默认的tab
+
+    function defaultload() {
+
+        $('#paramcontent').append($('#defaultloadhtml table')[0].innerHTML);
+        $('#shareresultcontent').append($('#defaultloadhtml table')[1].innerHTML);
+        $('#collectresultcontent').append($('#defaultloadhtml table')[2].innerHTML);
+        var form = layui.form
+        form.render('checkbox');
+    }
+
+
+    //接口参数行添加
+    function paramadd() {
+        $('#paramdiv table').append($('#defaultloadhtml table')[0].innerHTML);
+        //刷新checkbox属性
+        var form = layui.form
+        form.render('checkbox');
+        form.render('select');
+    }
+
+    //接口参数行删除
+    function paramdel(obj) {
+        var children = $('#paramdiv table').children();
+        if (children && children.length == 1) {
+            layui.layer.msg('至少需要一条');
+            return false;
+        }
+        //至少要有一个
+        $(obj).parent().parent().parent().parent().parent().remove();
+    }
+
+    //共享返回字段行添加
+    function shareresultcontentadd() {
+        $('#shareresultcontentdiv table').append($('#defaultloadhtml table')[1].innerHTML);
+        //刷新checkbox属性
+        var form = layui.form
+        form.render('checkbox');
+        form.render('select');
+    }
+
+    //共享返回字段行删除
+    function shareresultcontentdel(obj) {
+        var children = $('#shareresultcontentdiv table').children();
+        if (children && children.length == 1) {
+            layui.layer.msg('至少需要一条');
+            return false;
+        }
+        $(obj).parent().parent().parent().parent().parent().remove();
+    }
+
+    //采集返回字段行添加
+    function collectresultadd() {
+        $('#collectresultcontentdiv table').append($('#defaultloadhtml table')[2].innerHTML);
+        //刷新checkbox属性
+        var form = layui.form
+        form.render('checkbox');
+        form.render('select');
+    }
+
+    //采集返回字段行删除
+    function collectresultdel(obj) {
+        var children = $('#collectresultcontentdiv table').children();
+        if (children && children.length == 1) {
+            layui.layer.msg('至少需要一条');
+            return false;
+        }
+        $(obj).parent().parent().parent().parent().parent().remove();
+    }
+
+</script>
 <div>
-
-
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs6">
                 <label class="layui-form-label">接口编号：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_service_no" autocomplete="off">
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs6">
                 <label class="layui-form-label">接口代码：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_service_code" autocomplete="off">
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs6">
                 <label class="layui-form-label">接口名称：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_service_name" autocomplete="off">
@@ -57,7 +141,6 @@
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增基本信息</button>
             <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-            @*<a class="layui-btn" href="/api/dcsservicegroupdata/export">导出所有</a>*@
         </div>
 
     </div>
@@ -65,123 +148,633 @@
 
 </div>
 
+
+
+
+<script type="text/html" id="parammodel">
+    @*接口参数*@
+
+    {{#  layui.each(d, function(index, item){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value={{item.paramId}} /></td>
+            <td class="layui-form-label">
+                参数代码
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value={{item.paramCode}} autocomplete="off" placeholder="参数代码" class="layui-input" lay-verify="required">
+            </td>
+            <td class="layui-form-label">
+                参数名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value={{item.paramName}} autocomplete="off" placeholder="参数名称" class="layui-input" lay-verify="required">
+            </td>
+            <td class="layui-form-label">
+                参数类型
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-form layui-input paramtype" lay-filter="xmFilter" lay-verify="required">
+                    <option value=""></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                可以为空
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+
+            <td class="layui-form-label">
+                是否时间戳参数
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+
+            <td class="layui-form-label">
+                关联字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input paramrelate" lay-filter="" lay-verify="required">
+                    <option value=''></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                参数说明
+            </td>
+            <td class="layui-input-block" colspan="3">
+                <input type="text" value={{item.paramDesc}} autocomplete="off" placeholder="参数说明" class="layui-input">
+            </td>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button id="paramadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button id="paramdel" onclick="paramdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    @*无数据*@
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value={{item.paramId}} /></td>
+            <td class="layui-form-label">
+                参数代码
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value='' autocomplete="off" placeholder="参数代码" class="layui-input" lay-verify="required">
+            </td>
+            <td class="layui-form-label">
+                参数名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value='' autocomplete="off" placeholder="参数名称" class="layui-input" lay-verify="required">
+            </td>
+            <td class="layui-form-label">
+                参数类型
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-form layui-input paramtype" lay-filter="xmFilter" lay-verify="required">
+                    <option value=""></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                可以为空
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+
+            <td class="layui-form-label">
+                是否时间戳参数
+            </td>
+            <td class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+
+            <td class="layui-form-label">
+                关联字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input paramrelate" lay-filter="" lay-verify="required">
+                    <option value=''></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label">
+                参数说明
+            </td>
+            <td class="layui-input-block" colspan="3">
+                <input type="text" value='' autocomplete="off" placeholder="参数说明" class="layui-input">
+            </td>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button id="paramadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button id="paramdel" onclick="paramdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  } }}
+
+    @*</table>*@
+</script>
+
+<script type="text/html" id="sharemodel">
+    @*共享接口返回*@
+    {{#  layui.each(d, function(index, item){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input sharerelate" lay-filter="shareselected" lay-verify="required">
+                    <option value=''></option>
+                </select>
+            </td>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+       
+
+        <tr>
+            <td colspan="5">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input sharerelate" lay-filter="shareselected" lay-verify="required">
+                    <option value=''></option>
+                </select>
+            </td>
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+      
+        <tr>
+            <td colspan="5">
+                <br />
+            </td>
+        </tr>
+    </tbody>
+    {{#  } }}
+
+</script>
+
+<script id="collectmodel" type="text/html">
+
+    @*采集接口返回*@
+    {{#  layui.each(d, function(index, item){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                返回字段名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value={{item.reFieldName}} autocomplete="off" placeholder="返回字段名称" class="layui-input" lay-verify="required">
+            </td>
+
+            <td class="layui-form-label">
+                写入字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input collectto" lay-filter="xmFilter" lay-verify="required">
+                    <option value=''></option>
+                </select>
+            </td>
+
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label" colspan="4">
+                是否需要从维度表转换数据
+            </td>
+            <td class="layui-input-block" colspan="2">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6"><br /></td>
+        </tr>
+    </tbody>
+    {{#  }); }}
+    {{#  if(d.length === 0){ }}
+    <tbody>
+        <tr>
+            <td style="display:none"><input type="text" value='' /></td>
+            <td class="layui-form-label">
+                返回字段名称
+            </td>
+            <td class="layui-input-block">
+                <input type="text" value='' autocomplete="off" placeholder="返回字段名称" class="layui-input" lay-verify="required">
+            </td>
+
+            <td class="layui-form-label">
+                写入字段ID
+            </td>
+            <td class="layui-input-block">
+                <select class="layui-input collectto" lay-filter="xmFilter" lay-verify="required">
+                    <option value=''></option>
+                </select>
+            </td>
+
+            <td colspan="2">
+                <fieldset class="layui-elem-field site-demo-button">
+                    <div class="layui-btn-group">
+                        <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td class="layui-form-label" colspan="4">
+                是否需要从维度表转换数据
+            </td>
+            <td class="layui-input-block" colspan="2">
+                <input type="checkbox" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6"><br /></td>
+        </tr>
+    </tbody>
+    {{#  } }}
+
+</script>
+
+<script src="~/layui/layui.js"></script>
+
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
-    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">目录分类</label>
-                <div class="layui-input-block">
-                    <select name="servicegroupid" id="servicegroupid" class="layui-input" lay-verify="required" lay-filter="xmFilter">
-                        <option value=""></option>
-                    </select>
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">主要信息</li>
+            <li>参数信息</li>
+            <li>共享返回字段信息</li>
+            <li>采集返回字段信息</li>
+            @*<li>paramtest</li>*@
+        </ul>
+        <div class="layui-form layui-form-pane layui-tab-content " action="" lay-filter="generate-form">
+            <div class="layui-tab-item layui-show">
+
+                <div style="margin-bottom:20px">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">接口代码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="servicecode" id="servicecode" autocomplete="off" placeholder="接口代码" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">接口名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="servicename" id="servicename" autocomplete="off" placeholder="接口名称" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">接口编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="serviceno" id="serviceno" autocomplete="off" placeholder="接口编号" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-bottom:20px">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">目录分类</label>
+                        <div class="layui-input-block">
+                            <select name="servicegroupid" id="servicegroupid" class="layui-input" lay-filter="xmFilter" lay-verify="required">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">接口版本</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="serviceversion" id="serviceversion" autocomplete="off" placeholder="接口版本" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">数据源</label>
+                        <div class="layui-input-block">
+                            <select name="datasourceid" id="datasourceid" class="layui-input" lay-filter="datasourceselected" lay-verify="required">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-bottom:20px;">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">技术类型</label>
+                        <div class="layui-input-block">
+                            <select name="servicetech" id="servicetech" class="layui-input" lay-filter="xmFilter">
+                                <option value="WebService">WEBSERVICE</option>
+                                <option value="API">API</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">业务类型</label>
+                        <div class="layui-input-block">
+                            <select name="servicetype" id="servicetype" class="layui-input" lay-filter="xmFilter">
+                                <option value="SHARE">共享</option>
+                                <option value="COLLECT">采集</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">返回格式</label>
+                        <div class="layui-input-block">
+                            <select name="servicereturn" id="servicereturn" class="layui-input" lay-filter="xmFilter">
+                                <option value="XML">XML</option>
+                                <option value="JSON">JSON</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">排序值</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="sortkey" id="sortkey" class="layui-input" lay-filter="xmFilter" lay-verify="required">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <div>
+                        <label class="layui-form-label">接口说明</label>
+                        <div class="layui-input-block select">
+                            <textarea name="servicedesc" id="servicedesc" placeholder="接口说明" class="layui-textarea" lay-verify="required"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" id="servicestatus" name="servicestatus" lay-skin="switch" lay-text="正常|停用">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否分页</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" id="datapageflag" name="datapageflag" lay-skin="switch" lay-text="是|否">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否多条结果</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" id="datamultiflag" name="datamultiflag" lay-skin="switch" lay-text="是|否">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div style="text-align:center">
+                        <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+                        <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+                    </div>
+
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">接口编号</label>
-                <div class="layui-input-block">
-                    <input type="text" name="serviceno" id="serviceno" autocomplete="off" placeholder="接口编号" class="layui-input" lay-verify="required">
+
+            <div class="layui-tab-item">
+                <div id="paramdiv">
+                    <table id="paramcontent"></table>
+
+                </div>
+            </div>
+            <div class="layui-tab-item" style="display:none">
+                <div id="shareresultcontentdiv">
+                    <table id="shareresultcontent"></table>
+                </div>
+            </div>
+
+            <div class="layui-tab-item" style="display:none">
+                <div id="collectresultcontentdiv">
+                    <table id="collectresultcontent"></table>
                 </div>
             </div>
         </div>
-        <div class="layui-form-item">
 
-            <div class="layui-inline">
-                <label class="layui-form-label">接口代码</label>
-                <div class="layui-input-block">
-                    <input type="text" name="servicecode" id="servicecode" autocomplete="off" placeholder="接口代码" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">接口名称</label>
-                <div class="layui-input-block">
-                    <input type="text" name="servicename" id="servicename" autocomplete="off" placeholder="接口名称" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">接口版本</label>
-                <div class="layui-input-block">
-                    <input type="text" name="serviceversion" id="serviceversion" autocomplete="off" placeholder="接口版本" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">技术类型</label>
-                <div class="layui-input-block">
-                    <input type="text" name="servicetech" id="servicetech" autocomplete="off" placeholder="技术类型" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">业务类型</label>
-                <div class="layui-input-block">
-                    <input type="text" name="servicetype" id="servicetype" autocomplete="off" placeholder="业务类型" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">返回格式</label>
-                <div class="layui-input-block">
-                    <input type="text" name="servicereturn" id="servicereturn" autocomplete="off" placeholder="返回格式" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-
-        </div>
-
-        <div class="layui-form-item layui-form-text">
-            <div>
-                <label class="layui-form-label">接口说明</label>
-                <div class="layui-input-block">
-                    <textarea name="servicedesc" id="servicedesc" placeholder="接口说明" class="layui-textarea"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item" style="display:none">
-            <div>
-                <input type="checkbox" id="status" title="状态">
-                <input type="checkbox" id="page" title="是否分页">
-                <input type="checkbox" id="muli" title="是否多条结果">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">状态</label>
-                <div class="layui-input-block">
-                    <input type="checkbox" id="servicestatus" name="servicestatus" lay-skin="switch" lay-text="正常|停用">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">是否分页</label>
-                <div class="layui-input-block">
-                    <input type="checkbox" id="datapageflag" name="datapageflag" lay-skin="switch" lay-text="是|否">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">是否多条结果</label>
-                <div class="layui-input-block">
-                    <input type="checkbox" id="datamultiflag" name="datamultiflag" lay-skin="switch" lay-text="是|否">
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="layui-form-item">
-            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
-        </div>
     </div>
-
-
 </div>
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
+
+<div id="defaultloadhtml" style="display:none">
+    @*param*@
+    <table>
+        <tbody>
+            <tr>
+                <td style="display:none"><input type="text" /></td>
+                <td class="layui-form-label">
+                    参数代码
+                </td>
+                <td class="layui-input-block">
+                    <input type="text" name="paramcode" id="paramcode" autocomplete="off" placeholder="参数代码" class="layui-input" lay-verify="required">
+                </td>
+                <td class="layui-form-label">
+                    参数名称
+                </td>
+                <td class="layui-input-block">
+                    <input type="text" name="paramname" id="paramname" autocomplete="off" placeholder="参数名称" class="layui-input" lay-verify="required">
+                </td>
+                <td class="layui-form-label">
+                    参数类型
+                </td>
+                <td class="layui-form ayui-input-block">
+                    <select class="layui-input paramtype" lay-filter="xmFilter" lay-verify="required">
+                        <option value=''></option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="layui-form-label">
+                    可以为空
+                </td>
+                <td class="layui-input-block">
+                    <input type="checkbox" id="paramnullable" name="paramnullable" lay-skin="switch" lay-text="是|否">
+
+                </td>
+                <td class="layui-form-label">
+                    是否时间戳参数
+                </td>
+                <td class="layui-input-block">
+                    <input type="checkbox" id="timestampflag" name="timestampflag" lay-skin="switch" lay-text="是|否">
+                </td>
+                <td class="layui-form-label">
+                    关联字段ID
+                </td>
+                <td class="layui-input-block">
+                    <select class="layui-input paramrelate" lay-filter="xmFilter" lay-verify="required">
+                        <option value=''></option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="layui-form-label">
+                    参数说明
+                </td>
+                <td class="layui-input-block" colspan="3">
+                    <input type="text" name="paramremark" id="paramremark" autocomplete="off" placeholder="参数说明" class="layui-input" lay-verify="required">
+                </td>
+                <td colspan="4">
+                    <fieldset class="layui-elem-field site-demo-button">
+                        <div class="layui-btn-group">
+                            <button id="paramadd" onclick="paramadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button id="paramdel" onclick="paramdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        </div>
+                    </fieldset>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="6">
+                    <br />
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    @*share*@
+    <table>
+        <tbody>
+            <tr>
+                <td style="display:none"><input type="text" /></td>
+                <td class="layui-form-label">
+                    字段ID
+                </td>
+                <td class="layui-input-block">
+                    <select class="layui-input sharerelate" lay-filter="shareselected" lay-verify="required">
+                        <option value=''></option>
+                    </select>
+                </td>
+                <td colspan="2">
+                    <fieldset class="layui-elem-field site-demo-button">
+                        <div class="layui-btn-group">
+                            <button id="shareresultadd" onclick="shareresultcontentadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button id="shareresultdel" onclick="shareresultcontentdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        </div>
+                    </fieldset>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5"><br /></td>
+            </tr>
+        </tbody>
+    </table>
+
+    @*collect*@
+    <table>
+        <tbody>
+            <tr>
+                <td style="display:none"><input type="text" /></td>
+                <td class="layui-form-label">
+                    返回字段名称
+                </td>
+                <td class="layui-input-block">
+                    <input type="text" name="refieldname" id="refieldname" autocomplete="off" placeholder="返回字段名称" class="layui-input" lay-verify="required">
+                </td>
+                <td class="layui-form-label">
+                    写入字段ID
+                </td>
+                <td class="layui-input-block">
+                    <select class="layui-input collectto" lay-filter="xmFilter" lay-verify="required">
+                        <option value=''></option>
+                    </select>
+                </td>
+
+                <td colspan="2">
+                    <fieldset class="layui-elem-field site-demo-button">
+                        <div class="layui-btn-group">
+                            <button onclick="collectresultadd()" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                            <button onclick="collectresultdel(this)" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon"></i></button>
+                        </div>
+                    </fieldset>
+                </td>
+            </tr>
+            <tr>
+                <td class="layui-form-label" colspan="4">
+                    是否需要从维度表转换数据
+                </td>
+                <td class="layui-input-block" colspan="2">
+                    <input type="checkbox" lay-skin="switch" lay-text="是|否">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6"><br /></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 <script>
 
     var serviceId = 0;
@@ -241,53 +834,18 @@
 
                             { type: 'checkbox', fixed: 'left', width: 40 }
                             , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-                            , {
-                                field: 'service_Id', width: 340, title: 'Service_Id', sort: true, fixed: 'left',
-                                templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Id + '</a>'; }
-                              }
                             , { field: 'service_No', title: '接口编号' }
                             , { field: 'service_Code', title: '接口代码', sort: true }
                             , { field: 'service_Name', title: '接口名', sort: true }
                             , { field: 'service_Version', title: '接口版本' }
                             , { field: 'service_Tech', title: '接口技术类型', sort: true }
                             , { field: 'service_Type', title: '接口业务类型', sort: true }
-                            , { field: 'service_Status', title: '接口状态', sort: true }
+                            , {
+                                field: 'service_Status', title: '接口状态', sort: true,
+                                templet: function (data) { if (data.service_Status) return (data.service_Status == "Y" || data.service_Status == "启用")?"正常":"停用" }
+                            }
                         ]],
                         page:true
-                    },
-                    //...2
-                    {
-                        url: '/api/dcsservicegroupdata/search/',
-                        unresize: true,
-                        cols: [
-                            [
-
-                                {
-                                    field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left',
-                                    templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Group_Id + '</a>'; }
-                                }
-                                , { field: 'service_Group_Code', title: '接口分类编号' }
-                                , { field: 'service_Group_Name', title: '接口分类名', sort: true }
-                                , { field: 'image_Url', title: '接口图片地址', sort: true }
-                            ]
-                        ]
-                    },
-                    //...3
-                    {
-                        url: '/api/dcsservicegroupdata/search/',
-                        unresize: true,
-                        cols: [
-                            [
-
-                                {
-                                    field: 'service_Group_Id', width: 340, title: 'ID', sort: true, fixed: 'left',
-                                    templet: function (data) { return '<a class="tbs-a" onclick="mytbs.click(layui.$(this));"><pre style="display:none;">' + JSON.stringify(data) + '</pre>' + data.service_Group_Id + '</a>'; }
-                                }
-                                , { field: 'service_Group_Code', title: '接口分类编号' }
-                                , { field: 'service_Group_Name', title: '接口分类名', sort: true }
-                                , { field: 'image_Url', title: '接口图片地址', sort: true }
-                            ]
-                        ]
                     }
                 ],
             ]
@@ -337,10 +895,10 @@
                 if (obj.event === 'detail') {
                     layer.msg('ID：' + data.id + ' 的查看操作');
                 } else if (obj.event === 'del') {
-                    let confirm_title = "确认删除账号" + data.service_Id + "的记录么";
+                    let confirm_title = "确认删除主键" + data.service_Id + "的记录么";
                     layer.confirm(confirm_title, function (index) {
                         layer.close(index);
-                        axios.delete('/api/dcsserviceinfodata/' + data.service_Group_Id)
+                        axios.delete('/api/dcsserviceinfodata/' + data.service_Id)
                             .then(function (response) {
                                 layer.msg(response.data.message);
                                 if (!response.data.isSuccess) {
@@ -385,9 +943,7 @@
                 title: mytbs.tbs[i].title || ' ',
                 content: str,
                 success: function (layero, index) {
-                    //mytbs.tbs[i].tr = index;
 
-                    //set mytbs.tbOptions[i + 1].where
                     mytbs.tbOptions[i + 1].where = $.extend(getSearchParms(), mytbs.getSearchModels[i](data));
 
                     mytbs.init(i + 1);
@@ -477,6 +1033,7 @@
             },
             closeGenerateLayer: function () {
                 layer.close(generateLayer_index);
+                $('#datasourceid').empty();
             },
             //导出
             export: function () {
@@ -488,20 +1045,130 @@
                 window.location.href = url;
             }
         };
-        //监听指定开关
-        //form.on('switch(switchTest)', function (data) {
-        //    if (this.checked == 'true') {
-        //        this.checked = 'false';
-        //    }
-        //    else {
-        //        this.checked = 'true';
-        //    }
-        //    layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
-        //        offset: '6px'
-        //    });
-        //});
 
+        //监听主要信息数据源select字段
+        form.on('select(datasourceselected)', function (data) {
+
+            //let datasourceid = jQuery('#datasourceid').val();//主要信息里的数据源字段值，记录用于帮助填充共享接口返回字段信息
+            let datasourceid = data.value;
+
+
+
+            //初始化 共享接口返回字段
+            //数据共享接口返回字段信息（FieldId）
+
+            ;//从这里面查找
+            //var tarData = jQuery.parseJSON(window.localStorage.getItem('getshareresult'));
+
+            $.ajax({
+                async: true,
+                url: "/api/dcsserviceinfodata/" + datasourceid,
+                type: 'get',
+                success: function (data) {
+                    //先清空option
+                    $('.sharerelate').empty();
+
+                    $.each(data, function (index, item) {
+                        $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                }
+            });
+        }),
+
+        //监听共享字段返回信息select字段
+            form.on('select(shareselected)', function (data) {
+
+            if (data.value === "") {
+                layer.msg('请先选择主要信息内数据源信息');
+            }
+
+        }),
+
+        //提交监听
         form.on('submit(submit)', function () {
+
+
+            var select = $('.paramrelate');
+
+            let params = [];//存放接口参数多表信息
+            let paramTbody = $('#paramcontent tbody');//接口参数信息
+            if (paramTbody && paramTbody.length > 0) {
+                //有数据（一个tbody里有4个tr，最后一个tr为换行tr，循环里跳过，tr里有6个td，
+                //取class为layui - input - block里第一个children的值）
+
+
+                //尝试循环每个tbody里的input
+                $.each(paramTbody, function (index, item) {
+                    var aInput = $(item).find('input');
+                    var aSelect = $(item).find('select');
+                    console.log(aInput);
+                    var obj = new Object();
+                    obj.paramid = aInput[0].value;
+                    obj.paramcode = aInput[1].value;
+                    obj.paramname = aInput[2].value;
+                    if (obj.paramname == '') {
+                        return false;
+                    }
+
+                    var t = $(aInput[3]).find("option");
+                    //obj.paramtypeid = $(aInput[3]).find("option:selected").val();
+                    obj.paramtypeid = jQuery(aSelect[0]).find('option:selected').val();
+                    obj.paramnullable = aInput[4].checked == true ? 1 : 0;
+                    obj.timestampflag = aInput[5].checked == true ? 1 : 0;
+                    //obj.relafieldid = jQuery(aInput[6]).find("option:selected").val();
+                    obj.relafieldid = jQuery(aSelect[1]).find('option:selected').val();
+
+                    obj.paramdesc = aInput[7].value;
+
+                    params.push(obj);
+                })
+            }
+
+
+            let shareresults = [];
+            let shareresultTbody = $('#shareresultcontent tbody');//共享接口返回字段信息
+            if (shareresultTbody && shareresultTbody.length > 0) {
+                //有数据
+
+                $.each(shareresultTbody, function (index, item) {
+                    var aInput = $(item).find('input');
+                    var aSelect = $(item).find('select');
+
+                    var obj = new Object();
+                    //obj.fieldid = jQuery(aInput[1]).find("option:selected").val();
+                    obj.fieldid = jQuery(aSelect[0]).find("option:selected").val();
+                    if (obj.fieldid == '') {
+                        return false;
+                    }
+
+                    shareresults.push(obj);
+                })
+            }
+
+
+            let collectrestults = [];
+            let collectresultTbody = $('#collectresultcontent tbody'); //采集接口返回字段信息
+            if (collectresultTbody && collectresultTbody.length > 0) {
+                //有数据
+                $.each(collectresultTbody, function (index, item) {
+                    var aInput = $(item).find('input');
+                    var aSelect = $(item).find('select');
+
+
+                    var obj = new Object();
+                    obj.refieldname = aInput[1].value;
+                    if (obj.refieldname == '') {
+                        return false;
+                    }
+                    //obj.tofieldid = jQuery(aInput[2]).find("option:selected").val();
+                    obj.tofieldid = jQuery(aSelect[0]).find("option:selected").val();
+
+                    obj.dimtransflag = aInput[3].checked == true ? 1 : 0;
+                    collectrestults.push(obj);
+                })
+            }
+
             let model = {
                 servicegroupid: $("#servicegroupid").val(),
                 serviceno: $("#serviceno").val(),
@@ -512,9 +1179,14 @@
                 servicetech: $("#servicetech").val(),
                 servicetype: $("#servicetype").val(),
                 servicereturn: $("#servicereturn").val(),
-                servicestatus: $("#servicestatus")[0].checked == 'true' ? 'N' : 'Y',
+                servicestatus: $("#servicestatus")[0].checked == true ? 'Y' : 'N',
                 datapageflag: $("#datapageflag")[0].checked == true ? 1 : 0,
-                datamultiflag: $("#datamultiflag")[0].checked == true ? 1 : 0
+                datamultiflag: $("#datamultiflag")[0].checked == true ? 1 : 0,
+                datasourceid: $('#datasourceid').val(),
+                sortkey: $('#sortkey').val(),
+                lsparam: params,
+                lsshare: shareresults,
+                lscollect: collectrestults
             };
             let url = "/api/dcsserviceinfodata";
             let method = "POST";
@@ -560,18 +1232,21 @@
         });
         function showLayer(data) {
             initFormValue(data);
+            //layui.form.render("select");
+
             let title = "新增基本信息";
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
+                //loadSelect();
                 title = "编辑基本信息";
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
                 type: 1
                 , title: title //不显示标题栏
-                , closeBtn: false
+                , closeBtn: true
                 , fixed: false
-                , area: ['800px', '600px']
+                , area: ['1000px', '600px']
                 , resize: false
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
@@ -584,6 +1259,42 @@
         };
         function initFormValue(data) {
             if (data == undefined) {
+
+
+                //如果共享返回字段的select有属性，则清空
+                $('.sharerelate').empty();
+                layui.form.render('select');
+
+                //将各个块里的tbody清空
+                //若#paramdiv table里有tbody,先清空tbody
+
+                let paramtbody = $('#paramdiv table').children();
+                if (paramtbody) {
+                    for (var i = 0; i < paramtbody.length; i++) {
+                        //可能有编辑过的，全部清空，现重新添加一个全新的tbody
+                        paramtbody[i].remove();
+                    }
+                    //paramadd();
+                }
+
+                var shareresultbody = $('#shareresultcontentdiv table').children();
+                if (shareresultbody) {
+                    for (var i = 0; i < shareresultbody.length; i++) {
+                        //可能有编辑过的，全部清空，现重新添加一个全新的tbody
+                        shareresultbody[i].remove();
+                    }
+                }
+
+                var pcollectresulttbody = $('#collectresultcontentdiv table').children();
+                if (pcollectresulttbody) {
+                    for (var i = 0; i < paramtbody.length; i++) {
+                        //可能有编辑过的，全部清空，现重新添加一个全新的tbody
+                        pcollectresulttbody[i].remove();
+                    }
+                    //paramadd();
+                }
+
+                defaultload();
                 form.val("generate-form", {
                     servicegroupid: '',
                     serviceno:'',
@@ -596,24 +1307,147 @@
                     servicereturn: '',
                     servicestatus: '',
                     datapageflag: '',
-                    datamultiflag: ''
+                    datamultiflag: '',
+                    datasourceId: '',
+                    sortkey:''
                 })
                 return;
             }
             else {
+
+                layui.use('laytpl', function () {
+                    //用于加载模板引擎数据
+                    laytpl = layui.laytpl;
+
+                    var loadflag;//定义加载提示
+                    jQuery.ajax({
+                        async: true,
+                        url: "/api/dcsserviceinfodata/getserviceinfoview?serviceid=" + serviceId,
+                        type: 'get',
+                        beforeSend: function (XMLHttpRequest) { loadflag = layer.msg('正在加载数据...', { offset: ['400px', '650px']}) },
+                        success: function (res) {
+
+                            $('.sharerelate').empty();
+                            //console.log(res.content)
+                            var getTpl = document.getElementById('collectmodel').innerHTML
+                                , viewcollect = document.getElementById('collectresultcontent');
+                            laytpl(getTpl).render(res.content.collectResult, function (html) {
+                                viewcollect.innerHTML = html;
+
+                                //给collect块的select赋值
+                            });
+
+                            var getTplparam = document.getElementById('parammodel').innerHTML
+                                , viewparam = document.getElementById('paramcontent');
+                            laytpl(getTplparam).render(res.content.params, function (html) {
+                                viewparam.innerHTML = html;
+
+                                //给param块的select赋值
+                            });
+
+                            var getTplshare = document.getElementById('sharemodel').innerHTML
+                                , viewshare = document.getElementById('shareresultcontent');
+                            laytpl(getTplshare).render(res.content.shareResult, function (html) {
+                                viewshare.innerHTML = html;
+
+                                //给share块的select赋值
+                            });
+
+
+                            loadSelect();//加载完再初始化select
+
+
+
+
+                            //取出每块的select再重新赋值?
+                            let paramTbody = $('#paramcontent tbody');//接口参数信息
+                            if (paramTbody && paramTbody.length > 0) {
+                                jQuery.each(paramTbody, function (index, item) {
+                                    var aSelect = $(item).find('select');
+                                    if (aSelect && aSelect.length > 0) {
+                                        jQuery(aSelect[0]).val(res.content.params[index].paramTypeId);
+                                        jQuery(aSelect[1]).val(res.content.params[index].relaFieldId);
+
+                                        //alert(jQuery(aSelect[1]).val());
+                                    }
+
+                                    //paramNullable  timestampFlag
+                                    var aInput = $(item).find('input');
+                                    aInput[4].checked = res.content.params[index].paramNullable == 1 ? true : false;
+                                    aInput[5].checked = res.content.params[index].timestampFlag == 1 ? true : false;
+                                })
+                            }
+
+
+                            let shareresultTbody = $('#shareresultcontent tbody');//共享接口返回字段信息
+                            if (shareresultTbody && shareresultTbody.length > 0) {
+
+                                let datasourceid = jQuery('#datasourceid').val();
+                                if (datasourceid && datasourceid != '') {
+                                    $.ajax({
+                                        async: false,
+                                        url: "/api/dcsserviceinfodata/" + datasourceid,
+                                        type: 'get',
+                                        success: function (data) {
+                                            $.each(data, function (index, item) {
+                                                $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                                            });
+                                            layui.form.render("select");
+
+                                        }
+                                    });
+                                }
+
+                                jQuery.each(shareresultTbody, function (index, item) {
+                                    var aSelect = $(item).find('select');
+                                    if (aSelect && aSelect.length > 0) {
+
+                                        jQuery(aSelect[0]).val(res.content.shareResult[index].fieldId)
+                                    }
+                                })
+                            }
+
+
+
+                            let collectresultTbody = $('#collectresultcontent tbody'); //采集接口返回字段信息
+                            if (collectresultTbody && collectresultTbody.length > 0) {
+                                jQuery.each(collectresultTbody, function (index, item) {
+                                    var aSelect = $(item).find('select');
+                                    if (aSelect && aSelect.length > 0) {
+                                        jQuery(aSelect[0]).val(res.content.collectResult[index].toFieldId)
+                                    }
+                                    var aInput = $(item).find('input');
+                                    aInput[3].checked = res.content.collectResult[index].dimTransFlag == 1 ? true : false;
+                                })
+
+
+                            }
+
+
+                            layui.form.render();//重新渲染
+                        },
+                        complete: function () {
+                            layer.close(loadflag)//关闭
+                        }
+                    })
+
+                });
+
                 form.val("generate-form", {
                     servicegroupid: data.service_Group_Id,
                     serviceno: data.service_No,
                     servicecode: data.service_Code,
                     servicename: data.service_Name,
-                    servicedesc: data.Service_Desc,
+                    servicedesc: data.service_Desc,
                     serviceversion: data.service_Version,
                     servicetech: data.service_Tech,
                     servicetype: data.service_Type,
                     servicereturn: data.service_Return,
-                    servicestatus: data.service_Status == '启用' ? true : false,
-                    datapageflag: data.datapageflag == 1 ? true : false,
-                    datamultiflag: data.datamultiflag == 1 ? true : false
+                    servicestatus:( data.service_Status == '启用' || data.service_Status == 'Y') ? true : false,
+                    datapageflag: data.dataPageFlag == 1 ? true : false,
+                    datamultiflag: data.dataMultiFlag == 1 ? true : false,
+                    datasourceid: data.datasource_Id,
+                    sortkey: data.sortKey
                 });
             }
 
@@ -625,18 +1459,125 @@
             })
         }
 
-        //目录分类
-        $.ajax({
-            async: false,
-            url: "/api/dcsservicegroupdata/GetServiceGroup",
-            type:'post',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('#servicegroupid').append(new Option(item.value,item.key));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
+        var catelogdata;
+        var datasource;
+        var paramdata;
+        var relateinfo;
+        var collecttofile;
+
+        $(function () {
+            //目录分类
+            $.ajax({
+                async: false,
+                url: "/api/dcsservicegroupdata/GetServiceGroup",
+                type: 'post',
+                success: function (data) {
+                    //$.each(data, function (index, item) {
+                    //    $('#servicegroupid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                    //});
+                    //layui.form.render("select");
+                    window.localStorage.setItem('catelog', JSON.stringify(data));
+                    catelogdata = data;
+                }
+            });
+
+            //数据源
+            $.ajax({
+                async: false,
+                url: "/api/dcsserviceinfodata/getdatasource",
+                type: 'post',
+                success: function (data) {
+                    window.localStorage.setItem('datasource', JSON.stringify(data));
+                    datasource = data;
+                }
+            });
+
+            //参数类型SYS_FIELD_TYPE.FIELD_TYPE_ID(数据接口参数信息)
+            $.ajax({
+                async: false,
+                url: "/api/dcsserviceinfodata/getfieldtype",
+                type: 'post',
+                success: function (data) {
+                    window.localStorage.setItem('fieldtype', JSON.stringify(data));
+                    //paramdata = data;
+                }
+            });
+
+            $.ajax({
+                async: false,
+                url: "/api/dcsserviceinfodata/getrelafieldid",
+                type: 'post',
+                success: function (data) {
+                    window.localStorage.setItem('relateinfo', JSON.stringify(data));
+                    //relateinfo = data;
+                }
+            });
+
+            //写入字段ID SYS_DATASOURCE_FIELD.FIELD_ID(数据采集接口返回字段信息)
+            $.ajax({
+                async: false,
+                url: "/api/dcsserviceinfodata/getrelafieldid",
+                type: 'post',
+                success: function (data) {
+                    window.localStorage.setItem('collecttofile', JSON.stringify(data));
+                    //collecttofile = data;
+                }
+            });
+
+
+            $('#servicegroupid').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('catelog')), function (index, item) {
+                $('#servicegroupid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            });
+            layui.form.render("select");
+
+
+            $('#datasourceid').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('datasource')), function (index, item) {
+                $('#datasourceid').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            });
+            layui.form.render("select");
+
+            loadSelect();
+        })
+
+        //加载select下拉
+        function loadSelect() {
+
+
+
+            $('.paramtype').empty();
+            //$.each(paramdata, function (index, item) {
+            //    $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            //});
+            $.each(jQuery.parseJSON(window.localStorage.getItem('fieldtype')), function (index, item) {
+                $('.paramtype').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            });
+            layui.form.render("select");
+
+
+
+
+            $('.paramrelate').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('relateinfo')), function (index, item) {
+                $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            });
+            layui.form.render("select");
+
+
+
+            $('.collectto').empty();
+            $.each(jQuery.parseJSON(window.localStorage.getItem('collecttofile')), function (index, item) {
+                $('.collectto').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+            });
+
+            layui.form.render("select");
+
+
+        }
+
+
+
 
     });
 

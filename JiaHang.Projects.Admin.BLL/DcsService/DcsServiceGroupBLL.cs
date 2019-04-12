@@ -39,7 +39,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 Service_Group_Id = s.ServiceGroupId,
                 Service_Group_Code = s.ServiceGroupCode,
                 Service_Group_Name = s.ServiceGroupName,
-                Image_Url = s.ImageUrl
+                Image_Url = s.ImageUrl,
+                SortKey = s.SortKey
             });
 
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
@@ -99,6 +100,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 ServiceGroupCode = model.ServiceGroupCode,
                 ServiceGroupName = model.ServiceGroupName,
                 ImageUrl = model.ImageUrl,
+                SortKey = model.SortKey,
 
                 CreatedBy = currentuserid,
                 CreationDate = DateTime.Now,
@@ -233,6 +235,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 entity.ServiceGroupCode = model.ServiceGroupCode;
                 entity.ServiceGroupName = model.ServiceGroupName;
                 entity.ImageUrl = model.ImageUrl;
+                entity.SortKey = model.SortKey;
 
                 entity.LastUpdatedBy = currentuserid;
                 entity.LastUpdateDate = DateTime.Now;

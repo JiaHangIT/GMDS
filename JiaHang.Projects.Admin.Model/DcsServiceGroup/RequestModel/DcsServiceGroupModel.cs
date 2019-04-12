@@ -30,5 +30,10 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceGroup.RequestModel
         /// </summary>
         [StringLength(100)]
         public string ImageUrl { get; set; }
+
+        /// <summary>
+        /// 排序值
+        /// </summary>
+        public int? SortKey { get; set; }
     }
 }

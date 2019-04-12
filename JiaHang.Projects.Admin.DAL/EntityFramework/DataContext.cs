@@ -618,6 +618,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("DELETE_FLAG")
                     .HasDefaultValueSql("0 ");
 
+                entity.Property(e => e.SortKey)
+                 .HasColumnName("SORT_KEY");
+
                 entity.Property(e => e.ImageUrl)
                     .HasColumnName("IMAGE_URL")
                     .HasMaxLength(200);
@@ -670,6 +673,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.DataMultiFlag).HasColumnName("DATA_MULTI_FLAG");
 
                 entity.Property(e => e.DataPageFlag).HasColumnName("DATA_PAGE_FLAG");
+
+                entity.Property(e => e.SortKey).HasColumnName("SORT_KEY");
 
                 entity.Property(e => e.DatasourceId)
                     .HasColumnName("DATASOURCE_ID")

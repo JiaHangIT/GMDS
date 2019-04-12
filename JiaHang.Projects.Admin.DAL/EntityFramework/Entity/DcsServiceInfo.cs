@@ -26,5 +26,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public DateTime DeleteDate { get; set; }
         public string DeleteBy { get; set; }
         public string DatasourceId { get; set; }
+        public int? SortKey { get; set; }
     }
 }

@@ -94,6 +94,11 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// </summary>
         public string DatasourceId { get; set; }
 
+        /// <summary>
+        /// 排序值
+        /// </summary>
+        public int? SortKey { get; set; }
+
         public List<DcsParamsModel> lsparam { get; set; }
 
         public List<DcsShareModel> lsshare { get; set; }

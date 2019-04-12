@@ -60,7 +60,7 @@
 
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
-        <div class="layui-form-item">
+        <div style="margin-bottom:20px;">
 
             <div class="layui-inline">
                 <label class="layui-form-label">分类编号</label>
@@ -74,7 +74,12 @@
                     <input type="text" name="add_service_name" id="add_service_name" autocomplete="off" placeholder="接口分类名称" class="layui-input" lay-verify="required">
                 </div>
             </div>
-
+            <div class="layui-inline">
+                <label class="layui-form-label">排序值</label>
+                <div class="layui-input-block">
+                    <input type="number" name="add_sortkey" id="add_sortkey" class="layui-input" lay-filter="xmFilter" lay-verify="required">
+                </div>
+            </div>
         </div>
 
         <div class="layui-form-item">
@@ -88,8 +93,10 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+            <div style="text-align:center">
+                <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+                <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+            </div>
         </div>
     </div>
 
@@ -433,7 +440,8 @@
             let model = {
                 servicegroupcode: $("#add_service_code").val(),
                 servicegroupname: $("#add_service_name").val(),
-                imageurl: $("#demo1").attr('src')
+                imageurl: $("#demo1").attr('src'),
+                sortkey: $("#add_sortkey").val()
             };
             
             let url = "/api/dcsservicegroupdata";
@@ -506,7 +514,8 @@
                 $('#demo1').removeAttr('src');
                 form.val("generate-form", {
                     add_service_code: "",
-                    add_service_name: ""
+                    add_service_name: "",
+                    add_sortkey:""
                 })
                 return;
             }
@@ -515,7 +524,8 @@
 
                 form.val("generate-form", {
                     add_service_code: data.service_Group_Code,
-                    add_service_name: data.service_Group_Name
+                    add_service_name: data.service_Group_Name,
+                    add_sortkey:data.sortKey
                 })
             }
 
