@@ -59,11 +59,12 @@
             <div class="layui-inline" id="divseldatabasetypename">
                 <label class="layui-form-label" style="width:150px">数据库类型名称</label>
                 <div class="layui-input-inline">
-                    <select name="databasetypename" id="databasetypename">
-                       
-                    </select>
+                    <select name="databasetypename" id="databasetypename"></select>
                 </div>
             </div>
+
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label" style="width:150px">连接名称</label>
                 <div class="layui-input-inline">
@@ -71,22 +72,22 @@
                 </div>
             </div>
         </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label" style="width:150px">连接字符串</label>
-                <div class="layui-input-inline">
-                    <textarea style="width:300px" placeholder="请输入连接字符串" class="layui-textarea" name="connection_string" id="connection_string" lay-verify="required"></textarea>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width:150px">连接字符串</label>
+                    <div class="layui-input-inline">
+                        <textarea style="width:300px" placeholder="请输入连接字符串" class="layui-textarea" name="connection_string" id="connection_string" lay-verify="required"></textarea>
+                    </div>
                 </div>
             </div>
+            <div class="layui-form-item" style="margin-left:300px">
+                <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">添加</button>
+                <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+            </div>
         </div>
-        <div class="layui-form-item" style="margin-left:300px">
-            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">添加</button>
-            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
-        </div>
+
+
     </div>
-
-
-</div>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
