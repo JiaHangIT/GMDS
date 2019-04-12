@@ -801,7 +801,19 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.SortKey)
                     .HasColumnName("SORT_KEY");
-                    //.HasColumnType("NUMBER");
+                //.HasColumnType("NUMBER");
+
+                entity.Property(e => e.AuditFlag)
+                   .HasColumnName("AUDIT_FLAG");
+                //.HasColumnType("NUMBER");
+
+                entity.Property(e => e.AuditedBy)
+                    .HasColumnName("AUDITED_BY")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.AuditedDate)
+                    .HasColumnName("AUDIT_DATE")
+                    .HasColumnType("DATE");
             });
 
             modelBuilder.Entity<DcsServiceParams>(entity =>

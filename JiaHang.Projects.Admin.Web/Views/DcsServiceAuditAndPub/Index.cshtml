@@ -1,0 +1,285 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+
+    .layui-layer-shade {
+        display: none;
+    }
+
+    .layui-select-title input {
+        width: 180px;
+    }
+</style>
+<div>
+
+    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
+        <div class="layui-form-item">
+            公告标题：
+            <div class="layui-inline">
+                <input class="layui-input" name="searchMESSAGE_TITLE" id="searchMESSAGE_TITLE" autocomplete="off">
+            </div>
+            建立人：
+            <div class="layui-inline">
+                <input class="layui-input" name="searchCreated_By" id="searchCreated_By" autocomplete="off">
+            </div>
+            是否审核：
+            <div class="layui-inline">
+                <select name="searchauditFlag" id="searchauditFlag" lay-verify="required" lay-filter="xmFilter">
+                    <option value="">请选择</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+            <button class="layui-btn" data-type="search">条件查询</button>
+        </div>
+    </div>
+    <table class="layui-hide" id="test" lay-filter="decservice"> </table>
+</div>
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
+</script>
+
+
+<script>
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+        var table = layui.table;
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var generateLayer_index = 0;
+        var layType = true;//true 新增  false 编辑
+        var store_id = "";
+        //日期
+        laydate.render({
+            elem: '#searchAuditedDate'
+        });
+        laydate.render({
+            elem: '#stCloseDate'
+        });
+
+
+        table.render({
+            elem: '#test'
+            , url: '/api/dcsserviceinfodata/search/'
+            , contentType: 'application/json'
+            , method: 'post'
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "status": res.isSuccess,
+                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.content.total, //解析数据长度
+                    "data": res.content.data //解析数据列表
+                };
+            }
+
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                , { field: 'service_No', title: '接口编号' }
+                , { field: 'service_Code', title: '接口代码', sort: true }
+                , { field: 'service_Name', title: '接口名', sort: true }
+                , { field: 'service_Version', title: '接口版本' }
+                , { field: 'service_Tech', title: '接口技术类型', sort: true }
+                , { field: 'service_Type', title: '接口业务类型', sort: true }
+                , {
+                    field: 'service_Status', title: '接口状态', sort: true,
+                    templet: function (data) { if (data.service_Status) return (data.service_Status == "Y" || data.service_Status == "启用") ? "正常" : "停用" }
+                }
+                , {
+                    field: 'audit_Flag', title: '审核状态', sort: true,
+                    templet: function (data) {
+                        switch (data.audit_Flag) {
+                            case 0:
+                                return '审核未通过';
+                                break;
+                            case 1:
+                                return '审核通过';
+                                break;
+                            default:
+                                return '未审核';
+                        } }
+                }
+                , { fixed: 'right', align: 'center', width: 177, toolbar: '#barDemo', fixed: 'right' } //这里的toolbar值是模板元素的选择器
+            ]]
+            , id: 'testReload'
+            , page: true,
+            text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+        });
+        table.on('checkbox(decservice)', function (obj) {
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(decservice)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'examine') {
+
+                let url = "/api/DcsServiceAuditAndPubData/Audit";
+                let method = "POST";
+                let confirm_title = "接口名：【" + data.service_Name + "】";
+
+                layer.confirm(confirm_title, {
+                    btn: ['通过审核', '不通过审核', '取消'], btn3: function (index) {
+
+                        layer.close(index);
+
+                    }
+                }, function (index) {
+                    let model = {
+                        ServiceId: data.service_Id,
+                        AuditFlag: 1
+                    };
+                    axios({ url: url, method: method, data: model  })
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            layer.msg(response.data.message);
+                            let datatable = table.cache.testReload;
+
+                            tableReload(datatable);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }, function (index) {
+
+                    let model = {
+                        ServiceId: data.service_Id,
+                        AuditFlag: 0
+                    };
+                    axios({ url: url, method: method, data: model })
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            tableReload(datatable);
+
+                        })
+                        .catch(function (error) {
+                            layer.msg(error);
+                        });
+                }
+                );
+            }
+        });
+        var $ = layui.$, active = {
+            getCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('testReload')
+                    , data = checkStatus.data;
+
+
+                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+
+                    let Message_IDs = [];
+                    let parms = "?";
+                    for (let i = 0; i < data.length; i++) {
+                        Message_IDs.push(data[i].messageId);
+                        parms += "Message_IDs=" + data[i].Message_ID + "&";
+                    }
+                    parms = parms.substring(0, parms.length - 1);
+                    axios.delete("/api/SysMessageInfo/batchdelete/" + parms)
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            //移除
+                            let tabledata = table.cache.testReload;
+                            tableReload(tabledata);
+
+
+                        })
+                        .catch(function (error) {
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+                });
+
+
+            },
+            search: function () {
+                console.log('reload');
+                let pars = {
+                    Message_title: $("#searchMESSAGE_TITLE").val(),
+                    Created_By: $("#searchCreated_By").val(),
+                    Audit_Flag: $("#searchauditFlag").val(),
+                }
+                //执行重载
+                console.log(pars);
+                table.reload('testReload', {
+                    where: pars,
+                    contentType: 'application/json',
+                    method: 'post'
+                });
+            },
+            showGenerateLayer: function () {
+                console.log('show');
+                layType = true;
+                showLayer();
+            },
+            closeGenerateLayer: function () {
+                layer.close(generateLayer_index);
+            },
+
+        };
+
+            $('.layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        
+        function showLayer(data) {
+
+        
+            let title = "新增";
+             
+            document.getElementById("generate_btn").innerHTML = "立即创建";
+            if (layType != true) {
+                title = "编辑";
+                
+                document.getElementById("generate_btn").innerHTML = "立即修改";
+            }
+            generateLayer_index = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: false
+                , area: ['50%', '60%']
+                , closeBtn: 2
+                , shade: 0.8
+                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 1 //拖拽模式，0或者1
+                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+
+            });
+        };
+
+
+        function tableReload(datatable) {
+            console.log(datatable);
+            table.reload("testReload", {
+                data: datatable
+            })
+        }
+
+
+      
+
+    });
+</script>

@@ -53,7 +53,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 Service_Return = s.ServiceReturn,
                 DataPageFlag = s.DataPageFlag,
                 DataMultiFlag=s.DataMultiFlag,
-                SortKey = s.SortKey
+                SortKey = s.SortKey,
+                Audit_Flag = s.AuditFlag
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -658,80 +659,89 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
+                    //让客户端决定状态----让项的原始值设置为从数据库中获取的值：
+                    ex.Entries.Single().OriginalValues.SetValues(ex.Entries.Single().GetDatabaseValues());
+
+                    //让客户端决定状态----用存储中的值刷新新实体值：
+                    //ex.Entries.Single().Reload();
+                    trans.Commit();
+                    result.IsSuccess = true;
+                    result.Content = entity;
+                    result.Message = "更新成功";
 
 
-                    foreach (var entry in ex.Entries)
-                    {
-                        if (entry.Entity is DcsServiceSResults)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //foreach (var entry in ex.Entries)
+                    //{
+                    //    if (entry.Entity is DcsServiceSResults)
+                    //    {
+                    //        var proposedValues = entry.CurrentValues;
+                    //        var databaseValues = entry.GetDatabaseValues();
 
-                            foreach (var property in proposedValues.Properties)
-                            {
-                                var proposedValue = proposedValues[property];
-                                var databaseValue = databaseValues[property];
+                    //        foreach (var property in proposedValues.Properties)
+                    //        {
+                    //            var proposedValue = proposedValues[property];
+                    //            var databaseValue = databaseValues[property];
 
-                                // TODO: decide which value should be written to database
-                                // proposedValues[property] = <value to be saved>;
-                            }
+                    //            // TODO: decide which value should be written to database
+                    //            // proposedValues[property] = <value to be saved>;
+                    //        }
 
-                            // Refresh original values to bypass next concurrency check
-                            entry.OriginalValues.SetValues(databaseValues);
-                            trans.Commit();
-                            result.IsSuccess = true;
-                            result.Content = entity;
-                            result.Message = "更新成功";
-                        }
-                        else if (entry.Entity is DcsServiceParams)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //        // Refresh original values to bypass next concurrency check
+                    //        entry.OriginalValues.SetValues(databaseValues);
+                    //        trans.Commit();
+                    //        result.IsSuccess = true;
+                    //        result.Content = entity;
+                    //        result.Message = "更新成功";
+                    //    }
+                    //    else if (entry.Entity is DcsServiceParams)
+                    //    {
+                    //        var proposedValues = entry.CurrentValues;
+                    //        var databaseValues = entry.GetDatabaseValues();
 
-                            foreach (var property in proposedValues.Properties)
-                            {
-                                var proposedValue = proposedValues[property];
-                                var databaseValue = databaseValues[property];
+                    //        foreach (var property in proposedValues.Properties)
+                    //        {
+                    //            var proposedValue = proposedValues[property];
+                    //            var databaseValue = databaseValues[property];
 
-                                // TODO: decide which value should be written to database
-                                // proposedValues[property] = <value to be saved>;
-                            }
+                    //            // TODO: decide which value should be written to database
+                    //            // proposedValues[property] = <value to be saved>;
+                    //        }
 
-                            // Refresh original values to bypass next concurrency check
-                            entry.OriginalValues.SetValues(databaseValues);
-                            trans.Commit();
-                            result.IsSuccess = true;
-                            result.Content = entity;
-                            result.Message = "更新成功";
-                        }
-                        else if (entry.Entity is DcsServiceCResults)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //        // Refresh original values to bypass next concurrency check
+                    //        entry.OriginalValues.SetValues(databaseValues);
+                    //        trans.Commit();
+                    //        result.IsSuccess = true;
+                    //        result.Content = entity;
+                    //        result.Message = "更新成功";
+                    //    }
+                    //    else if (entry.Entity is DcsServiceCResults)
+                    //    {
+                    //        var proposedValues = entry.CurrentValues;
+                    //        var databaseValues = entry.GetDatabaseValues();
 
-                            foreach (var property in proposedValues.Properties)
-                            {
-                                var proposedValue = proposedValues[property];
-                                var databaseValue = databaseValues[property];
+                    //        foreach (var property in proposedValues.Properties)
+                    //        {
+                    //            var proposedValue = proposedValues[property];
+                    //            var databaseValue = databaseValues[property];
 
-                                // TODO: decide which value should be written to database
-                                // proposedValues[property] = <value to be saved>;
-                            }
+                    //            // TODO: decide which value should be written to database
+                    //            // proposedValues[property] = <value to be saved>;
+                    //        }
 
-                            // Refresh original values to bypass next concurrency check
-                            entry.OriginalValues.SetValues(databaseValues);
-                            trans.Commit();
-                            result.IsSuccess = true;
-                            result.Content = entity;
-                            result.Message = "更新成功";
-                        }
-                        else
-                        {
-                            throw new NotSupportedException(
-                                "Don't know how to handle concurrency conflicts for "
-                                + entry.Metadata.Name);
-                        }
-                    }
+                    //        // Refresh original values to bypass next concurrency check
+                    //        entry.OriginalValues.SetValues(databaseValues);
+                    //        trans.Commit();
+                    //        result.IsSuccess = true;
+                    //        result.Content = entity;
+                    //        result.Message = "更新成功";
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new NotSupportedException(
+                    //            "Don't know how to handle concurrency conflicts for "
+                    //            + entry.Metadata.Name);
+                    //    }
+                    //}
 
 
 

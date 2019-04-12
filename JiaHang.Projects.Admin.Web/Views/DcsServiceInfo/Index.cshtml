@@ -72,8 +72,14 @@
             layui.layer.msg('至少需要一条');
             return false;
         }
-        //至少要有一个
-        $(obj).parent().parent().parent().parent().parent().remove();
+
+        layer.confirm('你确定要删除吗?', { title: '删除' }, function (index) {
+            layer.close(index)
+           
+            //至少要有一个
+            $(obj).parent().parent().parent().parent().parent().remove();
+        })
+   
     }
 
     //共享返回字段行添加
@@ -92,7 +98,11 @@
             layui.layer.msg('至少需要一条');
             return false;
         }
-        $(obj).parent().parent().parent().parent().parent().remove();
+        layer.confirm('你确定要删除吗?', { title: '删除' }, function (index) {
+            layer.close(index);
+            $(obj).parent().parent().parent().parent().parent().remove();
+        })
+        
     }
 
     //采集返回字段行添加
@@ -111,7 +121,12 @@
             layui.layer.msg('至少需要一条');
             return false;
         }
-        $(obj).parent().parent().parent().parent().parent().remove();
+
+        layer.confirm('你确定要删除吗?', { title: '删除' }, function (index) {
+            layer.close(index);
+            $(obj).parent().parent().parent().parent().parent().remove();
+        })
+       
     }
 
 </script>
