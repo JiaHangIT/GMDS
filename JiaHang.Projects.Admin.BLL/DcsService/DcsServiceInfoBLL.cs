@@ -31,9 +31,12 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         public FuncResult Select(SearchDcsServiceInfo model)
         {
             List<DcsServiceInfo> query = context.DcsServiceInfo.Where(s =>
-                                        (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceName.Contains(model.ServiceName)) &&
-                                        (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceNo.Contains(model.ServiceNo)) &&
-                                        (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+                                           (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceName.Contains(model.ServiceName)) &&
+                                           (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceNo.Contains(model.ServiceNo)) &&
+                                            (string.IsNullOrWhiteSpace(model.ServiceTech) || s.ServiceTech.Contains(model.ServiceTech)) &&
+                                           (string.IsNullOrWhiteSpace(model.ServiceStatus) || s.ServiceStatus.Contains(model.ServiceStatus)) &&
+                                            (string.IsNullOrWhiteSpace(model.ServiceType) || s.ServiceType.Contains(model.ServiceType)) &&
+                                           (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
 
             int total = query.Count();
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList().Select(s => new
