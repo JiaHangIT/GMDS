@@ -138,4 +138,20 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         public string ToFieldId { get; set; }
         public decimal DimTransFlag { get; set; }
     }
+
+    /// <summary>
+    /// 接口审核接收参数实体
+    /// </summary>
+    public class ServiceAudit
+    {
+        /// <summary>
+        /// 接口主键
+        /// </summary>
+        public string ServiceId { get; set; }
+
+        /// <summary>
+        /// 审核通过标致
+        /// </summary>
+        public int AuditFlag { get; set; }
+    }
 }
