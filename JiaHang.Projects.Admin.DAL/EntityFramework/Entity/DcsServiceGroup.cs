@@ -16,6 +16,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public int DeleteFlag { get; set; }
         public DateTime? DeleteDate { get; set; }
         public string DeleteBy { get; set; }
-        public decimal? SortKey { get; set; }
+        public int? SortKey { get; set; }
     }
 }

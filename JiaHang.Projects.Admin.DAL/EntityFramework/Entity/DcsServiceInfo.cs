@@ -16,8 +16,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string ServiceType { get; set; }
         public string ServiceReturn { get; set; }
         public string ServiceStatus { get; set; }
-        public decimal? DataPageFlag { get; set; }
-        public decimal? DataMultiFlag { get; set; }
+        public int? DataPageFlag { get; set; }
+        public int? DataMultiFlag { get; set; }
         public DateTime CreationDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime LastUpdateDate { get; set; }
@@ -26,6 +26,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public DateTime DeleteDate { get; set; }
         public string DeleteBy { get; set; }
         public string DatasourceId { get; set; }
-        public decimal? SortKey { get; set; }
+        public int? SortKey { get; set; }
     }
 }

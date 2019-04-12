@@ -661,6 +661,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     //.HasColumnType("NUMBER")
                     .HasDefaultValueSql("0 ");
 
+                entity.Property(e => e.SortKey)
+                 .HasColumnName("SORT_KEY");
+
                 entity.Property(e => e.ImageUrl)
                     .HasColumnName("IMAGE_URL")
                     .HasColumnType("NVARCHAR2(100)");
@@ -721,6 +724,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.DataPageFlag)
                     .HasColumnName("DATA_PAGE_FLAG");
                     //.HasColumnType("NUMBER");
+
+                entity.Property(e => e.SortKey).HasColumnName("SORT_KEY");
 
                 entity.Property(e => e.DatasourceId)
                     .HasColumnName("DATASOURCE_ID")
