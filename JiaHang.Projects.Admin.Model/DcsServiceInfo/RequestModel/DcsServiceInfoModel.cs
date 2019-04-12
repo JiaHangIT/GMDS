@@ -114,10 +114,10 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         public string ParamId { get; set; }
         public string ParamCode { get; set; }
         public string ParamName { get; set; }
-        public int? ParamTypeId { get; set; }
+        public decimal? ParamTypeId { get; set; }
         public string ParamDesc { get; set; }
-        public int? ParamNullable { get; set; }
-        public int? TimestampFlag { get; set; }
+        public decimal? ParamNullable { get; set; }
+        public decimal? TimestampFlag { get; set; }
         public string RelaFieldId { get; set; }
     }
 
@@ -136,6 +136,6 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
     {
         public string ReFieldName { get; set; }
         public string ToFieldId { get; set; }
-        public int DimTransFlag { get; set; }
+        public decimal DimTransFlag { get; set; }
     }
 }

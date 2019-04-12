@@ -52,8 +52,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
+            try
+            {
+                return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
 
-            return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
         }
 
         /// <summary>
@@ -64,7 +71,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpDelete("{id}")]
         public async Task<FuncResult> Delete([FromRoute] string id)
         {
-            return await DcsServiceInfo.Delete(id, HttpContext.CurrentUser(cache).Id);
+            try
+            {
+                return await DcsServiceInfo.Delete(id, HttpContext.CurrentUser(cache).Id);
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+          
         }
         
         /// <summary>
@@ -76,7 +91,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpDelete]
         public async Task<FuncResult> Delete(string[] ids)
         {
-            return await DcsServiceInfo.Delete(ids,HttpContext.CurrentUser(cache).Id);
+            try
+            {
+                return await DcsServiceInfo.Delete(ids, HttpContext.CurrentUser(cache).Id);
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+          
         }
 
         /// <summary>
@@ -88,8 +111,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         [HttpPut("{id}")]
         public async Task<FuncResult> Update(string id, [FromBody]DcsServiceInfoModel model)
         {
-            var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
-            return data;
+            try
+            {
+                var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+      
         }
 
         /// <summary>
@@ -109,13 +140,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                                value = a.DatasourceName
                            };
                 return data;
-                //var data = context.SysDatasourceInfo.Select(s => new
-                //{
-                //    key = s.DatasourceId,
-                //    value = s.DatasourceName
-                //});
-
-                //return data;
             }
             catch (Exception ex)
             {

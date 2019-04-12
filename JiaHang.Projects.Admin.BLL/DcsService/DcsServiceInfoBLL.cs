@@ -495,11 +495,11 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         DcsServiceParams entityP1 = MappingHelper.Mapping(existP, param);
                         entityP1.LastUpdateDate = DateTime.Now;
                         entityP1.LastUpdatedBy = currentuserid;
-                        var existUniqueData = tagParam.Where(w =>w.ParamId != entityP1.ParamId && w.ServiceId == entityP1.ServiceId && w.ParamCode == entityP1.ParamCode);
-                        if (existUniqueData != null && existUniqueData.Count() > 0)
-                        {
-                            continue;
-                        }
+                        //var existUniqueData = tagParam.Where(w =>w.ParamId != entityP1.ParamId && w.ServiceId == entityP1.ServiceId && w.ParamCode == entityP1.ParamCode);
+                        //if (existUniqueData != null && existUniqueData.Count() > 0)
+                        //{
+                        //    continue;
+                        //}
                         context.DcsServiceParams.Update(existP);
                     }
                 }
@@ -539,11 +539,11 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         entityS.LastUpdateDate = DateTime.Now;
                         entityS.LastUpdatedBy = currentuserid;
                         entityS.DeleteFlag = 0;
-                        var existUniqueData = tagShare.Where(w => w.ServiceId == entityS.ServiceId && w.FieldId == entityS.FieldId);
-                        if (existUniqueData != null && existUniqueData.Count() > 0)
-                        {
-                            continue;
-                        }
+                        //var existUniqueData = tagShare.Where(w => w.ServiceId == entityS.ServiceId && w.FieldId == entityS.FieldId);
+                        //if (existUniqueData != null && existUniqueData.Count() > 0)
+                        //{
+                        //    continue;
+                        //}
                         await context.DcsServiceSResults.AddAsync(entityS);
                     }
                     else
@@ -551,11 +551,17 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         DcsServiceSResults entityS1 = MappingHelper.Mapping(current, share);
                         entityS1.LastUpdateDate = DateTime.Now;
                         entityS1.LastUpdatedBy = currentuserid;
-                        var existUniqueData = tagShare.Where(w => w.ServiceId == entityS1.ServiceId && w.FieldId == entityS1.FieldId);
-                        if (existUniqueData != null && existUniqueData.Count() > 0)
-                        {
-                            continue;
-                        }
+                        //var existUniqueData = tagShare.Where(w => w.ServiceId == entityS1.ServiceId && w.FieldId == entityS1.FieldId);
+                        //if (existUniqueData != null && existUniqueData.Count() > 0)
+                        //{
+                        //    //if (existUniqueData.FirstOrDefault().DeleteFlag == 1)
+                        //    //{
+                        //    //    existUniqueData.FirstOrDefault().DeleteFlag = 0;
+                        //    //    tagShare.Update(existUniqueData.FirstOrDefault());
+                        //    //}
+                         
+                        //    continue;
+                        //}
                         context.DcsServiceSResults.Update(entityS1);
                     }
                 }
@@ -599,6 +605,12 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                             var existUniqueData = tagCollect.Where(w => w.ServiceId == entityC.ServiceId && w.ReFieldName == entityC.ReFieldName);
                             if (existUniqueData != null && existUniqueData.Count() > 0)
                             {
+                                if (existUniqueData.FirstOrDefault().DeleteFlag == 1)
+                                {
+                                    existUniqueData.FirstOrDefault().DeleteFlag = 0;
+                                    tagCollect.Update(existUniqueData.FirstOrDefault());
+                                }
+
                                 continue;
                             }
                             await context.DcsServiceCResults.AddAsync(entityC);
@@ -616,11 +628,18 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         entityC1.LastUpdateDate = DateTime.Now;
                         entityC1.LastUpdatedBy = currentuserid;
                         var existUniqueData = tagCollect.Where(w => w.ServiceId == entityC1.ServiceId && w.ReFieldName == entityC1.ReFieldName);
+                        
                         if (existUniqueData != null && existUniqueData.Count() > 0)
                         {
+                            if (existUniqueData.FirstOrDefault().DeleteFlag == 1)
+                            {
+                                existUniqueData.FirstOrDefault().DeleteFlag = 0;
+                                tagCollect.Update(existUniqueData.FirstOrDefault());
+                            }
+
                             continue;
                         }
-                        context.DcsServiceCResults.Update(entityC1);
+                        tagCollect.Update(entityC1);
                     }
                 }
             }
@@ -631,6 +650,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                 try
                 {
                     await context.SaveChangesAsync();
+
                     trans.Commit();
                     result.IsSuccess = true;
                     result.Content = entity;
