@@ -5,34 +5,31 @@
 
 
 <style>
-    .v-modal {
-        display:none;
-    }
-    #app {
-        margin-top:30px;
-    }
+    .v-modal { display: none; }
+    #app { margin-top: 15px; padding: 15px; background-color: #fff; }
 </style>
-<div id="app">
+<div id="app" >
+
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item label="客户名称">
             <el-input placeholder="客户手机号" v-model="searchCustomerName"></el-input>
         </el-form-item>
         <el-form-item label="客户手机号">
-            <el-input placeholder="客户手机号" v-model="searchCustomerMobile"></el-input>            
-        </el-form-item>        
+            <el-input placeholder="客户手机号" v-model="searchCustomerMobile"></el-input>
+        </el-form-item>
     </el-form>
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item>
             <el-button type="primary" @@click="fetchList">查询</el-button>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @@click="handleAdd">添加</el-button>            
+            <el-button type="primary" @@click="handleAdd">添加</el-button>
         </el-form-item>
-        <el-form-item>           
-            <el-button type="danger"  @@click="batchDelete">批量删除</el-button>
+        <el-form-item>
+            <el-button type="danger" @@click="batchDelete">批量删除</el-button>
         </el-form-item>
-
     </el-form>
+
     <el-table ref="multipleTable"
               :data="data"
               :border="true"
@@ -133,15 +130,15 @@
                 total: 0,
                 multipleSelection: [],//获取批量选择的数据
                 searchCustomerName: '',
-                searchCustomerMobile:'',
+                searchCustomerMobile: '',
 
-                form: {   
-                    customerName:'',
+                form: {
+                    customerName: '',
                     contactMobile: '',
-                    contactEmail: '',   
+                    contactEmail: '',
                     customerId: '',
                     loginAccount: '',
-                    loginPassword:''
+                    loginPassword: ''
                 },
                 rules: {
                     customerName: [
@@ -149,7 +146,7 @@
                         { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                     ],
                     contactMobile: [
-                        { required: true,  message: '输入正确手机号码', trigger: 'blur' }
+                        { required: true, message: '输入正确手机号码', trigger: 'blur' }
                     ],
                     loginAccount: [
                         { required: true, message: '输入正确登录账号', trigger: 'blur' },
@@ -162,9 +159,9 @@
                     contactEmail: [
                         { required: true, type: 'email', message: '输入正确邮箱', trigger: 'blur' }
                     ],
-                   
-                    
-                },        
+
+
+                },
                 formLabelWidth: '160px',
                 dialogTitle: '',
                 labelPosition: 'left',
@@ -174,7 +171,7 @@
         methods: {
             fetchList: function () {
                 let vm = this
-                
+
                 axios.get(`/api/DcsCustomerData/${vm.pageSize}/${vm.currentPage}?customerName=${vm.searchCustomerName}&customerMobile=${vm.searchCustomerMobile}`)
                     .then(function (response) {
                         console.log(response.data);
@@ -185,7 +182,7 @@
                         console.log(error)
                     });
             },
-            handleEdit: function (index,row) {
+            handleEdit: function (index, row) {
                 //编辑
                 let vm = this
                 let rowstr = JSON.stringify(row)
@@ -195,12 +192,12 @@
                 vm.form = formdata;
                 vm.centerDialogVisible = true
             },
-            handleDelete: function (index,row) {
+            handleDelete: function (index, row) {
                 let vm = this
                 //删除
 
                 //弹出确认框
-                
+
                 this.$confirm('此操作将删除该客户信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -220,7 +217,7 @@
                             vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
                             console.log(error);
                         });
-                    
+
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -233,7 +230,7 @@
                 let vm = this
                 vm.IsCreate = true
                 vm.resetForm()
-                vm.dialogTitle="添加客户信息"
+                vm.dialogTitle = "添加客户信息"
                 vm.centerDialogVisible = true
                 //添加
             },
@@ -269,21 +266,21 @@
 
                     } else {
                         console.log('error submit!!');
-                        return ;
+                        return;
                     }
                 });
 
-               
+
 
             },
             resetForm() {
                 let vm = this;
-                vm.form.customerName= ''
+                vm.form.customerName = ''
                 vm.form.contactMobile = ''
                 vm.form.contactEmail = ''
                 vm.form.customerId = ''
-                vm.form.loginAccount= ''
-                vm.form.loginPassword=''
+                vm.form.loginAccount = ''
+                vm.form.loginPassword = ''
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
@@ -306,7 +303,7 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
-                
+
             },
             batchDelete() {
                 let batchdatas = this.multipleSelection;
@@ -314,17 +311,17 @@
                     return;
                 }
                 let ids = '';
-                for (let i = 0; i < batchdatas.length;i++) {               
+                for (let i = 0; i < batchdatas.length; i++) {
                     ids += `&ids=${batchdatas[i].customerId}`;
                 };
                 ids = ids.substring(1, ids.length)
-                let vm=this
+                let vm = this
                 vm.$confirm(`此操作将删除${batchdatas.length}条客户信息, 是否继续?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.delete('/api/DcsCustomerData/BatchDelete?'+ids)
+                    axios.delete('/api/DcsCustomerData/BatchDelete?' + ids)
                         .then(function (response) {
                             if (!response.data.isSuccess) {
                                 vm.$message({ title: '失败', message: response.data.message, type: 'error' })

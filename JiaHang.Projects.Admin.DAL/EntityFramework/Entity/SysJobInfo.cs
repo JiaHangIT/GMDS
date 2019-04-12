@@ -8,7 +8,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string JobId { get; set; }
         public string JobCode { get; set; }
         public string JobName { get; set; }
-        public int EnableFlag { get; set; }
+        public decimal EnableFlag { get; set; }
         public string JobType { get; set; }
         public string JobDesc { get; set; }
         public DateTime? JobLastRuntime { get; set; }
@@ -19,7 +19,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string CycleDayFrequeceType { get; set; }
         public string CycleDayOnetimesTime { get; set; }
         public string CycleDayIntervalType { get; set; }
-        public int? CycleDayIntervalNumber { get; set; }
+        public decimal? CycleDayIntervalNumber { get; set; }
         public string CycleWeekEnabledMon { get; set; }
         public string CycleWeekEnabledTue { get; set; }
         public string CycleWeekEnabledWed { get; set; }
@@ -30,15 +30,15 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string CycleWeekFrequeceType { get; set; }
         public string CycleWeekOnetimesTime { get; set; }
         public string CycleWeekIntervalType { get; set; }
-        public int? CycleWeekIntervalNumber { get; set; }
+        public decimal? CycleWeekIntervalNumber { get; set; }
         public string CycleMonthType { get; set; }
         public string CycleMonthDaytimes { get; set; }
         public string CycleMonthWeekType { get; set; }
-        public int? CycleMonthWeekNumber { get; set; }
+        public decimal? CycleMonthWeekNumber { get; set; }
         public string CycleMonthFrequeceType { get; set; }
         public string CycleMonthOnetimesTime { get; set; }
         public string CycleMonthIntervalType { get; set; }
-        public int? CycleMonthIntervalNumber { get; set; }
+        public decimal? CycleMonthIntervalNumber { get; set; }
         public DateTime? CreationDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }

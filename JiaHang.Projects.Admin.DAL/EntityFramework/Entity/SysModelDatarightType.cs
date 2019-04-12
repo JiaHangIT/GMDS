@@ -7,7 +7,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
     {
         public string ModelId { get; set; }
         public string DataRightTypeId { get; set; }
-        public int? DataLevel { get; set; }
+        public decimal? DataLevel { get; set; }
         public string DataRightColumn1 { get; set; }
         public string DataRightColumn2 { get; set; }
         public string DataRightColumn3 { get; set; }

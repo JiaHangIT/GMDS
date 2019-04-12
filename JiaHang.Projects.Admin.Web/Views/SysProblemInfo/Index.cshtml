@@ -33,7 +33,10 @@
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
                 <label class="layui-form-label">问题类型：</label>
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="search_problem_type_id" autocomplete="off">
+                    <select name="search_problem_type_id" id="search_problem_type_id" lay-verify="required" lay-filter="xmFilter">
+                        <option value=""></option>
+
+                    </select>
                 </div>
             </div>
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px">
@@ -76,6 +79,7 @@
                 <div class="layui-input-block">
                     <input type="text" name="problem_type_id" id="problem_type_id" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
+
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">问题标题</label>
@@ -315,8 +319,7 @@
             },
             search: function () {
                 let pars = {
-                    limit: 10,
-                    page: 1,
+                    
                     //problem_Type_Id: $("#search_problem_type_id").val(),
                     problem_Title: $("#search_problem_title").val(),
                     //important_Flag: 0,

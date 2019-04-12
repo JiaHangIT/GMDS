@@ -7,9 +7,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
     {
         public string CustomerId { get; set; }
         public string ServiceId { get; set; }
-        public int DatarightFlag { get; set; }
-        public int LimitDay { get; set; }
-        public int LimitMonth { get; set; }
+        public decimal DatarightFlag { get; set; }
+        public decimal LimitDay { get; set; }
+        public decimal LimitMonth { get; set; }
         public DateTime? LastAccessDate { get; set; }
         public string Param1 { get; set; }
         public string Param2 { get; set; }

@@ -22,45 +22,31 @@
         width: 182px;
     }
 </style>
-<div>
 
 
-    <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
-        <div class="layui-row">
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label"style="width:150px">连接名称：</label>
-                <div class="layui-inline">
-                    <input class="layui-input"  name="search_connection_name" id="search_connection_name" autocomplete="off">
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label" style="width:150px">连接字符串：</label>
-                <div class="layui-inline">
-                    <input class="layui-input" name="search_connection_string" id="search_connection_string" autocomplete="off">
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label" style="width:150px">数据库类型代码：</label>
-                <div class="layui-inline">
-                    <input class="layui-input" name="search_database_type_code" id="search_database_type_code" autocomplete="off">
-                </div>
-            </div>
-            <div class=" layui-col-md6 layui-col-xs6">
-                <label class="layui-form-label" style="width:150px">数据库类型名称：</label>
-                <div class="layui-inline">
-                    <input class="layui-input" name="isearch_database_type_name" id="search_database_type_name" autocomplete="off">
-                </div>
+<div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px;">
+    <div class="layui-row">
+        <div class=" layui-col-md6 layui-col-xs6">
+            <label class="layui-form-label" style="width:150px">连接名称：</label>
+            <div class="layui-inline">
+                <input class="layui-input" name="search_connection_name" id="search_connection_name" autocomplete="off">
             </div>
         </div>
-        <div class="layui-form-item" style="margin-top:15px;">
-            <button class="layui-btn btn-search" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增连接</button>
-            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+        <div class=" layui-col-md6 layui-col-xs6">
+            <label class="layui-form-label" style="width:150px">数据库类型名称：</label>
+            <div class="layui-inline">
+                <select name="seldatabasetypename" id="seldatabasetypename"></select>
+            </div>
         </div>
+
     </div>
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
-
+    <div class="layui-form-item" style="margin-top:8px;">
+        <button class="layui-btn btn-search" data-type="search">条件查询</button>
+        <button class="layui-btn" data-type="showGenerateLayer">新增连接</button>
+        <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+    </div>
 </div>
+<table class="layui-hide" id="test" style="margin-top:8px" lay-filter="sysuser"> </table>
 <div id="generate_layer" style="display:none;position:relative;padding:15px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
@@ -73,10 +59,8 @@
             <div class="layui-inline" id="divseldatabasetypename">
                 <label class="layui-form-label" style="width:150px">数据库类型名称</label>
                 <div class="layui-input-inline">
-                    <select name="seldatabasetypename" id="seldatabasetypename">
-                        <option value="1">SQL数据库1</option>
-                        <option value="2">旧数据库平台</option>
-                        <option value="3">新数据平台</option>
+                    <select name="databasetypename" id="databasetypename">
+                       
                     </select>
                 </div>
             </div>
@@ -88,22 +72,14 @@
             </div>
         </div>
         <div class="layui-form-item">
-         
-            <div class="layui-inline" id="divdatabasetypecode">
-                <label class="layui-form-label" style="width:150px">数据库类型代码</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="database_type_code" id="database_type_code" autocomplete="off" placeholder="数据库类型代码" class="layui-input" lay-verify="required">
-                </div>
-            </div>
             <div class="layui-inline">
                 <label class="layui-form-label" style="width:150px">连接字符串</label>
                 <div class="layui-input-inline">
                     <input type="text" name="connection_string" id="connection_string" autocomplete="off" placeholder="连接字符串" class="layui-input" lay-verify="required">
                 </div>
             </div>
-            <input type="text" name="database_type_id" id="database_type_id" autocomplete="off" style="display:none" class="layui-input" lay-verify="required">
         </div>
-        <div class="layui-form-item">
+        <div class="layui-form-item" style="margin-left:300px">
             <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">添加</button>
             <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
         </div>
@@ -126,7 +102,10 @@
         var generateLayer_index = 0;
         var layType = true;//true 新增  false 编辑
         var connectionId = 0;
-
+        //初始化数据库连接类型
+        form.render('select');
+        getDateBaseType();
+        
         table.render({
             elem: '#test'
             , url: '/api/sysdatabaseconnection/search/'
@@ -148,7 +127,7 @@
                 , { title:'操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
                 //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                , { field: 'connectionId', title: '连接ID' ,sort: true }
+                //, { field: 'connectionId', title: '连接ID' ,sort: true }
                 , { field: 'connectionName', title: '连接名称', sort: true }
                 , { field: 'connectionString', title: '连接字符串', sort: true }
                 , { field: 'databaseTypeCode', title: '数据库类型代码', sort: true }
@@ -157,7 +136,6 @@
             ]]
             , id: 'testReload'
             , page: true,
-            limits: [1,2,3,4,5],
             text: {
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
@@ -168,7 +146,6 @@
         });
         //监听工具条
         table.on('tool(sysuser)', function (obj) {
-            debugger;
             var data = obj.data;
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
@@ -248,12 +225,8 @@
             },
             search: function () {
                 let pars = {
-                    limit: 2,
-                    page: 1,
-                    Connection_Name: $("#search_connection_name").val(),
-                    Connection_String: $("#search_connection_string").val(),
-                    Database_Type_Code: $("#search_database_type_code").val(),
-                    Database_Type_Name: $("#search_database_type_name").val(),
+                    DataBaseTypeId: $("#seldatabasetypename option:selected").val(),
+                    ConnectionName: $("#search_connection_name").val(),
                 }
                 //执行重载
                 table.reload('testReload', {
@@ -273,12 +246,9 @@
         };
         form.on('submit(submit)', function () {
             let model = {
-                databaseTypeId: $('#seldatabasetypename  option:selected').val(),
-                Database_Type_Id: $('#database_type_id').val(),
+                databaseTypeId: $('#databasetypename  option:selected').val(),
                 connectionName: $('#connection_name').val(),
                 connectionString:$('#connection_string').val(),
-                Database_Type_Code:$('#database_type_code').val(),
-                Database_Type_Name: $('#seldatabasetypename option:selected').text(),
             };
 
             let url = "/api/sysdatabaseconnection";
@@ -325,17 +295,10 @@
             });
         function showLayer(data) {
             initFormValue(data);
-           // divdatabasetypename divseldatabasetypename divdatabasetypecode
             let title = "新增连接信息";
-            //$('#database_type_code').remove();
-            //$('#database_type_name').remove();
-            //document.getElementById("seldatabasetypename").style.display = '';
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
                 title = "编辑连接信息";
-                //$('#database_type_code').attr("lay-verify", "required");
-                //$('#database_type_name').attr("lay-verify", "required");
-                //document.getElementById("seldatabasetypename").style.display = 'none';
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -350,7 +313,7 @@
                 , btnAlign: 'c'
                 , moveType: 0 //拖拽模式，0或者1
                 , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                ,offset: ['10%', '3%']
+                ,offset: ['10%', '13%']
             });
         };
         function initFormValue(data) {
@@ -358,17 +321,15 @@
                 form.val("generate-form", {
                     connection_name:"",
                     connection_string: "",
-                    database_type_code: "",
                     database_type_name: "",
                 })
                 return;
             }
+            $('#databasetypename').val(data.databaseTypeId);
+            console.log(data.databaseTypeId);
             form.val("generate-form", {
-                database_type_id: data.databaseTypeId,
                 connection_name: data.connectionName,
                 connection_string: data.connectionString,
-                database_type_code: data.databaseTypeCode,
-                database_type_name: data.databaseTypeName,
             })
         }
 
@@ -378,10 +339,26 @@
                 data: datatable
             })
         }
-
+        function getDateBaseType() {
+            axios.get('/api/SysDataBaseConnection/SelectDatabaseType')
+                .then(function (response) {
+                    var len = response.data.content.length;
+                    var text = '<option value="">请选择</option>';
+                    $('#databasetypename').append(text);
+                    $('#seldatabasetypename').append(text);
+                    for (var i = 0; i < len; i++) {
+                        $('#databasetypename').append(new Option(response.data.content[i].databaseTypeName, response.data.content[i].databaseTypeId))
+                        $('#seldatabasetypename').append(new Option(response.data.content[i].databaseTypeName, response.data.content[i].databaseTypeId))
+                    }
+                    form.render('select');
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
     });
 
-
+    
 
 </script>
 

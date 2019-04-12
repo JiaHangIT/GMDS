@@ -76,6 +76,7 @@ namespace JiaHang.Projects.Admin.DAL
             }
             return new DataTable();
         }
+        
         public static int ExcuteSql(string cmdstr, List<SqlParameter> parameters = null)
         {
             int rows = 0;

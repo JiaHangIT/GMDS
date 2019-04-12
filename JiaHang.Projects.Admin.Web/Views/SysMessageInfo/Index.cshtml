@@ -55,45 +55,64 @@
 <div id="generate_layer" style="display:none; padding:40px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">系统公告ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="Message_ID" id="Message_ID" autocomplete="off" placeholder="产品编号" class="layui-input">
-                </div>
-            </div>
+            
             <div class="layui-inline">
                 <label class="layui-form-label">公告标题</label>
                 <div class="layui-input-block">
-                    <input type="text" name="MESSAGETITLE" id="MESSAGETITLE" autocomplete="off" placeholder="产品名称" class="layui-input">
+                    <input type="text" name="MESSAGETITLE" id="MESSAGETITLE" autocomplete="off" placeholder="公告名称" class="layui-input">
                 </div>
             </div>
-        </div>
-        <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">是否重要标志</label>
-                <div class="layui-inline">
-                    <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
-                        <option value="">请选择</option>
-                        <option value="1">是</option>
-                        <option value="0">否</option>
-                    </select>
+                <div class="layui-col-md4 layui-col-xs6" style="margin-top:0px;z-index:9999999">
+                    <label class="layui-form-label">是否重要 </label>
+                    <div class="layui-input-block" style="width:180px">
+                        <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
+                            <option value="">请选择</option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="layui-form-item">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">公告内容</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" name="MESSAGECONTENT" id="MESSAGECONTENT" class="layui-textarea"></textarea>
-                </div>
+        @*<div class="layui-form-item">
+            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;z-index:9999999">
+            <label class="layui-form-label">是否重要</label>
+            <div class="layui-input-block">
+                <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
+                    <option value=""></option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
             </div>
+        </div>
+            
+            
+        </div>*@
+        <div class="layui-form-item">
+            
+            @*<div class="layui-form-item" style="padding-top:4px;z-index:10">
+                 加载编辑器的容器 
+                <script id="editor" name="MESSAGECONTENT" type="text/plain" style="width:790px;height:200px;">
+                </script>
+                <script type="text/javascript">
+                    var ue = UE.getEditor('editor');
+                </script>
+              
+            </div>*@
+            <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">公告内容</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" name="MESSAGECONTENT" id="MESSAGECONTENT" class="layui-textarea"></textarea>
+            </div>
+        </div>
         </div>
 
-        <div class="layui-form-item">
-            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+            <div class="layui-form-item">
+                <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+                <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+            </div>
         </div>
-    </div>
 </div>
 
 
@@ -102,6 +121,8 @@
     <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
+@*<script src="~/utf8-asp/ueditor.config.js"></script>
+<script src="~/utf8-asp/ueditor.all.js"></script>*@
 <script>
     layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
         var table = layui.table;
@@ -196,7 +217,7 @@
                 showLayer(data);
             } else if (obj.event === 'examine') {
                 console.log("审核");
-               
+
                 let url = "/api/SysMessageInfo/UpdateExamine";
                 let method = "POST";
                 let confirm_title = "公告名称为：【" + data.messageTitle + "】";
@@ -325,15 +346,18 @@
             },
 
         };
-        
+
         form.on('submit(submit)', function () {
             //console.log(data);
             console.log('save');
             //alert($("#Message_ID").val());
+            //获取纯文本内容
+            //var txt = ue.getContentTxt();
+            //alert(data.messageContent);
             let model = {
                 Message_ID: $("#Message_ID").val(),
                 Message_title: $("#MESSAGETITLE").val(),
-                Message_Content: $("#MESSAGECONTENT").val(),
+                Message_Content: $("#MESSAGECONTENT").val(), 
                 Important_Flag: $("#Important_Flag").val(),
                 //Audit_Flag: $("#colorName").val(),
                 //Audited_Date: $("#category").val(),
@@ -343,7 +367,7 @@
                 //Last_Updata_Date: $("#cost").val(),
                 //Last_Updata_By: $("#colorName").val(),
             };
-            alert(store_id);
+             
             console.log(model);
             let url = "/api/SysMessageInfo/add";
             let method = "POST";
@@ -392,12 +416,12 @@
 
         //    console.log(table);
         //    console.log(table.cache);
-        //    initFormValue(data);           
-            
+        //    initFormValue(data);
+
         //        let title = "审核";
         //        document.getElementById("Message_ID").disabled = true;
         //        document.getElementById("examine_btn").innerHTML = "立即审核";
-            
+
         //    generateLayer_indexT = layer.open({
         //        type: 1
         //        , title: "审核" //不显示标题栏
@@ -419,11 +443,11 @@
             console.log(table.cache);
             initFormValue(data);
             let title = "新增";
-            document.getElementById("Message_ID").disabled = false;
+             
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
                 title = "编辑";
-                document.getElementById("Message_ID").disabled = true;
+                
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -458,7 +482,8 @@
                 Message_ID: data.messageId,
                 MESSAGETITLE: data.messageTitle,
                 MESSAGECONTENT: data.messageContent,
-                Important_Flag: data.importantFlag
+                Important_Flag: data.importantFlag,
+
                 //colorName: data.dish_Color,
                 //category: data.category
             })
@@ -484,3 +509,116 @@
 
     });
 </script>
+@*<script type="text/javascript">
+
+    //实例化编辑器
+    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+    var ue = UE.getEditor('editor');
+
+
+    function isFocus(e) {
+        alert(UE.getEditor('editor').isFocus());
+        UE.dom.domUtils.preventDefault(e)
+    }
+    function setblur(e) {
+        UE.getEditor('editor').blur();
+        UE.dom.domUtils.preventDefault(e)
+    }
+    function insertHtml() {
+        var value = prompt('插入html代码', '');
+        UE.getEditor('editor').execCommand('insertHtml', value)
+    }
+    function createEditor() {
+        enableBtn();
+        UE.getEditor('editor');
+    }
+    function getAllHtml() {
+        alert(UE.getEditor('editor').getAllHtml())
+    }
+    function getContent() {
+        var arr = [];
+        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+        arr.push("内容为：");
+        arr.push(UE.getEditor('editor').getContent());
+        alert(arr.join("\n"));
+    }
+    function getPlainTxt() {
+        var arr = [];
+        arr.push("使用editor.getPlainTxt()方法可以获得编辑器的带格式的纯文本内容");
+        arr.push("内容为：");
+        arr.push(UE.getEditor('editor').getPlainTxt());
+        alert(arr.join('\n'))
+    }
+    function setContent(isAppendTo) {
+        var arr = [];
+        arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
+        UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
+        alert(arr.join("\n"));
+    }
+    function setDisabled() {
+        UE.getEditor('editor').setDisabled('fullscreen');
+        disableBtn("enable");
+    }
+
+    function setEnabled() {
+        UE.getEditor('editor').setEnabled();
+        enableBtn();
+    }
+
+    function getText() {
+        //当你点击按钮时编辑区域已经失去了焦点，如果直接用getText将不会得到内容，所以要在选回来，然后取得内容
+        var range = UE.getEditor('editor').selection.getRange();
+        range.select();
+        var txt = UE.getEditor('editor').selection.getText();
+        alert(txt)
+    }
+
+    function getContentTxt() {
+        var arr = [];
+        arr.push("使用editor.getContentTxt()方法可以获得编辑器的纯文本内容");
+        arr.push("编辑器的纯文本内容为：");
+        arr.push(UE.getEditor('editor').getContentTxt());
+        alert(arr.join("\n"));
+    }
+    function hasContent() {
+        var arr = [];
+        arr.push("使用editor.hasContents()方法判断编辑器里是否有内容");
+        arr.push("判断结果为：");
+        arr.push(UE.getEditor('editor').hasContents());
+        alert(arr.join("\n"));
+    }
+    function setFocus() {
+        UE.getEditor('editor').focus();
+    }
+    function deleteEditor() {
+        disableBtn();
+        UE.getEditor('editor').destroy();
+    }
+    function disableBtn(str) {
+        var div = document.getElementById('btns');
+        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+        for (var i = 0, btn; btn = btns[i++];) {
+            if (btn.id == str) {
+                UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+            } else {
+                btn.setAttribute("disabled", "true");
+            }
+        }
+    }
+    function enableBtn() {
+        var div = document.getElementById('btns');
+        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+        for (var i = 0, btn; btn = btns[i++];) {
+            UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+        }
+    }
+
+    function getLocalData() {
+        alert(UE.getEditor('editor').execCommand("getlocaldata"));
+    }
+
+    function clearLocalData() {
+        UE.getEditor('editor').execCommand("clearlocaldata");
+        alert("已清空草稿箱")
+    }
+</script>*@

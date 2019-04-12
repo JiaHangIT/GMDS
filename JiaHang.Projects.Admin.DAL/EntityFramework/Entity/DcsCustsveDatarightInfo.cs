@@ -11,8 +11,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string RightValue1 { get; set; }
         public string RightValue2 { get; set; }
         public string RightValue3 { get; set; }
-        public int? UseChildrenLevel { get; set; }
-        public int? ValueRelativePath { get; set; }
+        public decimal? UseChildrenLevel { get; set; }
+        public decimal? ValueRelativePath { get; set; }
         public DateTime CreationDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime LastUpdateDate { get; set; }

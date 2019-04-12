@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsCustomer
+namespace JiaHang.Projects.Admin.Web.Controllers.API
 {
   
     [Route("api/[controller]")]
@@ -18,7 +18,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsCustomer
 
         private readonly DcsCustomerBLL  dcsCustomerBLL;
         private readonly IMemoryCache cache;
-        public DcsCustomerDataController(DataContext dataContext, IMemoryCache cache)
+        public DcsCustomerDataController(DAL.EntityFramework.DataContext dataContext, IMemoryCache cache)
         {
             dcsCustomerBLL = new DcsCustomerBLL(dataContext);
             this.cache = cache;

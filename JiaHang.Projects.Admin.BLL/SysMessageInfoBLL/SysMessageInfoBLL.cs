@@ -14,8 +14,8 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
 {
     public class SysMessageInfoBLL
     {
-        private readonly DataContext _context;
-        public SysMessageInfoBLL(DataContext context)
+        private readonly DAL.EntityFramework.DataContext _context;
+        public SysMessageInfoBLL(DAL.EntityFramework.DataContext context)
         {
             _context = context;
         }
@@ -49,7 +49,7 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
                     messageId = e.MessageId,
                     messageTitle = e.MessageTitle ?? "",
                     messageContent = e.MessageContent ?? "",
-                    importantFlag = e.ImportantFlag > 0 ? "是" : "否",
+                    importantFlag = e.ImportantFlag,
                     auditFlag = e.AuditFlag > 0 ? "通过审核" : "未通过审核",
                     auditedDate = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
                     auditedBy = e.AuditedBy ?? "",
@@ -90,7 +90,7 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
-            entity.MessageId = model.Message_ID;
+            entity.MessageId = MessageId;
             entity.MessageTitle = model.Message_title;
             entity.MessageContent = model.Message_Content;
             entity.ImportantFlag = model.Important_Flag;
@@ -170,7 +170,7 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
             }
             SysMessageInfo entity = new SysMessageInfo
             {
-                MessageId = model.Message_ID,
+                MessageId = Guid.NewGuid().ToString(),
                 MessageTitle = model.Message_title,
                 MessageContent = model.Message_Content,
                 ImportantFlag = model.Important_Flag,

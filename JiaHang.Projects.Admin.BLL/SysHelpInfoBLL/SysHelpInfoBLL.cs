@@ -58,13 +58,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                     Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
                     Audited_Date = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
                     Audited_By = e.AuditedBy
-                    //e.HelpId,
-                    //e.HelpTypeId,
-                    //e.HelpTitle,
-                    //e.ImportantFlag,
-                    //e.AuditFlag,
-                    //e.AuditedDate,
-                    //e.AuditedBy
+                  
                 });
                 return new FuncResult() { IsSuccess = true, Content = new { data, total } };
             }

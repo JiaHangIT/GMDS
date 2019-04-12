@@ -48,7 +48,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysConnection
         {
             return await connectionServers.Select(id);
         }
+        /// <summary>
+        ///查询数据库连接类型
+        /// </summary>
+        /// <returns></returns>
+        [Route("SelectDatabaseType")]
+        [HttpGet]
+        public async Task<FuncResult> SelectDatabaseType()
+        {
+            return await connectionServers.SelectDatabaseType();
 
+        }
         /// <summary>
         /// 添加
         /// </summary>

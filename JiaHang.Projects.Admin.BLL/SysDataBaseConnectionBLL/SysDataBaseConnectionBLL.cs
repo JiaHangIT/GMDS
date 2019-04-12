@@ -28,9 +28,8 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
         {
             var querys = from a in _context.SysConnectionInfo
                          where (
-                            (string.IsNullOrWhiteSpace(model.Connection_Name) || a.ConnectionName.Contains(model.Connection_Name))
-                            && (string.IsNullOrWhiteSpace(model.Connection_String) || a.ConnectionString.Contains(model.Connection_String))
-                            && a.DeleteFlag==0
+                            (string.IsNullOrWhiteSpace(model.ConnectionName) || a.ConnectionName.Contains(model.ConnectionName))
+                             && (string.IsNullOrWhiteSpace(model.DataBaseTypeId) || a.DatabaseTypeId.ToString().Contains(model.DataBaseTypeId))
                             )
                          join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId
                           into a_temp
@@ -61,7 +60,27 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
 
             return new FuncResult() { IsSuccess = true, Content = entity };
         }
-
+        /// <summary>
+        /// 查询数据库类型
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FuncResult> SelectDatabaseType() {
+            var query = from a in _context.SysDatabaseType
+                        where (
+                                a.DeleteFlag == 0
+                               )
+                        select new
+                        {
+                            DatabaseTypeId = a.DatabaseTypeId,
+                            DatabaseTypeName = a.DatabaseTypeName
+                        };
+            object data = null;
+            await Task.Run(() =>
+            {
+                data = query.ToList();
+            });
+            return new FuncResult() { IsSuccess = true, Content = data };
+        }
         /// <summary>
         /// 修改 同时修改数据库类型和数据库连接表
         /// </summary>
@@ -70,23 +89,18 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
         public async Task<FuncResult> Update(string id, SearchContentConnection model, string currentUserId)
         {
             SysConnectionInfo entity = await _context.SysConnectionInfo.FindAsync(id);
-            var entity2 = (from a in _context.SysDatabaseType where a.DatabaseTypeId==model.DATABASE_TYPE_ID select a).FirstOrDefault();
+          
             if (entity == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "连接ID错误!" };
             }
-           
-                    entity2.DatabaseTypeCode = model.Database_Type_Code;
-                    entity2.DatabaseTypeName = model.Database_Type_Name;
-                    entity2.LastUpdatedBy = currentUserId;
-                    entity2.LastUpdateDate = DateTime.Now;
+            entity.DatabaseTypeId = model.DatabaseTypeId;
             entity.ConnectionName = model.ConnectionName;
             entity.ConnectionString = model.ConnectionString;
             entity.LastUpdatedBy = currentUserId;
             entity.LastUpdateDate = DateTime.Now;
          
             _context.SysConnectionInfo.Update(entity);
-            _context.SysDatabaseType.Update(entity2);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
         }

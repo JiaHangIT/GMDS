@@ -59,35 +59,22 @@
 <div id="generate_layer" style="display:none; padding:40px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">错误代码ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="ErrorCodeId" id="ErrorCodeId" autocomplete="off" placeholder="错误代码ID" class="layui-input">
-                </div>
-            </div>
+
             <div class="layui-inline">
                 <label class="layui-form-label">错误代码代码</label>
                 <div class="layui-input-block">
                     <input type="text" name="ErrorCodeCode" id="ErrorCodeCode" autocomplete="off" placeholder="错误代码代码" class="layui-input">
                 </div>
             </div>
-        </div>
-        <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">错误代码名称</label>
                 <div class="layui-input-block">
                     <input type="text" name="ErrorCodeName" id="ErrorCodeName" autocomplete="off" placeholder="错误代码名称" class="layui-input">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">错误代码描述</label>
-                <div class="layui-input-block">
-                    <input type="text" name="ErrorCodeDesc" id="ErrorCodeDesc" autocomplete="off" placeholder="错误代码描述" class="layui-input">
-                </div>
-            </div>
         </div>
         <div class="layui-form-item">
-
+            
             <div class="layui-inline">
                 <label class="layui-form-label">是否重要标志</label>
                 <div class="layui-inline">
@@ -98,7 +85,16 @@
                     </select>
                 </div>
             </div>
-
+            
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">错误代码描述</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" name="ErrorCodeDesc" id="ErrorCodeDesc" class="layui-textarea"></textarea>
+                </div>
+            </div>
+          
         </div>
 
         <div class="layui-form-item">
@@ -156,16 +152,16 @@
                 //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
                 //, { field: 'errorCodeId', title: '错误代码ID', sort: true, fixed: 'left' }
                 , { field: 'errorCodeCode', title: '错误代码代码', sort: true }
-                , { field: 'errorCodeName', title: '错误代码名称' }
-                , { field: 'errorCodeDesc', title: '错误代码描述' }
-                , { field: 'importantFlag', width: 99, title: '是否重要', sort: true }
+                , { field: 'errorCodeName', width: 155, title: '错误代码名称' }
+                //, { field: 'errorCodeDesc', title: '错误代码描述' }
+                , { field: 'importantFlag', title: '是否重要', sort: true }
                 , { field: 'auditFlag', width: 99, title: '是否审核', sort: true }
                 , { field: 'auditedDate', title: '审核时间', sort: true }
                 , { field: 'auditedBy', title: '审核人', sort: true }
                 , { field: 'creationDate', title: '建立时间', sort: true }
                 , { field: 'createdBy', title: '建立人', sort: true }
-                , { field: 'LastUpdateDate', title: '最后更新时间', sort: true }
-                , { field: 'LastUpdatedBy', title: '最后更新人', sort: true }
+                , { field: 'LastUpdateDate', width: 132, title: '最后更新时间', sort: true }
+                , { field: 'LastUpdatedBy', width: 132, title: '最后更新人', sort: true }
                 //, { field: 'stOpenDate', title: '开业日期', sort: true }
                 //, { field: 'stCloseDate', title: '关店日期', sort: true }
                 //, { field: 'stTel', title: '电话', sort: true }
@@ -418,11 +414,11 @@
                 console.log(table.cache);
                 initFormValue(data);
                 let title = "新增";
-                document.getElementById("ErrorCodeId").disabled = false;
+               
                 document.getElementById("generate_btn").innerHTML = "立即创建";
                 if (layType != true) {
                     title = "编辑";
-                    document.getElementById("ErrorCodeId").disabled = true;
+                  
                     document.getElementById("generate_btn").innerHTML = "立即修改";
                 }
                 generateLayer_index = layer.open({
