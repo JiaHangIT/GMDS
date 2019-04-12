@@ -30,6 +30,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                          where (
                             (string.IsNullOrWhiteSpace(model.ConnectionName) || a.ConnectionName.Contains(model.ConnectionName))
                              && (string.IsNullOrWhiteSpace(model.DataBaseTypeId) || a.DatabaseTypeId.ToString().Contains(model.DataBaseTypeId))
+                             
                             )
                          join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId
                           into a_temp
