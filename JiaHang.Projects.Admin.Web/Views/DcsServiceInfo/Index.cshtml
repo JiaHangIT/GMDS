@@ -1125,6 +1125,7 @@
                 success: function (data) {
                     //先清空option
                     $('.sharerelate').empty();
+                    $('.paramrelate').empty();
 
                     $.each(data, function (index, item) {
                         $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
