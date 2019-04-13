@@ -504,7 +504,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         //{
                         //    continue;
                         //}
-                        context.DcsServiceParams.Update(existP);
+                        context.DcsServiceParams.Update(entityP1);
                     }
                 }
             }
