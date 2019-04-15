@@ -1068,6 +1068,7 @@
                         //$('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
                         let iStr = "<input type='checkbox' value=" + item.key + " title=" + item.value + " lay-filter='ceshi' />";
                         $('#shareresultcontentdiv').append(iStr);
+                        $('#shareresultcontentdiv').append('<br />');
                         //给共享返回接口字段添加checkbox
 
                         $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
@@ -1446,6 +1447,7 @@
                                         $.each(data, function (index, item) {
                                             let iStr = "<input type='checkbox' value=" + item.key + " title=" + item.value + " lay-filter='ceshi' />";
                                             $('#shareresultcontentdiv').append(iStr); //给共享返回接口字段添加checkbox
+                                            $('#shareresultcontentdiv').append('<br />');
                                         });
                                         layui.form.render("checkbox");
 

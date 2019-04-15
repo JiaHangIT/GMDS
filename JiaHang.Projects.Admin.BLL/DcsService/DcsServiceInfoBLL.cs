@@ -467,7 +467,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         deleteP.DeleteFlag = 1;
                         deleteP.LastUpdateDate = DateTime.Now;
                         deleteP.LastUpdatedBy = currentuserid;
-                        context.DcsServiceParams.Update(deleteP);
+                        context.DcsServiceParams.Remove(deleteP);
                     }
                 }
 
@@ -526,7 +526,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         deleteP.LastUpdateDate = DateTime.Now;
                         deleteP.LastUpdatedBy = currentuserid;
                       
-                        context.DcsServiceSResults.Update(deleteP);
+                        context.DcsServiceSResults.Remove(deleteP);
                     }
                 }
 
@@ -587,7 +587,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                         deleteP.DeleteFlag = 1;
                         deleteP.LastUpdateDate = DateTime.Now;
                         deleteP.LastUpdatedBy = currentuserid;
-                        context.DcsServiceCResults.Update(deleteP);
+                        context.DcsServiceCResults.Remove(deleteP);
                     }
                 }
 
