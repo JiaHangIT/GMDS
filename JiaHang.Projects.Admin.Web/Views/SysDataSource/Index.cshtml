@@ -149,7 +149,7 @@
 </div>
 <div id="generate_layer_add" style="display:none;position:relative;padding:15px;">
         <div class="layui-tab-content" >
-            <div class="layui-tab-item layui-show">
+            <div class="layui-tab-item layui-show" style="margin-top:-20px">
                 <div class="layui-form layui-form-pane" action="" lay-filter="generateadd-form" style="margin-top: 4px;">
                     <div class="layui-form-item">
                         <div class="layui-inline">
@@ -165,7 +165,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item" style="margin-top: 4px;" >
+                    <div class="layui-form-item" style="margin-top: -14px;" >
                         <div class="layui-inline">
                             <label class="layui-form-label" style="width:150px;">数据库源类型：</label>
                             <div class="layui-inline">
@@ -188,7 +188,7 @@
                         </div>
 
                     </div>
-                    <div class="layui-form-item" style="margin-top:4px">
+                    <div class="layui-form-item" style="margin-top:-14px">
                         <div class="layui-inline" >
                             <label class="layui-form-label" style="width:150px">数据库连接名称</label>
                             <div class="layui-input-inline">
@@ -696,7 +696,7 @@
                 , title: title //不显示标题栏
                 , closeBtn: 2
                 , fixed: false
-                , area: ['800px', '600px']
+                , area: ['800px', '400px']
                 , shade: 0.8
                 , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
@@ -715,7 +715,7 @@
                 , title: title //不显示标题栏
                 , closeBtn: 2
                 , fixed: false
-                , area: ['800px', '600px']
+                , area: ['800px', '400px']
                 , shade: 0.8
                 , id: 'LAY_layuiaddfield' //设定一个id，防止重复弹出
                 //, btn: ['火速围观', '残忍拒绝']
@@ -1022,9 +1022,7 @@
                 for (var i = 0; i < len; i++) {
                     $('#field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId));
                     $('#edit_field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId))
-                    //text += '<option value="' + response.data.content[i].fieldTypeId + '">' + response.data.content[i].fieldTypeName + '</option>'
                 }
-                //$('#field_types').append(text);
             })
             .catch(function (error) {
                 console.log(error);
