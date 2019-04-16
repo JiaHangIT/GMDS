@@ -106,8 +106,8 @@
             <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;padding-left:23px;"  >
                 <label class="layui-form-label">是否重要</label>
                 <div class="layui-input-block">
-                    <select name="interest" id="important_flag" lay-filter="aihao">
-                        <option value=""></option>
+                    <select name="interest" id="important_flag" lay-filter="important_flag">
+                        <option value="" selected></option>
                         <option value="1">是</option>
                         <option value="0">否</option>
                     </select>
@@ -118,7 +118,7 @@
                 <div class="layui-form-item layui-form-text" style="padding-top:4px;padding-left:15px;padding-right:16px">
                     <label class="layui-form-label">公告内容</label>
                     <div class="layui-input-block">
-                        <textarea placeholder="请输入内容" id="help_content" class="layui-textarea"></textarea>
+                        <textarea placeholder="请输入内容" id="help_content" name="help_content" class="layui-textarea"></textarea>
                     </div>
                 </div>
             
@@ -183,7 +183,12 @@
                 //, { field: 'help_Type_Id', title: '帮助类型' }
                 , { field: 'help_Title', title: '公告标题',/* sort: true,*/ fixed: 'left' }
                 //, { field: 'user_Org_Id', title: '用户组别', }
-                , { field: 'important_Flag', title: '是否重要',/* sort: true*/ }
+                , {field: 'important_Flag', title: '是否重要',/* sort: true*/
+                    templet: function (data) {
+                        if (data.important_Flag > 0) return "是"
+                        else return "否"
+                    }
+                }
                 , { field: 'audit_Flag', title: '是否审核' }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
                 , { field: 'audited_Date', title: '审核时间', sort: true }
@@ -202,8 +207,8 @@
         });
         //监听工具条
         table.on('tool(syshelp)', function (obj) {
-            debugger;
             var data = obj.data;
+            console.log(data)
             if (obj.event === 'detail') {
                 layer.msg('ID：' + data.id + ' 的查看操作');
             } else if (obj.event === 'del') {
@@ -365,7 +370,7 @@
             let model = {
                 helptypeid: $("#help_type_id").val(),
                 helptitle: $("#help_title").val(),
-                helpcontent: $("#help_contant").val(),
+                helpcontent: $("#help_content").val(),
                 importantflag: $("#important_flag").val(),
                 auditflag: $("#audit_flag").val(),
                 //auditeddate: $("#audited_date").val(),
@@ -444,29 +449,25 @@
 
         function initFormValue(data) {
             if (data == undefined) {
-
+                $('#important_flag').val("");
                 form.val("generate-form", {
                     help_id: "",
                     help_type_id: "",
                     help_title: "",
-                    help_contant: "",
+                    help_content: "",
                     important_flag: "",
-                    audit_flag: "",
-                    //audited_Date: "",
-                    //audited_By: "",
+                    audit_flag: ""
 
                 })
                 return;
             }
+           
+            $('#important_flag').val(data.important_Flag);
             form.val("generate-form", {
-                help_id: data.help_Id,
                 help_type_id: data.help_Type_Id,
                 help_title: data.help_Title,
-                help_content: data.help_Contant,
+                help_content: data.help_Content,
                 important_flag: data.important_Flag,
-                audit_flag: data.audit_Flag,
-                //audited_Date: data.audited_Date,
-                //audited_By: data.audited_By,
             })
         }
 
