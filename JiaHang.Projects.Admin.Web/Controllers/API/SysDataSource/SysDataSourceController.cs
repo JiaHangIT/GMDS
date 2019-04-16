@@ -52,6 +52,18 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSource
 
             return dataSourceServers.SelectDataSourceInfo(model);
         }
+
+        /// <summary>
+        /// 查询主表信息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string dataSourceCode, string dataSourceName, string dataSourceType, string dataSourceUse)
+        {
+            currentPage--;
+            return dataSourceServers.ElemeSelect(pageSize,currentPage,dataSourceCode,dataSourceName,dataSourceType,dataSourceUse);
+        }
         /// <summary>
         /// 查询数据库连接名称
         /// </summary>

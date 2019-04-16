@@ -114,6 +114,43 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             var data = query.Skip(model.limit * model.page).Take(model.limit).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+        public FuncResult ElemeSelect(int pageSize,int currentPage,string dataSourceCode,string dataSourceNmae,string dataSourceType,string dataSourceUse)
+        {
+            var query = from a in _context.SysDatasourceInfo
+                        where (
+                            (string.IsNullOrWhiteSpace(dataSourceCode) || a.DatasourceCode.Contains(dataSourceCode))
+                         && (string.IsNullOrWhiteSpace(dataSourceNmae) || a.DatasourceName.Contains(dataSourceNmae))
+                         && (string.IsNullOrWhiteSpace(dataSourceType) || a.DatasourceType.Contains(dataSourceType))
+                         && (string.IsNullOrWhiteSpace(dataSourceUse) || a.DatasourceUse.Contains(dataSourceUse))
+
+                               )
+                        join b in _context.SysConnectionInfo on a.ConnectionId equals b.ConnectionId
+                        into a_temp
+                        from a_ifnull in a_temp.DefaultIfEmpty()
+                        join c in _context.SysDatabaseType on a_ifnull.DatabaseTypeId equals c.DatabaseTypeId
+                        into b_temp
+                        from b_ifnull in b_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
+                        select new
+                        {
+                            DataSourceId = a.DatasourceId,
+                            DataSourceCode = a.DatasourceCode,
+                            DataSourceName = a.DatasourceName,
+                            DataSourceType = a.DatasourceType,
+                            DataSourceUse = a.DatasourceUse,
+                            ConnectionId = a.ConnectionId,
+                            CreationDate = a.CreationDate,
+                            CreateBy = a.CreatedBy,
+                            ConnectionName = a_ifnull.ConnectionName,
+                            DataBaseTypeId = a_ifnull.DatabaseTypeId,
+                            ConnectionString = a_ifnull.ConnectionString,
+                            DataBaseTypeCode = b_ifnull.DatabaseTypeCode,
+                            DatabaseTypeName = b_ifnull.DatabaseTypeName
+                        };
+            int total = query.Count();
+            var data = query.Skip(pageSize * currentPage).Take(pageSize).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询数据源的所有字段
         /// </summary>
