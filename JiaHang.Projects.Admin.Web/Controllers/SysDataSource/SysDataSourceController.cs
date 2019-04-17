@@ -12,8 +12,5 @@ namespace JiaHang.Projects.Admin.Web.Controllers.SysDataSource
         {
             return View();
         }
-        public IActionResult ElemeIndex() {
-            return View();
-        }
     }
 }
