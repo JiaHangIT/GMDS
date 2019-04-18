@@ -30,11 +30,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// <param name="model"></param>
         /// <returns></returns>       
         [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize, int currentPage, string customerName, string customerMobile)
+        public FuncResult Select(int pageSize, int currentPage, string customerName)
         {
             currentPage--;
 
-            return dcsCustomerServiceBLL.Select(pageSize, currentPage, customerName, customerMobile);
+            return dcsCustomerServiceBLL.Select(pageSize, currentPage, customerName);
 
         }
 

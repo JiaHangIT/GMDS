@@ -24,9 +24,10 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(int pageSize, int currentPage, string customerName, string customerMobile)
+        public FuncResult Select(int pageSize, int currentPage, string customerName)
         {
             var query = from a in _context.DcsCustomerInfo
+                        where string.IsNullOrWhiteSpace(customerName)|| a.CustomerName.Contains(customerName)
                         join b in _context.DcsCustomerServices
                         on a.CustomerId equals b.CustomerId
                         into b_temp
@@ -70,7 +71,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
                             allFieldCode = f_ifnul == null ? "" : f_ifnul.FieldCode,
                             allFieldName = f_ifnul == null ? "" : f_ifnul.FieldName
                         };
-            var data = query.ToList().GroupBy(customer => new { customer.CustomerName, customer.CustomerId }).Select(c => new
+            var data = query.GroupBy(customer => new { customer.CustomerName, customer.CustomerId }).Select(c => new
             {
                 c.Key.CustomerName,
                 c.Key.CustomerId,
@@ -99,7 +100,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
                     }).Distinct()
                 })
             });
-            return new FuncResult() { IsSuccess = true, Content = data };
+            return new FuncResult() { IsSuccess = true, Content =new {total=data.Count(), data=data.Skip(pageSize * currentPage).Take(pageSize)}  };
         }
 
 

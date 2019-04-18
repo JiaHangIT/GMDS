@@ -13,8 +13,20 @@
 </style>
 <div id="app">
 
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="客户名称">
+            <el-input placeholder="客户名称"></el-input>
+        </el-form-item>
 
-    <el-collapse accordion v-for="item in data" >
+        <el-form-item>
+            <el-button type="primary">查询</el-button>
+        </el-form-item>
+        <el-pagination style="margin-bottom:16px;" @@size-change="handleSizeChange" @@current-change="handleCurrentChange"
+                       :current-page="currentPage" :page-sizes="[2,10, 20, 30, 40]"
+                       :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
+    </el-form>
+    <el-collapse accordion v-for="item in data">
         <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;">
             <el-col :span="16">
                 <p>{{item.customerName}}</p>
@@ -38,10 +50,10 @@
                 </el-row>
                 <div style="padding-left:15px;padding-right:15px;">
                     <div style="padding-top:10px;"><span>已授权字段</span></div>
-                    <el-tag v-for="(field,index) in service.alreadyFields"  :disable-transitions="false" @@close="fieldDel(field,service,index)" closable>
+                    <el-tag v-for="(field,index) in service.alreadyFields" :disable-transitions="false" @@close="fieldDel(field,service,index)" closable>
                         {{ field.fieldName }}
                     </el-tag>
-                    <div style="border-top: 1px solid #EBEEF5;padding-top:10px;margin-top:10px;" ><span>未授权字段</span></div>
+                    <div style="border-top: 1px solid #EBEEF5;padding-top:10px;margin-top:10px;"><span>未授权字段</span></div>
 
                     <span v-for="(field,index) in service.noryetfields" class="span-tag" href="#" @@click="fieldAdd(field,service,index)">{{ field.fieldName}}</span>
                 </div>
@@ -72,7 +84,7 @@
             </div>
         </el-dialog>
     </div>
-
+   
 </div>
 
 <script>
@@ -96,10 +108,13 @@
                 cities1: ['字段1', '字段2', '字段3', '字段4', '字段5', '字段6', '字段7', '字段8', '字段9', '字段10', '字段11', '字段12'],
                 isIndeterminate: false,
                 centerDialogVisible: false,
-                pageSize: 10,
+                pageSize: 2,
                 currentPage: 1,
+                total: 0,
                 notbindData: [],
-                thisCustomer: {}
+                thisCustomer: {},  
+                customerName:''//查询条件 客户名称
+       
             }
         },
         methods: {
@@ -108,7 +123,8 @@
                 axios.get(`/api/DcsCustomerServiceData/${vm.pageSize}/${vm.currentPage}`)
                     .then(function (response) {
                         console.log(response.data);
-                        vm.data = response.data.content
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
                     })
                     .catch(function (error) {
                         console.log(error)
@@ -116,7 +132,7 @@
             },
             fetchNotBindService: function () {
                 let vm = this
-                axios.get(`/api/DcsCustomerServiceData/notbind/${vm.thisCustomer.customerid}`)
+                axios.get(`/api/DcsCustomerServiceData/notbind/${vm.thisCustomer.customerid}?customerName=${vm.customerName}`)
                     .then(function (response) {
                         console.log(response.data);
                         vm.notbindData = response.data.content
@@ -255,7 +271,17 @@
                 let checkedCount = data.checkedFields.length;
                 data.checkAll = checkedCount === data.fields.length;
                 data.isIndeterminate = checkedCount > 0 && checkedCount < data.fields.length;
-            }
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.currentPage = val;
+                this.fetchList();
+            },
 
         },
         mounted: function () {
