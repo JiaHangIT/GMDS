@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
     public partial class DcsCustsveFieldList
-    {        
+    {
         public string CustomerId { get; set; }
         public string ServiceId { get; set; }
         public string FieldId { get; set; }

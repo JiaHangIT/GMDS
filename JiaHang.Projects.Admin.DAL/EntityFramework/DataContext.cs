@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using System.Linq.Expressions;
+using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 
 namespace JiaHang.Projects.Admin.DAL.EntityFramework
 {
@@ -67,8 +67,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<SysUserRoute> SysUserRoute { get; set; }
         public virtual DbSet<SysUserRouteCondition> SysUserRouteCondition { get; set; }
 
-        // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
+        // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -100,8 +100,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.ConcurrentLimit)
-                    .HasColumnName("CONCURRENT_LIMIT");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("CONCURRENT_LIMIT")
+; 
 
                 entity.Property(e => e.ContactEmail)
                     .HasColumnName("CONTACT_EMAIL")
@@ -145,16 +145,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    ////.HasColumnType("NUMBER")
-                    .HasDefaultValueSql(@"0");
+ 
+                    .HasDefaultValueSql(@"0
+");
 
                 entity.Property(e => e.EffEndDate)
                     .HasColumnName("EFF_END_DATE")
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.IpLimitFlag)
-                    .HasColumnName("IP_LIMIT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("IP_LIMIT_FLAG")
+; 
 
                 entity.Property(e => e.IpLimitList)
                     .HasColumnName("IP_LIMIT_LIST")
@@ -202,7 +203,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LogDate)
@@ -220,7 +221,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustomerServices>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.CustomerId });
+                entity.HasKey(e => new { e.CustomerId, e.ServiceId });
 
                 entity.ToTable("DCS_CUSTOMER_SERVICES");
 
@@ -228,12 +229,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTOMER_SERVICES")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
                 entity.Property(e => e.CustomerId)
                     .HasColumnName("CUSTOMER_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -246,12 +247,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DatarightFlag)
-                    .HasColumnName("DATARIGHT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DATARIGHT_FLAG")
+; 
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastAccessDate)
@@ -268,12 +269,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.LimitDay)
-                    .HasColumnName("LIMIT_DAY");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("LIMIT_DAY")
+; 
 
                 entity.Property(e => e.LimitMonth)
-                    .HasColumnName("LIMIT_MONTH");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("LIMIT_MONTH")
+; 
 
                 entity.Property(e => e.Param1)
                     .HasColumnName("PARAM_1")
@@ -336,16 +337,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.AccessExeTime)
-                    .HasColumnName("ACCESS_EXE_TIME");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("ACCESS_EXE_TIME")
+; 
 
                 entity.Property(e => e.AccessIp)
                     .HasColumnName("ACCESS_IP")
                     .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.AccessResultFlag)
-                    .HasColumnName("ACCESS_RESULT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("ACCESS_RESULT_FLAG")
+; 
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("CREATION_DATE")
@@ -357,12 +358,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ReturnDataNum)
-                    .HasColumnName("RETURN_DATA_NUM");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("RETURN_DATA_NUM")
+; 
 
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
@@ -391,7 +392,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ReturnResult)
@@ -401,7 +402,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveDatarightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.DatarightTypeId, e.ServiceId, e.CustomerId });
+                entity.HasKey(e => new { e.CustomerId, e.ServiceId, e.DatarightTypeId });
 
                 entity.ToTable("DCS_CUSTSVE_DATARIGHT_INFO");
 
@@ -409,16 +410,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_DATARIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.DatarightTypeId)
-                    .HasColumnName("DATARIGHT_TYPE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.DatarightTypeId)
+                    .HasColumnName("DATARIGHT_TYPE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -432,7 +433,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -457,17 +458,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.UseChildrenLevel)
-                    .HasColumnName("USE_CHILDREN_LEVEL");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("USE_CHILDREN_LEVEL")
+; 
 
                 entity.Property(e => e.ValueRelativePath)
-                    .HasColumnName("VALUE_RELATIVE_PATH");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("VALUE_RELATIVE_PATH")
+; 
             });
 
             modelBuilder.Entity<DcsCustsveDatarightType>(entity =>
             {
-                entity.HasKey(e => new { e.CustomerId, e.DataRightId, e.ServiceId });
+                entity.HasKey(e => new { e.ServiceId, e.DataRightId, e.CustomerId });
 
                 entity.ToTable("DCS_CUSTSVE_DATARIGHT_TYPE");
 
@@ -475,16 +476,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_DATARIGHT_TYPE")
                     .IsUnique();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.DataRightId)
                     .HasColumnName("DATA_RIGHT_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -496,8 +497,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DataLevel)
-                    .HasColumnName("DATA_LEVEL");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DATA_LEVEL")
+; 
 
                 entity.Property(e => e.DataRightColumn1)
                     .HasColumnName("DATA_RIGHT_COLUMN1")
@@ -513,7 +514,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -527,7 +528,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsCustsveFieldList>(entity =>
             {
-                entity.HasKey(e => new { e.CustomerId, e.FieldId, e.ServiceId });
+                entity.HasKey(e => new { e.ServiceId, e.FieldId, e.CustomerId });
 
                 entity.ToTable("DCS_CUSTSVE_FIELD_LIST");
 
@@ -535,16 +536,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_CUSTSVE_FIELD_LIST")
                     .IsUnique();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnName("CUSTOMER_ID")
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.FieldId)
                     .HasColumnName("FIELD_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("CUSTOMER_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -557,7 +558,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DisplayName)
@@ -575,7 +576,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<DcsServiceCResults>(entity =>
             {
-                entity.HasKey(e => new { e.ReFieldName, e.ServiceId })
+                entity.HasKey(e => new { e.ServiceId, e.ReFieldName })
                     .HasName("PK_DCS_SERVICE_COLLECT_RESULTS");
 
                 entity.ToTable("DCS_SERVICE_C_RESULTS");
@@ -584,12 +585,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_SERVICE_COLLECT_RESULTS")
                     .IsUnique();
 
-                entity.Property(e => e.ReFieldName)
-                    .HasColumnName("RE_FIELD_NAME")
-                    .HasColumnType("NVARCHAR2(40)");
-
                 entity.Property(e => e.ServiceId)
                     .HasColumnName("SERVICE_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ReFieldName)
+                    .HasColumnName("RE_FIELD_NAME")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -603,12 +604,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimTransFlag)
-                    .HasColumnName("DIM_TRANS_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DIM_TRANS_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -658,11 +659,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
-
-                entity.Property(e => e.SortKey)
-                 .HasColumnName("SORT_KEY");
 
                 entity.Property(e => e.ImageUrl)
                     .HasColumnName("IMAGE_URL")
@@ -685,8 +683,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.SortKey)
-                    .HasColumnName("SORT_KEY");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("SORT_KEY")
+; 
             });
 
             modelBuilder.Entity<DcsServiceInfo>(entity =>
@@ -708,6 +706,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)")
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.AuditDate)
+                    .HasColumnName("AUDIT_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.AuditFlag)
+                    .HasColumnName("AUDIT_FLAG")
+; 
+
+                entity.Property(e => e.AuditedBy)
+                    .HasColumnName("AUDITED_BY")
+                    .HasColumnType("NVARCHAR2(40)");
+
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasColumnName("CREATED_BY")
@@ -718,14 +728,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DataMultiFlag)
-                    .HasColumnName("DATA_MULTI_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DATA_MULTI_FLAG")
+; 
 
                 entity.Property(e => e.DataPageFlag)
-                    .HasColumnName("DATA_PAGE_FLAG");
-                    //.HasColumnType("NUMBER");
-
-                entity.Property(e => e.SortKey).HasColumnName("SORT_KEY");
+                    .HasColumnName("DATA_PAGE_FLAG")
+; 
 
                 entity.Property(e => e.DatasourceId)
                     .HasColumnName("DATASOURCE_ID")
@@ -741,7 +749,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -800,20 +808,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.SortKey)
-                    .HasColumnName("SORT_KEY");
-                //.HasColumnType("NUMBER");
-
-                entity.Property(e => e.AuditFlag)
-                   .HasColumnName("AUDIT_FLAG");
-                //.HasColumnType("NUMBER");
-
-                entity.Property(e => e.AuditedBy)
-                    .HasColumnName("AUDITED_BY")
-                    .HasColumnType("NVARCHAR2(40)");
-
-                entity.Property(e => e.AuditedDate)
-                    .HasColumnName("AUDIT_DATE")
-                    .HasColumnType("DATE");
+                    .HasColumnName("SORT_KEY")
+; 
             });
 
             modelBuilder.Entity<DcsServiceParams>(entity =>
@@ -846,7 +842,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -873,12 +869,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.ParamNullable)
-                    .HasColumnName("PARAM_NULLABLE");
-                //.HasColumnType("NUMBER");
+                    .HasColumnName("PARAM_NULLABLE")
+; 
 
                 entity.Property(e => e.ParamTypeId)
-                    .HasColumnName("PARAM_TYPE_ID");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("PARAM_TYPE_ID")
+; 
 
                 entity.Property(e => e.RelaFieldId)
                     .HasColumnName("RELA_FIELD_ID")
@@ -890,13 +886,13 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.TimestampFlag)
-                    .HasColumnName("TIMESTAMP_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("TIMESTAMP_FLAG")
+; 
             });
 
             modelBuilder.Entity<DcsServiceSResults>(entity =>
             {
-                entity.HasKey(e => new { e.ServiceId, e.FieldId })
+                entity.HasKey(e => new { e.FieldId, e.ServiceId })
                     .HasName("PK_DCS_SERVICE_SHARE_RESULTS");
 
                 entity.ToTable("DCS_SERVICE_S_RESULTS");
@@ -905,12 +901,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_DCS_SERVICE_SHARE_RESULTS")
                     .IsUnique();
 
-                entity.Property(e => e.ServiceId)
-                    .HasColumnName("SERVICE_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
                 entity.Property(e => e.FieldId)
                     .HasColumnName("FIELD_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ServiceId)
+                    .HasColumnName("SERVICE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -923,7 +919,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -1014,8 +1010,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DatabaseTypeId)
-                    .HasColumnName("DATABASE_TYPE_ID");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DATABASE_TYPE_ID")
+; 
 
                 entity.Property(e => e.DeleteBy)
                     .HasColumnName("DELETE_BY")
@@ -1027,7 +1023,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -1183,7 +1179,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysDataRightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.DatarightTypeId, e.ModelId, e.UserGroupId, e.UserId });
+                entity.HasKey(e => new { e.UserId, e.UserGroupId, e.ModelId, e.DatarightTypeId });
 
                 entity.ToTable("SYS_DATA_RIGHT_INFO");
 
@@ -1191,20 +1187,20 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_SYS_DATA_RIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.DatarightTypeId)
-                    .HasColumnName("DATARIGHT_TYPE_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
-                entity.Property(e => e.ModelId)
-                    .HasColumnName("MODEL_ID")
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.UserGroupId)
                     .HasColumnName("USER_GROUP_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
+                entity.Property(e => e.ModelId)
+                    .HasColumnName("MODEL_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DatarightTypeId)
+                    .HasColumnName("DATARIGHT_TYPE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -1217,7 +1213,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DisplayName)
@@ -1245,12 +1241,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.UseChildrenLevel)
-                    .HasColumnName("USE_CHILDREN_LEVEL");
-                //.HasColumnType("NUMBER");
+                    .HasColumnName("USE_CHILDREN_LEVEL")
+; 
 
                 entity.Property(e => e.ValueRelativePath)
-                    .HasColumnName("VALUE_RELATIVE_PATH");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("VALUE_RELATIVE_PATH")
+; 
             });
 
             modelBuilder.Entity<SysDatabaseType>(entity =>
@@ -1264,8 +1260,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .IsUnique();
 
                 entity.Property(e => e.DatabaseTypeId)
-                    .HasColumnName("DATABASE_TYPE_ID");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DATABASE_TYPE_ID")
+; 
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -1285,7 +1281,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -1346,16 +1342,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag)
-                    .HasColumnName("ENABLE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("ENABLE_FLAG")
+; 
 
                 entity.Property(e => e.HaveDataLevel)
-                    .HasColumnName("HAVE_DATA_LEVEL");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("HAVE_DATA_LEVEL")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -1446,7 +1442,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimFieldCode)
@@ -1458,8 +1454,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.DimFlag)
-                    .HasColumnName("DIM_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DIM_FLAG")
+; 
 
                 entity.Property(e => e.DimTableName)
                     .HasColumnName("DIM_TABLE_NAME")
@@ -1470,28 +1466,28 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.FieldIndexFlag)
-                    .HasColumnName("FIELD_INDEX_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("FIELD_INDEX_FLAG")
+; 
 
                 entity.Property(e => e.FieldKeyFlag)
-                    .HasColumnName("FIELD_KEY_FLAG");
-                //.HasColumnType("NUMBER");
+                    .HasColumnName("FIELD_KEY_FLAG")
+; 
 
                 entity.Property(e => e.FieldLength)
-                    .HasColumnName("FIELD_LENGTH");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("FIELD_LENGTH")
+; 
 
                 entity.Property(e => e.FieldName)
                     .HasColumnName("FIELD_NAME")
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.FieldNullable)
-                    .HasColumnName("FIELD_NULLABLE");
-                //.HasColumnType("NUMBER");
+                    .HasColumnName("FIELD_NULLABLE")
+; 
 
                 entity.Property(e => e.FieldTypeId)
-                    .HasColumnName("FIELD_TYPE_ID");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("FIELD_TYPE_ID")
+; 
 
                 entity.Property(e => e.FieldValue)
                     .HasColumnName("FIELD_VALUE")
@@ -1510,8 +1506,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.TimestampFlag)
-                    .HasColumnName("TIMESTAMP_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("TIMESTAMP_FLAG")
+; 
             });
 
             modelBuilder.Entity<SysDatasourceInfo>(entity =>
@@ -1571,7 +1567,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -1619,7 +1615,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimName)
@@ -1676,7 +1672,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.DimTypeName)
@@ -1708,8 +1704,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AuditFlag)
-                    .HasColumnName("AUDIT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("AUDIT_FLAG")
+; 
 
                 entity.Property(e => e.AuditedBy)
                     .HasColumnName("AUDITED_BY")
@@ -1737,7 +1733,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ErrorCodeCode)
@@ -1755,8 +1751,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(100)");
 
                 entity.Property(e => e.ImportantFlag)
-                    .HasColumnName("IMPORTANT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("IMPORTANT_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -1778,8 +1774,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .IsUnique();
 
                 entity.Property(e => e.FieldTypeId)
-                    .HasColumnName("FIELD_TYPE_ID");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("FIELD_TYPE_ID")
+; 
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -1791,7 +1787,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.FieldTypeCode)
@@ -1830,8 +1826,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AuditFlag)
-                    .HasColumnName("AUDIT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("AUDIT_FLAG")
+; 
 
                 entity.Property(e => e.AuditedBy)
                     .HasColumnName("AUDITED_BY")
@@ -1859,7 +1855,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.HelpContent)
@@ -1876,8 +1872,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.ImportantFlag)
-                    .HasColumnName("IMPORTANT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("IMPORTANT_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -1923,7 +1919,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql(@"0
 ");
 
@@ -1970,8 +1966,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.CycleDayIntervalNumber)
-                    .HasColumnName("CYCLE_DAY_INTERVAL_NUMBER");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("CYCLE_DAY_INTERVAL_NUMBER")
+; 
 
                 entity.Property(e => e.CycleDayIntervalType)
                     .HasColumnName("CYCLE_DAY_INTERVAL_TYPE")
@@ -1998,8 +1994,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.CycleMonthIntervalNumber)
-                    .HasColumnName("CYCLE_MONTH_INTERVAL_NUMBER");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("CYCLE_MONTH_INTERVAL_NUMBER")
+; 
 
                 entity.Property(e => e.CycleMonthIntervalType)
                     .HasColumnName("CYCLE_MONTH_INTERVAL_TYPE")
@@ -2014,8 +2010,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.CycleMonthWeekNumber)
-                    .HasColumnName("CYCLE_MONTH_WEEK_NUMBER");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("CYCLE_MONTH_WEEK_NUMBER")
+; 
 
                 entity.Property(e => e.CycleMonthWeekType)
                     .HasColumnName("CYCLE_MONTH_WEEK_TYPE")
@@ -2058,8 +2054,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.CycleWeekIntervalNumber)
-                    .HasColumnName("CYCLE_WEEK_INTERVAL_NUMBER");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("CYCLE_WEEK_INTERVAL_NUMBER")
+; 
 
                 entity.Property(e => e.CycleWeekIntervalType)
                     .HasColumnName("CYCLE_WEEK_INTERVAL_TYPE")
@@ -2079,12 +2075,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag)
-                    .HasColumnName("ENABLE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("ENABLE_FLAG")
+; 
 
                 entity.Property(e => e.JobCode)
                     .IsRequired()
@@ -2137,8 +2133,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AuditFlag)
-                    .HasColumnName("AUDIT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("AUDIT_FLAG")
+; 
 
                 entity.Property(e => e.AuditedBy)
                     .HasColumnName("AUDITED_BY")
@@ -2166,12 +2162,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.ImportantFlag)
-                    .HasColumnName("IMPORTANT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("IMPORTANT_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2222,7 +2218,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql(@"0
 ");
 
@@ -2309,7 +2305,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysModelDatarightType>(entity =>
             {
-                entity.HasKey(e => new { e.DataRightTypeId, e.ModelId });
+                entity.HasKey(e => new { e.ModelId, e.DataRightTypeId });
 
                 entity.ToTable("SYS_MODEL_DATARIGHT_TYPE");
 
@@ -2317,12 +2313,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PK_SYS_MODEL_DATARIGHT_TYPE")
                     .IsUnique();
 
-                entity.Property(e => e.DataRightTypeId)
-                    .HasColumnName("DATA_RIGHT_TYPE_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
                 entity.Property(e => e.ModelId)
                     .HasColumnName("MODEL_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DataRightTypeId)
+                    .HasColumnName("DATA_RIGHT_TYPE_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.CreatedBy)
@@ -2334,8 +2330,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DataLevel)
-                    .HasColumnName("DATA_LEVEL");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DATA_LEVEL")
+; 
 
                 entity.Property(e => e.DataRightColumn1)
                     .HasColumnName("DATA_RIGHT_COLUMN1")
@@ -2351,7 +2347,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.LastUpdateDate)
@@ -2391,7 +2387,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteBy)
-                    .IsRequired()
                     .HasColumnName("DELETE_BY")
                     .HasColumnType("NVARCHAR2(40)");
 
@@ -2400,14 +2395,13 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
+                    .IsRequired()
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag)
-                    .HasColumnName("ENABLE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("ENABLE_FLAG")
+; 
 
                 entity.Property(e => e.ImageUrl)
                     .HasColumnName("IMAGE_URL")
@@ -2430,8 +2424,16 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("MODEL_GROUP_NAME")
                     .HasColumnType("NVARCHAR2(60)");
 
-                entity.Property(e => e.ParentId)
+                entity.Property(e => e.ModelGroupUrl)
+                    .HasColumnName("MODEL_GROUP_URL")
+                    .HasColumnType("NVARCHAR2(60)");
+
+                entity.Property(e => e.OutUrlFlag)
                     .IsRequired()
+                    .HasColumnName("OUT_URL_FLAG")
+                    .HasDefaultValueSql("0 ");
+
+                entity.Property(e => e.ParentId)
                     .HasColumnName("PARENT_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
@@ -2440,8 +2442,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(1000)");
 
                 entity.Property(e => e.SortKey)
-                    .HasColumnName("SORT_KEY");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("SORT_KEY")
+; 
             });
 
             modelBuilder.Entity<SysModelInfo>(entity =>
@@ -2479,13 +2481,13 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
+                    .IsRequired()
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.EnableFlag)
-                    .HasColumnName("ENABLE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("ENABLE_FLAG")
+; 
 
                 entity.Property(e => e.ImageUrl)
                     .HasColumnName("IMAGE_URL")
@@ -2516,9 +2518,13 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("MODEL_URL")
                     .HasColumnType("NVARCHAR2(100)");
 
+                entity.Property(e => e.OutUrlFlag)
+                    .HasColumnName("OUT_URL_FLAG")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.SortKey)
-                    .HasColumnName("SORT_KEY");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("SORT_KEY")
+; 
             });
 
             modelBuilder.Entity<SysModule>(entity =>
@@ -2694,33 +2700,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysOperRightInfo>(entity =>
             {
-                entity.HasKey(e => new { e.FunctionCode, e.ModelGroupId, e.ModelId, e.UserGroupId, e.UserId });
+                entity.HasKey(e => e.RecordId);
 
                 entity.ToTable("SYS_OPER_RIGHT_INFO");
 
-                entity.HasIndex(e => new { e.UserId, e.UserGroupId, e.ModelId, e.ModelGroupId, e.FunctionCode })
+                entity.HasIndex(e => e.RecordId)
                     .HasName("PK_SYS_OPER_RIGHT_INFO")
                     .IsUnique();
 
-                entity.Property(e => e.FunctionCode)
-                    .HasColumnName("FUNCTION_CODE")
-                    .HasColumnType("NVARCHAR2(10)");
-
-                entity.Property(e => e.ModelGroupId)
-                    .HasColumnName("MODEL_GROUP_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
-                entity.Property(e => e.ModelId)
-                    .HasColumnName("MODEL_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
-                entity.Property(e => e.UserGroupId)
-                    .HasColumnName("USER_GROUP_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("USER_ID")
-                    .HasColumnType("NVARCHAR2(40)");
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -2739,9 +2730,13 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
+                    .IsRequired()
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
                     .HasDefaultValueSql("0 ");
+
+                entity.Property(e => e.FunctionCode)
+                    .HasColumnName("FUNCTION_CODE")
+                    .HasColumnType("NVARCHAR2(10)");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2749,6 +2744,23 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.LastUpdatedBy)
                     .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ModelGroupId)
+                    .HasColumnName("MODEL_GROUP_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ModelId)
+                    .IsRequired()
+                    .HasColumnName("MODEL_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("USER_ID")
                     .HasColumnType("NVARCHAR2(40)");
             });
 
@@ -2768,8 +2780,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AuditFlag)
-                    .HasColumnName("AUDIT_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("AUDIT_FLAG")
+; 
 
                 entity.Property(e => e.AuditedBy)
                     .HasColumnName("AUDITED_BY")
@@ -2796,8 +2808,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DELETE_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2852,8 +2864,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DELETE_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -2880,12 +2892,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .IsUnique();
 
                 entity.Property(e => e.SystemId)
-                    .HasColumnName("SYSTEM_ID");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("SYSTEM_ID")
+; 
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
 
                 entity.Property(e => e.SystemCode)
@@ -3004,8 +3016,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DELETE_FLAG")
+; 
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -3024,8 +3036,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(1000)");
 
                 entity.Property(e => e.UserGroupLevel)
-                    .HasColumnName("USER_GROUP_LEVEL");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("USER_GROUP_LEVEL")
+; 
 
                 entity.Property(e => e.UserGroupName)
                     .HasColumnName("USER_GROUP_NAME")
@@ -3085,7 +3097,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
             modelBuilder.Entity<SysUserInGroup>(entity =>
             {
-                entity.HasKey(e => new { e.UserGroupId, e.UserId })
+                entity.HasKey(e => new { e.UserId, e.UserGroupId })
                     .HasName("PX_SYS_USER_IN_GROUP");
 
                 entity.ToTable("SYS_USER_IN_GROUP");
@@ -3094,17 +3106,17 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasName("PX_SYS_USER_IN_GROUP")
                     .IsUnique();
 
-                entity.Property(e => e.UserGroupId)
-                    .HasColumnName("USER_GROUP_ID")
-                    .HasColumnType("NVARCHAR2(40)");
-
                 entity.Property(e => e.UserId)
                     .HasColumnName("USER_ID")
                     .HasColumnType("NVARCHAR2(40)");
 
+                entity.Property(e => e.UserGroupId)
+                    .HasColumnName("USER_GROUP_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    //.HasColumnType("NUMBER")
+ 
                     .HasDefaultValueSql("0 ");
             });
 
@@ -3145,8 +3157,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("DELETE_FLAG")
+; 
 
                 entity.Property(e => e.EffEndDate)
                     .HasColumnName("EFF_END_DATE")
@@ -3183,12 +3195,12 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(500)");
 
                 entity.Property(e => e.UserIsLdap)
-                    .HasColumnName("USER_IS_LDAP");
-                //.HasColumnType("NUMBER");
+                    .HasColumnName("USER_IS_LDAP")
+; 
 
                 entity.Property(e => e.UserIsLock)
-                    .HasColumnName("USER_IS_LOCK");
-                    //.HasColumnType("NUMBER");
+                    .HasColumnName("USER_IS_LOCK")
+; 
 
                 entity.Property(e => e.UserMobile)
                     .HasColumnName("USER_MOBILE")

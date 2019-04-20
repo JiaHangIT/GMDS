@@ -9,10 +9,25 @@ namespace JiaHang.Projects.Admin.Web
     {
         public static AccountModel CurrentUser(this HttpContext httpContext, IMemoryCache cache)
         {
+
             IRequestCookieCollection cookies = httpContext.Request.Cookies;
             string token = cookies["token"];
             CredentialsManage credentialsManage = new CredentialsManage(cache);
             AccountModel account = credentialsManage.GetAccount(token);
+#if DEBUG
+            if (account == null)
+            {
+                account = new AccountModel()
+                {
+                    Id = "6e3ad26e6056472c9e0e415d37cde247",
+                    UserName = "admin",
+                    UserAccount = "admin",
+                    MobileNo = "admin",
+                    Email = "admin@admin.com",
+
+                };
+            }
+#endif
             return account;
         }
 

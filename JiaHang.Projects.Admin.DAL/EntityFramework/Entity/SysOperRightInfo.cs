@@ -5,6 +5,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
     public partial class SysOperRightInfo
     {
+        public string RecordId { get; set; }
         public string UserId { get; set; }
         public string UserGroupId { get; set; }
         public string ModelId { get; set; }

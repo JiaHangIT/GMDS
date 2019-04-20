@@ -24,10 +24,14 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(int pageSize, int currentPage, string customerName)
+        public FuncResult Select( string customerId)
         {
+            var customerEntity = _context.DcsCustomerInfo.FirstOrDefault(e => e.CustomerId == customerId);
+            if (customerEntity == null) {
+                return new FuncResult() { IsSuccess = false, Message = "客户id错判" };
+            }
             var query = from a in _context.DcsCustomerInfo
-                        where string.IsNullOrWhiteSpace(customerName)|| a.CustomerName.Contains(customerName)
+                        where a.CustomerId==customerId
                         join b in _context.DcsCustomerServices
                         on a.CustomerId equals b.CustomerId
                         into b_temp
@@ -99,8 +103,8 @@ namespace JiaHang.Projects.Admin.BLL.DcsCustomerBLL
 
                     }).Distinct()
                 })
-            });
-            return new FuncResult() { IsSuccess = true, Content =new {total=data.Count(), data=data.Skip(pageSize * currentPage).Take(pageSize)}  };
+            }).FirstOrDefault();
+            return new FuncResult() { IsSuccess = true, Content =data  };
         }
 
 

@@ -7,7 +7,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
     {
         public string ConnectionId { get; set; }
         public string ConnectionName { get; set; }
-        public decimal? DatabaseTypeId { get; set; }
+        public int? DatabaseTypeId { get; set; }
         public string ConnectionString { get; set; }
         public DateTime? CreationDate { get; set; }
         public string CreatedBy { get; set; }

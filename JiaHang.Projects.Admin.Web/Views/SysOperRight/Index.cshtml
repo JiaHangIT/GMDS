@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "客户接口授权";
+    ViewData["Title"] = "用户操作权限";
 }
 
 
@@ -12,38 +12,55 @@
     .el-dialog__body { padding: 15px; }
 </style>
 <div id="app">
-    <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;margin-bottom:15px;">
-        <el-col :span="16">
-            <p>{{data.customerName}}</p>
-        </el-col>
-        <el-col :span="8" style="text-align: right;">           
-            <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog">添加其它接口</span>
-            <span style="color:#67C23A;cursor:pointer;" @@click="updateServiceAuthorize">保存本次修改</span>
-        </el-col>
-    </el-row>
 
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="客户名称">
+            <el-input placeholder="客户名称"></el-input>
+        </el-form-item>
 
-    <div v-for="service in data.serviceinfos">
-        <el-row style="padding:15px;background-color:#ECF5FF;border-left:5px solid #50BFFF;">
-            <el-col :span="12">
-                <span>{{service.serviceName}}</span>(<small>{{service.serviceCode}}</small> )
+        <el-form-item>
+            <el-button type="primary">查询</el-button>
+        </el-form-item>
+        <el-pagination style="margin-bottom:16px;" @@size-change="handleSizeChange" @@current-change="handleCurrentChange"
+                       :current-page="currentPage" :page-sizes="[2,10, 20, 30, 40]"
+                       :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
+    </el-form>
+    <el-collapse accordion v-for="item in data">
+        <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;">
+            <el-col :span="16">
+                <p>{{item.customerName}}</p>
             </el-col>
-            <el-col :span="12" style="text-align: right;">
-                <span type="danger" style="color:#F56C6C;cursor:pointer;" @@click="removeServiceAuthorize(service.serviceId)">移除此接口授权</span>
+            <el-col :span="8" style="text-align: right;">
+                @*<span type="danger" style="color:#F56C6C;cursor:pointer;padding-right:15px;">取消此次接口操作</span>*@
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog(item)">添加其它接口</span>
+                <span style="color:#67C23A;cursor:pointer;" @@click="updateServiceAuthorize(item)">保存本次修改</span>
             </el-col>
         </el-row>
-        <div style="padding-left:15px;padding-right:15px;">
-            <div style="padding-top:10px;"><span>已授权字段</span></div>
-            <el-tag v-for="(field,index) in service.alreadyFields" :disable-transitions="false" @@close="fieldDel(field,service,index)" closable>
-                {{ field.fieldName }}
-            </el-tag>
-            <div style="border-top: 1px solid #EBEEF5;padding-top:10px;margin-top:10px;"><span>未授权字段</span></div>
-            <div style="min-height:30px;">
-                <span v-for="(field,index) in service.noryetfields" class="span-tag" href="#" @@click="fieldAdd(field,service,index)">{{ field.fieldName}}</span>
+
+        <el-collapse-item title="已授权接口" class="author_checkboxs">
+            <div v-for="service in item.serviceinfos">
+                <el-row style="padding:15px;background-color:#ECF5FF;">
+                    <el-col :span="12">
+                        <span>{{service.serviceName}}</span>(<small>{{service.serviceCode}}</small> )
+                    </el-col>
+                    <el-col :span="12" style="text-align: right;">
+                        <span type="danger" style="color:#F56C6C;cursor:pointer;" @@click="removeServiceAuthorize(item.customerId,service.serviceId)">移除此接口授权</span>
+                    </el-col>
+                </el-row>
+                <div style="padding-left:15px;padding-right:15px;">
+                    <div style="padding-top:10px;"><span>已授权字段</span></div>
+                    <el-tag v-for="(field,index) in service.alreadyFields" :disable-transitions="false" @@close="fieldDel(field,service,index)" closable>
+                        {{ field.fieldName }}
+                    </el-tag>
+                    <div style="border-top: 1px solid #EBEEF5;padding-top:10px;margin-top:10px;"><span>未授权字段</span></div>
+
+                    <span v-for="(field,index) in service.noryetfields" class="span-tag" href="#" @@click="fieldAdd(field,service,index)">{{ field.fieldName}}</span>
+                </div>
             </div>
-            
-        </div>
-    </div>
+
+        </el-collapse-item>
+    </el-collapse>
     <div style="width:1690px;">
         <el-dialog title="给用户授权新接口" :visible.sync="centerDialogVisible" width="68%" style="font-size:15px" modal-append-to-body="false" close-on-click-modal="false">
             <div style="margin-bottom:10px;margin-top:10px;" v-for="item in notbindData">
@@ -83,7 +100,7 @@
         el: "#app",
         data: function () {
             return {
-                data: {},
+                data: [],
                 activeNames: ['1'],
                 checkAll: false,
                 checkedCities: [],
@@ -96,7 +113,6 @@
                 total: 0,
                 notbindData: [],
                 thisCustomer: {},
-                customerid: '',
                 customerName: ''//查询条件 客户名称
 
             }
@@ -104,23 +120,11 @@
         methods: {
             fetchList: function () {
                 let vm = this
-                axios.get(`/api/DcsCustomerServiceData/${vm.customerid}`)
+                axios.get(`/api/DcsCustomerServiceData/${vm.pageSize}/${vm.currentPage}`)
                     .then(function (response) {
                         console.log(response.data);
-                        if (response.data.isSuccess == false) { 
-                            vm.$confirm('客户id错误', '警告', {
-                                confirmButtonText: '返回至客户信息管理页面',
-                                showCancelButton: false,
-                                showClose: false,
-                                closeOnClickModal: false,
-                                type: 'warning'
-                            }).then(() => {
-                                window.localStorage.removeItem('token')
-                                isAlertReLogin = false
-                                window.location.replace('/DcsCustomerInfo/index');
-                            })
-                        }
-                        vm.data = response.data.content
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
                     })
                     .catch(function (error) {
                         console.log(error)
@@ -128,7 +132,7 @@
             },
             fetchNotBindService: function () {
                 let vm = this
-                axios.get(`/api/DcsCustomerServiceData/notbind/${vm.customerid}`)
+                axios.get(`/api/DcsCustomerServiceData/notbind/${vm.thisCustomer.customerid}?customerName=${vm.customerName}`)
                     .then(function (response) {
                         console.log(response.data);
                         vm.notbindData = response.data.content
@@ -137,17 +141,17 @@
                         console.log(error)
                     });
             },
-            showDialog: function () {
+            showDialog: function (customer) {
                 this.centerDialogVisible = true
-                //console.log(customer)
+                console.log(customer)
 
-                //this.thisCustomer = { customerid: customer.customerId, customerName: customer.customerName }
+                this.thisCustomer = { customerid: customer.customerId, customerName: customer.customerName }
                 this.fetchNotBindService()
             },
             dialogSave: function () {
                 let vm = this
-                //console.log(this.thisCustomer)
-                //console.log(vm.notbindData)
+                console.log(this.thisCustomer)
+                console.log(vm.notbindData)
 
                 ///取出选中的所有接口以及字段
                 let data = vm.notbindData
@@ -171,7 +175,7 @@
                     vm.$message({ title: '异常', message: '未选择任何接口', type: 'error' })
                     return
                 }
-                axios.post('/api/DcsCustomerServiceData', { CustomerId: vm.customerid, ServiceInfos: parms })
+                axios.post('/api/DcsCustomerServiceData', { CustomerId: vm.thisCustomer.customerid, ServiceInfos: parms })
                     .then(function (response) {
                         if (!response.data.isSuccess) {
                             vm.$message({ title: '失败', message: response.data.message, type: 'error' })
@@ -193,10 +197,11 @@
                 data.checkedFields = data.checkAll ? data.fields : [];
                 data.isIndeterminate = false;
             },
-            removeServiceAuthorize: function ( serviceId) {
-                
+            removeServiceAuthorize: function (customerId, serviceId) {
+                console.log(customerId)
+                console.log(serviceId)
                 let vm = this
-                axios.delete(`/api/DcsCustomerServiceData/${vm.customerid}/${serviceId}`)
+                axios.delete(`/api/DcsCustomerServiceData/${customerId}/${serviceId}`)
                     .then(function (response) {
                         console.log(response.data);
 
@@ -213,15 +218,14 @@
                         console.log(error)
                     });
             },
-            updateServiceAuthorize: function () {
-              
+            updateServiceAuthorize: function (data) {
+                console.log(data)
                 let vm = this
                 var parms = {}
-                parms.customerId = vm.customerid
-                let serviceinfos = vm.data.serviceinfos
-                let services=[]
-                for (let i = 0; i < serviceinfos.length; i++) {
-                    let fields = serviceinfos[i]
+                parms.customerId = data.customerId
+                let services = []
+                for (let i = 0; i < data.serviceinfos.length; i++) {
+                    let fields = data.serviceinfos[i]
                     let service = {}
                     service.serviceId = fields.serviceId
                     let fs = []
@@ -282,17 +286,6 @@
         },
         mounted: function () {
             let vm = this
-            let url = location.href;
-            
-            let strs = url.split("=")
-            console.log(strs)
-            
-            let id = strs[strs.length - 1]
-            if (strs.length <= 1) { 
-                id='null'
-            }
-            console.log(id)
-            vm.customerid = id
             vm.fetchList();
         }
 
