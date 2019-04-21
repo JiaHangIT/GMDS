@@ -114,9 +114,7 @@
                                 showClose: false,
                                 closeOnClickModal: false,
                                 type: 'warning'
-                            }).then(() => {
-                                window.localStorage.removeItem('token')
-                                isAlertReLogin = false
+                            }).then(() => {                                
                                 window.location.replace('/DcsCustomerInfo/index');
                             })
                         }

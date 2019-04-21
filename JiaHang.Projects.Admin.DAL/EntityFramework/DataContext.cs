@@ -3126,9 +3126,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.ToTable("SYS_USER_INFO");
 
-                entity.HasIndex(e => e.UserAccount)
-                    .HasName("UX_SYS_USER_INFO")
-                    .IsUnique();
+                
 
                 entity.HasIndex(e => e.UserId)
                     .HasName("PK_SYS_USER_INFO")

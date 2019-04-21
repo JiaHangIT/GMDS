@@ -25,13 +25,10 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(int pageSize, int currentPage, string modelName)
+        public FuncResult Select( string modelGroupId)
         {
             var query = from a in _context.SysModelInfo
-                        .Where(e => string.IsNullOrWhiteSpace(modelName) || e.ModelName.Contains(modelName))
-                        .Skip(pageSize * currentPage).Take(pageSize)
-
-                        join b in _context.SysModelGroup
+                        join b in _context.SysModelGroup.Where(a => a.ModelGroupId == modelGroupId)
                         on a.ModelGroupId equals b.ModelGroupId
                         join c in _context.SysOperRightInfo
                         on a.ModelId equals c.ModelId
@@ -60,26 +57,34 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                             userGroupName = e_ifnull == null ? "" : e_ifnull.UserGroupName
                         };
 
-            var data = query.GroupBy(e => new { e.ModelId, e.ModelName, e.ModelGroupName, e.ModelGroupId }).Select(model => new
+            var data = query.ToList().GroupBy(e => new { e.ModelGroupName, e.ModelGroupId }).Select(modelgroup => new
             {
-                model.Key.ModelId,
-                model.Key.ModelName,
-                model.Key.ModelGroupId,
-                model.Key.ModelGroupName,
+               
+                modelgroup.Key.ModelGroupId,
+                modelgroup.Key.ModelGroupName,
+                model=modelgroup.GroupBy(g=>new { g.ModelId,g.ModelName}).Select(model=>new {
+                    model.Key.ModelName,
+                    model.Key.ModelId,
+                    users = model.Where(u => !u.userIsNull).Select(c => new
+                    {
+                        c.operReightId,
+                        c.userName,
+                        c.userAccount,
+                        isRemove=false,
+                    }).Distinct(),
+                  
+                    userGroups = model.Where(g => !g.userGroupIsNull).Select(c => new
+                    {
+                        c.operReightId,
+                        c.userGroupName,
+                        isRemove = false,
+                    }).Distinct(),
+                    deloperids = new List<string>(),
 
-                users = model.Where(u => !u.userIsNull).Select(c => new
-                {
-                    c.operReightId,
-                    c.userName,
-                    c.userAccount,
-                }).Distinct(),
-                userGroups = model.Where(g => !g.userGroupIsNull).Select(c => new
-                {
-                    c.userGroupName
-                }).Distinct()
+                }),                
             });
 
-            return new FuncResult() { IsSuccess = true, Content = new { data, total = _context.SysModelInfo.Count() } };
+            return new FuncResult() { IsSuccess = data.Count()>0, Content = data.FirstOrDefault()};
         }
 
 
@@ -172,31 +177,23 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
         }
 
 
-        public async Task<FuncResult> Delete(string currentUserId, SysOperRightParamsModel model)
+        public async Task<FuncResult> Delete(string currentUserId, SysOperRightDeleteParamsModel model)
         {
 
-            var users = _context.SysOperRightInfo.Where(e => model.userIds.Contains(e.UserId) && e.ModelId == model.ModelId);
-
-            var usergroups = _context.SysOperRightInfo.Where(e => model.userGroupIds.Contains(e.UserGroupId) && e.ModelId == model.ModelId);
-
+            var dels = _context.SysOperRightInfo.Where(e => model.operids.Contains(e.RecordId) && e.ModelId == model.ModelId);
+           
            
             await Task.Run(() =>
             {
-                foreach (var u in users)
+                foreach (var u in dels)
                 {
                     u.DeleteBy = currentUserId;
                     u.DeleteDate = DateTime.Now;
                     u.DeleteFlag = 1;
                 }
-                foreach (var g in usergroups)
-                {
-                    g.DeleteBy = currentUserId;
-                    g.DeleteDate = DateTime.Now;
-                    g.DeleteFlag = 1;
-                }
+               
             });
-            _context.SysOperRightInfo.UpdateRange(users);
-            _context.SysOperRightInfo.UpdateRange(usergroups);
+            _context.SysOperRightInfo.UpdateRange(dels);
             using (var trans = _context.Database.BeginTransaction())
             {
                 try

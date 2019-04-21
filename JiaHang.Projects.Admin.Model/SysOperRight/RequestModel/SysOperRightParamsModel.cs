@@ -11,5 +11,9 @@ namespace JiaHang.Projects.Admin.Model.SysOperRightParamsModel.RequestModel
         public List<string> userIds { get; set; }
         public List<string> userGroupIds { get; set; }       
     }
-    
+    public class SysOperRightDeleteParamsModel
+    {
+        public string ModelId { get; set; }
+        public List<string> operids { get; set; }
+    }
 }

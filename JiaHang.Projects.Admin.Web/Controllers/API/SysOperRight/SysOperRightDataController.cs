@@ -31,12 +31,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>       
-        [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize, int currentPage, string modelName)
+        [HttpGet("{modelGroupId}")]
+        public FuncResult Select(string modelGroupId)
         {
 
-            currentPage--;
-            return sysOperRightBLL.Select(pageSize, currentPage, modelName);
+          
+            return sysOperRightBLL.Select(modelGroupId);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
         [HttpPost]
         [Route("delete")]
-        public async Task<FuncResult> Delete([FromBody] SysOperRightParamsModel model)
+        public async Task<FuncResult> Delete([FromBody] SysOperRightDeleteParamsModel model)
         {
             if (!ModelState.IsValid)
             {
