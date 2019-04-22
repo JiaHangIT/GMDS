@@ -25,7 +25,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select( string modelGroupId)
+        public FuncResult Select(string modelGroupId)
         {
             var query = from a in _context.SysModelInfo
                         join b in _context.SysModelGroup.Where(a => a.ModelGroupId == modelGroupId)
@@ -46,6 +46,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                             a.ModelName,
                             a.ModelGroupId,
                             b.ModelGroupName,
+                            a.SortKey,
 
 
                             operReightId = c_ifnull == null ? "" : c_ifnull.RecordId,
@@ -59,20 +60,22 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
 
             var data = query.ToList().GroupBy(e => new { e.ModelGroupName, e.ModelGroupId }).Select(modelgroup => new
             {
-               
+
                 modelgroup.Key.ModelGroupId,
                 modelgroup.Key.ModelGroupName,
-                model=modelgroup.GroupBy(g=>new { g.ModelId,g.ModelName}).Select(model=>new {
+                model = modelgroup.GroupBy(g => new { g.ModelId, g.ModelName }).Select(model => new
+                {
                     model.Key.ModelName,
                     model.Key.ModelId,
+                    model.First().SortKey,
                     users = model.Where(u => !u.userIsNull).Select(c => new
                     {
                         c.operReightId,
                         c.userName,
                         c.userAccount,
-                        isRemove=false,
+                        isRemove = false,
                     }).Distinct(),
-                  
+
                     userGroups = model.Where(g => !g.userGroupIsNull).Select(c => new
                     {
                         c.operReightId,
@@ -81,10 +84,10 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                     }).Distinct(),
                     deloperids = new List<string>(),
 
-                }),                
+                }).OrderByDescending(e=>e.SortKey),
             });
 
-            return new FuncResult() { IsSuccess = data.Count()>0, Content = data.FirstOrDefault()};
+            return new FuncResult() { IsSuccess = data.Count() > 0, Content = data.FirstOrDefault() };
         }
 
 
@@ -181,8 +184,8 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
         {
 
             var dels = _context.SysOperRightInfo.Where(e => model.operids.Contains(e.RecordId) && e.ModelId == model.ModelId);
-           
-           
+
+
             await Task.Run(() =>
             {
                 foreach (var u in dels)
@@ -191,7 +194,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                     u.DeleteDate = DateTime.Now;
                     u.DeleteFlag = 1;
                 }
-               
+
             });
             _context.SysOperRightInfo.UpdateRange(dels);
             using (var trans = _context.Database.BeginTransaction())
@@ -212,6 +215,44 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
             return new FuncResult() { IsSuccess = true, Message = "删除成功" };
         }
 
+        public FuncResult<List<UserRouteModel>> CurrentUserRoutes(string currentUserId,bool isAdmin=false)
+        {
+            var listusers = _context.SysUserGroupRelation.Where(e => e.UserId == currentUserId).Select(c => c.UserId);
+            var opers = _context.SysOperRightInfo.Where(e => e.UserId == currentUserId || listusers.Contains(e.UserId)).Select(e=>e.ModelId);
+            //获取当前用户 所拥有的页面权限信息
+            var query = (from a in _context.SysModelInfo.Where(e=>isAdmin==true|| opers.Contains(e.ModelId))
+                         join b in _context.SysModelGroup on a.ModelGroupId equals b.ModelGroupId                         
+                         orderby a.SortKey descending
+                         orderby b.SortKey descending
+                         select new                         
+                         {
+                             b.ModelGroupId,
+                             b.ModelGroupName,
+                             b.ModelGroupUrl,
+                             GroupOutUrlFlag = b.OutUrlFlag,
+                             
 
+                             a.ModelId,
+                             a.ModelName,
+                             a.ModelUrl,
+                             a.OutUrlFlag,
+                         }).ToList();
+            var data = query.GroupBy(e => new { e.ModelGroupId, e.ModelGroupName, e.ModelGroupUrl ,e.GroupOutUrlFlag})
+                .Select(g => new UserRouteModel
+                {
+                    ModelGroupId = g.Key.ModelGroupId,
+                    ModelGroupName = g.Key.ModelGroupName,
+                    ModelGroupUrl = g.Key.GroupOutUrlFlag == 1?$"/iframecontainer/index?path={g.Key.ModelGroupUrl}":g.Key.ModelGroupUrl,
+                    OutUrlFlag=g.Key.GroupOutUrlFlag==1,
+                    Models = g.Select(m => new UserModuleRoute
+                    {
+                        ModelId = m.ModelId,
+                        ModelName = m.ModelName,
+                        ModelUrl = m.OutUrlFlag==1?$"/iframecontainer/index?path={m.ModelUrl}" : m.ModelUrl,
+                        OutUrlFlag = m.OutUrlFlag==1
+                    }).ToList()
+                }).ToList();
+            return new FuncResult<List<UserRouteModel>>() { IsSuccess = true, Content = data };
+        }
     }
 }

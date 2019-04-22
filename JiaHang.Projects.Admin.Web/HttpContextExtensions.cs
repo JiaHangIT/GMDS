@@ -31,18 +31,18 @@ namespace JiaHang.Projects.Admin.Web
             return account;
         }
 
-        public static string CurrentPathId(this HttpContext httpContext, IMemoryCache cache)
-        {
-            IRequestCookieCollection cookies = httpContext.Request.Cookies;
-            string token = cookies["token"];
-            string path = httpContext.Request.Headers["Referer"];
-            string cu_controller = path.Split("/")[3].ToUpper();
-            CredentialsManage credentialsManage = new CredentialsManage(cache);
-            //从缓存中获取当前用户routes
-            System.Collections.Generic.List<BLL.Relation.CurrentUserRouteBLL.UserRouteRawModel> routes = credentialsManage.GetAccountRoute(token);
-            //从routes匹配得到controllerid
-            return routes.FirstOrDefault(e => e.ControllerPath.ToUpper() == cu_controller)?.ControllerId;
+        //public static string CurrentPathId(this HttpContext httpContext, IMemoryCache cache)
+        //{
+        //    IRequestCookieCollection cookies = httpContext.Request.Cookies;
+        //    string token = cookies["token"];
+        //    string path = httpContext.Request.Headers["Referer"];
+        //    string cu_controller = path.Split("/")[3].ToUpper();
+        //    CredentialsManage credentialsManage = new CredentialsManage(cache);
+        //    //从缓存中获取当前用户routes
+        //    System.Collections.Generic.List<BLL.Relation.CurrentUserRouteBLL.UserRouteRawModel> routes = credentialsManage.GetAccountRoute(token);
+        //    //从routes匹配得到controllerid
+        //    return routes.FirstOrDefault(e => e.ControllerPath.ToUpper() == cu_controller)?.ControllerId;
 
-        }
+        //}
     }
 }

@@ -71,7 +71,7 @@ namespace JiaHang.Projects.Admin.Web.WebApiIdentityAuth
 
             ///取出当前用户route信息 
             ///判断当前请求路径 是否有无权限
-            List<BLL.Relation.CurrentUserRouteBLL.UserRouteRawModel> routes = credentialsManage.GetAccountRoute(token);
+            //List<BLL.Relation.CurrentUserRouteBLL.UserRouteRawModel> routes = credentialsManage.GetAccountRoute(token);
             //var result= VerifyPath(routes, context.Request);
             await _next.Invoke(context);
         }

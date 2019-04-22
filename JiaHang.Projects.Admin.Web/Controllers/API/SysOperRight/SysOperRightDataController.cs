@@ -78,5 +78,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             return await sysOperRightBLL.Delete(HttpContext.CurrentUser(cache).Id, model);
         }
 
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>       
+        [HttpGet]
+        [Route("CurrentUserRoutes")]
+        public object CurrentUserRoutes()
+        {
+            return sysOperRightBLL.CurrentUserRoutes(HttpContext.CurrentUser(cache).Id);
+        }
+        
     }
 }
