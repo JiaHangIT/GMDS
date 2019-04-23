@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "iframe container";
+}
+<div style="height:100%;margin-top:15px;">
+    <iframe id="ifr" frameborder="0" style="width:100%;min-height:100%;" marginwidth="0" marginheight="0"></iframe>
+</div>
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+    let url = location.href;
+    let strs = url.split("=")
+    let id = strs[strs.length - 1]
+    if (strs.length <= 1) {
+        id = 'null'
+    }
+    document.getElementById("ifr").src = id
+
+</script>

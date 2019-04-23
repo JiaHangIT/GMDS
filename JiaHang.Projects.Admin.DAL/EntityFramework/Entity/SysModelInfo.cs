@@ -8,9 +8,11 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string ModelId { get; set; }
         public string ModelCode { get; set; }
         public string ModelName { get; set; }
+        public string ModelUrl { get; set; }
+        public int? OutUrlFlag { get; set; }
         public string ModelGroupId { get; set; }
-        public decimal? SortKey { get; set; }
-        public decimal? EnableFlag { get; set; }
+        public int? SortKey { get; set; }
+        public int? EnableFlag { get; set; }
         public string ImageUrl { get; set; }
         public DateTime? CreationDate { get; set; }
         public string CreatedBy { get; set; }
@@ -19,6 +21,5 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public int DeleteFlag { get; set; }
         public DateTime? DeleteDate { get; set; }
         public string DeleteBy { get; set; }
-        public string ModelUrl { get; set; }
     }
 }

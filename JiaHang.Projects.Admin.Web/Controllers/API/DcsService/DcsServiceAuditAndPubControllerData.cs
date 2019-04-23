@@ -48,7 +48,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                     return new FuncResult() { IsSuccess = false, Message = string.Format("Error:{0}","接口主键信息异常，或当前审核接口已被删除!") };
                 }
                 serviceInfo.AuditFlag = model.AuditFlag;
-                serviceInfo.AuditedDate = DateTime.Now;
+                serviceInfo.AuditDate = DateTime.Now;
                 serviceInfo.AuditedBy = HttpContext.CurrentUser(cache).Id;
                 context.SaveChanges();
                 return new FuncResult() { IsSuccess = true,Message="Success" };

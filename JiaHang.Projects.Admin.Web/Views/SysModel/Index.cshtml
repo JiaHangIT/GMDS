@@ -1,0 +1,286 @@
+﻿
+@{
+    ViewData["Title"] = "模块信息管理";
+}
+
+
+<style>
+    .v-modal { display: none; }
+    #app { margin-top: 15px; padding: 15px; background-color: #fff; }
+</style>
+<div id="app">
+
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              tooltip-effect="dark"
+              style="width: 100%">
+
+
+        <el-table-column label="模块名称"
+                         prop="modelName">
+        </el-table-column>
+        <el-table-column label="模块路径"
+                         prop="modelUrl">
+        </el-table-column>
+        <el-table-column label="是否外部路径">
+            <template slot-scope="scope">
+                <el-tag size="medium" type="warning" v-if="scope.row.outUrlFlag==1">外部路径</el-tag>
+                <el-tag size="medium" v-else>内部视图</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column label="所属模块名称"
+                         prop="modelGroupName">
+        </el-table-column>
+        <el-table-column label="排序值"
+                         prop="sortKey">
+        </el-table-column>
+        <el-table-column label="创建时间"
+                         prop="creationDate">
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+            <template slot="header" slot-scope="scope">
+                <el-button type="primary" @@click="handleAdd">添加模块</el-button>
+            </template>
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+
+            </template>
+        </el-table-column>
+    </el-table>
+
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="30%"
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="模块名称" prop="modelName">
+                <el-input v-model="form.modelName"></el-input>
+            </el-form-item>
+            <el-form-item label="模块默认路径">
+                <el-input v-model="form.modelUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="是否外部路径">
+                <el-radio v-model="form.outUrlFlag" label="1">外部路径</el-radio>
+                <el-radio v-model="form.outUrlFlag" label="0">内部视图</el-radio>
+            </el-form-item>
+            <el-form-item label="排序值">
+                <el-input-number v-model="form.sortKey" :min="1" :max="300" label="排序值"></el-input-number>
+            </el-form-item>
+            <el-form-item label="所属模块组">
+                <el-select v-model="form.modelGroupId" placeholder="请选择">
+                    <el-option v-for="item in options"
+                               :key="item.modelGroupId"
+                               :label="item.modelGroupName"
+                               :value="item.modelGroupId">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                centerDialogVisible: false,
+                currentPage: 1,
+                pageSize: 10,
+                total: 0,
+                form: {
+                    modelName: '',
+                    modelUrl: '',
+                    outUrlFlag: '0',
+                    sortKey: 1,
+                    modelGroupName: '',
+                    modelGroupId: ''
+                },
+                rules: {
+                    modelName: [
+                        { required: true, message: '模块名称不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                },
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
+                IsCreate: true,//是否新增
+                options: []
+
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+
+                axios.get(`/api/SysModelData/${vm.pageSize}/${vm.currentPage}`)
+                    .then(function (response) {
+                        console.log(response.data);
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                vm.fetchSelectData();
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑模块信息"
+                vm.form = formdata;
+                console.log(formdata)
+                vm.centerDialogVisible = true
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+                //删除
+
+                //弹出确认框
+
+                this.$confirm('此操作将删除该模块，以及其下的所有绑定关系, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysModelData/' + row.modelId)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+            },
+            handleAdd: function () {
+                let vm = this
+                vm.fetchSelectData();
+                vm.IsCreate = true
+                vm.resetForm()
+                vm.dialogTitle = "添加模块信息"
+                vm.centerDialogVisible = true
+                //添加
+            },
+            fetchSelectData: function () {
+                let vm = this
+                axios.get(`/api/SysModelData/GetParentModule`)
+                    .then(function (response) {
+                        console.log(response.data);
+                        vm.options = response.data.content;
+                       
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            dialogCancel: function () {
+                let vm = this;
+
+                vm.centerDialogVisible = false
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/SysModelData";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/SysModelData/`;
+                            method = "PUT";
+                        }
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
+                        return;
+                    }
+                });
+            },
+            resetForm() {
+                let vm = this;
+                vm.form.modelName = '';
+                vm.form.modelUrl = '';
+                vm.form.outUrlFlag = '0';
+                vm.form.sortKey = 1;
+                vm.form.modelParentName = '';
+                vm.form.modelGroupId = '';
+
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.currentPage = val;
+                this.fetchList();
+            },
+
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>

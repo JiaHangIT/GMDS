@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using JiaHang.Projects.Admin.Model;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,13 @@ namespace JiaHang.Projects.Admin.Web.WebApiIdentityAuth
             var account = _cache.Get<AccountModel>(token);
             return account;
         }
-        public void SetAccountRoute(List<UserRouteRawModel> routes, string token)
+        public void SetAccountRoute(List<UserRouteModel> routes, string token)
         {
-            _cache.Set<List<UserRouteRawModel>>(token+"_route", routes, DateTimeOffset.Now.AddDays(7));
+            _cache.Set<List<UserRouteModel>>(token+"_route", routes, DateTimeOffset.Now.AddDays(7));
         }
 
-        public List<UserRouteRawModel> GetAccountRoute(string token) {
-            var routes = _cache.Get<List<UserRouteRawModel>>(token + "_route");
+        public List<UserRouteModel> GetAccountRoute(string token) {
+            var routes = _cache.Get<List<UserRouteModel>>(token + "_route");
             return routes;
         }
 

@@ -27,8 +27,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string DeleteBy { get; set; }
         public string DatasourceId { get; set; }
         public int? SortKey { get; set; }
-        public decimal? AuditFlag { get; set; }
-        public DateTime? AuditedDate { get; set; }
+        public int? AuditFlag { get; set; }
+        public DateTime? AuditDate { get; set; }
         public string AuditedBy { get; set; }
     }
 }

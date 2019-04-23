@@ -54,15 +54,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             }
             try
             {
-                if (model.ServiceType == "SHARE")
-                {
-                    model.lscollect = new List<DcsCollectModel>();
-                }
-                else
-                {
-                    model.lsshare = new List<DcsShareModel>();
-                }
-                return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
+                //if (model.ServiceType == "SHARE")
+                //{
+                //    model.lscollect = new List<DcsCollectModel>();
+                //}
+                //else
+                //{
+                //    model.lsshare = new List<DcsShareModel>();
+                //}
+                //return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
+                return new FuncResult() { IsSuccess = true, Message = "Success" };
             }
             catch (Exception ex)
             {

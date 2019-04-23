@@ -5,7 +5,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
     public partial class SysFieldType
     {
-        public decimal FieldTypeId { get; set; }
+        public int FieldTypeId { get; set; }
         public string FieldTypeCode { get; set; }
         public string FieldTypeName { get; set; }
         public DateTime? CreationDate { get; set; }

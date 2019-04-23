@@ -100,25 +100,25 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Condition
             return new FuncResult() { IsSuccess = true, Content = data };
         }
 
-        /// <summary>
-        /// 以树型结构返回当前用户在当前路径下所拥有的数据查询权限
-        /// 用于前端页面构建查询条件的下拉框
-        /// </summary>
-        /// <param name="conditionId"></param>
-        /// <returns></returns>
-        [Route("GetCurrentUserConditionTree")]
-        [HttpGet]
-        public object GetCurrentUserConditionTree(string conditionId)
-        {
-            var data = storeService.GetCurrentUserConditionTree(HttpContext.CurrentUser(cache).Id, HttpContext.CurrentPathId(cache), conditionId);
-            return data;
-        }
-        [Route("GetControllerIdTest")]
-        [HttpGet]
-        public string GetControllerIdTest()
-        {
-            return HttpContext.CurrentPathId(cache);
-        }
+        ///// <summary>
+        ///// 以树型结构返回当前用户在当前路径下所拥有的数据查询权限
+        ///// 用于前端页面构建查询条件的下拉框
+        ///// </summary>
+        ///// <param name="conditionId"></param>
+        ///// <returns></returns>
+        //[Route("GetCurrentUserConditionTree")]
+        //[HttpGet]
+        //public object GetCurrentUserConditionTree(string conditionId)
+        //{
+        //    var data = storeService.GetCurrentUserConditionTree(HttpContext.CurrentUser(cache).Id, HttpContext.CurrentPathId(cache), conditionId);
+        //    return data;
+        //}
+        //[Route("GetControllerIdTest")]
+        //[HttpGet]
+        //public string GetControllerIdTest()
+        //{
+        //    return HttpContext.CurrentPathId(cache);
+        //}
 
 
         ///// <summary>

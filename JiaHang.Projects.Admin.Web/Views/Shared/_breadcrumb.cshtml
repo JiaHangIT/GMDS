@@ -1,6 +1,6 @@
 ﻿<div>
     <div style="padding:0px 15px;cursor:pointer;float:left;" id="animation-left-nav"><a class="layui-icon layui-icon-spread-left" style="color:#1E9FFF;"></a></div>
-    <span class="layui-breadcrumb" id="breadcrumb">
+    <span class="layui-breadcrumb" id="breadcrumb" style="visibility: visible;">
     </span>
 </div>
 
@@ -17,50 +17,49 @@
 
         let c_routes = routes[0];
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i].moduleId === current_moduleId) {
+            if (routes[i].modelGroupId === current_moduleId) {
                 //generateMenu(side, [routes[i]], 1);
                 c_routes = routes[i];
                 break;
             }
         }
-        let curl = GetUrlRelativePath();
-        for (let i = 0; i < c_routes.controllers.length; i++) {
+      
+        let breadcrumb = document.getElementById("breadcrumb");
+        let group = document.createElement("a");
+        group.innerText = c_routes.modelGroupName;
+        group.href = c_routes.modelGroupUrl;
+        breadcrumb.appendChild(group);
 
-            let controller = c_routes.controllers[i];
-            if (controller.methods.length <= 1) {
-                if (controller.methods[0].completePath == curl) {
-                    document.getElementById("breadcrumb").innerHTML = "<a href='#'>"
-                        + c_routes.moduleName + "</a>" + "<a href='" + controller.methods[0].completePath
-                        + "'>" + controller.controllerAlias + "</a>";
-                    break;
-                }
-
-            }
-            else {
-                for (let j = 0; j < controller.methods.length; j++) {
-                    let method = controller.methods[j];
-                    if (method.completePath == curl) {
-                        document.getElementById("breadcrumb").innerHTML = "<a href='#'>"
-                            + c_routes.moduleName + "</a>" + "<a href='" + controller.methods[0].completePath + "'>" + controller.controllerAlias + "</a>" + "<a href='#'>" + method.methodAlias + "</a>";
-                        break;
-                    }
-                }
-            }
-           
+        for (let i = 0; i < c_routes.models.length; i++) {
+            let controller = c_routes.models[i];          
+            if (controller.modelUrl == GetUrlRelativePath(controller.outUrlFlag)) {
+               
+                let cite = document.createElement("cite");
+                cite.innerText = controller.modelName;
+                let moa = document.createElement("a");
+                moa.appendChild(cite);
+                breadcrumb.appendChild(moa);
+            }         
         }
 
     }
     //获取当前url
-    function GetUrlRelativePath() {
+    function GetUrlRelativePath(isIframe) {
         var url = document.location.toString();
+        if (isIframe == true) {
+            let s = url.indexOf("/iframe");
+            let curl = url.substr(s);
+            console.log(curl);
+            return curl;
+        }
         var arrUrl = url.split("//");
 
         var start = arrUrl[1].indexOf("/");
         var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
-
+        
         if (relUrl.indexOf("?") != -1) {
             relUrl = relUrl.split("?")[0];
-        }
+        }       
         return relUrl;
     }
 

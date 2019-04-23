@@ -1,7 +1,7 @@
 ﻿
 <div class="layui-header">
     <div class="layui-logo" style="width: 100%;text-align: left;font-size: 20px;color: #B5C0C2;">
-        数据共享平台维护系统  
+        数据共享与采集应用支撑平台
     </div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
@@ -36,7 +36,7 @@
         var header_modules = new Array();
         for (let i = 0; i < routes.length; i++) {
             
-            header_modules.push({ moduleId: routes[i].moduleId, defaultUrl: routes[i].controllers[0].methods[0].completePath, moduleName: routes[i].moduleName });
+            header_modules.push({ moduleId: routes[i].modelGroupId, defaultUrl: routes[i].modelGroupUrl, moduleName: routes[i].modelGroupName });
            
         }
     }
@@ -47,8 +47,7 @@
     for (let i = header_modules.length-1; i >= 0; i--) { 
         var li = document.createElement("li");
         li.className = "layui-nav-item";
-        //&quot;"+ row.name + "&quot;
-        //li.innerHTML = "<a href='#' onclick='jump(" + header_modules[i].moduleId + ")' >" + header_modules[i].moduleName + "</a>";
+        
         li.innerHTML = "<a href='#' onclick='jump(&quot;" + header_modules[i].moduleId + "&quot)' >" + header_modules[i].moduleName + "</a>";
         //ul.insertBefore(li, ul.childNodes[i]);
         ul.appendChild(li);
@@ -57,6 +56,7 @@
     function jump(moduleId) {
         for (let i = 0; i < header_modules.length; i++) {
             if (moduleId === header_modules[i].moduleId) {
+               
                 window.localStorage.setItem("current_moduleId", header_modules[i].moduleId);
                 window.location.replace(header_modules[i].defaultUrl);
             }

@@ -1,0 +1,308 @@
+﻿
+@{
+    ViewData["Title"] = "用户操作权限管理";
+}
+
+
+<style>
+    .v-modal { display: none; }
+    #app { margin-top: 15px; padding: 15px; background-color: #fff; overflow: hidden; zoom: 1; }
+    .span-tag { margin-right: 20px; margin-top: 9px; margin-bottom: 9px; padding: 0px 10px; cursor: pointer; color: #606266; border: 1px solid rgba(64,158,255,.2); height: 32px; line-height: 30px; border-radius: 4px; display: inline-block; }
+    .el-tag { margin-right: 20px; margin-top: 9px; margin-bottom: 9px; }
+    .el-dialog__body { padding: 15px; }
+</style>
+<div id="app">
+    <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;margin-bottom:15px;">
+        <el-col :span="16">
+            <p>{{data.modelGroupName}}</p>
+        </el-col>
+        @*<el-col :span="8" style="text-align: right;">
+            <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog">添加其它接口</span>
+            <span style="color:#67C23A;cursor:pointer;" @@click="updateServiceAuthorize">保存本次修改</span>
+        </el-col>*@
+    </el-row>
+
+
+    <div v-for="item in data.model">
+        <el-row style="padding:15px;background-color:#ECF5FF;border-left:5px solid #50BFFF;">
+            <el-col :span="12">
+                <span>{{item.modelName}}</span>
+            </el-col>
+            <el-col :span="12" style="text-align: right;">
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog(item)">添加用户/用户组</span>
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="cancel(item)">取消本次修改</span>
+                <span style="color:#67C23A;cursor:pointer;" @@click="save(item)">保存本次修改</span>
+            </el-col>
+        </el-row>
+        <div style="padding-left:15px;padding-right:15px;">
+            <div style="padding-top:10px;"><span>用户</span></div>
+            <div >
+                <el-tag v-for="(field,index) in item.users" v-if="!field.isRemove" :disable-transitions="false" @@close="delUser(field,item,index)" closable>
+                    {{ field.userName }}
+                </el-tag>
+            </div>
+           
+            <div style="border-top: 1px solid #EBEEF5;padding-top:10px;"><span>用户组</span></div>
+            <div style="min-height:12px;">
+                <el-tag v-for="(field,index) in item.userGroups" v-if="!field.isRemove" :disable-transitions="false" @@close="delUserGroup(field,item,index)" closable>
+                    {{ field.userGroupName }}
+                </el-tag>                
+            </div>
+
+        </div>
+    </div>
+    <div style="width:1690px;">
+        <el-dialog title="给模块组添加用户/用户组" :visible.sync="centerDialogVisible" width="68%" style="font-size:15px" modal-append-to-body="false" close-on-click-modal="false">
+
+            <div style="margin-bottom:10px;margin-top:10px;">
+                <el-row style="padding:15px;background-color:#ECF5FF;">
+                    <el-col :span="18">
+                        <el-checkbox :indeterminate="userisIndeterminate" v-model="userscheckAll" @@change="usersCheckAllChange"> <span>未绑定用户</span> </el-checkbox>
+                    </el-col>
+                </el-row>
+                <div style="padding:15px 15px 0px 15px;">
+                    <el-checkbox-group v-model="checkeUsers" @@change="handleCheckedUsersChange">
+                        <el-checkbox v-for="field in notbindData.users" :label="field" style="margin:9px 15px 9px 0px;">
+                            <span>{{field.userName}}</span>
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </div>
+            </div>
+            <div style="margin-bottom:10px;margin-top:10px;">
+                <el-row style="padding:15px;background-color:#ECF5FF;">
+                    <el-col :span="18">
+                        <el-checkbox :indeterminate="userisIndeterminate" v-model="userGroupscheckAll" @@change="userGroupsCheckAllChange"> <span>未绑定用户组</span> </el-checkbox>
+                    </el-col>
+                </el-row>
+                <div style="padding:15px 15px 0px 15px;">
+                    <el-checkbox-group v-model="checkeUserGroups" @@change="handleCheckedUserGroupsChange">
+                        <el-checkbox v-for="field in notbindData.userGroups" :label="field" style="margin:9px 15px 9px 0px;">
+                            <span>{{field.userGroupName}}</span>
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @@click="centerDialogVisible= false">取 消</el-button>
+                <el-button type="primary" @@click="dialogSave">保 存</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+</div>
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: {},
+                activeNames: ['1'],
+                checkAll: false,
+                checkedCities: [],
+                cities: ['字段1', '字段2', '字段3', '字段4', '字段5', '字段6', '字段7', '字段8', '字段9', '字段10', '字段11', '字段12'],
+                cities1: ['字段1', '字段2', '字段3', '字段4', '字段5', '字段6', '字段7', '字段8', '字段9', '字段10', '字段11', '字段12'],
+                isIndeterminate: false,
+                centerDialogVisible: false,
+                pageSize: 2,
+                currentPage: 1,
+                total: 0,
+                notbindData: {},
+                thisCustomer: {},
+                modelGroupId: '',
+                modelId: '',
+
+                userscheckAll: false,
+                userisIndeterminate: false,
+                checkeUsers: [],
+
+                userGroupscheckAll: false,
+                userGroupsIsIndeterminate: false,
+                checkeUserGroups: [],
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                axios.get(`/api/SysOperRightData/${vm.modelGroupId}`)
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data.isSuccess == false) {
+                            vm.$confirm('暂无模块信息', '警告', {
+                                confirmButtonText: '返回至模块组信息管理页面',
+                                showCancelButton: false,
+                                showClose: false,
+                                closeOnClickModal: false,
+                                type: 'warning'
+                            }).then(() => {
+                                window.location.replace('/sysmodel/group');
+                            })
+                        }
+                        vm.data = response.data.content
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            fetchNotBindService: function () {
+                let vm = this
+                axios.get(`/api/SysOperRightData/notbind/${vm.modelGroupId}`)
+                    .then(function (response) {
+                        console.log(response.data);
+                        vm.notbindData = response.data.content
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            showDialog: function (value) {
+                console.log(value)
+                this.modelId = value.modelId
+                this.centerDialogVisible = true
+                //console.log(customer)
+
+                //this.thisCustomer = { modelGroupId: customer.modelGroupId, customerName: customer.customerName }
+                this.fetchNotBindService()
+            },
+            dialogSave: function () {
+                let vm = this
+                ///取出选中的所有接口以及字段
+                let data = vm.notbindData
+                let parms = []
+                console.log(vm.checkeUsers);
+                console.log(vm.checkeUserGroups);
+                const cusers = vm.checkeUsers;
+                const cgroups = vm.checkeUserGroups;
+                let uid = [];
+                for (let i = 0; i < cusers.length; i++) {
+                    uid.push(cusers[i].userId);
+                }
+
+                let ugid = [];
+                for (let i = 0; i < cgroups.length; i++) {
+                    ugid.push(cgroups[i].userGroupId);
+                }
+                if (uid.length <= 0 && ugid.length <= 0) {
+                    vm.$message({ title: '异常', message: '未选择任何用户/用户组', type: 'error' })
+                    return
+                }
+
+                axios.post('/api/SysOperRightData', { modelId: vm.modelId, userIds: uid, userGroupIds: ugid })
+                    .then(function (response) {
+                        if (!response.data.isSuccess) {
+                            vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                            return;
+                        }
+                        vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                        vm.fetchList();
+                        vm.centerDialogVisible = false
+                    })
+                    .catch(function (error) {
+                        vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                        console.log(error);
+                    });
+                console.log(parms)
+
+            },
+            usersCheckAllChange(val) {
+                console.log(val)
+                let vm = this;
+                vm.checkeUsers = val ? vm.notbindData.users : [];
+                vm.userisIndeterminate = false;
+
+            },
+            userGroupsCheckAllChange(val) {
+                let vm = this;
+                vm.checkeUserGroups = val ? vm.notbindData.userGroups : [];
+                vm.userGroupsIsIndeterminate = false;
+            },
+            handleCheckedUsersChange(value) {
+                let vm = this
+                let checkedCount = value.length;
+                vm.userscheckAll = checkedCount === vm.notbindData.users.length;
+                vm.userisIndeterminate = checkedCount > 0 && checkedCount < vm.notbindData.users.length;
+            },
+            handleCheckedUserGroupsChange(value) {
+                let vm = this
+                let checkedCount = value.length;
+                vm.userGroupscheckAll = checkedCount === vm.notbindData.userGroups.length;
+                vm.userGroupsIsIndeterminate = checkedCount > 0 && checkedCount < vm.notbindData.userGroups.length;
+            },
+            cancel: function (model) { 
+                for (let i = 0; i < model.users.length; i++) {
+                    model.users[i].isRemove = false
+                }
+                for (let i = 0; i < model.userGroups.length; i++) {
+                    model.userGroups[i].isRemove = false
+                }
+                model.deloperids=[]
+            },
+            save: function (model) {
+               
+                let vm = this
+                if (model.deloperids.length <= 0) {
+                    vm.$message({ title: '失败', message: '暂无任何修改', type: 'error' });
+                    return;
+                }                      
+                axios.post('/api/SysOperRightData/delete', { modelId: model.modelId, operids: model.deloperids})
+                    .then(function (response) {
+                        if (!response.data.isSuccess) {
+                            vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                            return;
+                        }
+                        vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                        vm.fetchList();
+                    })
+                    .catch(function (error) {
+                        vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                        console.log(error);
+                    });
+            },              
+            delUser: function (user, model, index) {
+        
+                model.deloperids.push(user.operReightId);               
+                user.isRemove = true;
+                
+            },
+            delUserGroup: function (group, model, index) {               
+                model.deloperids.push(group.operReightId);
+                group.isRemove = true;
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.currentPage = val;
+                this.fetchList();
+            },
+
+        },
+        mounted: function () {
+            let vm = this
+            let url = location.href;
+
+            let strs = url.split("=")
+            console.log(strs)
+
+            let id = strs[strs.length - 1]
+            if (strs.length <= 1) {
+                id = 'null'
+            }
+            console.log(id)
+            vm.modelGroupId = id
+            vm.fetchList();
+        }
+
+    });
+</script>

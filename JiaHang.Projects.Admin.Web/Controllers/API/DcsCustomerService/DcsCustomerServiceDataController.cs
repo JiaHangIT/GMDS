@@ -1,6 +1,7 @@
 ﻿using JiaHang.Projects.Admin.BLL.DcsCustomerBLL;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
+using JiaHang.Projects.Admin.Model.DcsCustomerServiceParams.RequestModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -28,63 +29,67 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>       
-        [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize, int currentPage, string customerName, string customerMobile)
+        [HttpGet("{customerId}")]
+        public FuncResult Select( string customerId)
         {
-            currentPage--;
 
-            return dcsCustomerServiceBLL.Select(pageSize, currentPage, customerName, customerMobile);
 
+            return dcsCustomerServiceBLL.Select(customerId);
         }
 
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>       
+        [HttpGet]
+        [Route("NotBind/{customerId}")]
+        public FuncResult NotBind(string customerId)
+        {            
+            return dcsCustomerServiceBLL.NotBind(customerId);
 
+        }
+        
         /// <summary>
         /// 添加
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<FuncResult> Add([FromBody] DcsCustomerInfo model)
+        public async Task<FuncResult> Add([FromBody] DcsCustomerServiceParamsModel model)
         {
             if (!ModelState.IsValid)
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-            return await dcsCustomerServiceBLL.Add(model, HttpContext.CurrentUser(cache).Id);
+            return await dcsCustomerServiceBLL.Add( HttpContext.CurrentUser(cache).Id,model);
         }
 
-        /// <summary>
-        /// 修改
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut("{id}")]
-        public async Task<FuncResult> Update(string id, [FromBody]DcsCustomerInfo model)
+        [HttpPost]
+        [Route("UpdateField")]
+        public async Task<FuncResult> UpdateField([FromBody] DcsCustomerServiceParamsModel model)
         {
-            FuncResult data = await dcsCustomerServiceBLL.Update(id, model, HttpContext.CurrentUser(cache).Id);
-            return data;
-
+            if (!ModelState.IsValid)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
+            }
+            return await dcsCustomerServiceBLL.UpdateField(HttpContext.CurrentUser(cache).Id, model);
         }
+
+        
 
         /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
-        public async Task<FuncResult> Delete([FromRoute]string id)
+        [HttpDelete("{customerId}/{serviceId}")]
+        public async Task<FuncResult> Delete(string customerId, string serviceId)
         {
-            return await dcsCustomerServiceBLL.Delete(id, HttpContext.CurrentUser(cache).Id);
+            return await dcsCustomerServiceBLL.Delete(customerId,serviceId, HttpContext.CurrentUser(cache).Id);
 
         }
 
-        [Route("BatchDelete")]
-        [HttpDelete]
-        public async Task<FuncResult> Delete(string[] ids)
-        {
-            return await dcsCustomerServiceBLL.Delete(ids, HttpContext.CurrentUser(cache).Id);
-
-        }
+        
     }
 }

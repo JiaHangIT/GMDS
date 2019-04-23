@@ -26,6 +26,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
         /// <returns></returns>
         public FuncResult Select(SearchSysProblemInfo model)
         {
+            #region 
             //try
             //{
             //    int total = _context.SysProblemInfo.
@@ -63,6 +64,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             //    return new FuncResult() { IsSuccess = true, Message = "数据错误" };
             //    throw ex;
             //}
+            #endregion
             var query = from a in _context.SysProblemType
                         join b in _context.SysProblemInfo on
                         a.ProblemTypeId equals b.ProblemTypeId
@@ -110,7 +112,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             SysProblemInfo entity = await _context.SysProblemInfo.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "公告ID错误!" };
+                return new FuncResult() { IsSuccess = false, Message = "常见问题ID错误!" };
             }
             entity.ProblemTypeId = model.ProblemTypeId;
             entity.ProblemTitle = model.ProblemTitle;

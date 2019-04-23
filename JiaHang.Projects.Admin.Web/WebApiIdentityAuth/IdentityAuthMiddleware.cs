@@ -46,9 +46,22 @@ namespace JiaHang.Projects.Admin.Web.WebApiIdentityAuth
                 await Task.CompletedTask;
                 return;
             }
-
             CredentialsManage credentialsManage = new CredentialsManage(cache);
             AccountModel account = credentialsManage.GetAccount(token);
+#if DEBUG
+            if (account == null) {
+                account = new AccountModel()
+                {
+                    Id = "6e3ad26e6056472c9e0e415d37cde247",
+                    UserName = "admin",
+                    UserAccount = "admin",
+                    MobileNo = "admin",
+                    Email = "admin@admin.com",
+
+                };
+            }
+#endif
+
             if (account == null)
             {
                 context.Response.Redirect("/account/login");
@@ -58,7 +71,7 @@ namespace JiaHang.Projects.Admin.Web.WebApiIdentityAuth
 
             ///取出当前用户route信息 
             ///判断当前请求路径 是否有无权限
-            List<BLL.Relation.CurrentUserRouteBLL.UserRouteRawModel> routes = credentialsManage.GetAccountRoute(token);
+            //List<BLL.Relation.CurrentUserRouteBLL.UserRouteRawModel> routes = credentialsManage.GetAccountRoute(token);
             //var result= VerifyPath(routes, context.Request);
             await _next.Invoke(context);
         }

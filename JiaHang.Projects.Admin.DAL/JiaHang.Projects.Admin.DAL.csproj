@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <!--<PackageReference Include="Citms.EntityFrameworkCore.Oracle" Version="1.0.6" />-->
     <PackageReference Include="EFCore.BulkExtensions" Version="2.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1">

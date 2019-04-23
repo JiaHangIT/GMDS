@@ -26,46 +26,6 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         /// <returns></returns>
         public FuncResult Select(SearchSysHelpInfo model)
         {
-            //try
-            //{
-
-            //    int total = _context.SysHelpInfo.
-            //           Where(a =>
-            //            (
-            //            (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-            //             &&(string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
-            //            && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
-            //            && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
-            //            && (a.DeleteFlag != 1)
-            //            )
-            //            ).Count();
-            //    var result = _context.SysHelpInfo.
-            //            Where(a =>
-            //            (
-            //            (string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
-            //            && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
-            //            && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
-            //            && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
-            //            && (a.DeleteFlag != 1)
-            //            )
-            //            ).Skip(model.limit * model.page).Take(model.limit).ToList();
-            //    var data = result.Select(e => new
-            //    {
-            //Help_Id = e.HelpId,
-            //        Help_Type_Id = e.HelpTypeId ?? "",
-            //        Help_Title = e.HelpTitle ?? "",
-            //        Important_Flag = e.ImportantFlag > 0 ? "是" : "否",
-            //        Audit_Flag = e.AuditFlag > 0 ? "是" : "否",
-            //        Audited_Date = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
-            //        Audited_By = e.AuditedBy
-            //    });
-            //    return new FuncResult() { IsSuccess = true, Content = new { data, total } };
-            //}
-            //catch (Exception ex)
-            //{
-            //    return new FuncResult() { IsSuccess = true, Message = "数据错误" };
-            //    throw ex;
-            //}
             var query = from a in _context.SysHelpType
                         join b in _context.SysHelpInfo on
                         a.HelpTypeId equals b.HelpTypeId
@@ -74,7 +34,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                         where ((string.IsNullOrWhiteSpace(model.Help_Type_Id) || a_ifnull.HelpTypeId.Contains(model.Help_Type_Id))
                                 && (string.IsNullOrWhiteSpace(model.Help_Title) || a_ifnull.HelpTitle.Contains(model.Help_Title))
                                 && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
-                                  && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a_ifnull.ImportantFlag == (model.Important_Flag))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a_ifnull.ImportantFlag == (model.Important_Flag))
                         )
                         select new
                         {
@@ -85,7 +45,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                             Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
                             Audited_Date = a_ifnull.AuditedDate,
                             Audited_By = a_ifnull.AuditedBy,
-                            help_Contant = a_ifnull.HelpContent,
+                            help_Content = a_ifnull.HelpContent,
                             help_Type_Name = a.HelpTypeName,
                         };
             int total = query.Count();
@@ -268,70 +228,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             });
             return new FuncResult() { IsSuccess = true, Content = data };
         }
-        //public FuncResult<SysUserInfo> CheckUserLDAP(string userAccount)
-        //{
-        //    var result = new FuncResult<SysUserInfo>() { IsSuccess = false, Message = "不是LDAP" };
-
-        //    var entity = _context.SysHelpInfo.FirstOrDefault(e => e.User_Account == userAccount);
-        //    if (entity != null && entity.User_Is_Ldap == true)
-        //    {
-        //        result.Content = entity;
-        //        result.Message = "是LDAP";
-        //        result.IsSuccess = true;
-        //    }
-        //    else if (entity == null)
-        //    {
-        //        result.Content = null;
-        //        result.Message = "不存在该用户";
-        //        result.IsSuccess = false;
-        //    }
-        //    return result;
-        //}
-
-
-        //public async Task<byte[]> GetUserListBytes()
-
-        //{
-
-        //    var comlumHeadrs = new[] { "帮助ID", "帮助类型ID", "公告标题", "是否重要标志", "是否审核标志", "审核时间", "审核人"};
-        //    byte[] result;
-        //    var data = _context.SysHelpInfo.ToList();
-        //    var package = new ExcelPackage();
-        //    var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
-        //                                                               //First add the headers
-        //    for (var i = 0; i < comlumHeadrs.Count(); i++)
-        //    {
-        //        worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
-        //    }
-        //    //Add values
-        //    var j = 2;
-        //    // var chars = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-        //    await Task.Run(() =>
-        //    {
-        //        foreach (var obj in data)
-        //        {
-        //            var rt = obj.GetType();
-        //            var rp = rt.GetProperties();
-
-        //            worksheet.Cells["A" + j].Value = obj.HelpId;
-        //            worksheet.Cells["B" + j].Value = obj.HelpTypeId;
-        //            worksheet.Cells["C" + j].Value = obj.HelpTitle;
-        //            worksheet.Cells["D" + j].Value = obj.ImportantFlag;
-        //            worksheet.Cells["E" + j].Value = obj.AuditFlag;
-        //            worksheet.Cells["F" + j].Value = obj.AuditedDate;
-        //            worksheet.Cells["G" + j].Value = obj.AuditedBy;
-
-        //            j++;
-        //        }
-        //    });
-
-        //    result = package.GetAsByteArray();
-
-
-
-        //    return result;
-        //}
-
+       
     }
 
 }

@@ -9,7 +9,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string ProblemTypeId { get; set; }
         public string ProblemTitle { get; set; }
         public string ProblemContent { get; set; }
-        public decimal? AuditFlag { get; set; }
+        public int? AuditFlag { get; set; }
         public DateTime? AuditedDate { get; set; }
         public string AuditedBy { get; set; }
         public DateTime? CreationDate { get; set; }

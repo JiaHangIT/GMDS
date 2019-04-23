@@ -10,7 +10,7 @@
     }
 
     .layui-select-title input {
-        width: 195px;
+        width: 182px;
     }
 
     .layui-row .layui-col-md4 {
@@ -22,7 +22,7 @@
     }
 
     .layui-form-pane .layui-form-select {
-        width: 196px;
+        width: 182px;
     }
 
     .tbs-a {
@@ -1125,6 +1125,7 @@
                 success: function (data) {
                     //先清空option
                     $('.sharerelate').empty();
+                    $('.paramrelate').empty();
 
                     $.each(data, function (index, item) {
                         $('.sharerelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
@@ -1467,11 +1468,39 @@
                             loadSelect();//加载完再初始化select
 
 
+                            //$.ajax({
+                            //    async: true,
+                            //    url: "/api/dcsserviceinfodata/" + data.datasource_Id,
+                            //    type: 'get',
+                            //    success: function (data) {
+                            //        //先清空option
+                            //        //$('.sharerelate').empty();
 
+                            //        $.each(data, function (index, item) {
+                            //            $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                            //        });
+                            //        layui.form.render("select");
+                            //    }
+                            //});
 
                             //取出每块的select再重新赋值?
                             let paramTbody = $('#paramcontent tbody');//接口参数信息
                             if (paramTbody && paramTbody.length > 0) {
+                                let datasourceid = data.datasource_Id;
+                                if (datasourceid && datasourceid != '') {
+                                    $.ajax({
+                                        async: false,
+                                        url: "/api/dcsserviceinfodata/" + datasourceid,
+                                        type: 'get',
+                                        success: function (data) {
+                                            $.each(data, function (index, item) {
+                                                $('.paramrelate').append(new Option(item.value, item.key));// 下拉菜单里添加元素
+                                            });
+                                            layui.form.render("select");
+
+                                        }
+                                    });
+                                }
                                 jQuery.each(paramTbody, function (index, item) {
                                     var aSelect = $(item).find('select');
                                     if (aSelect && aSelect.length > 0) {
@@ -1480,6 +1509,7 @@
                                         }
                                         jQuery(aSelect[0]).val(res.content.params[index].paramTypeId);
                                         jQuery(aSelect[1]).val(res.content.params[index].relaFieldId);
+
                                         
                                     }
 
