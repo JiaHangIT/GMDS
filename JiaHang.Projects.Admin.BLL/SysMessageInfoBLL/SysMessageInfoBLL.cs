@@ -227,5 +227,31 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "处理成功！" };
         }
+        /// <summary>
+        /// 取用户名
+        /// </summary>
+        /// <returns></returns>
+        public object GetUser()
+        {
+            try
+            {
+
+                int total = _context.SysUserInfo.Count();
+
+                var result = _context.SysUserInfo.ToList();
+                var data = result.Select(e => new
+                {
+                    e.UserId,
+                    e.UserName,
+                });
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+
+        }
     }
 }

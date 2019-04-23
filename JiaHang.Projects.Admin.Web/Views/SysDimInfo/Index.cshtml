@@ -25,7 +25,11 @@
             </div>
             建立人：
             <div class="layui-inline">
-                <input class="layui-input" name="searchCreation_By" id="searchCreation_By" autocomplete="off">
+                
+                <select name="searchCreation_By" id="searchCreation_By" lay-verify="required" lay-filter="xmFilter">
+                    <option value=""></option>
+
+                </select>
             </div>
 
 
@@ -378,16 +382,16 @@
         }
 
 
-        ////色蝶
-        //$.ajax({
-        //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
-        //    success: function (data) {
-        //        $.each(data, function (index, item) {
-        //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
-        //        });
-        //        layui.form.render("select");
-        //    }
-        //});
+        $.ajax({
+            url: "/api/SysMessageInfo/GetUser",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    $('#searchCreation_By').append(new Option(item.userName));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
 
     });
 </script>

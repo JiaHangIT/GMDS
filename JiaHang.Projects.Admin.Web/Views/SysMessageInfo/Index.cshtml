@@ -24,7 +24,11 @@
             </div>
             建立人：
             <div class="layui-inline">
-                <input class="layui-input" name="searchCreated_By" id="searchCreated_By" autocomplete="off">
+
+                <select name="searchCreated_By" id="searchCreated_By" lay-verify="required" lay-filter="xmFilter">
+                    <option value=""></option>
+
+                </select>
             </div>
             是否审核：
             <div class="layui-inline">
@@ -35,12 +39,12 @@
                 </select>
             </div>
             @*<div class="layui-inline">
-                    <label class="layui-form-label">审核时间</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+            <label class="layui-form-label">审核时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
 
-                    </div>
-                </div>*@
+            </div>
+        </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增公告</button>
         </div>
@@ -496,16 +500,16 @@
         }
 
 
-        ////色蝶
-        //$.ajax({
-        //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
-        //    success: function (data) {
-        //        $.each(data, function (index, item) {
-        //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
-        //        });
-        //        layui.form.render("select");
-        //    }
-        //});
+        $.ajax({
+            url: "/api/SysMessageInfo/GetUser",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    $('#searchCreated_By').append(new Option(item.userName));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
 
     });
 </script>

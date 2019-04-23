@@ -106,6 +106,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
         /// <returns></returns>
         /// 
         [Route("UpdateExamine")]
+
         [HttpPost]
         public async Task<FuncResult> UpdateExamine([FromBody]SysMessageInfoModel model)
         {
@@ -113,5 +114,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
             return data;
         }
 
+        [Route("GetUser")]
+        [HttpGet]
+        public object GetUser()
+        {
+            var data = storeService.GetUser();
+            return data;
+        }
     }
 }
