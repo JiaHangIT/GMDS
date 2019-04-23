@@ -71,12 +71,7 @@
             if (GetUrlRelativePath() == routes.models[i].modelUrl) {
                 li_class_name += " layui-this";
             }
-            //if (routes.models[i].outUrlFlag == true) { 
-            //    if (GetUrlRelativePath().indexOf(routes.models[i].modelUrl) != -1) { 
-            //        li_class_name += " layui-this";
-            //    }
-            //}
-
+          
             li.className = li_class_name;
             let a = document.createElement("a");
             a.innerText = routes.models[i].modelName;
