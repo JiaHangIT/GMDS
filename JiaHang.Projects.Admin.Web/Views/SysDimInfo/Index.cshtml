@@ -25,7 +25,7 @@
             </div>
             建立人：
             <div class="layui-inline">
-                
+
                 <select name="searchCreation_By" id="searchCreation_By" lay-verify="required" lay-filter="xmFilter">
                     <option value=""></option>
 
@@ -34,14 +34,15 @@
 
 
             @*<div class="layui-inline">
-                    <label class="layui-form-label">审核时间</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+            <label class="layui-form-label">审核时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
 
-                    </div>
-                </div>*@
+            </div>
+        </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增维度</button>
+            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
         </div>
         @*<div class="layui-form-item" style="margin-top:30px;">
 
@@ -54,18 +55,14 @@
 <div id="generate_layer" style="display:none; padding:40px;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
         <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">维度ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="DimID" id="DimID" autocomplete="off" placeholder="维度编号" class="layui-input">
-                </div>
+
+
+            @*<div class="layui-inline">
+            <label class="layui-form-label">维度类型ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="DimTypeID" id="DimTypeID" autocomplete="off" placeholder="维度类型编号" class="layui-input">
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">维度类型ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="DimTypeID" id="DimTypeID" autocomplete="off" placeholder="维度类型编号" class="layui-input">
-                </div>
-            </div>
+        </div>*@
             <div class="layui-inline">
                 <label class="layui-form-label">维度名称</label>
                 <div class="layui-input-block">
@@ -76,6 +73,15 @@
                 <label class="layui-form-label">维度值</label>
                 <div class="layui-input-block">
                     <input type="text" name="DimValue" id="DimValue" autocomplete="off" placeholder="维度值" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">维度类型ID</label>
+                <div class="layui-inline">
+                    <select name="DimTypeID" id="DimTypeID" lay-verify="required" lay-filter="xmFilter">
+                        <option value=""></option>
+
+                    </select>
                 </div>
             </div>
         </div>
@@ -190,22 +196,26 @@
             getCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload')
                     , data = checkStatus.data;
+                //if (data.length==0) {
 
+                //}
 
                 layer.confirm("确认删除" + data.length + "条记录么", function (index) {
                     layer.close(index);
 
-                    let Message_IDs = [];
+                    let DimTypeCodes = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        Message_IDs.push(data[i].dimId);
-                        parms += "Message_IDs=" + data[i].dimId + "&";
+                        DimTypeCodes.push(data[i].dimId);
+                        parms += "DimTypeCodes=" + data[i].dimId + "&";
                     }
+                    
                     parms = parms.substring(0, parms.length - 1);
-                    //layer.alert(JSON.stringify(data));
+                    //layer.alert(JSON.stringify(data));                 
                     axios.delete("/api/SysDimInfo/batchdelete/" + parms)
                         .then(function (response) {
                             console.log(response);
+                           
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
@@ -266,7 +276,7 @@
             console.log('save');
             //alert($("#Message_ID").val());
             let model = {
-                Dim_Id: $("#DimID").val(),
+                
                 Dim_Type_Code: $("#DimTypeID").val(),
                 Dime_Name: $("#DimName").val(),
                 Dim_Value: $("#DimValue").val(),
@@ -326,11 +336,11 @@
             console.log(table.cache);
             initFormValue(data);
             let title = "新增";
-            document.getElementById("DimID").disabled = false;
+            //document.getElementById("DimID").disabled = false;
             document.getElementById("generate_btn").innerHTML = "立即创建";
             if (layType != true) {
                 title = "编辑";
-                document.getElementById("DimID").disabled = true;
+                //document.getElementById("DimID").disabled = true;
                 document.getElementById("generate_btn").innerHTML = "立即修改";
             }
             generateLayer_index = layer.open({
@@ -383,6 +393,16 @@
 
 
         $.ajax({
+            url: "/api/SysDimInfo/GetDimType",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    $('#DimTypeID').append(new Option(item.dimTypeCode));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+        $.ajax({
             url: "/api/SysMessageInfo/GetUser",
             success: function (data) {
                 console.log(data);
@@ -392,6 +412,5 @@
                 layui.form.render("select");
             }
         });
-
     });
 </script>

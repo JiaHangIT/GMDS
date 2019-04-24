@@ -13,7 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDimType
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class SysDimTypeController : ControllerBase
     {
         private readonly Sys_Dim_TypeBLL storeService;

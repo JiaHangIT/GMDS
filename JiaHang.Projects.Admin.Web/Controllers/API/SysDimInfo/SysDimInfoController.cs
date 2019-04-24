@@ -13,7 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDimInfo
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class SysDimInfoController : ControllerBase
     {
         private readonly SysDimInfoBLL storeService;
@@ -95,6 +95,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDimInfo
         {
             return await storeService.Delete(DimTypeCodes, HttpContext.CurrentUser(cache).Id);
 
+        }
+
+        [Route("GetDimType")]
+        [HttpGet]
+        public object GetDimType()
+        {
+            var data = storeService.GetDimType();
+            return data;
         }
     }
 }

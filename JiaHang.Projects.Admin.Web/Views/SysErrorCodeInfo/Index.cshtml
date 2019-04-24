@@ -39,14 +39,15 @@
                 </select>
             </div>
             @*<div class="layui-inline">
-                    <label class="layui-form-label">审核时间</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+            <label class="layui-form-label">审核时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
 
-                    </div>
-                </div>*@
+            </div>
+        </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer" style="width:120px">新增错误代码</button>
+            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
         </div>
         @*<div class="layui-form-item" style="margin-top:30px;">
 
@@ -214,7 +215,7 @@
                
                 let url = "/api/SysErrorCodeInfo/UpdateExamine";
                 let method = "POST";
-                let confirm_title = "错误名称为：【" + data.errorCodeName + "】";
+                let confirm_title = "错误代码名称为：【" + data.errorCodeName + "】";
 
 
 
@@ -280,7 +281,7 @@
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
                         Message_IDs.push(data[i].errorCodeId);
-                        parms += "Message_IDs=" + data[i].Message_ID + "&";
+                        parms += "Message_IDs=" + data[i].errorCodeId + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
