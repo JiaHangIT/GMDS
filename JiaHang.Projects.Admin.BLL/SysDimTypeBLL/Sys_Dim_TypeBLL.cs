@@ -166,7 +166,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
             }
             SysDimType entity = new SysDimType
             {
-                DimTypeCode = Guid.NewGuid().ToString(),
+                DimTypeCode = model.Dim_Type_Code,
                 DimTypeName = model.Dim_Type_Name,
                 CreationDate = System.DateTime.Now,
                 CreatedBy = currentUserId,

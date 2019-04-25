@@ -47,6 +47,7 @@
         </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增公告</button>
+            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
         </div>
         @*<div class="layui-form-item" style="margin-top:30px;">
 
@@ -288,7 +289,7 @@
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
                         Message_IDs.push(data[i].messageId);
-                        parms += "Message_IDs=" + data[i].Message_ID + "&";
+                        parms += "Message_IDs=" + data[i].messageId + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
