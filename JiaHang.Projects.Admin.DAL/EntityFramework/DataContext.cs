@@ -711,8 +711,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.AuditFlag)
-                    .HasColumnName("AUDIT_FLAG")
-; 
+                    .HasColumnName("AUDIT_FLAG"); 
 
                 entity.Property(e => e.AuditedBy)
                     .HasColumnName("AUDITED_BY")

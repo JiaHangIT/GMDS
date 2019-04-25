@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "用户操作权限管理";
+    ViewData["Title"] = "用户操作权限绑定";
 }
 
 
@@ -30,8 +30,8 @@
             </el-col>
             <el-col :span="12" style="text-align: right;">
                 <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog(item)">添加用户/用户组</span>
-                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="cancel(item)">取消本次修改</span>
-                <span style="color:#67C23A;cursor:pointer;" @@click="save(item)">保存本次修改</span>
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" v-if="item.deloperids.length>0"  @@click="cancel(item)">取消本次修改</span>
+                <span style="color:#67C23A;cursor:pointer;" @@click="save(item)" v-if="item.deloperids.length>0">保存本次修改</span>
             </el-col>
         </el-row>
         <div style="padding-left:15px;padding-right:15px;">
@@ -99,7 +99,6 @@
     })
 </script>
 <script>
-
     new Vue({
         el: "#app",
         data: function () {
@@ -166,10 +165,12 @@
             showDialog: function (value) {
                 console.log(value)
                 this.modelId = value.modelId
+                this.userisIndeterminate = false;
+                this.userscheckAll = false;
+                this.userGroupscheckAll = false;
+                this.userGroupsIsIndeterminate = false;
                 this.centerDialogVisible = true
-                //console.log(customer)
-
-                //this.thisCustomer = { modelGroupId: customer.modelGroupId, customerName: customer.customerName }
+               
                 this.fetchNotBindService()
             },
             dialogSave: function () {

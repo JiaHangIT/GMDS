@@ -1,6 +1,6 @@
 ﻿
 <div class="layui-header">
-    <div class="layui-logo" style="width: 100%;text-align: left;font-size: 20px;color: #B5C0C2;">
+    <div class="layui-logo" style="width: 100%;text-align: left;font-size: 20px;color: #B5C0C2;padding-left:15px;">
         数据共享与采集应用支撑平台
     </div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
@@ -43,11 +43,17 @@
 
     //添加自动生成的导航栏
     let ul = document.getElementById("head_menu");
+    var current_moduleId = window.localStorage.getItem("current_moduleId");
 
     for (let i = header_modules.length-1; i >= 0; i--) { 
         var li = document.createElement("li");
-        li.className = "layui-nav-item";
-        
+        let licn = "layui-nav-item";
+        console.log(header_modules[i].moduleId)
+        if (current_moduleId == header_modules[i].moduleId) { 
+            
+            licn +=" layui-this"
+        }
+        li.className = licn;        
         li.innerHTML = "<a href='#' onclick='jump(&quot;" + header_modules[i].moduleId + "&quot)' >" + header_modules[i].moduleName + "</a>";
         //ul.insertBefore(li, ul.childNodes[i]);
         ul.appendChild(li);
