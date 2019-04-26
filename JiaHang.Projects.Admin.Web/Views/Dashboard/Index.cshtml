@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "运行概况";
 }
 <link id="layuicss-atalicdncomtfont_477590_n82storgbjcss" rel="stylesheet" href="//at.alicdn.com/t/font_477590_n82storgbj.css" media="all">
 
@@ -90,78 +90,78 @@
             </el-col>
         </el-row>
         <el-row :gutter="15" style="margin-top:15px; height:386px;">
-            <el-col :span="12" style="height:100%;">                
-                    <el-card class="box-card" style="height:100%;">
-                        <div slot="header" class="clearfix">
-                            <span>用户访问量占比</span>
-                        </div>
-                        <el-table :data="data.chart3data" stripe style="width: 100%">
-                            <el-table-column type="index" label="排名" width="180"></el-table-column>
-                            <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
-                            <el-table-column prop="perc" label="占比">
-                                <template slot-scope="scope">
-                                    <el-progress :percentage="scope.row.perc"></el-progress>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-card>              
+            <el-col :span="12" style="height:100%;">
+                <el-card class="box-card" style="height:100%;">
+                    <div slot="header" class="clearfix">
+                        <span>用户访问量占比</span>
+                    </div>
+                    <el-table :data="data.chart3data" stripe style="width: 100%">
+                        <el-table-column type="index" label="排名" width="180"></el-table-column>
+                        <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
+                        <el-table-column prop="perc" label="占比">
+                            <template slot-scope="scope">
+                                <el-progress :percentage="scope.row.perc"></el-progress>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-card>
             </el-col>
-            <el-col :span="12" style="height:100%;" >                
-                    <el-card class="box-card" style="height:100%;"> 
-                        <div slot="header" class="clearfix">
-                            <span>接口访问量占比</span>
-                        </div>
-                        <el-table :data="data.chart4data" stripe style="width: 100%">
-                            <el-table-column type="index" label="排名" width="180"></el-table-column>
-                            <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
-                            <el-table-column prop="perc" label="占比">
-                                <template slot-scope="scope">
-                                    <el-progress :percentage="scope.row.perc"></el-progress>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-card>               
+            <el-col :span="12" style="height:100%;">
+                <el-card class="box-card" style="height:100%;">
+                    <div slot="header" class="clearfix">
+                        <span>接口访问量占比</span>
+                    </div>
+                    <el-table :data="data.chart4data" stripe style="width: 100%">
+                        <el-table-column type="index" label="排名" width="180"></el-table-column>
+                        <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
+                        <el-table-column prop="perc" label="占比">
+                            <template slot-scope="scope">
+                                <el-progress :percentage="scope.row.perc"></el-progress>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-card>
             </el-col>
         </el-row>
 
         <el-row :gutter="15" style="margin-top:15px;height:386px;">
             <el-col :span="12" style="height:100%;">
-             
-                    <el-card class="box-card" style="height:100%;">
-                        <div slot="header" class="clearfix">
-                            <span>用户接口日访问量</span>
-                        </div>
-                        <el-table :data="data.chart5data" stripe style="width: 100%">
-                            <el-table-column type="index" label="排名" width="180"></el-table-column>
-                            <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
-                            <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
-                            <el-table-column prop="perc" label="占比">
-                                <template slot-scope="scope">
-                                    <el-progress :percentage="scope.row.perc"></el-progress>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-card>
-                
+
+                <el-card class="box-card" style="height:100%;">
+                    <div slot="header" class="clearfix">
+                        <span>用户接口日访问量</span>
+                    </div>
+                    <el-table :data="data.chart5data" stripe style="width: 100%">
+                        <el-table-column type="index" label="排名" width="180"></el-table-column>
+                        <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
+                        <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
+                        <el-table-column prop="perc" label="占比">
+                            <template slot-scope="scope">
+                                <el-progress :percentage="scope.row.perc"></el-progress>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-card>
+
             </el-col>
-            <el-col :span="12"  style="height:100%;">
-           
-                    <el-card class="box-card"  style="height:100%;">
-                        <div slot="header" class="clearfix">
-                            <span>用户接口月访问量</span>
-                        </div>
-                        <el-table :data="data.chart6data" stripe style="width: 100%">
-                            <el-table-column type="index" label="排名" width="180"></el-table-column>
-                            <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
-                            <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
-                            <el-table-column prop="perc" label="占比">
-                                <template slot-scope="scope">
-                                    <el-progress :percentage="scope.row.perc"></el-progress>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-card>
-      
+            <el-col :span="12" style="height:100%;">
+
+                <el-card class="box-card" style="height:100%;">
+                    <div slot="header" class="clearfix">
+                        <span>用户接口月访问量</span>
+                    </div>
+                    <el-table :data="data.chart6data" stripe style="width: 100%">
+                        <el-table-column type="index" label="排名" width="180"></el-table-column>
+                        <el-table-column prop="customerName" label="客户名称" width="180"></el-table-column>
+                        <el-table-column prop="serviceName" label="接口名称" width="180"></el-table-column>
+                        <el-table-column prop="perc" label="占比">
+                            <template slot-scope="scope">
+                                <el-progress :percentage="scope.row.perc"></el-progress>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-card>
+
             </el-col>
         </el-row>
 
@@ -172,11 +172,17 @@
 
 
 </div>
-<script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
-<script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
-<script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
-<script src="https://img.highcharts.com.cn/highcharts/modules/oldie.js"></script>
-<script src="https://img.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+@*<script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts/modules/oldie.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>*@
+
+<script src="~/common/highcharts/jquery-1.8.3.min.js"></script>
+<script src="~/common/highcharts/highcharts.js"></script>
+<script src="~/common/highcharts/exporting.js"></script>
+<script src="~/common/highcharts/oldie.js"></script>
+<script src="~/common/highcharts/highcharts-zh_CN.js"></script>
 <script>
     new Vue({
         el: "#app",
@@ -211,7 +217,7 @@
                         vm.data = response.data.content;
                         vm.initChart1(vm.data.chart1data);
                         vm.initChart2(vm.data.chart2data);
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error)
@@ -301,7 +307,7 @@
                     }]
                 });
             },
-            initChart2: function (data) { 
+            initChart2: function (data) {
 
                 var chart2 = Highcharts.chart('container2', {
                     chart: {
@@ -372,9 +378,9 @@
 
     });
 
-    
 
-   
+
+
 </script>
 <script>
 

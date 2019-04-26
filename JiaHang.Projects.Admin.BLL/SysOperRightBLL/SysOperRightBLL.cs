@@ -84,7 +84,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                     }).Distinct(),
                     deloperids = new List<string>(),
 
-                }).OrderByDescending(e=>e.SortKey),
+                }).OrderByDescending(e => e.SortKey),
             });
 
             return new FuncResult() { IsSuccess = data.Count() > 0, Content = data.FirstOrDefault() };
@@ -215,44 +215,109 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
             return new FuncResult() { IsSuccess = true, Message = "删除成功" };
         }
 
-        public FuncResult<List<UserRouteModel>> CurrentUserRoutes(string currentUserId,bool isAdmin=false)
+        public FuncResult<List<UserRouteModel>> CurrentUserRoutes(string currentUserId, bool isAdmin = false)
         {
             var listusers = _context.SysUserGroupRelation.Where(e => e.UserId == currentUserId).Select(c => c.UserId);
-            var opers = _context.SysOperRightInfo.Where(e => e.UserId == currentUserId || listusers.Contains(e.UserId)).Select(e=>e.ModelId);
+            var opers = _context.SysOperRightInfo.Where(e => e.UserId == currentUserId || listusers.Contains(e.UserId)).Select(e => e.ModelId);
             //获取当前用户 所拥有的页面权限信息
-            var query = (from a in _context.SysModelInfo.Where(e=>isAdmin==true|| opers.Contains(e.ModelId))
-                         join b in _context.SysModelGroup on a.ModelGroupId equals b.ModelGroupId                         
+            var query = (from a in _context.SysModelInfo.Where(e => isAdmin == true || opers.Contains(e.ModelId))
+                         join b in _context.SysModelGroup.Where(e => string.IsNullOrWhiteSpace(e.ParentId)) on a.ModelGroupId equals b.ModelGroupId
+
+                         join c in _context.SysModelGroup on b.ParentId equals c.ModelGroupId
+                         into c_temp
+                         from c_ifnull in c_temp.DefaultIfEmpty()
+
                          orderby a.SortKey descending
                          orderby b.SortKey descending
-                         select new                         
+                         select new
                          {
                              b.ModelGroupId,
                              b.ModelGroupName,
                              b.ModelGroupUrl,
                              GroupOutUrlFlag = b.OutUrlFlag,
-                             
+
 
                              a.ModelId,
                              a.ModelName,
                              a.ModelUrl,
                              a.OutUrlFlag,
                          }).ToList();
-            var data = query.GroupBy(e => new { e.ModelGroupId, e.ModelGroupName, e.ModelGroupUrl ,e.GroupOutUrlFlag})
+
+            var query1 = (from a in _context.SysModelInfo.Where(e => isAdmin == true || opers.Contains(e.ModelId))
+                          join b in _context.SysModelGroup on a.ModelGroupId equals b.ModelGroupId
+                          join c in _context.SysModelGroup on b.ParentId equals c.ModelGroupId
+
+
+                          orderby a.SortKey descending
+                          orderby b.SortKey descending
+                          select new
+                          {
+                              b.ModelGroupId,
+                              b.ModelGroupName,
+                              b.ModelGroupUrl,
+                              GroupOutUrlFlag = b.OutUrlFlag,
+
+
+                              a.ModelId,
+                              a.ModelName,
+                              a.ModelUrl,
+                              a.OutUrlFlag,
+
+                              hModelGroupId = c.ModelGroupId,
+                              hModelGroupUrl = c.ModelGroupUrl,
+                              hModelGroupName = c.ModelGroupName,
+                              hOutUrlFlag = c.OutUrlFlag,
+                          }).ToList();
+
+            var data1 = query1.GroupBy(e => new { e.hModelGroupId, e.hModelGroupName, e.hModelGroupUrl, e.hOutUrlFlag }).Select(c => new UserRouteModel
+            {
+                ModelGroupId = c.Key.hModelGroupId,
+                ModelGroupUrl = c.Key.hOutUrlFlag == 1 ? $"/iframecontainer/index?path={c.Key.hModelGroupUrl}" : c.Key.hModelGroupUrl,
+                OutUrlFlag = c.Key.hOutUrlFlag == 1,
+                ModelGroupName = c.Key.hModelGroupName,
+                ModelGroups = c.GroupBy(g => new { g.ModelGroupId, g.ModelGroupName, g.ModelGroupUrl, g.OutUrlFlag }).Select(gc => new UserRouteModel
+                {
+                    ModelGroupId = gc.Key.ModelGroupId,
+                    OutUrlFlag = gc.Key.OutUrlFlag == 1,
+                    ModelGroupUrl = gc.Key.OutUrlFlag == 1 ? $"/iframecontainer/index?path={gc.Key.ModelGroupUrl}" : gc.Key.ModelGroupUrl,
+                    ModelGroupName = gc.Key.ModelGroupName,
+                    
+                    Models = gc.Select(m => new UserModuleRoute()
+                    {
+                       ModelId= m.ModelId,
+                        ModelName= m.ModelName,
+                        ModelUrl= m.OutUrlFlag == 1 ? $"/iframecontainer/index?path={m.ModelUrl}" : m.ModelUrl,
+                        OutUrlFlag = m.OutUrlFlag==1,
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+            var data = query.GroupBy(e => new { e.ModelGroupId, e.ModelGroupName, e.ModelGroupUrl, e.GroupOutUrlFlag })
                 .Select(g => new UserRouteModel
                 {
                     ModelGroupId = g.Key.ModelGroupId,
                     ModelGroupName = g.Key.ModelGroupName,
-                    ModelGroupUrl = g.Key.GroupOutUrlFlag == 1?$"/iframecontainer/index?path={g.Key.ModelGroupUrl}":g.Key.ModelGroupUrl,
-                    OutUrlFlag=g.Key.GroupOutUrlFlag==1,
+                    ModelGroupUrl = g.Key.GroupOutUrlFlag == 1 ? $"/iframecontainer/index?path={g.Key.ModelGroupUrl}" : g.Key.ModelGroupUrl,
+                    OutUrlFlag = g.Key.GroupOutUrlFlag == 1,
                     Models = g.Select(m => new UserModuleRoute
                     {
                         ModelId = m.ModelId,
                         ModelName = m.ModelName,
-                        ModelUrl = m.OutUrlFlag==1?$"/iframecontainer/index?path={m.ModelUrl}" : m.ModelUrl,
-                        OutUrlFlag = m.OutUrlFlag==1
+                        ModelUrl = m.OutUrlFlag == 1 ? $"/iframecontainer/index?path={m.ModelUrl}" : m.ModelUrl,
+                        OutUrlFlag = m.OutUrlFlag == 1
                     }).ToList()
                 }).ToList();
-            return new FuncResult<List<UserRouteModel>>() { IsSuccess = true, Content = data };
+
+            foreach (var obj in data1) {
+                for (var i = 0;i < data.Count;i++) {
+                    if (obj.ModelGroupId == data[i].ModelGroupId) {
+                        obj.Models.AddRange(data[i].Models);
+                        data.Remove(data[i]);
+                    }
+                }
+            }
+
+            data1.AddRange(data);
+            return new FuncResult<List<UserRouteModel>>() { IsSuccess = true, Content = data1 };
         }
     }
 }

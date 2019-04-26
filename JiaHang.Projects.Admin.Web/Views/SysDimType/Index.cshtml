@@ -23,21 +23,26 @@
             <div class="layui-inline">
                 <input class="layui-input" name="searchDimTypeName" id="searchDimTypeName" autocomplete="off">
             </div>
+           
             建立人：
             <div class="layui-inline">
-                <input class="layui-input" name="searchCreation_By" id="searchCreation_By" autocomplete="off">
-            </div>
-            
-            
-            @*<div class="layui-inline">
-                    <label class="layui-form-label">审核时间</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
 
-                    </div>
-                </div>*@
+                <select name="searchCreation_By" id="searchCreation_By" lay-verify="required" lay-filter="xmFilter">
+                    <option value=""></option>
+
+                </select>
+            </div>
+
+            @*<div class="layui-inline">
+            <label class="layui-form-label">审核时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+
+            </div>
+        </div>*@
             <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增维度类型</button>
+            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
         </div>
         @*<div class="layui-form-item" style="margin-top:30px;">
 
@@ -168,6 +173,7 @@
                 showLayer(data);
             } 
         });
+       
         var $ = layui.$, active = {
             getCheckData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('testReload')
@@ -177,17 +183,16 @@
                 layer.confirm("确认删除" + data.length + "条记录么", function (index) {
                     layer.close(index);
 
-                    let Message_IDs = [];
+                    let DimTypeCodes = [];
                     let parms = "?";
                     for (let i = 0; i < data.length; i++) {
-                        Message_IDs.push(data[i].dimTypecode);
-                        parms += "Message_IDs=" + data[i].dimTypecode + "&";
+                        DimTypeCodes.push(data[i].dimTypecode);
+                        parms += "DimTypeCodes=" + data[i].dimTypecode + "&";
                     }
                     parms = parms.substring(0, parms.length - 1);
                     //layer.alert(JSON.stringify(data));
                     axios.delete("/api/SysDimType/batchdelete/" + parms)
                         .then(function (response) {
-                            console.log(response);
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
@@ -212,21 +217,21 @@
                             console.log(error);
                         });
                 });
-
-
             },
             search: function () {
-                console.log('reload');
                 let pars = {
                     //limit: 10,
                     //page: 1,
                     Dim_Type_Name: $("#searchDimTypeName").val(),
                     Creation_By: $("#searchCreation_By").val(),
-                   
+
                     //Audited_Date: $("#searchAuditedDate").val(),
                 }
+                //if ($("#search_user_ower").val() != "") {
+                //    pars.User_Ower = Number($("#search_user_ower").val());
+                //}
+
                 //执行重载
-                console.log(pars);
                 table.reload('testReload', {
                     where: pars,
                     contentType: 'application/json',
@@ -234,17 +239,14 @@
                 });
             },
             showGenerateLayer: function () {
-                console.log('show');
                 layType = true;
                 showLayer();
             },
             closeGenerateLayer: function () {
-                
                 layer.close(generateLayer_index);
             },
 
         };
-       
         form.on('submit(submit)', function () {
             console.log('save');
             //alert($("#Message_ID").val());
@@ -253,8 +255,8 @@
                 Dim_Type_Name: $("#DimTypeName").val(),
               
             };
-            alert($("#DimTypeCode").val());
-            alert(store_id);
+            //alert($("#DimTypeCode").val());
+            //alert(store_id);
             console.log(model);
             let url = "/api/SysDimType/add";
             let method = "POST";
@@ -360,17 +362,16 @@
         }
 
 
-        ////色蝶
-        //$.ajax({
-        //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
-        //    success: function (data) {
-        //        $.each(data, function (index, item) {
-        //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
-        //        });
-        //        layui.form.render("select");
-        //    }
-        //});
-
+        $.ajax({
+            url: "/api/SysMessageInfo/GetUser",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    $('#searchCreation_By').append(new Option(item.userName));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
     });
 </script>
 

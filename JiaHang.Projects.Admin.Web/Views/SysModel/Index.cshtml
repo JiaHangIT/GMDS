@@ -9,7 +9,16 @@
     #app { margin-top: 15px; padding: 15px; background-color: #fff; }
 </style>
 <div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="模块名称">
+            <el-input placeholder="模块名称" v-model="searchModelName"></el-input>
+        </el-form-item>
 
+        <el-form-item>
+            <el-button type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+    </el-form>
+    
     <el-table ref="multipleTable"
               :data="data"
               :border="true"
@@ -116,6 +125,7 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                searchModelName:'',
                 form: {
                     modelName: '',
                     modelUrl: '',
@@ -142,7 +152,7 @@
             fetchList: function () {
                 let vm = this
 
-                axios.get(`/api/SysModelData/${vm.pageSize}/${vm.currentPage}`)
+                axios.get(`/api/SysModelData/${vm.pageSize}/${vm.currentPage}?modelName=${vm.searchModelName}`)
                     .then(function (response) {
                         console.log(response.data);
                         vm.data = response.data.content.data;

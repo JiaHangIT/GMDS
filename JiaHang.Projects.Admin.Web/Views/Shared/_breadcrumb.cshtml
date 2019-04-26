@@ -15,7 +15,7 @@
         var current_moduleId = window.localStorage.getItem("current_moduleId");
         let side = document.getElementById("side");
 
-        let c_routes = routes[0];
+        let c_routes = {};
         for (let i = 0; i < routes.length; i++) {
             if (routes[i].modelGroupId === current_moduleId) {
                 //generateMenu(side, [routes[i]], 1);
@@ -23,24 +23,62 @@
                 break;
             }
         }
-      
+
         let breadcrumb = document.getElementById("breadcrumb");
         let group = document.createElement("a");
         group.innerText = c_routes.modelGroupName;
         group.href = c_routes.modelGroupUrl;
         breadcrumb.appendChild(group);
-
+        let eflag = false;
+        for (let i = 0; i < c_routes.modelGroups.length; i++) {
+            for (let j = 0; j < c_routes.modelGroups[i].models.length; j++) {
+                let cmodel = c_routes.modelGroups[i].models[j];
+                if (cmodel.modelUrl == GetUrlRelativePath(cmodel.outUrlFlag)) {
+                    let a = document.createElement("a");
+                    a.innerText = c_routes.modelGroups[i].modelGroupName;
+                    a.href = c_routes.modelGroups[i].modelGroupUrl;
+                    let cite = document.createElement("cite");
+                    cite.innerText = cmodel.modelName;
+                    let moa = document.createElement("a");
+                    moa.appendChild(cite);
+                    breadcrumb.appendChild(a);
+                    breadcrumb.appendChild(moa);
+                    eflag = true;
+                    break;
+                }
+            }
+        }
         for (let i = 0; i < c_routes.models.length; i++) {
-            let controller = c_routes.models[i];          
-            if (controller.modelUrl == GetUrlRelativePath(controller.outUrlFlag)) {
-               
+            let cmodel = c_routes.models[i];
+            if (cmodel.modelUrl == GetUrlRelativePath(cmodel.outUrlFlag)) {
                 let cite = document.createElement("cite");
-                cite.innerText = controller.modelName;
+                cite.innerText = cmodel.modelName;
                 let moa = document.createElement("a");
                 moa.appendChild(cite);
                 breadcrumb.appendChild(moa);
-            }         
+                eflag = true;
+                break;
+            }
         }
+
+        if (eflag == false) {
+            let cite = document.createElement("cite");
+            cite.innerText = '@Html.Raw(ViewData["Title"])';
+            let moa = document.createElement("a");
+            moa.appendChild(cite);
+            breadcrumb.appendChild(moa);
+        }
+        //for (let i = 0; i < c_routes.models.length; i++) {
+        //    let controller = c_routes.models[i];
+        //    if (controller.modelUrl == GetUrlRelativePath(controller.outUrlFlag)) {
+
+        //        let cite = document.createElement("cite");
+        //        cite.innerText = controller.modelName;
+        //        let moa = document.createElement("a");
+        //        moa.appendChild(cite);
+        //        breadcrumb.appendChild(moa);
+        //    }
+        //}
 
     }
     //获取当前url
@@ -56,10 +94,10 @@
 
         var start = arrUrl[1].indexOf("/");
         var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
-        
+
         if (relUrl.indexOf("?") != -1) {
             relUrl = relUrl.split("?")[0];
-        }       
+        }
         return relUrl;
     }
 

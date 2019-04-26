@@ -123,7 +123,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
         }
         public async Task<FuncResult> Delete(string[] DimTypeCodes, string currentuserId)
         {
-            IQueryable<SysDimInfo> entitys = _context.SysDimInfo.Where(e => DimTypeCodes.Contains(e.DimTypeCode));
+            IQueryable<SysDimInfo> entitys = _context.SysDimInfo.Where(e => DimTypeCodes.Contains(e.DimId));
             if (entitys.Count() != DimTypeCodes.Length)
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
@@ -194,6 +194,33 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
 
 
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
+        }
+
+        /// <summary>
+        /// 取用户名
+        /// </summary>
+        /// <returns></returns>
+        public object GetDimType()
+        {
+            try
+            {
+
+                int total = _context.SysDimType.Count();
+
+                var result = _context.SysDimType.ToList();
+                var data = result.Select(e => new
+                {
+                    e.DimTypeCode,
+                    e.DimTypeName,
+                });
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+
         }
     }
 }

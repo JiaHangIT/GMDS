@@ -2,10 +2,11 @@
 @{
     ViewData["Title"] = "iframe container";
 }
-<div style="height:100%;margin-top:15px;">
-    <iframe id="ifr" frameborder="0" style="width:100%;min-height:100%;" marginwidth="0" marginheight="0"></iframe>
-</div>
 
+<div style="height:100%;margin-top:15px;">
+
+    <iframe id="ifr" frameborder="0" style="width:100%;height:100%;  " marginwidth="0" marginheight="0"></iframe>
+</div>
 <script>
     layui.use(['element', 'layer'], function () {
         var layer = layui.layer

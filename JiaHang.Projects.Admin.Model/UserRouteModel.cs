@@ -11,6 +11,11 @@ namespace JiaHang.Projects.Admin.Model
         public string ModelGroupUrl { get; set; }
         public bool OutUrlFlag { get; set; }
         public List<UserModuleRoute> Models { get; set;  }
+        public List<UserRouteModel> ModelGroups { get; set; }
+        public UserRouteModel() {
+            Models = new List<UserModuleRoute>();
+            ModelGroups = new List<UserRouteModel>();
+        }
     }
     public class UserModuleRoute
     {

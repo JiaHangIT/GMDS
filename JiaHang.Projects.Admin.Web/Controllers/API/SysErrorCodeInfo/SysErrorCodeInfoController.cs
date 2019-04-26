@@ -13,7 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class SysErrorCodeInfoController : ControllerBase
     {
         private readonly SysErrorCodeInfoBLL storeService;

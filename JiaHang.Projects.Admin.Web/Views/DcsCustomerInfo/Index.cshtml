@@ -12,7 +12,7 @@
 
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item label="客户名称">
-            <el-input placeholder="客户手机号" v-model="searchCustomerName"></el-input>
+            <el-input placeholder="客户名称" v-model="searchCustomerName"></el-input>
         </el-form-item>
         <el-form-item label="客户手机号">
             <el-input placeholder="客户手机号" v-model="searchCustomerMobile"></el-input>
@@ -82,10 +82,6 @@
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
     </el-pagination>
-    <div style="margin-top: 20px">
-        <el-button @@click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
-        <el-button @@click="toggleSelection()">取消选择</el-button>
-    </div>
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
                width="30%"

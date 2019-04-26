@@ -23,9 +23,9 @@ namespace JiaHang.Projects.Admin.BLL.SysModelBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(int pageSize, int currentPage)
+        public FuncResult Select(int pageSize, int currentPage, string modelName)
         {
-            var query = from a in _context.SysModelInfo
+            var query = from a in _context.SysModelInfo.Where(e=>string.IsNullOrWhiteSpace( modelName )||e.ModelName.Contains(modelName))
                         join b in _context.SysModelGroup
                         on a.ModelGroupId equals b.ModelGroupId
                         orderby a.SortKey descending

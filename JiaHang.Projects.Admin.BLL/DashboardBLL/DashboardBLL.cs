@@ -30,7 +30,7 @@ namespace JiaHang.Projects.Admin.BLL.DashboardBLL
 
             //var todaygrowth = todayCount/yesterdayCount *100 +"%";//今天同比增长
 
-            var serviceCount = _context.DcsServiceInfo.Count();//接口数量
+            var serviceCount = _context.DcsServiceInfo.Where(e=>e.AuditFlag==1 && e.ServiceType== "SHARE").Count();//接口数量
             var customerCount = _context.DcsCustomerInfo.Count();//用户数量
      
 
