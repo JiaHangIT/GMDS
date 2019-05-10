@@ -81,7 +81,6 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             entity.HelpTitle = model.HelpTitle;
             entity.HelpContent = model.HelpContent;
             entity.ImportantFlag = model.ImportantFlag;
-            entity.AuditFlag = model.AuditFlag;
             //entity.AuditedDate = model.AuditedDate;
             //entity.AuditedBy = model.AuditedBy;
             entity.LastUpdatedBy = currentUserId;

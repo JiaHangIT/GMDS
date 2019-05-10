@@ -117,7 +117,6 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             entity.ProblemTypeId = model.ProblemTypeId;
             entity.ProblemTitle = model.ProblemTitle;
             entity.ProblemContent = model.ProblemContent;
-            entity.AuditFlag = model.AuditFlag;
             //entity.AuditedDate = model.AuditedDate;
             //entity.AuditedBy = model.AuditedBy;
             entity.LastUpdatedBy = currentUserId;
