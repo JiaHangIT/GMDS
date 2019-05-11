@@ -60,7 +60,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
             return new FuncResult() { IsSuccess = true, Content = data };
         }
 
-        public FuncResult NotBindUser(string groupId)
+        public FuncResult NotBindUser(string groupId,string condition)
         {
             //var data=_context.SysUserGroupRelation.Where(e=>e.UserGroupId)
 
@@ -74,7 +74,7 @@ namespace JiaHang.Projects.Admin.BLL.Relation
                 UserAccount = c.UserAccount,
                 UserIsLdap = c.UserIsLdap,
                 UserMobileNo = c.UserMobile
-            });
+            }).Where(e=>string.IsNullOrWhiteSpace(condition)||(e.name.Contains(condition)||e.UserAccount.Contains(condition)));
             return new FuncResult() { IsSuccess = true, Content = data };
         }
 

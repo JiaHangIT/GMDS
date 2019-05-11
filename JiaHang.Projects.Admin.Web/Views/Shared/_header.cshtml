@@ -35,8 +35,19 @@
         //取出所有一级模块
         var header_modules = new Array();
         for (let i = 0; i < routes.length; i++) {
-            
-            header_modules.push({ moduleId: routes[i].modelGroupId, defaultUrl: routes[i].modelGroupUrl, moduleName: routes[i].modelGroupName });
+            console.log(routes[i])
+            let firsturl ="";
+            if (routes[i].modelGroups.length > 0) {
+                firsturl = routes[i].modelGroups[0].modelGroupUrl;
+            }
+            else if (routes[i].models.length > 0) {
+                firsturl = routes[i].models[0].modelUrl;
+            }
+            else {
+                firsturl = "/";
+            }
+
+            header_modules.push({ moduleId: routes[i].modelGroupId, defaultUrl: routes[i].modelGroupUrl, moduleName: routes[i].modelGroupName, firsturl: firsturl });
            
         }
     }
@@ -53,10 +64,11 @@
             
             licn +=" layui-this"
         }
-        li.className = licn;        
+        li.className = licn;
+        
         li.innerHTML = "<a href='#' onclick='jump(&quot;" + header_modules[i].moduleId + "&quot)' >" + header_modules[i].moduleName + "</a>";
-        //ul.insertBefore(li, ul.childNodes[i]);
-        ul.appendChild(li);
+        ul.insertBefore(li, ul.childNodes[i]);
+        //ul.appendChild(li);
     }
 
     function jump(moduleId) {
@@ -64,7 +76,9 @@
             if (moduleId === header_modules[i].moduleId) {
                
                 window.localStorage.setItem("current_moduleId", header_modules[i].moduleId);
-                window.location.replace(header_modules[i].defaultUrl);
+                console.log(header_modules[i].firsturl)
+                //window.location.replace(header_modules[i].defaultUrl);
+                window.location.replace(header_modules[i].firsturl);
             }
         }
     }

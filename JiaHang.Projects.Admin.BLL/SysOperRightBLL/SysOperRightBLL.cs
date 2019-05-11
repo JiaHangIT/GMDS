@@ -223,9 +223,9 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
             var query = (from a in _context.SysModelInfo.Where(e => isAdmin == true || opers.Contains(e.ModelId))
                          join b in _context.SysModelGroup.Where(e => string.IsNullOrWhiteSpace(e.ParentId)) on a.ModelGroupId equals b.ModelGroupId
 
-                         join c in _context.SysModelGroup on b.ParentId equals c.ModelGroupId
-                         into c_temp
-                         from c_ifnull in c_temp.DefaultIfEmpty()
+                         //join c in _context.SysModelGroup on b.ParentId equals c.ModelGroupId
+                         //into c_temp
+                         //from c_ifnull in c_temp.DefaultIfEmpty()
 
                          orderby a.SortKey descending
                          orderby b.SortKey descending
@@ -235,7 +235,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                              b.ModelGroupName,
                              b.ModelGroupUrl,
                              GroupOutUrlFlag = b.OutUrlFlag,
-
+                             b.SortKey,
 
                              a.ModelId,
                              a.ModelName,
@@ -250,6 +250,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
 
                           orderby a.SortKey descending
                           orderby b.SortKey descending
+                          orderby c.SortKey descending
                           select new
                           {
                               b.ModelGroupId,
@@ -267,37 +268,40 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                               hModelGroupUrl = c.ModelGroupUrl,
                               hModelGroupName = c.ModelGroupName,
                               hOutUrlFlag = c.OutUrlFlag,
+                              c.SortKey,
                           }).ToList();
 
-            var data1 = query1.GroupBy(e => new { e.hModelGroupId, e.hModelGroupName, e.hModelGroupUrl, e.hOutUrlFlag }).Select(c => new UserRouteModel
+            var data1 = query1.GroupBy(e => new { e.hModelGroupId, e.hModelGroupName, e.hModelGroupUrl, e.hOutUrlFlag, e.SortKey }).Select(c => new UserRouteModel
             {
                 ModelGroupId = c.Key.hModelGroupId,
                 ModelGroupUrl = c.Key.hOutUrlFlag == 1 ? $"/iframecontainer/index?path={c.Key.hModelGroupUrl}" : c.Key.hModelGroupUrl,
                 OutUrlFlag = c.Key.hOutUrlFlag == 1,
                 ModelGroupName = c.Key.hModelGroupName,
+                SortKey = c.Key.SortKey.Value,
                 ModelGroups = c.GroupBy(g => new { g.ModelGroupId, g.ModelGroupName, g.ModelGroupUrl, g.OutUrlFlag }).Select(gc => new UserRouteModel
                 {
                     ModelGroupId = gc.Key.ModelGroupId,
                     OutUrlFlag = gc.Key.OutUrlFlag == 1,
                     ModelGroupUrl = gc.Key.OutUrlFlag == 1 ? $"/iframecontainer/index?path={gc.Key.ModelGroupUrl}" : gc.Key.ModelGroupUrl,
                     ModelGroupName = gc.Key.ModelGroupName,
-                    
+
                     Models = gc.Select(m => new UserModuleRoute()
                     {
-                       ModelId= m.ModelId,
-                        ModelName= m.ModelName,
-                        ModelUrl= m.OutUrlFlag == 1 ? $"/iframecontainer/index?path={m.ModelUrl}" : m.ModelUrl,
-                        OutUrlFlag = m.OutUrlFlag==1,
+                        ModelId = m.ModelId,
+                        ModelName = m.ModelName,
+                        ModelUrl = m.OutUrlFlag == 1 ? $"/iframecontainer/index?path={m.ModelUrl}" : m.ModelUrl,
+                        OutUrlFlag = m.OutUrlFlag == 1,
                     }).ToList()
                 }).ToList()
             }).ToList();
-            var data = query.GroupBy(e => new { e.ModelGroupId, e.ModelGroupName, e.ModelGroupUrl, e.GroupOutUrlFlag })
+            var data = query.GroupBy(e => new { e.ModelGroupId, e.ModelGroupName, e.ModelGroupUrl, e.GroupOutUrlFlag, e.SortKey })
                 .Select(g => new UserRouteModel
                 {
                     ModelGroupId = g.Key.ModelGroupId,
                     ModelGroupName = g.Key.ModelGroupName,
                     ModelGroupUrl = g.Key.GroupOutUrlFlag == 1 ? $"/iframecontainer/index?path={g.Key.ModelGroupUrl}" : g.Key.ModelGroupUrl,
                     OutUrlFlag = g.Key.GroupOutUrlFlag == 1,
+                    SortKey = g.Key.SortKey.Value,
                     Models = g.Select(m => new UserModuleRoute
                     {
                         ModelId = m.ModelId,
@@ -307,9 +311,12 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
                     }).ToList()
                 }).ToList();
 
-            foreach (var obj in data1) {
-                for (var i = 0;i < data.Count;i++) {
-                    if (obj.ModelGroupId == data[i].ModelGroupId) {
+            foreach (var obj in data1)
+            {
+                for (var i = 0; i < data.Count; i++)
+                {
+                    if (obj.ModelGroupId == data[i].ModelGroupId)
+                    {
                         obj.Models.AddRange(data[i].Models);
                         data.Remove(data[i]);
                     }
@@ -317,7 +324,7 @@ namespace JiaHang.Projects.Admin.BLL.SysOperRightBLL
             }
 
             data1.AddRange(data);
-            return new FuncResult<List<UserRouteModel>>() { IsSuccess = true, Content = data1 };
+            return new FuncResult<List<UserRouteModel>>() { IsSuccess = true, Content = data1.OrderByDescending(e => e.SortKey).ToList() };
         }
     }
 }

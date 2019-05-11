@@ -16,9 +16,10 @@
         <el-col :span="16">
             <p>{{data.customerName}}</p>
         </el-col>
-        <el-col :span="8" style="text-align: right;">           
+        <el-col :span="8" style="text-align: right;">
             <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog">添加其它接口</span>
-            <span style="color:#67C23A;cursor:pointer;" @@click="updateServiceAuthorize">保存本次修改</span>
+            <span style="color:#67C23A;cursor:pointer;padding-right:15px;" @@click="updateServiceAuthorize">保存本次修改</span>
+            <span style="color:#909399;cursor:pointer;" @@click="window.location.replace('/DcsCustomerInfo/index')">返回</span>
         </el-col>
     </el-row>
 
