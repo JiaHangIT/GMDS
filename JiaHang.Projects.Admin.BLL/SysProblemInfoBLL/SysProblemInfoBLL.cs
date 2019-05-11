@@ -78,7 +78,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                             Problem_Id = a_ifnull.ProblemId,
                             Problem_Type_Id = a_ifnull.ProblemTypeId,
                             Problem_Title = a_ifnull.ProblemTitle,
-                            Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
+                            Audit_Flag = a_ifnull.AuditFlag,
                             Audited_Date = a_ifnull.AuditedDate,
                             Audited_By = a_ifnull.AuditedBy,
                             problem_Contant = a_ifnull.ProblemContent,
@@ -117,7 +117,6 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             entity.ProblemTypeId = model.ProblemTypeId;
             entity.ProblemTitle = model.ProblemTitle;
             entity.ProblemContent = model.ProblemContent;
-            entity.AuditFlag = model.AuditFlag;
             //entity.AuditedDate = model.AuditedDate;
             //entity.AuditedBy = model.AuditedBy;
             entity.LastUpdatedBy = currentUserId;
@@ -194,7 +193,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                 ProblemTypeId = model.ProblemTypeId,
                 ProblemTitle = model.ProblemTitle,
                 ProblemContent = model.ProblemContent,
-                AuditFlag = model.AuditFlag,
+                AuditFlag = 2,
 
 
                 LastUpdatedBy = currentUserId,

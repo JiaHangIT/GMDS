@@ -57,23 +57,12 @@
                 <div class="layui-inline">
                     <select name="interest" id="search_audit_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="1">是</option>
-                        <option value="0">否</option>
+                        <option value="1">审核通过</option>
+                        <option value="0">审核未通过</option>
+                        <option value="2">未审核</option>
                     </select>
                 </div>
             </div>
-            @*<div class="layui-row">
-                    <div class=" layui-col-md4 layui-col-xs6" style="margin-top:4px">
-                        <label class="layui-form-label"> 是否审核：</label>
-                        <div class="layui-inline">
-                            <select name="interest" id="search_audit_flag" lay-filter="aihao">
-                                <option value=""></option>
-                                <option value="1">是</option>
-                                <option value="0">否</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>*@
         </div>
 
 
@@ -186,7 +175,21 @@
                 , {
                     field: 'important_Flag', title: '是否重要',/* sort: true*/
                 }
-                , { field: 'audit_Flag', title: '是否审核' }
+                , {
+                    field: 'audit_Flag', title: '是否审核',
+                    templet: function (d) {
+                        if (d.audit_Flag > 0) {
+                            if (d.audit_Flag == 1) {
+                                return '审核通过';
+                            }
+                            else {
+                                return "未审核";
+                            }
+                        }
+                        else {
+                            return "审核未通过";
+                        }
+                    }}
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
                 , { field: 'audited_Date', title: '审核时间', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
@@ -200,6 +203,19 @@
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
         });
+        //templet: function (audit_Flag) {
+        //    if (audit_Flag > 0) {
+        //        if (audit_Flag == 1) {
+        //            audit_Flag = "是";
+        //        }
+        //        else {
+        //            audit_Flag = "未审核";
+        //        }
+        //    }
+        //    else {
+        //        audit_Flag = "否";
+        //    }
+        //}
         table.on('checkbox(syshelp)', function (obj) {
         });
         //监听工具条
@@ -237,50 +253,75 @@
                 let method = "POST";
                 let confirm_title = "帮助信息名称为：【" + data.help_Title + "】";
 
+                if (data.audit_Flag == 1) {
+                    layer.confirm(confirm_title, {
+                        btn: ['不通过审核', '取消'], btn2: function (index, layero) {
+                            layer.close(index);
+                        }
+                    }, function (index, layero) { //alert("不通过");
+                        let model = {
+                            HelpTypeId: data.help_Id,
+                            AuditFlag: 0
+                        };
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                console.log(response);
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                    tableReload(datatable);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });}, function (index){ })
+                 }
+                else {
                 layer.confirm(confirm_title, {
                     btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
                         layer.close(index);
                     }
-                }, function (index, layero) {
-                    let model = {
-                        HelpTypeId: data.help_Id,
-                        AuditFlag: 1
-                    };
-                    axios({ url: url, method: method, data: model })
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                                tableReload(datatable);
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }, function (index) {
-                    //alert("不通过");
-                    let model = {
-                        HelpTypeId: data.help_Id,
-                        AuditFlag: 0
-                    };
-                    axios({ url: url, method: method, data: model })
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                                tableReload(datatable);
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
                 }
-                );
+                    , function (index, layero) {
+                        let model = {
+                            HelpTypeId: data.help_Id,
+                            AuditFlag: 1
+                        };
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                console.log(response);
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                    tableReload(datatable);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }, function (index) {
+                        //alert("不通过");
+                        let model = {
+                            HelpTypeId: data.help_Id,
+                            AuditFlag: 0
+                        };
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                console.log(response);
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                    tableReload(datatable);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                });
+                        }
+                    );
+                }
             }
         });
-
 
         var $ = layui.$, active = {
             getCheckData: function () { //获取选中数据
@@ -448,7 +489,7 @@
             if (data == undefined) {
                 $('#important_flag').val("");
                 form.val("generate-form", {
-                    help_id: "",
+                    //help_id: "",
                     help_type_id: "",
                     help_title: "",
                     help_content: "",
