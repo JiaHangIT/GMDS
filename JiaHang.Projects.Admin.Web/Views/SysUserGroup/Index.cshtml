@@ -17,7 +17,7 @@
 </style>
 <div>
 
-    
+
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
             <div class=" layui-col-md6 layui-col-xs6">
@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-  
+
         <div class="layui-form-item" style="margin-top:15px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
             <button class="layui-btn" data-type="showGenerateLayer">新增用户组</button>
@@ -48,7 +48,7 @@
 
     </div>
     <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
-
+    level
 </div>
 <div id="generate_layer" style="display:none; padding:15px;position:relative;">
     <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
@@ -66,7 +66,7 @@
         <div class="layui-form-item" >
             <label class="layui-form-label">用户组等级</label>
             <div class="layui-input-inline">
-                <input type="text" id="level" lay-verify="required" placeholder="用户组等级" autocomplete="off" class="layui-input" readonly value="一级用户组">
+                <input type="text" id="level" lay-verify="required" placeholder="用户组等级" autocomplete="off" class="layui-input"  readonly value="一级用户组">
             </div>
             <div class="layui-form-mid layui-word-aux">当前用户组级别,若无父级用户组，可不选择</div>
         </div>
@@ -333,7 +333,7 @@
            
             initSecondSelect(data.value, "");
             if (data.value == "") {
-                $("#second_select").attr("disabled", "disabled");
+                //$("#second_select").attr("disabled", "disabled");
                 $("#level").val( "一级用户组");
                 return;
             }
@@ -480,13 +480,13 @@
             form.render('select');
             initFirstSelect(data.firstId);
             initSecondSelect(data.firstId, data.secondId);
-            if (data.level == "一级用户组") {
-                $("#first_select").attr("disabled", "disabled");
-                $("#second_select").attr("disabled", "disabled");
-            }
-            if (data.level == "二级用户组") {
-                $("#second_select").attr("disabled", "disabled");
-            }
+            //if (data.level == "一级用户组") {
+            //    $("#first_select").attr("disabled", "disabled");
+            //    $("#second_select").attr("disabled", "disabled");
+            //}
+            //if (data.level == "二级用户组") {
+            //    $("#second_select").attr("disabled", "disabled");
+            //}
             form.render('select');
             
         }

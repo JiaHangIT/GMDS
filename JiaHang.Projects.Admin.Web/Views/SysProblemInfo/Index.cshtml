@@ -51,8 +51,9 @@
                 <div class="layui-inline">
                     <select name="interest" id="search_audit_flag" lay-filter="aihao">
                         <option value=""></option>
-                        <option value="1">是</option>
-                        <option value="0">否</option>
+                        <option value="1">审核通过</option>
+                        <option value="0">审核未通过</option>
+                        <option value="2">未审核</option>
                     </select>
                 </div>
             </div>
@@ -91,13 +92,13 @@
                 </div>
             </div>
 
-           
-                <div class="layui-form-item layui-form-text" style="padding-right:20px">
-                    <label class="layui-form-label">常见问题内容</label>
-                    <div class="layui-input-block">
-                        <textarea placeholder="请输入内容" id="problem_contant" name="problem_contant" class="layui-textarea"></textarea>
-                    </div>
+
+            <div class="layui-form-item layui-form-text" style="padding-right:20px">
+                <label class="layui-form-label">常见问题内容</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="problem_contant" name="problem_contant" class="layui-textarea"></textarea>
                 </div>
+            </div>
 
         </div>
         <div class="layui-form-item" style="margin-left:210PX">
@@ -160,7 +161,22 @@
                 , { field: 'problem_Title', width: 200, title: '常见问题标题',/* sort: true,*/ fixed: 'left' }
                 //, { field: 'user_Org_Id', title: '用户组别', }
                 //, { field: 'important_Flag', title: '是否重要', sort: true }
-                , { field: 'audit_Flag', title: '是否审核' }
+                , {
+                    field: 'audit_Flag', title: '是否审核',
+                 templet: function (d) {
+                        if (d.audit_Flag > 0) {
+                            if (d.audit_Flag == 1) {
+                                return '审核通过';
+                            }
+                            else {
+                                return "未审核";
+                            }
+                        }
+                        else {
+                            return "审核未通过";
+                        }
+                    }
+                }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
                 , { field: 'audited_Date', title: '审核时间', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
@@ -219,6 +235,31 @@
                 let url = "/api/sysproblemInfodata/UpdateExamine";
                 let method = "POST";
                 let confirm_title = "确认审核 ：【" + data.problem_Title + "】的记录么";
+                if (data.audit_Flag == 1) {
+                    layer.confirm(confirm_title, {
+                        btn: ['不通过审核', '取消'], btn2: function (index, layero) {
+                            layer.close(index);
+                        }
+                    }, function (index, layero) { //alert("不通过");
+                        let model = {
+                            ProblemId: data.problem_Id,
+                            AuditFlag: 0
+                        };
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                console.log(response);
+                                layer.msg(response.data.message);
+                                if (!response.data.isSuccess) {
+                                    return;
+                                    tableReload(datatable);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }, function (index) { })
+                }
+                else {
                 layer.confirm(confirm_title, {
                     btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
 
@@ -266,6 +307,7 @@
                         });
                 }
                 );
+            }
             }
         });
 
@@ -436,7 +478,7 @@
 
             if (data == undefined) {
                 form.val("generate-form", {
-                    problem_id: "",
+                    //problem_id: "",
                     problem_type_id: "",
                     problem_title: "",
                     problem_contant: "",
@@ -451,7 +493,7 @@
             }
             form.val("generate-form", {
 
-                problem_id: data.problem_Id,
+              
                 problem_type_id: data.problem_Type_Id,
                 problem_title: data.problem_Title,
                 problem_contant: data.problem_Contant,

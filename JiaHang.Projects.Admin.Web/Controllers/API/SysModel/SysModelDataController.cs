@@ -32,10 +32,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysModule
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize,int currentPage,string modelName)
+        public FuncResult Select(int pageSize,int currentPage,string modelName,string parentModelName)
         {
             currentPage--;
-            return sysModelBLL.Select(pageSize,currentPage, modelName);
+            return sysModelBLL.Select(pageSize,currentPage, modelName, parentModelName);
 
         }
 

@@ -23,10 +23,11 @@ namespace JiaHang.Projects.Admin.BLL.SysModelBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(int pageSize, int currentPage, string modelName)
+        public FuncResult Select(int pageSize, int currentPage, string modelName, string parentModelName)
         {
-            var query = from a in _context.SysModelInfo.Where(e=>string.IsNullOrWhiteSpace( modelName )||e.ModelName.Contains(modelName))
-                        join b in _context.SysModelGroup
+            var query = from a in _context.SysModelInfo
+                        .Where(e=>string.IsNullOrWhiteSpace( modelName )||e.ModelName.Contains(modelName))                       
+                        join b in _context.SysModelGroup.Where(e => string.IsNullOrWhiteSpace(parentModelName) || e.ModelGroupName.Contains(parentModelName))
                         on a.ModelGroupId equals b.ModelGroupId
                         orderby a.SortKey descending
                         orderby b.SortKey   descending
@@ -167,14 +168,32 @@ namespace JiaHang.Projects.Admin.BLL.SysModelBLL
         /// <returns></returns>
         public FuncResult GetParentModule()
         {
-            var data = _context.SysModelGroup
-                //.Where(e => string.IsNullOrWhiteSpace( e.ParentId))
-                .Select(e => new
-            {
-                e.ModelGroupId,
-                e.ModelGroupName
-            });
-            return new FuncResult() { IsSuccess = true, Content = data };
+            var query = (from a in _context.SysModelGroup
+                         join b in _context.SysModelGroup.Where(e => string.IsNullOrWhiteSpace(e.ParentId))
+                         on a.ParentId equals b.ModelGroupId
+                         into b_temp
+                         from b_ifnull in b_temp.DefaultIfEmpty()
+                         orderby a.SortKey descending
+                        //orderby b_ifnull.SortKey.GetValueOrDefault() descending
+                         select new
+                         {
+                             a.ModelGroupId,
+                             ModelGroupName= b_ifnull==null? a.ModelGroupName:"----"+a.ModelGroupName,
+                             sort= b_ifnull==null?(a.SortKey*10000+1000):(b_ifnull.SortKey*10000+a.SortKey),
+                             a.SortKey,
+                             CreationDate = a.CreationDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                             ModelGroupParentName = b_ifnull == null ? "暂未父模块组" : b_ifnull.ModelGroupName,
+                             gk = b_ifnull == null ? 1 : 0,
+                             ParentId = b_ifnull == null ? a.ModelGroupId : b_ifnull.ModelGroupId,
+                         }).OrderByDescending(e=>e.sort);
+            //var data = _context.SysModelGroup
+            //    //.Where(e => string.IsNullOrWhiteSpace( e.ParentId))
+            //    .Select(e => new
+            //{
+            //    e.ModelGroupId,
+            //    e.ModelGroupName
+            //});
+            return new FuncResult() { IsSuccess = true, Content = query };
         }
 
     }

@@ -12,41 +12,50 @@
     .el-dialog__body { padding: 15px; }
 </style>
 <div id="app">
+  
+    @*<el-row>
+        <el-col style="text-align:right;margin-bottom: -35px;">
+            <el-button @@click="window.location.replace('/sysmodel/group')" type="info" >返 回</el-button>
+        </el-col>
+    </el-row>*@
     <el-row style="height: 48px; line-height: 48px;border-bottom: 1px solid #EBEEF5;margin-bottom:15px;">
         <el-col :span="16">
             <p>{{data.modelGroupName}}</p>
         </el-col>
+        <el-col :span="8" style="text-align:right;" v-if="">
+            <el-button @@click="window.location.replace('/sysmodel/group')" type="info">返 回</el-button>
+        </el-col>
         @*<el-col :span="8" style="text-align: right;">
-            <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog">添加其它接口</span>
-            <span style="color:#67C23A;cursor:pointer;" @@click="updateServiceAuthorize">保存本次修改</span>
-        </el-col>*@
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog">添加其它接口</span>
+                <span style="color:#67C23A;cursor:pointer;" @@click="updateServiceAuthorize">保存本次修改</span>
+            </el-col>*@
     </el-row>
 
 
     <div v-for="item in data.model">
         <el-row style="padding:15px;background-color:#ECF5FF;border-left:5px solid #50BFFF;">
             <el-col :span="12">
-                <span>{{item.modelName}}</span>
+                <span>{{item.modelName}}</span> 
             </el-col>
             <el-col :span="12" style="text-align: right;">
                 <span style="color:#409EFF;cursor:pointer;padding-right:15px;" @@click="showDialog(item)">添加用户/用户组</span>
-                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" v-if="item.deloperids.length>0"  @@click="cancel(item)">取消本次修改</span>
+                <span style="color:#409EFF;cursor:pointer;padding-right:15px;" v-if="item.deloperids.length>0" @@click="cancel(item)">取消本次修改</span>
                 <span style="color:#67C23A;cursor:pointer;" @@click="save(item)" v-if="item.deloperids.length>0">保存本次修改</span>
             </el-col>
         </el-row>
         <div style="padding-left:15px;padding-right:15px;">
             <div style="padding-top:10px;"><span>用户</span></div>
-            <div >
+            <div>
                 <el-tag v-for="(field,index) in item.users" v-if="!field.isRemove" :disable-transitions="false" @@close="delUser(field,item,index)" closable>
                     {{ field.userName }}
                 </el-tag>
             </div>
-           
+
             <div style="border-top: 1px solid #EBEEF5;padding-top:10px;"><span>用户组</span></div>
             <div style="min-height:12px;">
                 <el-tag v-for="(field,index) in item.userGroups" v-if="!field.isRemove" :disable-transitions="false" @@close="delUserGroup(field,item,index)" closable>
                     {{ field.userGroupName }}
-                </el-tag>                
+                </el-tag>
             </div>
 
         </div>
@@ -145,6 +154,7 @@
                                 window.location.replace('/sysmodel/group');
                             })
                         }
+                        
                         vm.data = response.data.content
                     })
                     .catch(function (error) {
