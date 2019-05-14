@@ -80,7 +80,6 @@
                 <div class="layui-inline">
                     <select name="DimTypeID" id="DimTypeID" lay-verify="required" lay-filter="xmFilter">
                         <option value=""></option>
-
                     </select>
                 </div>
             </div>
@@ -167,7 +166,7 @@
                 layer.msg('DimTypeCode：' + data.dimId + ' 的查看操作');
             } else if (obj.event === 'del') {
                 console.log("delete");
-                let confirm_title = "确认删除产品编号" + data.dimId + "的记录么";
+                let confirm_title = "确认删除维度编号" + data.dimId + "的记录么";
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
                     axios.delete('/api/SysDimInfo/' + data.dimId)
