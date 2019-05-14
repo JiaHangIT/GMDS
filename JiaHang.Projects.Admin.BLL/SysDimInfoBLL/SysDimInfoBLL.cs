@@ -197,7 +197,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
         }
 
         /// <summary>
-        /// 取用户名
+        /// 取维度
         /// </summary>
         /// <returns></returns>
         public object GetDimType()

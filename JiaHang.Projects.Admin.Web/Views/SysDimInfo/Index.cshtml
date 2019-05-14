@@ -396,7 +396,7 @@
             success: function (data) {
                 console.log(data);
                 $.each(data, function (index, item) {
-                    $('#DimTypeID').append(new Option(item.dimTypeCode));// 下拉菜单里添加元素
+                    $('#DimTypeID').append(new Option(item.dimTypeName, item.dimTypeCode));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }
