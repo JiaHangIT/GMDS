@@ -66,6 +66,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<SysUserInfo> SysUserInfo { get; set; }
         public virtual DbSet<SysUserRoute> SysUserRoute { get; set; }
         public virtual DbSet<SysUserRouteCondition> SysUserRouteCondition { get; set; }
+        public virtual DbSet<DcsDataCatalog> DcsDataCatalog { get; set; }
 
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
@@ -1531,7 +1532,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.ConnectionId)
                     .HasColumnName("CONNECTION_ID")
                     .HasColumnType("NVARCHAR2(40)");
-
+                entity.Property(e => e.DataCatalogId)
+                   .HasColumnName("DATA_CATALOG_ID")
+                   .HasColumnType("NVARCHAR2(40)");
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
                     .HasColumnType("NVARCHAR2(40)");
@@ -3328,6 +3331,70 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.UserRouteId)
                     .HasColumnName("USER_ROUTE_ID")
                     .HasColumnType("NVARCHAR2(36)");
+            });
+            modelBuilder.Entity<DcsDataCatalog>(entity =>
+            {
+                entity.HasKey(e => e.DataCatalogId);
+                entity.ToTable("DCS_DATA_CATALOG");
+
+                entity.HasIndex(e => e.DataCatalogId)
+                    .HasName("PK_DCS_DATA_CATALOG")
+                    .IsUnique();
+
+                entity.Property(e => e.DataCatalogId)
+                    .HasColumnName("DATA_CATALOG_ID")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DataCatalogCode)
+                    .HasColumnName("DATA_CATALOG_CODE")
+                    .HasColumnType("NVARCHAR2(60)");
+
+                entity.Property(e => e.DataCatalogName)
+                    .HasColumnName("DATA_CATALOG_NAME")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ParentId)
+                    .HasColumnName("PARENT_ID")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.ParentIdTree)
+                    .HasColumnName("PARENT_ID_TREE")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG")
+                .HasDefaultValueSql("0 ");
+
+                entity.Property(e => e.DataCountSelf)
+                    .HasColumnName("DATA_COUNT_SELF");
+
+                entity.Property(e => e.DataCountTree)
+                    .HasColumnName("DATA_COUNT_TREE");
+
+                entity.Property(e => e.ImageUrl)
+                    .HasColumnName("IMAGE_URL")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NVARCHAR2(40)");
+                entity.Property(e => e.LastUpdateDate)
+                   .HasColumnName("LAST_UPDATE_DATE")
+                   .HasColumnType("DATE");
+                entity.Property(e => e.LastUpdatedBy)
+                   .HasColumnName("LAST_UPDATED_BY")
+                   .HasColumnType("NVARCHAR2(40)");
+                entity.Property(e => e.DeleteDate)
+                   .HasColumnName("DELETE_DATE")
+                   .HasColumnType("DATE");
+                entity.Property(e => e.DeleteBy)
+                   .HasColumnName("DELETED_BY")
+                   .HasColumnType("NVARCHAR2(40)");
+               
             });
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
                //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
