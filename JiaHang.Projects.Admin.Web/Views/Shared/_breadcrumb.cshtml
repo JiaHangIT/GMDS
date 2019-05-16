@@ -13,6 +13,7 @@
         routes = JSON.parse(routes_str);
         //获取当前模块id
         var current_moduleId = window.localStorage.getItem("current_moduleId");
+        
         let side = document.getElementById("side");
 
         let c_routes = {};
@@ -22,6 +23,10 @@
                 c_routes = routes[i];
                 break;
             }
+        }
+        
+        if (c_routes.modelGroups == null || c_routes.modelGroups == undefined) {
+            c_routes = routes[0]
         }
 
         let breadcrumb = document.getElementById("breadcrumb");
