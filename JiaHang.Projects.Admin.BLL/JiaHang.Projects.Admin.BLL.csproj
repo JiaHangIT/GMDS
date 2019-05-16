@@ -16,8 +16,4 @@
     <ProjectReference Include="..\JiaHang.Projects.Admin.Model\JiaHang.Projects.Admin.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DcsDataCatalog\" />
-  </ItemGroup>
-
 </Project>

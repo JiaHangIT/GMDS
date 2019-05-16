@@ -1,1032 +1,1000 @@
 ﻿
 @{
-    ViewData["Title"] = "数据源管理";
+    ViewData["Title"] = "数据源ElementUI设计";
 }
 <style>
-    .layui-layer-shade {
+    .v-modal {
         display: none;
     }
 
-    .layui-select-title input {
-        width: 180px;
-    }
-
-    .layui-row .layui-col-md4 {
-        padding-right: 5%;
-    }
-
-    .layui-row {
-        margin-bottom: 6px;
-    }
-
-    .layui-form-pane .layui-form-select {
-        width: 182px;
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
     }
 </style>
-<div class="layui-form layui-form-pane" style="background-color:#F2F2F2;margin-top:8px;">
-    <div class="layui-row">
-        <div class=" layui-col-md6 layui-col-xs6">
-            <label class="layui-form-label" style="width:150px">数据源代码：</label>
-            <div class="layui-inline">
-                <input class="layui-input" name="search_datasource_code" id="search_datasource_code" autocomplete="off">
-            </div>
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="数据源代码：">
+            <el-input placeholder="数据源代码" v-model="searchDataSourceCode"></el-input>
+        </el-form-item>
+        <el-form-item label="数据源名称：" style="margin-left:18px">
+            <el-input placeholder="数据源名称" v-model="searchDataSourceName"></el-input>
+        </el-form-item>
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="数据源类型：">
+            <el-select v-model="value1" placeholder="请选择">
+                <el-option v-for="item in searchdataSourceType"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="数据源用途：">
+            <el-select v-model="value2" placeholder="请选择">
+                <el-option v-for="item in searchdataSourceUse"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="search">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="dataSourceAdd">新增数据源</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="danger" @@click="batchDelete">选中行删除</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @@selection-change="handleSelectionChange">
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
+        <el-table-column label="数据源代码"
+                         prop="dataSourceCode">
+        </el-table-column>
+        <el-table-column label="数据源名称"
+                         prop="dataSourceName">
+        </el-table-column>
+        <el-table-column label="数据源类型"
+                         prop="dataSourceType">
+        </el-table-column>
+        <el-table-column label="数据源用途"
+                         prop="dataSourceUse">
+        </el-table-column>
+        <el-table-column label="数据库连接名称"
+                         prop="connectionName">
+        </el-table-column>
+        <el-table-column label="创建时间"
+                         prop="creationDate">
+        </el-table-column>
+        <el-table-column label="操作">
+
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="50%"
+               left>
+        <el-tabs v-model="activeName" @@tab-click="handleClick" style="margin-top: -40px;">
+            <el-tab-pane label="数据源基础信息" name="first">
+
+                <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+                    <el-form-item label="数据源ID" prop="dataSourceId" hidden>
+                        <el-input v-model="form.dataSourceId"></el-input>
+                    </el-form-item>
+                    <el-form-item label="数据源代码" prop="dataSourceCode">
+                        <el-input v-model="form.dataSourceCode"></el-input>
+                    </el-form-item>
+                    <el-form-item label="数据源名称" prop="dataSourceName">
+                        <el-input v-model="form.dataSourceName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="数据库连接名称：">
+                        <el-select v-model="form.connectionId" placeholder="请选择">
+                            <el-option v-for="item in databaseName"
+                                       :key="item.connectionId"
+                                       :label="item.connectionName"
+                                       :value="item.connectionId"
+                                       :disabled="item.disabled">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="数据源类型：">
+                        <el-select v-model="form.dataSourceType" placeholder="请选择">
+                            <el-option v-for="item in dataSourceType"
+                                       :key="item.value"
+                                       :label="item.label"
+                                       :value="item.value"
+                                       :disabled="item.disabled">
+                            </el-option>
+                        </el-select>
+
+                    </el-form-item>
+                    <el-form-item label="数据源用途：">
+                        <el-select v-model="form.dataSourceUse" placeholder="请选择">
+                            <el-option v-for="item in dataSourceUse"
+                                       :key="item.value"
+                                       :label="item.label"
+                                       :value="item.value"
+                                       :disabled="item.disabled">
+                            </el-option>
+                        </el-select>
+
+                    </el-form-item>
+
+                </el-form>
+                <div style="margin-left:220px">
+                    <el-button v-on:click="dialogCancel()">取 消</el-button>
+                    <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+                </div>
+            </el-tab-pane>
+
+            <el-tab-pane label="数据源字段信息" name="second">
+                <el-table ref="multipleTable"
+                          :data="dataField"
+                          :border="true"
+                          tooltip-effect="dark"
+                          style="width: 100%"
+                          @@selection-change="handleSelectionChangeField">
+                    <el-table-column type="selection"
+                                     width="55">
+                    </el-table-column>
+                    <el-table-column label="字段代码"
+                                     prop="fieldCode">
+                    </el-table-column>
+                    <el-table-column label="字段名称"
+                                     prop="fieldName">
+                    </el-table-column>
+                    <el-table-column label="字段类型"
+                                     prop="fieldTypeName">
+                    </el-table-column>
+                    <el-table-column label="是否可为空"
+                                     prop="fieldNullable">
+                    </el-table-column>
+                    <el-table-column label="字段长度"
+                                     prop="fieldLength">
+                    </el-table-column>
+                    <el-table-column label="是否索引"
+                                     prop="fieldIndexFlag">
+                    </el-table-column>
+                    <el-table-column label="操作">
+
+                        <template slot-scope="scope">
+                            <el-button size="mini"
+                                       v-on:click="handleEditField(scope.$index, scope.row)">编辑</el-button>
+                            <el-button size="mini"
+                                       type="danger"
+                                       v-on:click="handleDeleteField(scope.$index, scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination @@size-change="handleSizeChangeField"
+                               @@current-change="handleCurrentChangeField"
+                               :current-page="currentPageField"
+                               :page-sizes="[10, 20, 30, 40]"
+                               :page-size="pageSizeField"
+                               layout="total, sizes, prev, pager, next, jumper"
+                               :total="totalField">
+                </el-pagination>
+                <div style="margin-left:220px">
+
+                    <el-button type="primary" size="mini" v-on:click="addfield()">添加字段</el-button>
+                    <el-button type="danger" size="mini" v-on:click="deletebatchfield()">删除字段</el-button>
+                    <el-button size="mini" v-on:click="canclefield()">取消</el-button>
+                </div>
+            </el-tab-pane>
+
+        </el-tabs>
+
+
+    </el-dialog>
+    <el-dialog :title="adddialogTitle"
+               :visible.sync="addcenterDialogVisible"
+               width="50%"
+               center>
+        <el-form :inline="true" :label-position="addlabelPosition" label-width="160px" :model="addform" :rules="addrules" ref="addform">
+            <el-form-item label="数据源代码：" prop="dataSourceCode">
+                <el-input v-model="addform.dataSourceCode"></el-input>
+            </el-form-item>
+            <el-form-item label="数据源名称：" prop="dataSourceName">
+                <el-input v-model="addform.dataSourceName"></el-input>
+            </el-form-item>
+            <el-form-item label="数据库连接名称：">
+                <el-select v-model="addform.connectionId" placeholder="请选择">
+                    <el-option v-for="item in databaseName"
+                               :key="item.connectionId"
+                               :label="item.connectionName"
+                               :value="item.connectionId"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="数据源类型：">
+                <el-select v-model="addform.dataSourceType" placeholder="请选择">
+                    <el-option v-for="item in dataSourceType"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="数据源用途：">
+                <el-select v-model="addform.dataSourceUse" placeholder="请选择">
+                    <el-option v-for="item in dataSourceUse"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="adddialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="adddialogSave('addform')">确 定</el-button>
         </div>
-        <div class=" layui-col-md6 layui-col-xs6">
-            <label class="layui-form-label" style="width:150px;">数据源名称：</label>
-            <div class="layui-inline">
-                <input class="layui-input" name="search_datasource_name" id="search_datasource_name" autocomplete="off">
-            </div>
+    </el-dialog>
+    <el-dialog :title="addfielddialogTitle"
+               :visible.sync="addfieldcenterDialogVisible"
+               width="50%"
+               center>
+        <el-form :label-position="addfieldlabelPosition" label-width="160px" :model="addfieldform" :rules="addfieldrules" ref="addfieldform">
+            <el-form-item label="数据源ID" prop="dataSourceId" hidden>
+                <el-input v-model="addfieldform.dataSourceId"></el-input>
+            </el-form-item>
+            <el-form-item label="字段代码：" prop="fieldCode">
+                <el-input v-model="addfieldform.fieldCode"></el-input>
+            </el-form-item>
+            <el-form-item label="字段名称：" prop="fieldName">
+                <el-input v-model="addfieldform.fieldName"></el-input>
+            </el-form-item>
+            <el-form-item label="字段类型：">
+                <el-select v-model="addfieldform.fieldTypeId" placeholder="请选择">
+                    <el-option v-for="item in fieldtypes"
+                               :key="item.fieldTypeId"
+                               :label="item.fieldTypeName"
+                               :value="item.fieldTypeId"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="是否可为空：">
+                <el-select v-model="addfieldform.fieldNullable" placeholder="请选择">
+                    <el-option v-for="item in fieldnullable"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="是否主键：">
+                <el-select v-model="addfieldform.fieldKeyFlag" placeholder="请选择">
+                    <el-option v-for="item in fieldkeyflag"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="字段长度：" prop="fieldLength">
+                <el-input v-model="addfieldform.fieldLength"></el-input>
+            </el-form-item>
+            <el-form-item label="是否唯一索引：">
+                <el-select v-model="addfieldform.fieldIndexFlag" placeholder="请选择">
+                    <el-option v-for="item in fieldindexflag"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="字段默认值：" prop="fieldValue">
+                <el-input v-model="addfieldform.fieldValue"></el-input>
+            </el-form-item>
+            <el-form-item label="是否维度字段：">
+                <el-select v-model="addfieldform.dimFlag" placeholder="请选择">
+                    <el-option v-for="item in dimflag"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="是否时间戳字段：">
+                <el-select v-model="addfieldform.timestampFlag" placeholder="请选择">
+                    <el-option v-for="item in timestampflag"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="维度字段表名：" prop="dimTableName">
+                <el-input v-model="addfieldform.dimTableName"></el-input>
+            </el-form-item>
+            <el-form-item label="维度字段代码：" prop="dimFieldCode">
+                <el-input v-model="addfieldform.dimFieldCode"></el-input>
+            </el-form-item>
+            <el-form-item label="维度字段名称：" prop="dimFieldName">
+                <el-input v-model="addfieldform.dimFieldName"></el-input>
+            </el-form-item>
+            <el-form-item label="序列代码：" prop="oraSequenceCode">
+                <el-input v-model="addfieldform.oraSequenceCode"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="addfielddialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="addfielddialogSave('addfieldform')">确 定</el-button>
         </div>
-        <div class=" layui-col-md6 layui-col-xs6" style="margin-top:8px">
-            <label class="layui-form-label" style="width:150px">数据库源类型：</label>
-            <div class="layui-inline">
-                <select name="search_datasource_type" id="search_datasource_type">
-                    <option value="">请选择</option>
-                    <option value="TABLE">TABLE</option>
-                    <option value="VIEW">VIEW</option>
-                </select>
-            </div>
-            <input class="layui-input" style="display:none" name="datasource_Id" id="datasource_Id" autocomplete="off">
-        </div>
-        <div class=" layui-col-md6 layui-col-xs6" style="margin-top:8px">
-            <label class="layui-form-label" style="width:150px">数据源用途：</label>
-            <div class="layui-inline">
-                <select name="search_datasource_use" id="search_datasource_use">
-                    <option value="">请选择</option>
-                    <option value="SHARE">SHARE</option>
-                    <option value="COLLECT">COLLECTION</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item" style="margin-top:8px;">
-        <button class="layui-btn btn-search" data-type="search">条件查询</button>
-        <button class="layui-btn" data-type="showGenerateLayer">新增数据源</button>
-        <button class="layui-btn" data-type="getCheckData">选中行删除</button>
-    </div>
+    </el-dialog>
 </div>
-<div style="margin-top:8px;">
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
-</div>
-
-<div id="generate_layer" style="display:none;position:relative;padding:15px;margin-top:8px">
-    <div class="layui-tab" lay-filter="tabtest">
-        <ul class="layui-tab-title" style="margin-top: -19px;">
-            <li>数据源基础信息</li>
-            <li>数据源字段信息</li>
-        </ul>
-        <div class="layui-tab-content">
-            <div class="layui-tab-item layui-show">
-                <div class="layui-form layui-form-pane" action="" lay-filter="generate-form" style="margin-top:4px;">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据源代码：</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="datasource_code" id="datasource_code" autocomplete="off" placeholder="数据源代码" class="layui-input" lay-verify="required">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据源名称：</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="datasource_name" id="datasource_name" autocomplete="off" placeholder="数据源名称" class="layui-input" lay-verify="required">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item"style="margin-top: -12px;">
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据库源类型：</label>
-                            <div class="layui-inline">
-                                <select name="datasource_type" id="datasource_type">
-                                    <option value="">请选择</option>
-                                    <option value="TABLE">TABLE</option>
-                                    <option value="VIEW">VIEW</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据源用途：</label>
-                            <div class="layui-inline">
-                                <select name="datasource_use" id="datasource_use">
-                                    <option value="">请选择</option>
-                                    <option value="SHARE">SHARE</option>
-                                    <option value="COLLECTION">COLLECTION</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="layui-form-item" style="margin-top: -14px;">
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据库连接名称：</label>
-                            <div class="layui-input-inline">
-                                <select name="databaseconnection_name" id="databaseconnection_name"></select>
-                            </div>
-                            <input type="text" name="database_type_id" id="database_type_id" autocomplete="off" style="display:none" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-form-item" style="margin-left:300px">
-                        <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">添加</button>
-                        <button class="layui-btn layui-layer-btn1" lay-filter="demo" data-type="closeGenerateLayer">取消</button>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-tab-item">
-                <table class="layui-hide" id="test2" lay-filter="fieldoperation"> </table>
-                <div style="margin-left:200px">
-                    <button class="layui-btn" lay-event="addfield" data-type="addfield">添加字段</button>
-                    <button class="layui-btn layui-btn-danger" data-type="deltefield" lay-event="deltefield">删除字段</button>
-                    <button class="layui-btn" data-type="closetest2" lay-event="closetest2">取消</button>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-
-
-
-</div>
-<div id="generate_layer_add" style="display:none;position:relative;padding:15px;">
-        <div class="layui-tab-content" >
-            <div class="layui-tab-item layui-show" style="margin-top:-20px">
-                <div class="layui-form layui-form-pane" action="" lay-filter="generateadd-form" style="margin-top: 4px;">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据源代码</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="add_datasource_code" id="add_datasource_code" autocomplete="off" placeholder="数据源代码" class="layui-input" lay-verify="required">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据源名称</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="add_datasource_name" id="add_datasource_name" autocomplete="off" placeholder="数据源名称" class="layui-input" lay-verify="required">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item" style="margin-top: -14px;" >
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px;">数据库源类型：</label>
-                            <div class="layui-inline">
-                                <select name="add_datasource_type" id="add_datasource_type">
-                                    <option value="">请选择</option>
-                                    <option value="TABLE">TABLE</option>
-                                    <option value="VIEW">VIEW</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:150px">数据源用途：</label>
-                            <div class="layui-inline">
-                                <select name="add_datasource_use" id="add_datasource_use">
-                                    <option value="">请选择</option>
-                                    <option value="SHARE">SHARE</option>
-                                    <option value="COLLECTION">COLLECTION</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="layui-form-item" style="margin-top:-14px">
-                        <div class="layui-inline" >
-                            <label class="layui-form-label" style="width:150px">数据库连接名称</label>
-                            <div class="layui-input-inline">
-                                <select name="add_databaseconnection_name" id="add_databaseconnection_name"></select>
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <div class="layui-form-item" style="margin-left:200px">
-                        <button class="layui-btn" data-type="addgenerate" id="generateadd_btn" lay-submit lay-filter="addsubmit">添加</button>
-                        <button class="layui-btn layui-layer-btn1" lay-filter="demo" data-type="closeaddGenerateLayer">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-</div>
-<div id="generate_fieldInfo" style="display:none;position:relative;padding:15px;">
-    <div>
-        <div class="layui-form layui-form-pane" action="" lay-filter="addfield-form" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
-            <div class="layui-row">
-                <div class="layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段代码：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="field_code" id="field_code" placeholder="字段代码" autocomplete="off" lay-verify="required">
-                    </div>
-                </div>
-                <div class="layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段名称：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="field_name" id="field_name" placeholder="字段名称" autocomplete="off" lay-verify="required">
-                    </div>
-                </div>
-                <div class="layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段类型：</label>
-                    <div class="layui-inline">
-                        <select name="field_types" id="field_types" lay-filter="field_types"></select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否可为空：</label>
-                    <div class="layui-inline">
-                        <select name="field_nullable" id="field_nullable">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否主键：</label>
-                    <div class="layui-inline">
-                        <select name="field_key_flag" id="field_key_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段长度：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="field_length" id="field_length" placeholder="字段长度" autocomplete="off" lay-verify="required">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否唯一索引：</label>
-                    <div class="layui-inline">
-                        <select name="field_index_flag" id="field_index_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段默认值：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="field_value" id="field_value" placeholder="字段默认值" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否维度字段：</label>
-                    <div class="layui-inline">
-                        <select name="dim_flag" id="dim_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否时间戳字段：</label>
-                    <div class="layui-inline">
-                        <select name="timestamp_flag" id="timestamp_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">维度字段表名：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="dim_table_name" id="dim_table_name" placeholder="维度字段表名" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">维度字段代码：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="dim_field_code" id="dim_field_code" placeholder="维度字段代码" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">维度字段名称：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="dim_field_name" id="dim_field_name" placeholder="维度字段名称" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">序列代码：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="ora_sequence_code" id="ora_sequence_code" placeholder="序列代码" autocomplete="off">
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item" style="margin-top:15px;margin-left:300px">
-                <button class="layui-btn" lay-submit="" lay-filter="submitfield">立即添加</button>
-                <button class="layui-btn" data-type="closefield">取消</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="edit_generate_fieldInfo" style="display:none;position:relative;padding:15px;">
-    <div>
-        <div class="layui-form layui-form-pane" action="" lay-filter="editfield-form" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
-            <div class="layui-row">
-                <div class="layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段代码：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_field_code" id="edit_field_code" placeholder="字段代码" autocomplete="off" lay-verify="required">
-                    </div>
-                </div>
-                <div class="layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段名称：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_field_name" id="edit_field_name" placeholder="字段名称" autocomplete="off" lay-verify="required">
-                    </div>
-                </div>
-                <div class="layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段类型：</label>
-                    <div class="layui-inline">
-                        <select name="edit_field_types" id="edit_field_types" lay-filter="edit_field_types"></select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否可为空：</label>
-                    <div class="layui-inline">
-                        <select name="edit_field_nullable" id="edit_field_nullable">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否主键：</label>
-                    <div class="layui-inline">
-                        <select name="edit_field_key_flag" id="edit_field_key_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段长度：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_field_length" id="edit_field_length" placeholder="字段长度" autocomplete="off" lay-verify="required">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否唯一索引：</label>
-                    <div class="layui-inline">
-                        <select name="edit_field_index_flag" id="edit_field_index_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">字段默认值：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_field_value" id="edit_field_value" placeholder="字段默认值" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否维度字段：</label>
-                    <div class="layui-inline">
-                        <select name="edit_dim_flag" id="edit_dim_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">是否时间戳字段：</label>
-                    <div class="layui-inline">
-                        <select name="edit_timestamp_flag" id="edit_timestamp_flag">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">维度字段表名：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_dim_table_name" id="edit_dim_table_name" placeholder="维度字段表名" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">维度字段代码：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_dim_field_code" id="edit_dim_field_code" placeholder="维度字段代码" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">维度字段名称：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_dim_field_name" id="edit_dim_field_name" placeholder="维度字段名称" autocomplete="off">
-                    </div>
-                </div>
-                <div class=" layui-col-md6 layui-col-xs6">
-                    <label class="layui-form-label" style="width:150px">序列代码：</label>
-                    <div class="layui-inline">
-                        <input class="layui-input" name="edit_ora_sequence_code" id="edit_ora_sequence_code" placeholder="序列代码" autocomplete="off">
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item" style="margin-left:200px;">
-                <button class="layui-btn" lay-submit="" lay-filter="submiteditfield">立即修改</button>
-                <button class="layui-btn" data-type="closeedtifield">取消</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
-<script type="text/html" id="barField">
-    <a class="layui-btn layui-btn-xs" lay-event="editfield">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delfield">删除</a>
-</script>
-
 <script>
-
-    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
-        var table = layui.table;
-        var element = layui.element;
-        var layer = layui.layer;
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
         var form = layui.form;
-        var laydate = layui.laydate;
-        var generateLayer_index = 0;
-        var generateLayer_field_edit = 1;
-        var genratefieldLayer = 2;
-        var generate_fieldInfo = 3;
-        var generateaddLayer_index = 4;
-        var layType = true;//true 新增  false 编辑
-        var layFieldType = true;
-        var dataSourceId = 0;
-        var fieldId = 0;
-        var testReload2;
-        var tabIndex = 0;
-        //初始化下拉框加载
-        getConnectionName();
-        getFieldType();
-        table.render({
-            elem: '#test'
-            , url: '/api/sysdatasource/SelectDataSourceInfo/'
-            , contentType: 'application/json'
-            , method: 'post'
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
-            }
-            , cols: [[
-                { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-                , { field: 'dataSourceCode', title: '数据源代码', sort: true }
-                , { field: 'dataSourceName', title: '数据源名称', sort: true }
-                , { field: 'dataSourceType', title: '数据源类型', sort: true }
-                , { field: 'dataSourceUse', title: '数据源用途', sort: true }
-                , { field: 'connectionName', title: '数据库连接名称', sort: true }
-                , { field: 'creationDate', title: '创建时间', width: 140, sort: true }
-            ]]
-            , id: 'testReload',
-            page: true,
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
-        table.render({
-            elem: '#test2'
-            , url: '/api/sysdatasourcefield/SelectDataSourceFiled/'
-            , contentType: 'application/json'
-            , method: 'post',
-            parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
-            }
-
-            , cols: [[
-
-                { type: 'checkbox', fixed: 'left', width: 40 }
-                , { title: '操作', align: 'center', toolbar: '#barField', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
-
-                //, { field: 'connectionId', width: 80, title: 'ID', sort: true,fixed: 'left'  }
-                , { field: 'fieldCode', title: '字段代码', sort: true }
-                , { field: 'fieldName', title: '字段名称', sort: true }
-                , { field: 'fieldTypeName', title: '字段类型', sort: true }
-                //, { field: 'datasourceName', title: '所属数据源', sort: true }
-                , { field: 'fieldNullable', title: '是否可为空', sort: true }
-                , { field: 'fieldLength', title: '字段长度', sort: true }
-                //, { field: 'oraSequenceCode', title: '序列号', sort: true }
-                , { field: 'fieldIndexFlag', title: '是否索引', sort: true }
-            ]]
-            , id: 'testReloadField'
-            , page: true,
-            //limits: [1, 2, 3, 4, 5],
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
-
-       
-        //监听工具条
-        table.on('tool(sysuser)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'detail') {
-                layer.msg('ID：' + data.id + ' 的查看操作');
-            } else if (obj.event === 'del') {
-                let confirm_title = "确认删除数据源" + data.dataSourceName + "的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios.delete('/api/sysdatasource/' + data.dataSourceId)
-                        .then(function (response) {
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-                            obj.del();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                });
-            } else if (obj.event === 'edit') {
-                showLayer(data);
-                console.log( $('#datasource_Id').val());
-                let par = {
-                    dataSourceId: $('#datasource_Id').val(),
-                };
-                table.reload('testReloadField', {
-                    where: par,
-                    contentType: 'application/json',
-                    method: 'post'
-                });
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                fieldId = data.fieldId;
-               
-               
-            }
-        });
-        //监听工具条
-        table.on('tool(fieldoperation)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'detail') {
-                layer.msg('ID：' + data.id + ' 的查看操作');
-            } else if (obj.event === 'delfield') {
-                let confirm_title = "确认删除字段信息" + data.fieldName + "的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios.delete('/api/SysDataSourceField/' + data.fieldId)
-                        .then(function (response) {
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-                            obj.del();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-
-                });
-            } else if (obj.event === 'editfield') {
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                fieldId = data.fieldId;
-                showEditFieldLayer(data);
-            }
-        });
-
-        var $ = layui.$, active = {
-            getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('testReload')
-                    , data = checkStatus.data;
-                if (data.length == 0) {
-                    layer.msg("请选中数据再进行操作！");
-                    return;
-                }
-                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
-                    layer.close(index);
-                    
-                    let ids = [];
-                    let parms = "?";
-                    for (let i = 0; i < data.length; i++) {
-                        ids.push(data[i].dataSourceId);
-                        parms += "ids=" + data[i].dataSourceId + "&";
+        var $ = layui.$
+    })
+</script>
+<script>
+    let dataSourceId = "";
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                data: [],
+                dataField:[],
+                activeName: 'first',
+                centerDialogVisible: false,
+                addcenterDialogVisible: false,
+                addfieldcenterDialogVisible:false,
+                currentPage: 1,
+                currentPageField:1,
+                pageSize: 10,
+                pageSizeField: 10,
+                total: 0,
+                totalField: 0,
+                multipleSelection: [],//获取批量选择的数据
+                multipleSelectionField:[],//
+                searchDataSourceCode: '',
+                searchDataSourceName: '',
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                adddialogTitle: '',
+                addfielddialogTitle:'',
+                value1: '',
+                value2: '',
+                valueconnection: '',
+                valuetype: '',
+                valueuse:'',
+                databaseName: [],
+                fieldtypes:[],
+                rules: {
+                    dataSourceCode: [
+                        { required: true, message: '数据源代码不能为空', trigger: 'blur' }
+                    ],
+                    dataSourceName: [
+                        { required: true, message: '数据源名称不能为空', trigger: 'blur' }
+                    ],
+                    connectionName: [
+                        {type:'number',required:true,message:'请选择',trigger:'change'}
+                    ]
+                },
+                addrules: {
+                    dataSourceCode: [
+                        { required: true, message: '数据源代码不能空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    dataSourceName: [
+                        { required: true, message: '数据源名称不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    //connectionId: [
+                    //    { type:'number',required: true, message: '请选择数据库连接', trigger: 'change' }
+                    //],
+                    //dataSourceType: [
+                    //    { required: true, message: '请选择数据源类型', trigger: 'change' }
+                    //],
+                    //dataSourceUse: [
+                    //    { required: true, message: '请选择数据源用途', trigger: 'change' }
+                    //],
+                },
+                addfieldrules: {
+                    fieldCode: [
+                        { required: true, message: '字段代码不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    fieldName: [
+                        { required: true, message: '字段名字不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    fieldLength: [
+                        { required: true, message: '字段长度不能为空' ,trigger: 'blur'},
+                    ],
+                },
+                searchdataSourceType: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    },    {
+                    value: 'TABLE',
+                    label: 'TABLE'
+                },
+                    {
+                        value: 'VIEW',
+                        label:'VIEW'
                     }
-                    parms = parms.substring(0, parms.length - 1);
-                    //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/sysdatasource/DeleteDataSourceInfos/" + parms)
-                        .then(function (response) {
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-                            //移除
-                            let tabledata = table.cache.testReload;
-                            tableReload(tabledata);
+                ],
+                fieldnullable: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    }, {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ],
+                fieldkeyflag: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    }, {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ],
+                fieldindexflag: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    }, {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ],
+                dimflag: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    }, {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ],
+                timestampflag:[
+                    {
+                        value: '',
+                        label: '请选择'
+                    }, {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ],
+                searchdataSourceUse: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    },
+                    {
+                    value: 'SHARE',
+                    label: 'SHARE'
+                },
+                {
+                    value: 'COLLECTION',
+                    label: 'COLLECTION'
+                }
+                ],
+                dataSourceUse: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    },
+                    {
+                        value: 'SHARE',
+                        label: 'SHARE'
+                    },
+                    {
+                        value: 'COLLECTION',
+                        label: 'COLLECTION'
+                    }
+                ],
+                dataSourceType: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    }, {
+                        value: 'TABLE',
+                        label: 'TABLE'
+                    },
+                    {
+                        value: 'VIEW',
+                        label: 'VIEW'
+                    }
+                ],
+                labelPosition: 'left',
+                addlabelPosition: 'left',
+                addfieldlabelPosition:'left',
+                IsCreate: true,//是否新增字段信息
+                form: {
+                    dataSourceId:'',
+                    dataSourceCode: '',
+                    dataSourceName: '',
+                    connectionId: '',
+                    dataSourceType: '',
+                    dataSourceUse: '',
 
-
-                        })
-                        .catch(function (error) {
-                            layer.msg("发生了预料之外的错误!");
-                            console.log(error);
-                        });
-                });
-
-
-            },
+                },
+                addform: {
+                    dataSourceCode: '',
+                    dataSourceName: '',
+                    connectionId: '',
+                    dataSourceType: '',
+                    dataSourceUse: '',
+                },
+                addfieldform: {
+                    dataSourceId: '',
+                    fieldCode:'',
+                    fieldName: '',
+                    fieldTypeId: '',
+                    fieldNullable: '',
+                    fieldKeyFlag: '',
+                    fieldLength: '',
+                    fieldIndexFlag: '',
+                    fieldValue: '',
+                    dimFlag: '',
+                    timestampFlag: '',
+                    dimTableName: '',
+                    dimFieldCode: '',
+                    dimFieldName: '',
+                    oraSequenceCode: '',
+                },
+            }
+        },
+        methods: {
             search: function () {
-                let pars = {
-                    Datasource_Code: $("#search_datasource_code").val(),
-                    Datasource_Name: $("#search_datasource_name").val(),
-                    Datasource_Type: $("#search_datasource_type option:selected").val(),
-                    Datasource_Use: $("#search_datasource_use option:selected").val(),
-                }
-                //执行重载
-                table.reload('testReload', {
-                    where: pars,
-                    contentType: 'application/json',
-                    method: 'post'
-                });
-            },
-            showGenerateLayer: function () {
-                form.render("select");
-                showLayerAdd();
-            },
-            closeGenerateLayer: function () {
-                layer.close(generateLayer_index);
-            },
-            closeaddGenerateLayer: function () {
-                layer.close(generateaddLayer_index);
-            },
-            closetest2: function () {
-                layer.close(generateLayer_index);
-            },
-            closeedtifield: function () {
-                layer.close(generateLayer_field_edit);
-            },
-            addfield: function () {
-                form.render("select");
-                showFieldLayers();
-
-            },
-            closefield: function () {
-                layer.close(genratefieldLayer);
-            },
-            deltefield: function () {
-                delFieldLayers();
-            },
-        };
-       
-        function showLayer(data) {
-            $("#datasource_Id").val(data.dataSourceId)
-            $("#datasource_type").val(data.dataSourceType)
-            $("#datasource_use").val(data.dataSourceUse)
-            $("#databaseconnection_name").val(data.connectionId)
-            form.val("generate-form", {
-                datasource_code: data.dataSourceCode,
-                datasource_name: data.dataSourceName,
-            })
-            
-               let title = "编辑基础和字段信息";
-                document.getElementById("generate_btn").innerHTML = "立即修改";
-            generateLayer_index = layer.open({
-                type: 1
-                , title: title //不显示标题栏
-                , closeBtn: 2
-                , fixed: false
-                , area: ['800px', '400px']
-                , shade: 0.8
-                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 0 //拖拽模式，0或者1
-                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '13%']
-            });
-        };
-        //添加数据源
-        function showLayerAdd() {
-            let title = "添加数据源";
-            document.getElementById("generateadd_btn").innerHTML = "立即添加";
-            generateaddLayer_index = layer.open({
-                type: 1
-                , title: title //不显示标题栏
-                , closeBtn: 2
-                , fixed: false
-                , area: ['800px', '400px']
-                , shade: 0.8
-                , id: 'LAY_layuiaddfield' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 0 //拖拽模式，0或者1
-                , content: $('#generate_layer_add') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '13%']
-            });
-        };
-        //添加字段信息
-        function showFieldLayers() {
-            genratefieldLayer = layer.open({
-                type: 1
-                , title: "新增字段信息"
-                , closeBtn: 2
-                , fixed: false
-                , area: ['800px', '400px']
-                , shade: 0.8
-                , id: 'loadField' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 0 //拖拽模式，0或者1
-                , content: $('#generate_fieldInfo')
-                , offset: ['10%', '13%'],
-            });
-
-        }
-        //编辑字段信息
-        function showEditFieldLayer(data) {
-            $('#edit_field_types').val(data.fieldTypeId);
-            $('#edit_field_nullable').val(data.fieldNullable == "否" ? 0 : 1);
-            $('#edit_field_key_flag').val(data.fieldKeyFlag == "否" ? 0 : 1);
-            $('#edit_field_index_flag').val(data.fieldIndexFlag=="否" ?0:1);
-            $('#edit_dim_flag').val(data.dimFlag == "否" ? 0 : 1);
-            $('#edit_timestamp_flag').val(data.timestampFlag == "否" ? 0 : 1);
-            form.val("editfield-form", {
-                edit_field_code: data.fieldCode,
-                edit_field_name: data.fieldName,
-                edit_field_length: data.fieldLength,
-                edit_field_value: data.fieldValue,
-                edit_dim_table_name: data.dimTableName,
-                edit_dim_field_code: data.dimFieldCode,
-                edit_dim_field_name: data.dimFieldName,
-                edit_ora_sequence_code: data.oraSequenceCode,
-            })
-
-            let title = "编辑字段信息";
-            document.getElementById("generateadd_btn").innerHTML = "立即修改";
-            generateLayer_field_edit = layer.open({
-                type: 1
-                , title: title //不显示标题栏
-                , closeBtn: 2
-                , fixed: false
-                , area: ['800px', '400px']
-                , shade: 0.8
-                , id: 'LAY_layuieditpro' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 0 //拖拽模式，0或者1
-                , content: $('#edit_generate_fieldInfo') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , offset: ['10%', '13%']
-            });
-        };
-        //修改字段信息
-        form.on("submit(submiteditfield)", function () {
-            let model = {
-                dataSourceId: $('#datasource_Id').val(),
-                fieldId: fieldId,
-                fieldCode: $('#edit_field_code').val(),
-                fieldName: $('#edit_field_name').val(),
-                fieldTypeId: $('#edit_field_types option:selected').val(),
-                fieldLength: $('#edit_field_length').val(),
-                fieldnullable: $('#edit_field_nullable').val(),
-                fieldkeyflag: $('#edit_field_key_flag option:selected').val(),
-                fieldindexflag: $('#edit_field_index_flag option:selected').val(),
-                fieldvalue: $('#edit_field_value').val(),
-                dimflag: $('#edit_dim_flag option:selected').val(),
-                timestampflag: $('#edit_timestamp_flag option:selected').val(),
-                dimtablename: $('#edit_dim_table_name').val(),
-                dimfieldcode: $('#edit_dim_field_code').val(),
-                dimfieldname: $('#edit_dim_field_name').val(),
-                orasequencecode: $('#edit_ora_sequence_code').val(),
-            };
-            let url = "/api/SysDataSourceField/" + fieldId;
-            let method = "PUT";
-             axios({ url: url, method: method, data: model })
-                .then(function (response) {
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
-                        return;
-                    }
-                    let datatable = table.cache.testReloadField;
-                    //修改
-                    for (let i = 0; i < datatable.length; i++) {
-                        if (datatable[i].dataSourceId == response.data.content.dataSourceId) {
-                            datatable.splice(i, 1, response.data.content);
-                            break;
-                        }
-                    }
-                    testReloadField(datatable)
-                    layer.close(generateLayer_field_edit);
-                })
-                .catch(function (error) {
-
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
-                });
-
-            return false; 
-        })
-        function delFieldLayers() {
-            var checkStatus = table.checkStatus('testReloadField')
-                , data = checkStatus.data;
-            if (data.length == 0) {
-                layer.msg("请选中数据再进行删除！");
-                return;
-            }
-            layer.confirm("确认删除" + data.length + "条记录么", function (index) {
-                layer.close(index);
-
-                let ids = [];
-                let parms = "?";
-                for (let i = 0; i < data.length; i++) {
-                    ids.push(data[i].fieldId);
-                    parms += "ids=" + data[i].fieldId + "&";
-                }
-                console.log(parms);
-                parms = parms.substring(0, parms.length - 1);
-                //layer.alert(JSON.stringify(data));
-                axios.delete("/api/SysDataSourceField/DeleteDataSourceFields/" + parms)
+                let vm = this;
+                axios.get(`/api/SysDataSource/${vm.pageSize}/${vm.currentPage}?dataSourceCode=${vm.searchDataSourceCode}&dataSourceName=${vm.searchDataSourceName}&dataSourceType=${vm.value1}&dataSourceUse=${vm.value2}`)
                     .then(function (response) {
-                        layer.msg(response.data.message);
-                        if (!response.data.isSuccess) {
-                            return;
-                        }
-                        //移除
-                        let tabledata = table.cache.testReloadField;
-                        //for (let i = 0; i < tabledata.length; i++) {
-                        //    for (let j = 0; j < ids.length; j++) {
-                        //        if (tabledata[i].connectionId == ids[j]) {
-                        //            tabledata.splice(i, 1);
-                        //        }
-                        //    }
-                        //}
-                        //console.log(tabledata);
-                        tableReload(tabledata);
-
-
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
                     })
                     .catch(function (error) {
-                        layer.msg("发生了预料之外的错误!");
+                        console.log(error)
+                    });
+            },
+            searchField: function () {
+                let vm = this;
+                axios.get(`/api/SysDataSourceField/${vm.pageSizeField}/${vm.currentPageField}?dataSourceId=${dataSourceId}`)
+                    .then(function (response) {
+                        vm.dataField = response.data.content.data;
+                        vm.totalField = response.data.content.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleClick(tab, event) {
+                //console.log(tab, event);
+            },
+            adddialogCancel: function () {
+                let vm = this;
+                vm.addcenterDialogVisible = false
+            },
+            addfielddialogCancel: function () {
+                this.addfieldcenterDialogVisible=false
+            },
+            getSelect: function () {
+                let vm = this;
+                axios.get('/api/sysdatasource/SelectConnection')
+                    .then(function (response) {
+                        vm.databaseName = response.data.content;
+                        vm.databaseName.unshift({ connectionName: '请选择', connectionId:''});
+                    })
+                    .catch(function (error) {
                         console.log(error);
                     });
-            });
+            },
+            getFieldType: function () {
+                let vm = this;
+                axios.get('/api/sysdatasourcefield/SelectFieldInfo')
+                    .then(function (response) {
+                        vm.fieldtypes = response.data.content;
+                        vm.fieldtypes.unshift({ fieldTypeName: '请选择', fieldTypeId: '' });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.getSelect();
+                vm.dialogTitle = "编辑数据源基础和字段信息"
+                vm.form = formdata;
+                dataSourceId = vm.form.dataSourceId;
+                vm.searchField();
+                vm.centerDialogVisible = true;
+            },
+            adddialogSave: function (formName) {
+                let vm = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/SysDataSource";
+                        let method = "POST";
+                        axios({ url: url, method: method, data: vm.addform })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.search();
+                                vm.addcenterDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
 
-        }
-        //修改数据源信息
-        form.on('submit(submit)', function () {
-            let model = {
-                datasourceCode: $('#datasource_code').val(),
-                datasourceName: $('#datasource_name').val(),
-                datasourceType: $("#datasource_type").val(),
-                datasourceUse: $("#datasource_use").val(),
-                connectionId: $('#databaseconnection_name').val(),
-            };
-            let url = "/api/sysdatasource/" + $('#datasource_Id').val();
-            let method = "PUT";
-            axios({ url: url, method: method, data: model })
-                .then(function (response) {
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
+                    } else {
+                        console.log('error submit!!');
                         return;
                     }
-                    let datatable = table.cache.testReload;
-                    //修改
-                    for (let i = 0; i < datatable.length; i++) {
-                        if (datatable[i].dataSourceId == response.data.content.dataSourceId) {
-                            datatable.splice(i, 1, response.data.content);
-                            break;
+                });
+            },
+            addfielddialogSave: function (formName) {
+                let vm = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/sysdatasourcefield";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/sysdatasourcefield/${vm.addfieldform.fieldId}`;
+                            method = "PUT";
                         }
-                    }
-                    tableReload(datatable)
-                    layer.close(generateLayer_index);
-                })
-                .catch(function (error) {
+                        vm.addfieldform.dimFlag = vm.addfieldform.dimFlag == "否" ? 0 : 1;
+                        vm.addfieldform.fieldIndexFlag = vm.addfieldform.fieldIndexFlag == "否" ? 0 : 1;
+                        vm.addfieldform.fieldKeyFlag = vm.addfieldform.fieldKeyFlag == "否" ? 0 : 1;
+                        vm.addfieldform.fieldNullable = vm.addfieldform.fieldNullable == "否" ? 0 : 1;
+                        vm.addfieldform.timestampFlag = vm.addfieldform.timestampFlag == "否" ? 0 : 1;
+                        axios({ url: url, method: method, data: vm.addfieldform })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.searchField();
+                                vm.addfieldcenterDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
 
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
-                });
-
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        }),
-            $('.layui-btn').on('click', function () {
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
-        //新增字段信息
-        form.on('submit(submitfield)', function () {
-            let model = {
-                datasourceId: $('#datasource_Id').val(),
-                fieldCode: $('#field_code').val(),
-                fieldName: $('#field_name').val(),
-                fieldTypeId: $('#field_types option:selected').val(),
-                fieldLength: $('#field_length').val(),
-                fieldnullable: $('#field_nullable').val(),
-                fieldkeyflag: $('#field_key_flag option:selected').val(),
-                fieldindexflag: $('#field_index_flag option:selected').val(),
-                fieldvalue: $('#field_value').val(),
-                dimflag: $('#dim_flag option:selected').val(),
-                timestampflag: $('#timestamp_flag option:selected').val(),
-                dimtablename: $('#dim_table_name').val(),
-                dimfieldcode: $('#dim_field_code').val(),
-                dimfieldname: $('#dim_field_name').val(),
-                orasequencecode: $('#ora_sequence_code').val(),
-            };
-            axios({ url: "/api/sysdatasourcefield", method: "POST", data: model })
-                .then(function (response) {
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
+                    } else {
+                        console.log('error submit!!');
                         return;
                     }
-                    let datatable = table.cache.testReloadField;;
-                        datatable.unshift(response.content)
-                    testReloadField(datatable)
-                    layer.close(genratefieldLayer);
-                })
-                .catch(function (error) {
-
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
                 });
+            },
+            dialogSave: function (formName) {
+                //编辑
+                let vm = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = `/api/SysDataSource/${vm.form.dataSourceId}`;
+                        let method = "PUT";
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.search();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
 
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        })
-        //新增数据源
-            form.on('submit(addsubmit)', function () {
-            let model = {
-                datasourceCode: $('#add_datasource_code').val(),
-                datasourceName: $('#add_datasource_name').val(),
-                datasourceType: $("#add_datasource_type").val(),
-                datasourceUse: $("#add_datasource_use").val(),
-                connectionId: $('#add_databaseconnection_name').val(),
-            };
-                let url = "/api/SysDataSource";
-            let method = "POST";
-            axios({ url: url, method: method, data: model })
-                .then(function (response) {
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
+                    } else {
+                        console.log('error submit!!');
                         return;
                     }
-                    let datatable = table.cache.testReload;
-                    datatable.unshift(response.content)
-                    tableReload(datatable)
-                    layer.close(generateaddLayer_index);
-                })
-                .catch(function (error) {
-
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
                 });
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+                //删除
+                //弹出确认框
+                this.$confirm('此操作将删除该数据源信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysDataSource/' + row.dataSourceId)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.search();
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
 
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleDeleteField: function (index, row) {
+                let vm = this;
+                this.$confirm('此操作将删除该字段信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysDataSourceField/' + row.fieldId)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.searchField();
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
 
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //编辑字段
+            handleEditField: function (index,row) {
+                let vm = this;
+                vm.addfielddialogTitle = "修改字段信息";
+                let rowstr = JSON.stringify(row);
+                let formdata = JSON.parse(rowstr);
+                vm.IsCreate = false
+                formdata.fieldTypeId = parseInt(formdata.fieldTypeId);
+                vm.getFieldType();
+                vm.addfieldform = formdata;
+                vm.addfieldform.dataSourceId = vm.form.dataSourceId;
 
+                vm.addfieldcenterDialogVisible = true;
+            },
+            addfield: function () {
+                let vm = this;
+                vm.addfielddialogTitle = "新增字段";
+                vm.IsCreate = true;
+                vm.resetFieldForm();
+                vm.getFieldType();
+                vm.addfieldform.dataSourceId = vm.form.dataSourceId;
+                vm.addfieldcenterDialogVisible = true;
+            },
+            //批量删除字段信息
+            deletebatchfield: function () {
+                let batchdatas = this.multipleSelectionField;
+                let vm = this
+                if (batchdatas.length == 0) {
+                    vm.$message("请先选中数据再进行操作！");
+                    return;
+                }
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&ids=${batchdatas[i].fieldId}`;
+                };
+                ids = ids.substring(1, ids.length)
+                vm.$confirm(`此操作将删除${batchdatas.length}条数据源信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysDataSourceField/DeleteDataSourceFields?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.searchField();
 
-            function testReloadField(datatable) {
-                table.reload("testReloadField", {
-                    data: datatable
-                })
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            canclefield: function () { },
+            dataSourceAdd: function () {
+                let vm = this;
+                //添加
+                vm.adddialogTitle = "添加数据源";
+                vm.resetForm();
+                vm.getSelect();
+                vm.addcenterDialogVisible = true;
+            },
+            batchDelete(){
+                let batchdatas = this.multipleSelection;
+                let vm = this
+                if (batchdatas.length == 0) {
+                    vm.$message("请先选中数据再进行操作！");
+                    return;
+                }
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&ids=${batchdatas[i].dataSourceId}`;
+                };
+                ids = ids.substring(1, ids.length)
+                vm.$confirm(`此操作将删除${batchdatas.length}条数据源信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysDataSource/DeleteDataSourceInfos?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.search();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.search();
+            },
+            handleSizeChangeField(val) {
+                this.pageSizeField = val;
+                this.searchField();
+            },
+            dialogCancel: function () {
+                let vm = this;
+                vm.centerDialogVisible = false
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
+            },
+            handleSelectionChangeField(val) {
+                this.multipleSelectionField = val;
+            },
+            handleCurrentChange(val) {
+                //当前页
+                this.currentPage = val;
+                this.search();
+            },
+            handleCurrentChangeField(val) {
+                this.currentPageField = val;
+                this.searchField();
+            },
+            resetForm() {
+                let vm = this;
+                vm.addform.dataSourceCode = '';
+                vm.addform.dataSourceName= '';
+                vm.addform.connectionId = '';
+                vm.addform.dataSourceType = '';
+                vm.addform.dataSourceUse= ''
+            },
+            resetFieldForm() {
+                let vm = this;
+                vm.addfieldform.fieldCode = '';
+                vm.addfieldform.fieldName = '';
+                vm.addfieldform.fieldTypeId = '';
+                vm.addfieldform.fieldNullable = '';
+                vm.addfieldform.fieldKeyFlag = '';
+                vm.addfieldform.fieldLength = '';
+                vm.addfieldform.fieldIndexFlag = '';
+                vm.addfieldform.fieldValue = '';
+                vm.addfieldform.dimFlag = '';
+                vm.addfieldform.timestampFlag = '';
+                vm.addfieldform.dimTableName = '';
+                vm.addfieldform.dimFieldCode = '';
+                vm.addfieldform.dimFieldName = '';
+                vm.addfieldform.oraSequenceCode = '';
             }
-        function tableReload(datatable) {
-            table.reload("testReload", {
-                data: datatable
-            })
+        },
+        mounted: function () {
+            let vm = this;
+            vm.search();
         }
-    });
-    //获取数据库连接列表
-    function getConnectionName() {
-        axios.get('/api/sysdatasource/SelectConnection')
-            .then(function (response) {
-                var len = response.data.content.length;
-                var text = '<option value="">请选择</option>';
-                $('#add_databaseconnection_name').append(text);
-                $('#databaseconnection_name').append(text);
-                for (var i = 0; i < len; i++) {
-                    $('#add_databaseconnection_name').append(new Option(response.data.content[i].connectionName, response.data.content[i].connectionId))
-                    $('#databaseconnection_name').append(new Option(response.data.content[i].connectionName, response.data.content[i].connectionId))
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-    //获取字段信息
-    function getFieldType() {
-        axios.get('/api/sysdatasourcefield/SelectFieldInfo')
-            .then(function (response) {
-                var len = response.data.content.length;
-                var text = '<option value="">请选择</option>';
-                $('#field_types').append(text);
-                $('#edit_field_types').append(text);
-                for (var i = 0; i < len; i++) {
-                    $('#field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId));
-                    $('#edit_field_types').append(new Option(response.data.content[i].fieldTypeName, response.data.content[i].fieldTypeId))
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    })
 </script>
-

@@ -38,6 +38,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysConnection
             return connectionServers.Select(model);
 
         }
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElementSelect(int pageSize, int currentPage, string connectionName, string databaseType)
+        {
+            currentPage--;
+            return connectionServers.ElementSelect(pageSize, currentPage, connectionName, databaseType);
+        }
         /// <summary>
         /// 查询一条
         /// </summary>
