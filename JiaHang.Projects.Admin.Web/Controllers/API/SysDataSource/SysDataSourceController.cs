@@ -37,14 +37,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSource
             return dataSourceServers.Select(model);
 
         }
-        /// <summary>
-        /// 查询主表信息
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
         [Route("SelectDataSourceInfo")]
         [HttpPost]
-        public FuncResult SelectDataSourceInfo([FromBody]SearchDatasource model) {
+        public FuncResult SelectDataSourceInfo([FromBody]SearchDatasource model)
+        {
             model.page--; if (model.page < 0)
             {
                 model.page = 0;

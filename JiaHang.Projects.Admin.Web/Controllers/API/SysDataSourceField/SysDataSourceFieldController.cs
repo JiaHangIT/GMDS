@@ -47,6 +47,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSourceField
             return data;
 
         }
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string dataSourceId)
+        {
+            currentPage--;
+            return dataSourceServers.ElementSelectDataSourceFiled(pageSize, currentPage, dataSourceId);
+        }
         /// <summary>
         /// 删除(单个数据源字段信息)
         /// </summary>

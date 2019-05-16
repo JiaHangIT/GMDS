@@ -151,6 +151,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             var data = query.Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+
         /// <summary>
         /// 查询数据源的所有字段
         /// </summary>
@@ -183,12 +184,41 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             var data = querys.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
-      
+        public FuncResult ElementSelectDataSourceFiled(int pageSize, int currentPage, string dataSourceId)
+        {
+            var querys = from a in _context.SysDatasourceField
+                         where (dataSourceId == a.DatasourceId)
+                         join b in _context.SysFieldType on a.FieldTypeId equals b.FieldTypeId
+                           into a_temp
+                         from a_ifnull in a_temp.DefaultIfEmpty()
+                         select new
+                         {
+                             FieldId = a.FieldId,
+                             FieldCode = a.FieldCode,
+                             FieldName = a.FieldName,
+                             FieldLength = a.FieldLength,
+                             FieldTypeName = a_ifnull.FieldTypeName,
+                             FieldTypeId = a_ifnull.FieldTypeId.ToString() ?? null,
+                             FieldNullable = a.FieldNullable == 1 ? "是" : "否",
+                             FieldKeyFlag = a.FieldKeyFlag == 1 ? "是" : "否",
+                             FieldIndexFlag = a.FieldIndexFlag == 1 ? "是" : "否",
+                             FieldValue = a.FieldValue,
+                             DimFlag = a.DimFlag == 1 ? "是" : "否",
+                             TimestampFlag = a.TimestampFlag == 1 ? "是" : "否",
+                             DimTableName = a.DimTableName,
+                             DimFieldCode = a.DimFieldCode,
+                             DimFieldName = a.DimFieldName,
+                             OraSequenceCode = a.OraSequenceCode,
+                         };
+            int total = querys.Count();
+            var data = querys.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询数据库连接信息
         /// </summary>
         /// <returns></returns>
-         public async Task<FuncResult> SelectConnection()
+        public async Task<FuncResult> SelectConnection()
         {
             var query = from a in _context.SysConnectionInfo
                         where (
