@@ -23,9 +23,9 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult Select(int pageSize, int currentPage)
+        public FuncResult Select(int pageSize, int currentPage,string modelName, string parentModelName)
         {
-            var query = from a in _context.SysModelGroup
+            var query = (from a in _context.SysModelGroup.Where(e => string.IsNullOrWhiteSpace(modelName) || e.ModelGroupName.Contains(modelName))
                         join b in _context.SysModelGroup.Where(e => string.IsNullOrWhiteSpace(e.ParentId))
                         on a.ParentId equals b.ModelGroupId
                         into b_temp
@@ -40,11 +40,12 @@ namespace JiaHang.Projects.Admin.BLL.SysModelGroupBLL
                             a.SortKey,
                             CreationDate = a.CreationDate.ToString("yyyy-MM-dd HH:mm:ss"),
                             ModelGroupParentName = b_ifnull == null ? "暂未父模块组" : b_ifnull.ModelGroupName,
+                            gk= b_ifnull==null?1:0,
                             ParentId = b_ifnull == null ? "" : b_ifnull.ModelGroupId,
-                        };
+                        }).Where(e => string.IsNullOrWhiteSpace(parentModelName) || e.ModelGroupParentName.Contains(parentModelName));
 
             int total = query.Count();
-            var data = query.Skip(pageSize * currentPage).Take(pageSize);
+            var data = query.OrderByDescending(e=>e.gk).Skip(pageSize * currentPage).Take(pageSize);
 
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }

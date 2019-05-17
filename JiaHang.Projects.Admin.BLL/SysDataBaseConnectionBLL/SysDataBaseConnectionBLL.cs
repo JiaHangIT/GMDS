@@ -61,6 +61,34 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
 
             return new FuncResult() { IsSuccess = true, Content = entity };
         }
+
+        public FuncResult ElementSelect(int pageSize, int currentPage, string connectionName, string databaseType)
+        {
+            var querys = from a in _context.SysConnectionInfo
+                         where (
+                            (string.IsNullOrWhiteSpace(connectionName) || a.ConnectionName.Contains(connectionName))
+                             && (string.IsNullOrWhiteSpace(databaseType) || a.DatabaseTypeId.ToString().Contains(databaseType))
+
+                            )
+                         join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId
+                          into a_temp
+                         from a_ifnull in a_temp.DefaultIfEmpty()
+                         select new
+                         {
+                             ConnectionId = a.ConnectionId,
+                             ConnectionName = a.ConnectionName,
+                             ConnectionString = a.ConnectionString,
+                             CreatedBy = a.CreatedBy,
+                             DatabaseTypeCode = a_ifnull.DatabaseTypeCode,
+                             DatabaseTypeName = a_ifnull.DatabaseTypeName,
+                             DatabaseTypeId = a_ifnull.DatabaseTypeId,
+                             CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                         };
+            int total = querys.Count();
+            var data = querys.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+
+        }
         /// <summary>
         /// 查询数据库类型
         /// </summary>

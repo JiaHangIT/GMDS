@@ -28,9 +28,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
         [HttpGet]
         [Route("NotBindUser")]
-        public FuncResult NotBindUser(string groupId)
+        public FuncResult NotBindUser(string groupId,string condition)
         {
-            return sysUserGroupRelationBLL.NotBindUser(groupId);
+            return sysUserGroupRelationBLL.NotBindUser(groupId,condition);
         }
 
         [HttpPost]

@@ -9,39 +9,52 @@
     #app { margin-top: 15px; padding: 15px; background-color: #fff; }
 </style>
 <div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="所属模块组名称">
+            <el-input placeholder="所属模块组名称" v-model="searchParentModelName"></el-input>
+        </el-form-item>
+        <el-form-item label="模块名称">
+            <el-input placeholder="模块名称" v-model="searchModelName"></el-input>
+        </el-form-item>
 
+        <el-form-item>
+            <el-button type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="handleAdd">添加模块组</el-button>
+        </el-form-item>
+
+    </el-form>
     <el-table ref="multipleTable"
               :data="data"
               :border="true"
               tooltip-effect="dark"
               style="width: 100%">
-
+        <el-table-column label="父模块组名称"
+                         prop="modelGroupParentName">
+        </el-table-column>
 
         <el-table-column label="模块组名称"
                          prop="modelGroupName">
         </el-table-column>
-        <el-table-column label="模块组路径"
-                         prop="modelGroupUrl">
-        </el-table-column>
+
         <el-table-column label="是否外部路径">
             <template slot-scope="scope">
                 <el-tag size="medium" type="warning" v-if="scope.row.outUrlFlag==1">外部路径</el-tag>
                 <el-tag size="medium" v-else>内部视图</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="父模块组名称"
-                         prop="modelGroupParentName">
-        </el-table-column>
         <el-table-column label="排序值"
                          prop="sortKey">
         </el-table-column>
-        <el-table-column label="创建时间"
-                         prop="creationDate">
+        <el-table-column label="模块组路径"
+                         prop="modelGroupUrl">
         </el-table-column>
+
         <el-table-column label="操作" align="center" width="260">
-            <template slot="header" slot-scope="scope">
+            @*<template slot="header" slot-scope="scope">
                 <el-button type="primary" @@click="handleAdd">添加模块组</el-button>
-            </template>
+            </template>*@
             <template slot-scope="scope">
                 <el-button size="mini"
                            v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -89,7 +102,7 @@
                                :label="item.modelGroupName"
                                :value="item.parentId">
                     </el-option>
-                </el-select>   
+                </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -135,7 +148,9 @@
                 dialogTitle: '',
                 labelPosition: 'left',
                 IsCreate: true,//是否新增
-                options:[]
+                options: [],
+                searchModelName: '',
+                searchParentModelName: '',
                 
             }
         },
@@ -143,7 +158,7 @@
             fetchList: function () {
                 let vm = this
 
-                axios.get(`/api/SysModelGroupData/${vm.pageSize}/${vm.currentPage}`)
+                axios.get(`/api/SysModelGroupData/${vm.pageSize}/${vm.currentPage}?modelName=${vm.searchModelName}&parentModelName=${vm.searchParentModelName}`)
                     .then(function (response) {
                         console.log(response.data);
                         vm.data = response.data.content.data;

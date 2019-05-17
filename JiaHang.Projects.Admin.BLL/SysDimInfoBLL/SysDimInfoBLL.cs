@@ -89,7 +89,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
             {
                 return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
             }
-            entity.DimTypeCode = DimTypeCode;
+            entity.DimTypeCode = model.Dim_Type_Code;
             entity.DimName = model.Dime_Name;
             entity.DimValue = model.Dim_Value;
             entity.LastUpdateDate = System.DateTime.Now;
@@ -197,7 +197,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
         }
 
         /// <summary>
-        /// 取用户名
+        /// 取维度
         /// </summary>
         /// <returns></returns>
         public object GetDimType()

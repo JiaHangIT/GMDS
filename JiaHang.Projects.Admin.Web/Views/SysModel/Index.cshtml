@@ -10,6 +10,9 @@
 </style>
 <div id="app">
     <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="所属模块组名称">
+            <el-input placeholder="所属模块组名称" v-model="searchParentModelName"></el-input>
+        </el-form-item>
         <el-form-item label="模块名称">
             <el-input placeholder="模块名称" v-model="searchModelName"></el-input>
         </el-form-item>
@@ -17,6 +20,10 @@
         <el-form-item>
             <el-button type="primary" @@click="fetchList">查询</el-button>
         </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="handleAdd">添加模块</el-button>
+        </el-form-item>
+
     </el-form>
     
     <el-table ref="multipleTable"
@@ -25,12 +32,12 @@
               tooltip-effect="dark"
               style="width: 100%">
 
+        <el-table-column label="所属模块组名称"
+                         prop="modelGroupName">
+        </el-table-column>
 
         <el-table-column label="模块名称"
                          prop="modelName">
-        </el-table-column>
-        <el-table-column label="模块路径"
-                         prop="modelUrl">
         </el-table-column>
         <el-table-column label="是否外部路径">
             <template slot-scope="scope">
@@ -38,19 +45,16 @@
                 <el-tag size="medium" v-else>内部视图</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="所属模块名称"
-                         prop="modelGroupName">
-        </el-table-column>
+
         <el-table-column label="排序值"
                          prop="sortKey">
         </el-table-column>
-        <el-table-column label="创建时间"
-                         prop="creationDate">
+        <el-table-column label="模块路径"
+                         prop="modelUrl">
         </el-table-column>
+       
         <el-table-column label="操作" align="center">
-            <template slot="header" slot-scope="scope">
-                <el-button type="primary" @@click="handleAdd">添加模块</el-button>
-            </template>
+            
             <template slot-scope="scope">
                 <el-button size="mini"
                            v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -125,7 +129,8 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
-                searchModelName:'',
+                searchModelName: '',
+                searchParentModelName:'',
                 form: {
                     modelName: '',
                     modelUrl: '',
@@ -152,7 +157,7 @@
             fetchList: function () {
                 let vm = this
 
-                axios.get(`/api/SysModelData/${vm.pageSize}/${vm.currentPage}?modelName=${vm.searchModelName}`)
+                axios.get(`/api/SysModelData/${vm.pageSize}/${vm.currentPage}?modelName=${vm.searchModelName}&parentModelName=${vm.searchParentModelName}`)
                     .then(function (response) {
                         console.log(response.data);
                         vm.data = response.data.content.data;

@@ -55,7 +55,7 @@
                     </select>
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            @*<div class=" layui-col-md6 layui-col-xs6">
                 <label class="layui-form-label"> 用户类型：</label>
                 <div class="layui-inline">
                     <select name="interest" id="search_user_ower" lay-filter="aihao">
@@ -65,7 +65,7 @@
                         <option value="4">kds报表用户</option>
                     </select>
                 </div>
-            </div>
+            </div>*@
         </div>
         <div class="layui-form-item" style="margin-top:15px;">
             <button class="layui-btn btn-search" data-type="search">条件查询</button>
@@ -130,11 +130,11 @@
 
         </div>
 
-        <div class="layui-form-item">
+        @*<div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">默认语言</label>
                 <div class="layui-input-block">
-                    @*<input type="text" name="title" id="language_code" autocomplete="off" placeholder="用户默认语言" class="layui-input">*@
+                   
                     <select name="interest" id="language_code" lay-filter="aihao">
                         <option value=""></option>
                         <option value="zh-cn" selected="">中文</option>
@@ -155,7 +155,7 @@
                 </div>
             </div>
 
-        </div>
+        </div>*@
    
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -243,7 +243,7 @@
                 , { field: 'user_Email', title: '邮箱地址', sort: true }
                 , { field: 'user_Is_Ldap', title: '是否ldap用户' }
                 //, { field: 'user_Mobile_No', title: '手机号', sort: true }
-                , { field: 'user_Ower', title: '用户类型', sort: true }
+                //, { field: 'user_Ower', title: '用户类型', sort: true }
                 //, { field: 'language_Code', title: '默认语言', sort: true }
                 , { field: 'user_Is_Lock', title: '是否锁定', sort: true }
                 //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }

@@ -42,7 +42,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                             Help_Type_Id = a_ifnull.HelpTypeId,
                             Help_Title = a_ifnull.HelpTitle,
                             Important_Flag = a_ifnull.ImportantFlag > 0 ? "是" : "否",
-                            Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
+                            Audit_Flag = a_ifnull.AuditFlag,
                             Audited_Date = a_ifnull.AuditedDate,
                             Audited_By = a_ifnull.AuditedBy,
                             help_Content = a_ifnull.HelpContent,
@@ -81,7 +81,6 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             entity.HelpTitle = model.HelpTitle;
             entity.HelpContent = model.HelpContent;
             entity.ImportantFlag = model.ImportantFlag;
-            entity.AuditFlag = model.AuditFlag;
             //entity.AuditedDate = model.AuditedDate;
             //entity.AuditedBy = model.AuditedBy;
             entity.LastUpdatedBy = currentUserId;
@@ -159,7 +158,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                 HelpTitle = model.HelpTitle,
                 HelpContent = model.HelpContent,
                 ImportantFlag = model.ImportantFlag,
-                AuditFlag = model.AuditFlag,
+                AuditFlag =2,
 
 
                 LastUpdatedBy = currentUserId,
