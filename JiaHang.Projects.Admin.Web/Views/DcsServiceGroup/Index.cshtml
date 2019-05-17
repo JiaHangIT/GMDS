@@ -286,7 +286,7 @@
                 if (obj.event === 'detail') {
                     layer.msg('ID：' + data.id + ' 的查看操作');
                 } else if (obj.event === 'del') {
-                    let confirm_title = "确认删除账号" + data.service_Group_Id + "的记录么";
+                    let confirm_title = "确认删除" + data.service_Group_Id + "的记录么";
                     layer.confirm(confirm_title, function (index) {
                         layer.close(index);
                         axios.delete('/api/dcsservicegroupdata/' + data.service_Group_Id)
