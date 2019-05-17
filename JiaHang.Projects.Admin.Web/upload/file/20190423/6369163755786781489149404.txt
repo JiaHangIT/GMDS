@@ -1,0 +1,3 @@
+cd /d F:\cqing\publishfile\dcsadmin2
+
+dotnet run JiaHang.Projects.Admin.Web.dll

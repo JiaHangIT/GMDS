@@ -47,6 +47,24 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         }
 
         /// <summary>
+        /// 查询列表
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public FuncResult Select(int pageSize, int pageNum, string code, string name)
+        {
+            List<DcsServiceGroup> query = _context.DcsServiceGroup.Where(s =>
+            (string.IsNullOrWhiteSpace(code) || s.ServiceGroupCode.Contains(code)) &&
+            (string.IsNullOrWhiteSpace(name) || s.ServiceGroupName.Contains(name)) &&
+            (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+
+            int total = query.Count();
+            var data = query.Skip(pageSize * pageNum).Take(pageSize).ToList();
+
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+
+        /// <summary>
         /// 查找一条
         /// </summary>
         /// <param name="id"></param>

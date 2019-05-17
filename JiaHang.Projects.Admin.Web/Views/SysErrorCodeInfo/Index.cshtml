@@ -1,223 +1,256 @@
 ﻿
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 <style>
-
-
-    .layui-layer-shade {
+    .v-modal {
         display: none;
     }
 
-    .layui-select-title input {
-        width: 180px;
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
     }
 </style>
-<div>
+<div id="app">
 
-    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
-        <div class="layui-form-item">
-            错误代码代码：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchError_Code_Code" id="searchError_Code_Code" autocomplete="off">
-            </div>
-            错误代码名称：
-            <div class="layui-inline">
-                <input class="layui-input" name="searcCreated_By" id="searcCreated_By" autocomplete="off">
-            </div>
-            建立人：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchError_Code_Name" id="searchError_Code_Name" autocomplete="off">
-            </div>
-            是否审核：
-            <div class="layui-inline">
-                <select name="searchauditFlag" id="searchauditFlag" lay-verify="required" lay-filter="xmFilter">
-                    <option value="">请选择</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
-                </select>
-            </div>
-            @*<div class="layui-inline">
-            <label class="layui-form-label">审核时间</label>
-            <div class="layui-input-block">
-                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
-
-            </div>
-        </div>*@
-            <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer" style="width:120px">新增错误代码</button>
-            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+    <el-form :inline="true" class="demo-form-inline">
+        <div class="layui-row">
+            <el-form-item label="错误代码代码">
+                <el-input placeholder="错误代码代码" v-model="searchForm.ErrorCode"></el-input>
+            </el-form-item>
+            <el-form-item label="错误代码名称">
+                <el-input placeholder="错误代码名称" v-model="searchForm.ErrorName"></el-input>
+            </el-form-item>
+            <el-form-item label="是否审核通过">
+                <el-select v-model="searchForm.AuditFlag">
+                    <el-option v-for="item in Audit"
+                               v-key="item.key"
+                               :label="item.value"
+                               :value="item.key"></el-option>
+                </el-select>
+            </el-form-item>
         </div>
-        @*<div class="layui-form-item" style="margin-top:30px;">
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="handleAdd">添加</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="danger" @@click="batchDelete">批量删除</el-button>
+        </el-form-item>
+    </el-form>
 
-                <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
-                <button class="layui-btn layui-btn-danger" data-type="getCheckData">选中行删除</button>
-            </div>*@
-    </div>
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              v-loading="loading"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @@selection-change="handleSelectionChange">
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
+        <el-table-column label="错误代码代码"
+                         prop="errorCodeCode">
+        </el-table-column>
+        <el-table-column label="错误代码名称"
+                         prop="errorCodeName">
+        </el-table-column>
+        <el-table-column label="是否重要"
+                         prop="importantFlag">
+            <template slot-scope="scope">
+                <p v-if="scope.row.importantFlag===null"></p>
+                <p v-else-if="scope.row.importantFlag===0">否</p>
+                <p v-else-if="scope.row.importantFlag===1">是</p>
+            </template>
+        </el-table-column>
+        <el-table-column label="是否审核"
+                         prop="auditFlag">
+            <template slot-scope="scope">
+                <p v-if="scope.row.auditFlag===null">未审核</p>
+                <p v-else-if="scope.row.auditFlag===0">审核未通过</p>
+                <p v-else-if="scope.row.auditFlag===1">审核通过</p>
+            </template>
+        </el-table-column>
+        <el-table-column label="审核时间"
+                         prop="auditedDate"
+                         :formatter="dateFormat">
+        </el-table-column>
+        <el-table-column label="审核人"
+                         prop="auditedBy">
+        </el-table-column>
+        <el-table-column label="操作" width="240px">
+
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           v-on:click="handleAudit(scope.$index, scope.row)">审核</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="pageNum"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="30%"
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="错误代码代码" prop="ErrorCodeCode">
+                <el-input v-model="form.ErrorCodeCode"></el-input>
+            </el-form-item>
+            <el-form-item label="错误代码名称" prop="ErrorCodeName">
+                <el-input v-model="form.ErrorCodeName"></el-input>
+            </el-form-item>
+            <el-form-item label="是否重要标志" prop="ImportantFlag">
+                <el-select v-model="form.ImportantFlag">
+                    <el-option v-for="item in Important"
+                               v-key="item.key"
+                               :label="item.value"
+                               :value="item.key"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="错误代码描述">
+
+                <el-input type="textarea"
+                          :rows="2"
+                          placeholder="请输入内容"
+                          v-model="form.ErrorCodeDesc">
+                </el-input>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
+
 </div>
-<div id="generate_layer" style="display:none; padding:40px;">
-    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
-        <div class="layui-form-item">
-
-            <div class="layui-inline">
-                <label class="layui-form-label">错误代码代码</label>
-                <div class="layui-input-block">
-                    <input type="text" name="ErrorCodeCode" id="ErrorCodeCode" autocomplete="off" placeholder="错误代码代码" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">错误代码名称</label>
-                <div class="layui-input-block">
-                    <input type="text" name="ErrorCodeName" id="ErrorCodeName" autocomplete="off" placeholder="错误代码名称" class="layui-input">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            
-            <div class="layui-inline">
-                <label class="layui-form-label">是否重要标志</label>
-                <div class="layui-inline">
-                    <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
-                        <option value="">请选择</option>
-                        <option value="1">是</option>
-                        <option value="0">否</option>
-                    </select>
-                </div>
-            </div>
-            
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">错误代码描述</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" name="ErrorCodeDesc" id="ErrorCodeDesc" class="layui-textarea"></textarea>
-                </div>
-            </div>
-          
-        </div>
-
-        <div class="layui-form-item">
-            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-            @*<button class="layui-btn" data-type="generate" id="examine_btn" lay-submit lay-filter="submit">审核通过</button>
-            <button class="layui-btn" data-type="generate" id="examine_btnT" lay-submit lay-filter="submit">审核通过</button>*@
-            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
-        </div>
-    </div>
-</div>
-@*<div id="shenhe_layer" style="display:none; padding:40px;">
-</div>*@
-
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
 </script>
 <script>
-    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
-        var table = layui.table;
-        var element = layui.element;
-        var layer = layui.layer;
-        var form = layui.form;
-        var laydate = layui.laydate;
-        var generateLayer_index = 0;
-        var layType = true;//true 新增  false 编辑
-        var store_id = "";
-        //日期
-        laydate.render({
-            elem: '#searchAuditedDate'
-        });
-        laydate.render({
-            elem: '#stCloseDate'
-        });
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                loading: true,
+                relateData: [],
+                imageUrl: [],
+                centerDialogVisible: false,
+                BaseInfoView: false,
+                pageNum: 1,
+                pageSize: 10,
+                total: 0,
+                multipleSelection: [],//获取批量选择的数据
+                searchCode: '',
+                searchName: '',
+                Audit: [{ key: null, value: '全部' },{ key: '0', value: '否' }, { key: '1', value: '是' }],
+                Important: [{ key: '0', value: '否' }, { key: '1', value: '是' }],
+                form: {
+                    errorCodeId:'',
+                    ErrorCodeCode: '',
+                    ErrorCodeName: '',
+                    ImportantFlag: '',
+                    ErrorCodeDesc: '',
+                },
+                searchForm: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    AuditFlag: '',
+                    ErrorCode: '',
+                    ErrorName: ''
+                },
+                rules: {
+                    ErrorCodeCode: [
+                        { required: true, message: '代码不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    ErrorCodeName: [
+                        { required: true, message: '名字不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ]
 
 
-        table.render({
-            elem: '#test'
-            , url: '/api/SysErrorCodeInfo/search/'
-            , contentType: 'application/json'
-            , method: 'post'
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
+                },
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
+                IsCreate: true,//是否新增
             }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                vm.loading = true;
+                axios({ url: `/api/SysErrorCodeInfo/Search1/`, method: 'post', async: false, data: vm.searchForm })
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                        vm.loading = false
+                    })
+                    .catch(function (error) {
+                        vm.loading = false
+                        console.log(error)
+                    });
 
-            , cols: [[
-                { type: 'checkbox', fixed: 'left' }
-                //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
-                //, { field: 'errorCodeId', title: '错误代码ID', sort: true, fixed: 'left' }
-                , { field: 'errorCodeCode', title: '错误代码代码', sort: true }
-                , { field: 'errorCodeName', width: 155, title: '错误代码名称' }
-                //, { field: 'errorCodeDesc', title: '错误代码描述' }
-                , { field: 'importantFlag', title: '是否重要', sort: true }
-                , { field: 'auditFlag', width: 99, title: '是否审核', sort: true }
-                , { field: 'auditedDate', title: '审核时间', sort: true }
-                , { field: 'auditedBy', title: '审核人', sort: true }
-                , { field: 'creationDate', title: '建立时间', sort: true }
-                , { field: 'createdBy', title: '建立人', sort: true }
-                , { field: 'LastUpdateDate', width: 132, title: '最后更新时间', sort: true }
-                , { field: 'LastUpdatedBy', width: 132, title: '最后更新人', sort: true }
-                //, { field: 'stOpenDate', title: '开业日期', sort: true }
-                //, { field: 'stCloseDate', title: '关店日期', sort: true }
-                //, { field: 'stTel', title: '电话', sort: true }
-                //, { field: 'stFax', title: '传真', sort: true }
-                //, { field: 'stSeat', title: '座位数', sort: true }
-                , { fixed: 'right', align: 'center', width: 187, toolbar: '#barDemo', fixed: 'right' } //这里的toolbar值是模板元素的选择器
-            ]]
-            , id: 'testReload'
-            , page: true,
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
-        table.on('checkbox(sysuser)', function (obj) {
-            console.log(obj)
-        });
-        //监听工具条
-        table.on('tool(sysuser)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'detail') {
-                layer.msg('Message_ID：' + data.errorCodeId + ' 的查看操作');
-            } else if (obj.event === 'del') {
-                console.log("delete");
-                let confirm_title = "确认删除产品编号" + data.errorCodeId + "的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios.delete('/api/SysErrorCodeInfo/' + data.errorCodeId)
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-                            obj.del();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+            },
+            dateFormat(row, column, cellValue, index) {
+                var daterc = row[column.property];
+                if (daterc != null) {
+                    return daterc.substring(0,10);
+                }
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑错误代码信息"
 
-                });
-            } else if (obj.event === 'edit') {
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                console.log(data);
-                store_id = data.errorCodeId;
-                layType = false;
-                showLayer(data);
-            } else if (obj.event === 'examine') {
-                console.log("审核");
-                console.log(data.errorCodeId);
-               
+                //vm.form = formdata;
+                vm.form.errorCodeId = formdata.errorCodeId;
+                vm.form.ErrorCodeCode = formdata.errorCodeCode;
+                vm.form.ErrorCodeName = formdata.errorCodeName;
+                vm.form.ImportantFlag = formdata.importantFlag != null? formdata.importantFlag.toString():'';
+                vm.form.ErrorCodeDesc = formdata.errorCodeDesc;
+
+                vm.centerDialogVisible = true
+            },
+            handleAudit: function (index, row) {
+
+                let vm = this;
+
                 let url = "/api/SysErrorCodeInfo/UpdateExamine";
                 let method = "POST";
-                let confirm_title = "错误代码名称为：【" + data.errorCodeName + "】";
-
-
+                let confirm_title = "错误代码名称为：【" + row.errorCodeName + "】";
 
                 layer.confirm(confirm_title, {
                     btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
@@ -225,261 +258,203 @@
                         layer.close(index);
 
                     }
-                      
-
                 }, function (index, layero) {
                     let model = {
-                        ErrorCodeId: data.errorCodeId,
-                        AuditFlag:1
+                        ErrorCodeId: row.errorCodeId,
+                        AuditFlag: 1
                     };
-                     axios({ url: url, method: method, data: model })
-                            .then(function (response) {
-                                console.log(response);
-                                layer.msg(response.data.message);
-                                if (!response.data.isSuccess) {
-                                    return;
-                                    tableReload(datatable);
-                                }
-
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }, function (index) {
-                        //alert("不通过");
-                        let model = {
-                            ErrorCodeId: data.errorCodeId,
-                            AuditFlag: 0
-                        };
-                        axios({ url: url, method: method, data: model })
-                            .then(function (response) {
-                                console.log(response);
-                                layer.msg(response.data.message);
-                                if (!response.data.isSuccess) {
-                                    return;
-                                    tableReload(datatable);
-                                }
-
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }
-                );
-            }
-        });
-        var $ = layui.$, active = {
-            getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('testReload')
-                    , data = checkStatus.data;
-
-
-                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
-                    layer.close(index);
-
-                    let Message_IDs = [];
-                    let parms = "?";
-                    for (let i = 0; i < data.length; i++) {
-                        Message_IDs.push(data[i].errorCodeId);
-                        parms += "Message_IDs=" + data[i].errorCodeId + "&";
-                    }
-                    parms = parms.substring(0, parms.length - 1);
-                    //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/SysErrorCodeInfo/batchdelete/" + parms)
+                    axios({ url: url, method: method, data: model })
                         .then(function (response) {
                             console.log(response);
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
                             }
-
-                            //移除
-                            let tabledata = table.cache.testReload;
-                            //for (let i = 0; i < tabledata.length; i++) {
-                            //    for (let j = 0; j < ids.length; j++) {
-                            //        if (tabledata[i].user_Id == ids[j]) {
-                            //            tabledata.splice(i, 1);
-                            //        }
-                            //    }
-                            //}
-                            //console.log(tabledata);
-                            tableReload(tabledata);
-
-
+                            layer.close(index);
+                            vm.fetchList();
                         })
                         .catch(function (error) {
-                            layer.msg("发生了预料之外的错误!");
                             console.log(error);
                         });
-                });
-
-
-            },
-            search: function () {
-                console.log('reload');
-                let pars = {
-                    //limit: 10,
-                    //page: 1,
-                    Error_Code_Code: $("#searchError_Code_Code").val(),
-                    Error_Code_Name: $("#searcCreated_By").val(),
-                    Created_By: $("#searchError_Code_Name").val(),
-                    Audit_Flag: $("#searchauditFlag").val(),
+                }, function (index) {
+                    //alert("不通过");
+                    let model = {
+                        ErrorCodeId: row.errorCodeId,
+                        AuditFlag: 0
+                    };
+                    axios({ url: url, method: method, data: model })
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            layer.close(index);
+                            vm.fetchList();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
                 }
-                //执行重载
-                console.log(pars);
-                table.reload('testReload', {
-                    where: pars,
-                    contentType: 'application/json',
-                    method: 'post'
+                );
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+                //删除
+
+                this.$confirm('此操作将删除该错误代码信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysErrorCodeInfo/' + row.errorCodeId)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
-            },
-            showGenerateLayer: function () {
-                console.log('show');
-                layType = true;
-                showLayer();
-            },
-            closeGenerateLayer: function () {
-                layer.close(generateLayer_index);
-            },
 
-        };
+            },
+            handleAdd: function () {
+                let vm = this;
+                vm.IsCreate = true;
+                vm.resetForm();
+                vm.imageUrl = [];
+                vm.dialogTitle = "添加错误代码信息";
+                vm.centerDialogVisible = true;
 
-        form.on('submit(submit)', function () {
-            console.log('save');
-            //alert($("#Message_ID").val());
-            let model = {
-                ErrorCodeId: $("#ErrorCodeId").val(),
-                ErrorCodeCode: $("#ErrorCodeCode").val(),
-                ErrorCodeName: $("#ErrorCodeName").val(),
-                ErrorCodeDesc: $("#ErrorCodeDesc").val(),
-                ImportantFlag: $("#Important_Flag").val(),
-                //Audit_Flag: $("#colorName").val(),
-                //Audited_Date: $("#category").val(),
-                //Audited_By: $("#code").val(),
-                //Creation_Date: $("#name").val(),
-                //Creation_By: $("#price").val(),
-                //Last_Updata_Date: $("#cost").val(),
-                //Last_Updata_By: $("#colorName").val(),
-            };
 
-            console.log(model);
-            let url = "/api/SysErrorCodeInfo/add";
-            let method = "POST";
-            if (layType != true) {
-                url = "/api/SysErrorCodeInfo/" + store_id;
-                method = "PUT";
-            }
-            axios({ url: url, method: method, data: model })
-                .then(function (response) {
-                    console.log(response);
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
+                //添加
+            },
+            dialogCancel: function () {
+                let vm = this;
+
+                vm.centerDialogVisible = false
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/SysErrorCodeInfo/add";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/SysErrorCodeInfo/${vm.form.errorCodeId}`;
+                            method = "PUT";
+                        }
+
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
                         return;
                     }
-                    let datatable = table.cache.testReload;
-                    console.log(datatable);
-                    if (layType != true) {
-                        //修改
-                        for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].Message_ID == response.data.content.Message_ID) {
-                                datatable.splice(i, 1, response.data.content);
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        //新增
-                        datatable.unshift(response.content)
-                    }
-                    tableReload(datatable)
-                    layer.close(generateLayer_index);
-                })
-                .catch(function (error) {
-
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
                 });
 
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        }),
-            $('.layui-btn').on('click', function () {
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
-        
-            
+            },
+            resetForm() {
+                let vm = this;
+                vm.errorCodeId='',
+                vm.form.ErrorCodeCode = ''
+                vm.form.ErrorCodeName = ''
+                vm.form.ImportantFlag = ''
+                vm.form.ErrorCodeDesc = ''
 
-            function showLayer(data) {
-
-                console.log(table);
-                console.log(table.cache);
-                initFormValue(data);
-                let title = "新增";
-               
-                document.getElementById("generate_btn").innerHTML = "立即创建";
-                if (layType != true) {
-                    title = "编辑";
-                  
-                    document.getElementById("generate_btn").innerHTML = "立即修改";
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.form.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                this.form.pageNum = val;
+                this.fetchList();
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
                 }
-                generateLayer_index = layer.open({
-                    type: 1
-                    , title: title //不显示标题栏
-                    , closeBtn: false
-                    , area: ['50%', '60%']
-                    , closeBtn: 2
-                    , shade: 0.8
-                    , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                    //, btn: ['火速围观', '残忍拒绝']
-                    , btnAlign: 'c'
-                    , moveType: 1 //拖拽模式，0或者1
-                    , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
 
-                });
-            };
-            function initFormValue(data) {
-                if (data == undefined) {
-
-                    form.val("generate-form", {
-                        ErrorCodeId: "",
-                        ErrorCodeCode: "",
-                        ErrorCodeName: "",
-                        ErrorCodeDesc: "",
-                        Important_Flag: "",
-                        //colorName: "",
-                        //category: ""
-                    })
+            },
+            batchDelete() {
+                let batchdatas = this.multipleSelection;
+                if (batchdatas.length == 0) {
                     return;
                 }
-                form.val("generate-form", {
-                    ErrorCodeId: data.errorCodeId,
-                    ErrorCodeCode: data.errorCodeCode,
-                    ErrorCodeName: data.errorCodeName,
-                    ErrorCodeDesc: data.errorCodeDesc,
-                    Important_Flag: data.importantFlag
-                    //colorName: data.dish_Color,
-                    //category: data.category
-                })
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&ErrorCodeId=${batchdatas[i].errorCodeId}`;
+                };
+                ids = ids.substring(1, ids.length)
+                let vm = this
+                vm.$confirm(`此操作将删除${batchdatas.length}条错误代码信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysErrorCodeInfo/BatchDelete?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+                console.log(this.multipleSelection);
             }
-            function tableReload(datatable) {
-                console.log(datatable);
-                table.reload("testReload", {
-                    data: datatable
-                })
-            }
+        },
+        mounted: function () {
+            let vm = this
+            vm.loading = true;
+            vm.fetchList();
+        }
 
-
-            ////色蝶
-            //$.ajax({
-            //    url: "/api/Dim_ProductData/GetDataConditionLinkage",
-            //    success: function (data) {
-            //        $.each(data, function (index, item) {
-            //            $('#colorName').append(new Option(item.name));// 下拉菜单里添加元素
-            //        });
-            //        layui.form.render("select");
-            //    }
-            //});
-
-        });
+    });
 </script>
-

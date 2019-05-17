@@ -63,6 +63,67 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         }
 
         /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="serviceno"></param>
+        /// <param name="servicecode"></param>
+        /// <param name="servicename"></param>
+        /// <returns></returns>
+        public FuncResult Select(int pageIndex, int pageSize, string serviceno, string servicecode, string servicename)
+        {
+            List<DcsServiceInfo> query = context.DcsServiceInfo.Where(s =>
+                                           (string.IsNullOrWhiteSpace(serviceno) || s.ServiceNo.Contains(serviceno)) &&
+                                           (string.IsNullOrWhiteSpace(servicecode) || s.ServiceCode.Contains(servicecode)) &&
+                                            (string.IsNullOrWhiteSpace(servicename) || s.ServiceName.Contains(servicename)) &&
+                                           (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+
+            int total = query.Count();
+            var data = query.Skip(pageIndex * pageSize).Take(pageSize).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public FuncResult Select(SearchDcsServiceInfos model)
+        {
+            List<DcsServiceInfo> query = context.DcsServiceInfo.Where(s =>
+                                           (string.IsNullOrWhiteSpace(model.ServiceName) || s.ServiceName.Contains(model.ServiceName)) &&
+                                           (string.IsNullOrWhiteSpace(model.ServiceNo) || s.ServiceNo.Contains(model.ServiceNo)) &&
+                                            (string.IsNullOrWhiteSpace(model.ServiceTech) || s.ServiceTech.Contains(model.ServiceTech)) &&
+                                           (string.IsNullOrWhiteSpace(model.ServiceStatus) || s.ServiceStatus.Contains(model.ServiceStatus)) &&
+                                            (string.IsNullOrWhiteSpace(model.ServiceType) || s.ServiceType.Contains(model.ServiceType)) &&
+                                           (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+
+            int total = query.Count();
+            var data = query.Skip(model.pageSize * model.pageNum).Take(model.pageSize).ToList().Select(s => new
+            {
+                //需要的列
+                Service_Id = s.ServiceId,
+                Service_Group_Id = s.ServiceGroupId,
+                Service_No = s.ServiceNo,
+                Service_Code = s.ServiceCode,
+                Service_Name = s.ServiceName,
+                Service_Version = s.ServiceVersion,
+                Service_Tech = s.ServiceTech,
+                Service_Type = s.ServiceType,
+                Service_Status = s.ServiceStatus,
+                Datasource_Id = s.DatasourceId,
+                Service_Desc = s.ServiceDesc,
+                Service_Return = s.ServiceReturn,
+                DataPageFlag = s.DataPageFlag,
+                DataMultiFlag = s.DataMultiFlag,
+                SortKey = s.SortKey,
+                Audit_Flag = s.AuditFlag
+            });
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+
+        /// <summary>
         /// 查询（根据主键）
         /// </summary>
         /// <param name="id"></param>

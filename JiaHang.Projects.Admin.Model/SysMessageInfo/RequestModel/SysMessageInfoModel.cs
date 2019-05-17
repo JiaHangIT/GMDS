@@ -18,4 +18,13 @@ namespace JiaHang.Projects.Admin.Model.SysMessageInfo.RequestModel
         public DateTime? Last_Updata_Date { get; set; }
         public string Last_Updata_By { get; set; }
     }
+
+    public class SysMessageInfosModel
+    {
+        public string MessageID { get; set; }
+        public string Messagetitle { get; set; }
+        public string MessageContent { get; set; }
+        public int? ImportantFlag { get; set; }
+        public int? AuditFlag { get; set; }
+    }
 }

@@ -46,4 +46,47 @@ namespace JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel
         /// </summary>
         public string ServiceStatus { get; set; }
     }
+
+    public class SearchDcsServiceInfos
+    {
+        /// <summary>
+        /// 页码
+        /// </summary>
+        public int pageNum { get; set; }
+
+        /// <summary>
+        /// 分页大小
+        /// </summary>
+        public int pageSize { get; set; }
+
+        /// <summary>
+        /// 接口编号
+        /// </summary>
+        public string ServiceNo { get; set; }
+
+        /// <summary>
+        /// 接口代码
+        /// </summary>
+        public string ServiceCode { get; set; }
+
+        /// <summary>
+        /// 接口名称
+        /// </summary>
+        public string ServiceName { get; set; }
+
+        /// <summary>
+        /// 技术类型
+        /// </summary>
+        public string ServiceTech { get; set; }
+
+        /// <summary>
+        /// 业务类型
+        /// </summary>
+        public string ServiceType { get; set; }
+
+        /// <summary>
+        /// 接口状态
+        /// </summary>
+        public string ServiceStatus { get; set; }
+    }
 }

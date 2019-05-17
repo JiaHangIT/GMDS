@@ -44,6 +44,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
         }
 
         /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet("{pageSize}/{pageNum}")]
+        public FuncResult Select(int pageSize, int pageNum, string title, string creationby, int? auditflag)
+        {
+            pageNum--;
+
+            return storeService.Select(pageSize, pageNum, title, creationby, auditflag);
+
+        }
+
+        /// <summary>
         /// 查询一条
         /// </summary>
         /// <param name="id"></param>
@@ -58,14 +72,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route("add")]
+        //[Route("add")]
         [HttpPost]
-        public async Task<FuncResult> Add([FromBody]SysMessageInfoModel model, string currentUserId)
+        public async Task<FuncResult> Add([FromBody]SysMessageInfosModel model)
         {
             if (!ModelState.IsValid)
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
+
+
             return await storeService.Add(model, HttpContext.CurrentUser(cache).UserName);
         }
         /// <summary>
@@ -75,9 +91,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{MessageId}")]
-        public async Task<FuncResult> Update(string MessageId, [FromBody]SysMessageInfoModel model)
+        public async Task<FuncResult> Update(string MessageId, [FromBody]SysMessageInfosModel model)
         {
             FuncResult data = await storeService.Update(MessageId, model, HttpContext.CurrentUser(cache).UserName);
+
             return data;
         }
         /// <summary>
@@ -106,14 +123,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
         /// <returns></returns>
         /// 
         [Route("UpdateExamine")]
-
         [HttpPost]
         public async Task<FuncResult> UpdateExamine([FromBody]SysMessageInfoModel model)
         {
             FuncResult data = await storeService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
-
         [Route("GetUser")]
         [HttpGet]
         public object GetUser()
@@ -121,5 +136,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysMessageInfo
             var data = storeService.GetUser();
             return data;
         }
+
     }
 }
