@@ -3336,7 +3336,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
             {
                 entity.HasKey(e => e.DataCatalogId);
                 entity.ToTable("DCS_DATA_CATALOG");
-
                 entity.HasIndex(e => e.DataCatalogId)
                     .HasName("PK_DCS_DATA_CATALOG")
                     .IsUnique();
