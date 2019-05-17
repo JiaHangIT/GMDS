@@ -40,6 +40,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysProblemType
             return problemTypeService.Select(model);
 
         }
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string problemTypeName)
+        {
+            currentPage--;
+            return problemTypeService.ElemeSelect(pageSize, currentPage, problemTypeName);
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

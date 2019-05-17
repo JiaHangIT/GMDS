@@ -89,6 +89,33 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
             var data = query.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string problemTypeId, string problemTitle, int? auditFlag)
+        {
+            var query = from a in _context.SysProblemType
+                        join b in _context.SysProblemInfo on
+                        a.ProblemTypeId equals b.ProblemTypeId
+                        into a_temp
+                        from a_ifnull in a_temp.DefaultIfEmpty()
+                        where ((string.IsNullOrWhiteSpace(problemTypeId) || a_ifnull.ProblemTypeId.Contains(problemTypeId))
+                               && (string.IsNullOrWhiteSpace(problemTitle) || a_ifnull.ProblemTitle.Contains(problemTitle))
+                               && (string.IsNullOrWhiteSpace(Convert.ToString(auditFlag)) || a_ifnull.AuditFlag == (auditFlag))
+                        )
+                        select new
+                        {
+                            Problem_Id = a_ifnull.ProblemId,
+                            Problem_Type_Id = a_ifnull.ProblemTypeId,
+                            Problem_Title = a_ifnull.ProblemTitle,
+                            Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
+                            Audited_Date = a_ifnull.AuditedDate,
+                            Audited_By = a_ifnull.AuditedBy,
+                            problem_Contant = a_ifnull.ProblemContent,
+                            problem_Type_Name = a.ProblemTypeName,
+
+                        };
+            int total = query.Count();
+            var data = query.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

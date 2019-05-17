@@ -12,5 +12,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.SysHelp
         {
             return View();
         }
+        public IActionResult Index2()
+        {
+            return View();
+        }
     }
 }

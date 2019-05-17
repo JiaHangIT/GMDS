@@ -64,7 +64,45 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
             }
 
         }
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string dimTypeName, string creationBy)
+        {
+            try
+            {
+                int total = _context.SysDimType.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(dimTypeName) || a.DimTypeName.Contains(dimTypeName))
+                        && (string.IsNullOrWhiteSpace(creationBy) || a.CreatedBy == (creationBy))
+                        && (a.DeleteFlag != 1)
 
+                        )).Count();
+
+                var result = _context.SysDimType.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(dimTypeName) || a.DimTypeName.Contains(dimTypeName))
+                        && (string.IsNullOrWhiteSpace(creationBy) || a.CreatedBy == (creationBy))
+                        && (a.DeleteFlag != 1)
+                        )).Skip(pageSize * currentPage).Take(pageSize).ToList();
+                var data = result.Select(e => new
+                {
+                    dimTypecode = e.DimTypeCode,
+                    messageTitle = e.DimTypeName ?? "",
+                    creationDate = e.CreationDate != null ? Convert.ToDateTime(e.CreationDate).ToString("yyyy-MM-dd") : "",
+                    createdBy = e.CreatedBy ?? "",
+                    lastUpdateDate = e.LastUpdateDate != null ? Convert.ToDateTime(e.LastUpdateDate).ToString("yyyy-MM-dd") : "",
+                    lastUpdatedBy = e.LastUpdatedBy ?? "",
+
+                });
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+
+        }
         /// <summary>
         /// 查询单个
         /// </summary>

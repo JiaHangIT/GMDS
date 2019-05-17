@@ -94,10 +94,10 @@
                 <el-input v-model="form.parentIdTree"></el-input>
             </el-form-item>
             <el-form-item label="本级目录数据量" prop="dataCountSelf">
-                <el-input v-model="form.dataCountSelf"></el-input>
+                <el-input v-model.number="form.dataCountSelf"></el-input>
             </el-form-item>
             <el-form-item label="本级加子级的数据量" prop="dataCountTree">
-                <el-input v-model="form.dataCountTree"></el-input>
+                <el-input v-model.number="form.dataCountTree"></el-input>
             </el-form-item>
             <el-form-item label="数据目录图片" prop="imageUrl">
                 <el-upload class="upload-demo"
@@ -153,11 +153,31 @@
                     imageUrl:''
                 },
                 rules: {
-                    connectionName: [
-                        { required: true, message: '连接名称不能为空', trigger: 'blur' },
+                    dataCatalogCode: [
+                        { required: true, message: '数据目录代码不能为空', trigger: 'blur' },
                     ],
-                    connectionString: [
-                        { required: true, message: '连接字符串不能为空', trigger: 'blur' }
+                    dataCatalogName: [
+                        { required: true, message: '数据目录名称不能为空', trigger: 'blur' }
+                    ],
+                    parentId: [
+                        { required: true, message: '父级ID不能为空', trigger: 'blur' },
+                    ],
+                    parentIdTree: [
+                        { required: true, message: '父级ID树不能为空', trigger: 'blur' },
+                    ],
+                    dataCountSelf: [
+                        { required: true, message: '本级目录数据量不能为空', trigger: 'blur' } , {
+                            type: 'number',
+                            message: '本级目录数据量必须为数字',
+                            trigger: 'blur'
+                        }
+                    ],
+                    dataCountTree: [
+                        { required: true, message: '本级加子级的数据量不能为空', trigger: 'blur' }, {
+                            type: 'number',
+                            message: '本级加子级的数据量必须为数字',
+                            trigger: 'blur'
+                        }
                     ],
                 },
                 formLabelWidth: '160px',

@@ -1,0 +1,377 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+
+    .layui-layer-shade {
+        display: none;
+    }
+
+    .layui-select-title input {
+        width: 180px;
+    }
+</style>
+<div>
+
+    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
+        <div class="layui-form-item">
+            维度类型名：
+            <div class="layui-inline">
+                <input class="layui-input" name="searchDimTypeName" id="searchDimTypeName" autocomplete="off">
+            </div>
+           
+            建立人：
+            <div class="layui-inline">
+
+                <select name="searchCreation_By" id="searchCreation_By" lay-verify="required" lay-filter="xmFilter">
+                    <option value=""></option>
+
+                </select>
+            </div>
+
+            @*<div class="layui-inline">
+            <label class="layui-form-label">审核时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+
+            </div>
+        </div>*@
+            <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
+            <button class="layui-btn" data-type="showGenerateLayer">新增维度类型</button>
+            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+        </div>
+        @*<div class="layui-form-item" style="margin-top:30px;">
+
+                <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
+                <button class="layui-btn layui-btn-danger" data-type="getCheckData">选中行删除</button>
+            </div>*@
+    </div>
+    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+</div>
+<div id="generate_layer" style="display:none; padding:40px;">
+    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">维度类型ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="DimTypeCode" id="DimTypeCode" autocomplete="off" placeholder="维度类型编号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">维度类型名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="DimTypeName" id="DimTypeName" autocomplete="off" placeholder="维度类型名称" class="layui-input">
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="layui-form-item">
+            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
+            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
+        var table = layui.table;
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var generateLayer_index = 0;
+        var layType = true;//true 新增  false 编辑
+        var store_id = "";
+        //日期
+        laydate.render({
+            elem: '#searchAuditedDate'
+        });
+        laydate.render({
+            elem: '#stCloseDate'
+        });
+
+
+        table.render({
+            elem: '#test'
+            , url: '/api/SysDimType/search/'
+            , contentType: 'application/json'
+            , method: 'post'
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "status": res.isSuccess,
+                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.content.total, //解析数据长度
+                    "data": res.content.data //解析数据列表
+                };
+            }
+
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
+                , { field: 'dimTypecode', title: '维度类型编号', sort: true, fixed: 'left' }
+                , { field: 'messageTitle', title: '维度类型名称', sort: true }
+                , { field: 'creationDate', title: '建立时间' }
+                , { field: 'createdBy', width: 99, title: '建立人', sort: true }
+                , { field: 'lastUpdateDate', title: '最后更新时间', sort: true }
+                , { field: 'lastUpdatedBy', title: '最后更新人', sort: true }
+                //, { field: 'stOpenDate', title: '开业日期', sort: true }
+                //, { field: 'stCloseDate', title: '关店日期', sort: true }
+                //, { field: 'stTel', title: '电话', sort: true }
+                //, { field: 'stFax', title: '传真', sort: true }
+                //, { field: 'stSeat', title: '座位数', sort: true }
+                , { fixed: 'right', align: 'center', width: 177, toolbar: '#barDemo', fixed: 'right' } //这里的toolbar值是模板元素的选择器
+            ]]
+            , id: 'testReload'
+            , page: true,
+            text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+        });
+        table.on('checkbox(sysuser)', function (obj) {
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(sysuser)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('DimTypeCode：' + data.dimTypecode + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                console.log("delete");
+                let confirm_title = "确认删除产品编号" + data.dimTypecode + "的记录么";
+                layer.confirm(confirm_title, function (index) {
+                    layer.close(index);
+                    axios.delete('/api/SysDimType/' + data.dimTypecode)
+                        .then(function (response) {
+                            console.log(response);
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+                            obj.del();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                });
+            } else if (obj.event === 'edit') {
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                console.log(data);
+                store_id = data.dimTypecode;
+                layType = false;
+                showLayer(data);
+            } 
+        });
+       
+        var $ = layui.$, active = {
+            getCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('testReload')
+                    , data = checkStatus.data;
+
+
+                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
+                    layer.close(index);
+
+                    let DimTypeCodes = [];
+                    let parms = "?";
+                    for (let i = 0; i < data.length; i++) {
+                        DimTypeCodes.push(data[i].dimTypecode);
+                        parms += "DimTypeCodes=" + data[i].dimTypecode + "&";
+                    }
+                    parms = parms.substring(0, parms.length - 1);
+                    //layer.alert(JSON.stringify(data));
+                    axios.delete("/api/SysDimType/batchdelete/" + parms)
+                        .then(function (response) {
+                            layer.msg(response.data.message);
+                            if (!response.data.isSuccess) {
+                                return;
+                            }
+
+                            //移除
+                            let tabledata = table.cache.testReload;
+                            //for (let i = 0; i < tabledata.length; i++) {
+                            //    for (let j = 0; j < ids.length; j++) {
+                            //        if (tabledata[i].user_Id == ids[j]) {
+                            //            tabledata.splice(i, 1);
+                            //        }
+                            //    }
+                            //}
+                            //console.log(tabledata);
+                            tableReload(tabledata);
+
+
+                        })
+                        .catch(function (error) {
+                            layer.msg("发生了预料之外的错误!");
+                            console.log(error);
+                        });
+                });
+            },
+            search: function () {
+                let pars = {
+                    //limit: 10,
+                    //page: 1,
+                    Dim_Type_Name: $("#searchDimTypeName").val(),
+                    Creation_By: $("#searchCreation_By").val(),
+
+                    //Audited_Date: $("#searchAuditedDate").val(),
+                }
+                //if ($("#search_user_ower").val() != "") {
+                //    pars.User_Ower = Number($("#search_user_ower").val());
+                //}
+
+                //执行重载
+                table.reload('testReload', {
+                    where: pars,
+                    contentType: 'application/json',
+                    method: 'post'
+                });
+            },
+            showGenerateLayer: function () {
+                layType = true;
+                showLayer();
+            },
+            closeGenerateLayer: function () {
+                layer.close(generateLayer_index);
+            },
+
+        };
+        form.on('submit(submit)', function () {
+            console.log('save');
+            //alert($("#Message_ID").val());
+            let model = {
+                Dim_Type_Code: $("#DimTypeCode").val(),
+                Dim_Type_Name: $("#DimTypeName").val(),
+              
+            };
+            //alert($("#DimTypeCode").val());
+            //alert(store_id);
+            console.log(model);
+            let url = "/api/SysDimType/add";
+            let method = "POST";
+            if (layType != true) {
+                url = "/api/SysDimType/" + store_id;
+                method = "PUT";
+            }
+            axios({ url: url, method: method, data: model })
+                .then(function (response) {
+                    console.log(response);
+                    layer.msg(response.data.message);
+                    if (!response.data.isSuccess) {
+                        return;
+                    }
+                    let datatable = table.cache.testReload;
+                    console.log(datatable);
+                    if (layType != true) {
+                        //修改
+                         
+                        for (let i = 0; i < datatable.length; i++) {
+                            if (datatable[i].dimTypecode == response.data.content.dimTypecode) {
+                                datatable.splice(i, 1, response.data.content);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        //新增
+                        datatable.unshift(response.content)
+                    }
+                    tableReload(datatable)
+                    layer.close(generateLayer_index);
+                })
+                .catch(function (error) {
+
+                    layer.msg("发生了预料之外的错误!");
+                    console.log(error);
+                });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        }),
+            $('.layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        
+
+        function showLayer(data) {
+
+            console.log(table);
+            console.log(table.cache);
+            initFormValue(data);
+            let title = "新增";
+            document.getElementById("DimTypeCode").disabled = false;
+            document.getElementById("generate_btn").innerHTML = "立即创建";
+            if (layType != true) {
+                title = "编辑";
+                document.getElementById("DimTypeCode").disabled = true;
+                document.getElementById("generate_btn").innerHTML = "立即修改";
+            }
+            generateLayer_index = layer.open({
+                type: 1
+                , title: title //不显示标题栏
+                , closeBtn: false
+                , area: ['50%', '60%']
+                , closeBtn: 2
+                , shade: 0.8
+                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                //, btn: ['火速围观', '残忍拒绝']
+                , btnAlign: 'c'
+                , moveType: 1 //拖拽模式，0或者1
+                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+
+            });
+        };
+        function initFormValue(data) {
+            if (data == undefined) {
+
+                form.val("generate-form", {
+                    DimTypeCode: "",
+                    DimTypeName: "",
+                    //MESSAGECONTENT: "",
+                    //Important_Flag: ""
+                    //colorName: "",
+                    //category: ""
+                })
+                return;
+            }
+            form.val("generate-form", {
+                DimTypeCode: data.dimTypecode,
+                DimTypeName: data.messageTitle,
+                //MESSAGECONTENT: data.messageContent,
+                //Important_Flag: data.importantFlag
+                //colorName: data.dish_Color,
+                //category: data.category
+            })
+        }
+        function tableReload(datatable) {
+            console.log(datatable);
+            table.reload("testReload", {
+                data: datatable
+            })
+        }
+
+
+        $.ajax({
+            url: "/api/SysMessageInfo/GetUser",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    $('#searchCreation_By').append(new Option(item.userName));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+    });
+</script>
+
