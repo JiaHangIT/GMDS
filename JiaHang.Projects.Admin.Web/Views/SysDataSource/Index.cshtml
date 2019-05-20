@@ -12,10 +12,13 @@
         padding: 15px;
         background-color: #fff;
     }
+    .aaa {
+    font-size:2px;
+    }
 </style>
 <div id="app">
     <el-form :inline="true" class="demo-form-inline">
-        <el-form-item label="数据源代码：">
+        <el-form-item label="数据源代码：" class="aaa">
             <el-input placeholder="数据源代码" v-model="searchDataSourceCode"></el-input>
         </el-form-item>
         <el-form-item label="数据源名称：" style="margin-left:18px">
@@ -151,8 +154,8 @@
 
                     </el-form-item>
                     <el-form-item label="所属数据目录：">
-                        <el-select v-model="form.dataCatlog" placeholder="请选择">
-                            <el-option v-for="item in dataCatlogName"
+                        <el-select v-model="form.dataCatalogId" placeholder="请选择">
+                            <el-option v-for="item in optDataCatalogName"
                                        :key="item.dataCatalogId"
                                        :label="item.dataCatalogName"
                                        :value="item.dataCatalogId"
@@ -270,8 +273,8 @@
 
             </el-form-item>
             <el-form-item label="所属数据目录：">
-                <el-select v-model="addform.dataCatlog" placeholder="请选择">
-                    <el-option v-for="item in dataCatlogName"
+                <el-select v-model="addform.dataCatalogId" placeholder="请选择">
+                    <el-option v-for="item in optDataCatalogName"
                                :key="item.dataCatalogId"
                                :label="item.dataCatalogName"
                                :value="item.dataCatalogId"
@@ -428,8 +431,9 @@
                 valuetype: '',
                 valueuse:'',
                 databaseName: [],
-                dataCatlogName:[],
-                fieldtypes:[],
+                optDataCatalogName:[],
+                fieldtypes: [],
+                dataCatalogId:'',
                 rules: {
                     dataSourceCode: [
                         { required: true, message: '数据源代码不能为空', trigger: 'blur' }
@@ -603,14 +607,14 @@
                     connectionId: '',
                     dataSourceType: '',
                     dataSourceUse: '',
-                    dataCatlog:'',
+                    dataCatalogId:'',
 
                 },
                 addform: {
                     dataSourceCode: '',
                     dataSourceName: '',
                     connectionId: '',
-                    dataCatlog:'',
+                    dataCatalogId:'',
                     dataSourceType: '',
                     dataSourceUse: '',
                 },
@@ -692,9 +696,8 @@
                 let vm = this;
                 axios.get('/api/SysDataSource/SelectDcsDataCatalog')
                     .then(function (response) {
-                        console.log(response.data.content)
-                        vm.dataCatlogName = response.data.content; 
-                        vm.dataCatlogName.unshift({ dataCatalogName: '请选择', dataCatalogId: '' });
+                        vm.optDataCatalogName = response.data.content; 
+                        vm.optDataCatalogName.unshift({ dataCatalogName: '请选择', dataCatalogId: '' });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -705,10 +708,12 @@
                 let vm = this
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
+                
                 vm.getSelect();
                 vm.getDcsDataCatalog();
                 vm.dialogTitle = "编辑数据源基础和字段信息"
                 vm.form = formdata;
+                console.log(vm.form.dataCatalogId + vm.form.dataCatalogId)
                 dataSourceId = vm.form.dataSourceId;
                 vm.searchField();
                 vm.centerDialogVisible = true;
@@ -1009,7 +1014,7 @@
                 vm.addform.connectionId = '';
                 vm.addform.dataSourceType = '';
                 vm.addform.dataSourceUse = ''
-                vm.addform.dataCatlog=''
+                vm.addform.dataCatalogId=''
             },
             resetFieldForm() {
                 let vm = this;
