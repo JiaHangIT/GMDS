@@ -31,6 +31,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                         a.HelpTypeId equals b.HelpTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
                         where ((string.IsNullOrWhiteSpace(model.Help_Type_Id) || a_ifnull.HelpTypeId.Contains(model.Help_Type_Id))
                                 && (string.IsNullOrWhiteSpace(model.Help_Title) || a_ifnull.HelpTitle.Contains(model.Help_Title))
                                 && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
@@ -59,6 +60,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                         a.HelpTypeId equals b.HelpTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
                         where ((string.IsNullOrWhiteSpace(helpTypeId) || a_ifnull.HelpTypeId.Contains(helpTypeId))
                                 && (string.IsNullOrWhiteSpace(helpTitle) || a_ifnull.HelpTitle.Contains(helpTitle))
                                 && (string.IsNullOrWhiteSpace(Convert.ToString(auditFlag)) || a_ifnull.AuditFlag == (auditFlag))
@@ -70,7 +72,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                             Help_Type_Id = a_ifnull.HelpTypeId,
                             Help_Title = a_ifnull.HelpTitle,
                             Important_Flag = a_ifnull.ImportantFlag > 0 ? "是" : "否",
-                            Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
+                            Audit_Flag = a_ifnull.AuditFlag ,
                             Audited_Date = a_ifnull.AuditedDate,
                             Audited_By = a_ifnull.AuditedBy,
                             help_Content = a_ifnull.HelpContent,

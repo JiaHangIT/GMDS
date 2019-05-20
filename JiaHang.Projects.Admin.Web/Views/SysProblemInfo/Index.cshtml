@@ -62,22 +62,33 @@
         <el-table-column type="selection"
                          width="55">
         </el-table-column>
-        <el-table-column label="常见问题类型"
+        <el-table-column label="常见问题类型" width="200"
                          prop="problem_Type_Name">
         </el-table-column>
-        <el-table-column label="常见问题标题"
+        <el-table-column label="常见问题标题" width="200"
                          prop="problem_Title">
         </el-table-column>
         <el-table-column label="是否审核"
                          prop="audit_Flag">
+            <template slot-scope="scope">
+                <p v-if="scope.row.audit_Flag===2">
+                    未审核
+                </p>
+                <p v-else-if="scope.row.audit_Flag===0">
+                    未通过
+                </p>
+                <p v-else-if="scope.row.audit_Flag===1">
+                    通过
+                </p>
+            </template>
         </el-table-column>
-        <el-table-column label="审核时间"
+        <el-table-column label="审核时间" width="200"
                          prop="audited_Date">
         </el-table-column>
         <el-table-column label="审核人"
                          prop="audited_By">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="260">
             <template slot-scope="scope">
                 <el-button size="mini"
                            v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -145,8 +156,9 @@
                 multipleSelection: [],//获取批量选择的数据
                 searchoptauditFlag: [
                     { value: '', label: '请选择' },
-                    { value: '1', label: '是' },
-                    { value: '0', label: '否' },
+                    { value: '1', label: '通过审核' },
+                    { value: '0', label: '未通过审核' },
+                    { value: '2', label: '未审核' },
                 ],
                 searchoptProblemType: [],
                 searchProblemTypeId: '',
@@ -201,6 +213,11 @@
                 let vm = this;
                 let rowstr = JSON.stringify(row);
                 let formdata = JSON.parse(rowstr);
+                //已审核过的不能再审核
+                if (formdata.audit_Flag === 1 || formdata.audit_Flag === 0) {
+                    this.$message.error('已审核的不能再次审核!');
+                    return false;
+                }
                 let url = "/api/sysproblemInfodata/UpdateExamine";
                 let method = "POST";
                 let confirm_title = "确认审核 ：【" + formdata.problem_Title + "】的记录么";

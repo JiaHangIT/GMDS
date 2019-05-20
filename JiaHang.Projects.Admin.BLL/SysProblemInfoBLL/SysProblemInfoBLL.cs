@@ -70,6 +70,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                         a.ProblemTypeId equals b.ProblemTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
                         where ((string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a_ifnull.ProblemTypeId.Contains(model.Problem_Type_Id))
                                && (string.IsNullOrWhiteSpace(model.Problem_Title) || a_ifnull.ProblemTitle.Contains(model.Problem_Title))
                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
@@ -96,6 +97,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                         a.ProblemTypeId equals b.ProblemTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
                         where ((string.IsNullOrWhiteSpace(problemTypeId) || a_ifnull.ProblemTypeId.Contains(problemTypeId))
                                && (string.IsNullOrWhiteSpace(problemTitle) || a_ifnull.ProblemTitle.Contains(problemTitle))
                                && (string.IsNullOrWhiteSpace(Convert.ToString(auditFlag)) || a_ifnull.AuditFlag == (auditFlag))
@@ -105,7 +107,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                             Problem_Id = a_ifnull.ProblemId,
                             Problem_Type_Id = a_ifnull.ProblemTypeId,
                             Problem_Title = a_ifnull.ProblemTitle,
-                            Audit_Flag = a_ifnull.AuditFlag > 0 ? "是" : "否",
+                            Audit_Flag = a_ifnull.AuditFlag ,
                             Audited_Date = a_ifnull.AuditedDate,
                             Audited_By = a_ifnull.AuditedBy,
                             problem_Contant = a_ifnull.ProblemContent,

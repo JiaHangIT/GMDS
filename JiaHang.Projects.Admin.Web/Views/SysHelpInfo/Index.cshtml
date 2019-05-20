@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "帮助信息管理";
+    ViewData["Title"] = "问题信息管理";
 }
 <style>
     .v-modal {
@@ -13,14 +13,14 @@
         background-color: #fff;
     }
 
-    .el-table__body td, .el-table__body th {
+    /*.el-table__body td, .el-table__body th {
         padding: 1px;
     }
 
     .el-table__header td, .el-table__header th {
         height: 40px;
         padding: 6px 0px;
-    }
+    }*/
 </style>
 <div id="app">
 
@@ -80,17 +80,7 @@
         <el-table-column type="selection"
                          width="100">
         </el-table-column>
-        <el-table-column label="操作" width="250px">
-            <template slot-scope="scope">
-                <el-button size="mini"
-                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="mini"
-                           v-on:click="handleExamine(scope.$index, scope.row)">审核</el-button>
-                <el-button size="mini"
-                           type="danger"
-                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
-        </el-table-column>
+
         <el-table-column label="帮助类型"
                          prop="help_Type_Name">
         </el-table-column>
@@ -102,14 +92,35 @@
         </el-table-column>
         <el-table-column label="是否审核"
                          prop="audit_Flag">
+            <template slot-scope="scope">
+                <p v-if="scope.row.audit_Flag===2">
+                    未审核
+                </p>
+                <p v-else-if="scope.row.audit_Flag===0">
+                    未通过
+                </p>
+                <p v-else-if="scope.row.audit_Flag===1">
+                    通过
+                </p>
+            </template>
         </el-table-column>
-        <el-table-column label="审核时间"
+        <el-table-column label="审核时间" width="200"
                          prop="audited_Date">
         </el-table-column>
         <el-table-column label="审核人"
                          prop="audited_By">
         </el-table-column>
-
+        <el-table-column label="操作" width="260px">
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           v-on:click="handleExamine(scope.$index, scope.row)">审核</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
     </el-table>
     <el-pagination @@size-change="handleSizeChange"
                    @@current-change="handleCurrentChange"
@@ -249,6 +260,11 @@
                 let vm = this;
                 let rowstr = JSON.stringify(row);
                 let formdata = JSON.parse(rowstr);
+                console.log(formdata);
+                if (formdata.audit_Flag === 1 || formdata.audit_Flag === 0) {
+                    this.$message.error('已审核的不能再次审核!');
+                    return false;
+                }
                 let url = "/api/syshelpinfodata/UpdateExamine";
                 let method = "POST";
                 let confirm_title = "帮助信息名称为：【" + formdata.help_Title + "】";
