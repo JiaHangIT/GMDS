@@ -162,6 +162,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                          join b in _context.SysFieldType on a.FieldTypeId equals b.FieldTypeId
                            into a_temp
                          from a_ifnull in a_temp.DefaultIfEmpty()
+                         orderby a.CreationDate descending
                          select new{
                             FieldId = a.FieldId,
                             FieldCode = a.FieldCode,
@@ -191,6 +192,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                          join b in _context.SysFieldType on a.FieldTypeId equals b.FieldTypeId
                            into a_temp
                          from a_ifnull in a_temp.DefaultIfEmpty()
+                         orderby a.CreationDate descending
                          select new
                          {
                              FieldId = a.FieldId,

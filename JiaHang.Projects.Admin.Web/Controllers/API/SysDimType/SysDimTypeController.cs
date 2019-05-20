@@ -40,7 +40,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDimType
 
             return storeService.Select(model);
         }
-
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string dimTypeName, string creationBy)
+        {
+            currentPage--;
+            return storeService.ElemeSelect(pageSize, currentPage, dimTypeName, creationBy);
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

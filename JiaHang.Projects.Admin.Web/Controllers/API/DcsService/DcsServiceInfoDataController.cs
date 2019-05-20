@@ -8,6 +8,7 @@ using JiaHang.Projects.Admin.Model;
 using JiaHang.Projects.Admin.Model.DcsServiceInfo.RequestModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
 {
@@ -41,6 +42,46 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         }
 
         /// <summary>
+        /// test
+        /// </summary>
+        /// <returns></returns>
+        [Route("test")]
+        [HttpGet]
+        public object test()
+        {
+            //后台client方式GET提交
+            System.Net.Http.HttpClient myHttpClient = new System.Net.Http.HttpClient();
+            //提交当前地址的webapi
+            string url = "https://" + "www.layui.com/";
+            myHttpClient.BaseAddress = new Uri(url);
+            //GET提交 返回string
+            System.Net.Http.HttpResponseMessage response = myHttpClient.GetAsync("/demo/table/user").Result;
+            string result = "";
+            if (response.IsSuccessStatusCode)
+            {
+                result = response.Content.ReadAsStringAsync().Result;
+            }
+
+            return JsonConvert.DeserializeObject(result);
+            //return new FuncResult() { IsSuccess = true, Content = JsonConvert.SerializeObject(result) };
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("Search1")]
+        [HttpPost]
+        public FuncResult Select([FromBody] SearchDcsServiceInfos model)
+        {
+            model.pageNum--; if (model.pageNum < 0)
+                model.pageNum = 0;
+
+            return DcsServiceInfo.Select(model);
+        }
+
+        /// <summary>
         /// 添加
         /// </summary>
         /// <param name="model"></param>
@@ -54,16 +95,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
             }
             try
             {
-                //if (model.ServiceType == "SHARE")
-                //{
-                //    model.lscollect = new List<DcsCollectModel>();
-                //}
-                //else
-                //{
-                //    model.lsshare = new List<DcsShareModel>();
-                //}
-                //return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
-                return new FuncResult() { IsSuccess = true, Message = "Success" };
+                if (model.ServiceType == "SHARE")
+                {
+                    model.lscollect = new List<DcsCollectModel>();
+                }
+                else
+                {
+                    model.lsshare = new List<DcsShareModel>();
+                }
+                return await DcsServiceInfo.Add(model, HttpContext.CurrentUser(cache).Id);
             }
             catch (Exception ex)
             {
@@ -132,6 +172,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                 }
                 var data = await DcsServiceInfo.Update(id, model, HttpContext.CurrentUser(cache).Id);
                 return data;
+                //return new FuncResult() { IsSuccess = true, Message = "Success" };
             }
             catch (Exception ex)
             {
@@ -231,6 +272,88 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         }
 
         /// <summary>
+        /// 获取参数类型和关联字段Id（接口基本信息添加里参数信息块select）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetParamsTypeAndRelaField")]
+        public FuncResult GetParamsTypeAndRelaField()
+        {
+            try
+            {
+                dynamic result = null;
+                var ls_paramstype = from a in context.SysFieldType
+                                    select
+                                     new
+                                     {
+                                         key = a.FieldTypeId,
+                                         value = a.FieldTypeName
+                                     };
+
+                var ls_relafield = from a in context.SysDatasourceField
+                                   select
+                                    new
+                                    {
+                                        key = a.FieldId,
+                                        value = a.FieldName
+                                    };
+                result = new { paramstype = ls_paramstype, relafield = ls_relafield };
+
+                return new FuncResult() { IsSuccess = true, Content = result };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+        }
+
+        /// <summary>
+        /// 获取参数类型（接口基本信息添加里参数信息块select）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetParamsType")]
+        public FuncResult GetParamsType()
+        {
+            try
+            {
+                dynamic result = null;
+                var ls_paramstype = from a in context.SysFieldType
+                                    select
+                                     new
+                                     {
+                                         key = a.FieldTypeId,
+                                         value = a.FieldTypeName
+                                     };
+                result = new { paramstype = ls_paramstype };
+
+                return new FuncResult() { IsSuccess = true, Content = result };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
+        }
+
+        /// <summary>
+        /// 获取关联字段信息，分页
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{pagNum}/{pageSize}")]
+        public FuncResult GetRelaFieldByPagination(int pageNum, int pageSize)
+        {
+            pageNum--; if (pageNum < 0) pageNum = 0;
+            var ls_relafield = from a in context.SysDatasourceField
+                               select
+                                new
+                                {
+                                    key = a.FieldId,
+                                    value = a.FieldName
+                                };
+
+            var result = ls_relafield.Skip(pageNum * pageSize).Take(pageSize);
+            return new FuncResult() { IsSuccess = true, Content = result };
+        }
+
+        /// <summary>
         /// 返回接口基本信息视图
         /// </summary>
         /// <param name="serviceid"></param>
@@ -240,6 +363,39 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         public FuncResult GetServiceInfoView(string serviceid)
         {
             return DcsServiceInfo.GetServiceInfoView(serviceid);
+        }
+
+        /// <summary>
+        /// 获取目录分类和数据源信息
+        /// </summary>
+        /// <returns></returns>
+        [Route("GetCatelogAndDataSource")]
+        [HttpGet]
+        public FuncResult GetCatelogAndDataSource()
+        {
+            try
+            {
+                dynamic result = null;
+                //List<DcsServiceGroup> query = _context.DcsServiceGroup.DefaultIfEmpty().ToList();
+
+                //var data = query.Select(s => new { key = s.ServiceGroupId, value = s.ServiceGroupName });
+
+                var ls_servicegroup = context.DcsServiceGroup.DefaultIfEmpty().Select(s => new { key = s.ServiceGroupId, value = s.ServiceGroupName });
+                var ls_datasource = from a in context.SysDatasourceInfo
+                                    select new
+                                    {
+                                        key = a.DatasourceId,
+                                        value = a.DatasourceName
+                                    };
+                result = new { servicegroup = ls_servicegroup, datasource = ls_datasource };
+
+
+                return new FuncResult() { IsSuccess = true, Content = result };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Message = ex.InnerException.Message };
+            }
         }
 
         /// <summary>

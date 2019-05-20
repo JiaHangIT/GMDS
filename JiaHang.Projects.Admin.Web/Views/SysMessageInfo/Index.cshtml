@@ -1,231 +1,238 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "系统公告";
 }
+
+
 <style>
-
-
-    .layui-layer-shade {
+    .v-modal {
         display: none;
     }
 
-    .layui-select-title input {
-        width: 180px;
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
     }
 </style>
-<div>
 
-    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
-        <div class="layui-form-item">
-            公告标题：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchMESSAGE_TITLE" id="searchMESSAGE_TITLE" autocomplete="off">
-            </div>
-            建立人：
-            <div class="layui-inline">
 
-                <select name="searchCreated_By" id="searchCreated_By" lay-verify="required" lay-filter="xmFilter">
-                    <option value=""></option>
+<script src="~/ueditor-1.4.3.3/ueditor.config.js"></script>
+<script src="~/ueditor-1.4.3.3/ueditor.all.min.js"></script>
 
-                </select>
-            </div>
-            是否审核：
-            <div class="layui-inline">
-                <select name="searchauditFlag" id="searchauditFlag" lay-verify="required" lay-filter="xmFilter">
-                    <option value="">请选择</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
-                </select>
-            </div>
-            @*<div class="layui-inline">
-            <label class="layui-form-label">审核时间</label>
-            <div class="layui-input-block">
-                <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+<div id="app">
 
-            </div>
-        </div>*@
-            <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer">新增公告</button>
-            <button class="layui-btn" data-type="getCheckData">选中行删除</button>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="公告名称">
+            <el-input placeholder="公告名称" v-model="searchTitle"></el-input>
+        </el-form-item>
+        <el-form-item label="建立人">
+            <el-input placeholder="建立人" v-model="searchCreationBy"></el-input>
+        </el-form-item>
+        <el-form-item label="是否通过审核">
+            <el-select v-model:value="searchAuditFlag">
+                <el-option v-for="item in Flag"
+                           :key="item.key"
+                           :label="item.value"
+                           :value="item.key">
+                </el-option>
+            </el-select>
+
+        </el-form-item>
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="handleAdd">添加</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="danger" @@click="batchDelete">批量删除</el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              v-loading="loading"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @@selection-change="handleSelectionChange">
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
+        <el-table-column label="公告名称"
+                         prop="messageTitle">
+        </el-table-column>
+        <el-table-column label="是否重要"
+                         prop="importantFlag">
+            <template slot-scope="scope">
+                <p>{{scope.row.importantFlag===1?'是':'否'}}</p>
+            </template>
+        </el-table-column>
+        <el-table-column label="是否审核"
+                         prop="auditFlag">
+            <template slot-scope="scope">
+                <p v-if="scope.row.auditFlag===null">
+                    未审核
+                </p>
+                <p v-else-if="scope.row.auditFlag===0">
+                    审核未通过
+                </p>
+                <p v-else-if="scope.row.auditFlag===1">
+                    审核通过
+                </p>
+            </template>
+        </el-table-column>
+        <el-table-column label="审核时间"
+                         prop="auditedDate">
+        </el-table-column>
+        <el-table-column label="审核人"
+                         prop="auditedBy">
+        </el-table-column>
+        <el-table-column label="建立时间"
+                         prop="creationDate">
+        </el-table-column>
+        <el-table-column label="建立人"
+                         prop="createdBy">
+        </el-table-column>
+        <el-table-column label="操作"
+                         min-width="120%">
+
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           type="primary"
+                           v-on:click="handleAudit(scope.$index,scope.row)">审核</el-button>
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="pageNum"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="50%"
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="公告名称" prop="messageTitle">
+                <el-input v-model="form.messageTitle"></el-input>
+            </el-form-item>
+            <el-form-item label="是否重要" prop="importantFlag">
+                <el-select v-model:value="importantFlag">
+                    <el-option v-for="item in Flag"
+                               :key="item.key"
+                               :label="item.value"
+                               :value="item.key">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+        </el-form>
+        <template>
+            <script id="editor" type="text/plain" name="gdesc" style="width:100%;height:200px;">
+            </script>
+        </template>
+
+
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
         </div>
-        @*<div class="layui-form-item" style="margin-top:30px;">
+    </el-dialog>
 
-                <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
-                <button class="layui-btn layui-btn-danger" data-type="getCheckData">选中行删除</button>
-            </div>*@
-    </div>
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
 </div>
-<div id="generate_layer" style="display:none; padding:40px;">
-    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
-        <div class="layui-form-item">
-            
-            <div class="layui-inline">
-                <label class="layui-form-label">公告标题</label>
-                <div class="layui-input-block">
-                    <input type="text" name="MESSAGETITLE" id="MESSAGETITLE" autocomplete="off" placeholder="公告名称" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <div class="layui-col-md4 layui-col-xs6" style="margin-top:0px;z-index:9999999">
-                    <label class="layui-form-label">是否重要 </label>
-                    <div class="layui-input-block" style="width:180px">
-                        <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
-                            <option value="">请选择</option>
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @*<div class="layui-form-item">
-            <div class="layui-col-md4 layui-col-xs6" style="margin-top:4px;z-index:9999999">
-            <label class="layui-form-label">是否重要</label>
-            <div class="layui-input-block">
-                <select name="Important_Flag" id="Important_Flag" lay-verify="required" lay-filter="xmFilter">
-                    <option value=""></option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
-                </select>
-            </div>
-        </div>
-            
-            
-        </div>*@
-        <div class="layui-form-item">
-            
-            @*<div class="layui-form-item" style="padding-top:4px;z-index:10">
-                 加载编辑器的容器 
-                <script id="editor" name="MESSAGECONTENT" type="text/plain" style="width:790px;height:200px;">
-                </script>
-                <script type="text/javascript">
-                    var ue = UE.getEditor('editor');
-                </script>
-              
-            </div>*@
-            <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">公告内容</label>
-            <div class="layui-input-block">
-                <textarea placeholder="请输入内容" name="MESSAGECONTENT" id="MESSAGECONTENT" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        </div>
 
-            <div class="layui-form-item">
-                <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-                <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
-            </div>
-        </div>
-</div>
-
-
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
-@*<script src="~/utf8-asp/ueditor.config.js"></script>
-<script src="~/utf8-asp/ueditor.all.js"></script>*@
 <script>
-    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
-        var table = layui.table;
-        var element = layui.element;
-        var layer = layui.layer;
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
         var form = layui.form;
-        var laydate = layui.laydate;
-        var generateLayer_index = 0;
-        var layType = true;//true 新增  false 编辑
-        var store_id = "";
-        //日期
-        laydate.render({
-            elem: '#searchAuditedDate'
-        });
-        laydate.render({
-            elem: '#stCloseDate'
-        });
+        var $ = layui.$
+    })
+</script>
 
 
-        table.render({
-            elem: '#test'
-            , url: '/api/SysMessageInfo/search/'
-            , contentType: 'application/json'
-            , method: 'post'
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
+<script>
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                loading: true,
+                data: [],
+                imageUrl: [],
+                centerDialogVisible: false,
+                pageNum: 1,
+                pageSize: 10,
+                total: 0,
+                multipleSelection: [],//获取批量选择的数据
+                searchTitle: '',
+                searchCreationBy: '',
+                searchAuditFlag: [{ key: 1, value: '是' }, { key: 0, value: '否' }],
+                Flag: [{ key: 1, value: '是' }, { key: 0, value: '否' }],
+                importantFlag: '',
+                form: {
+                    messageTitle: '',
+                    importantFlag: '',
+                    messageContent: '',
+                    auditFlag: null,
+
+                },
+                rules: {
+                    messageTitle: [
+                        { required: true, message: '公告名称不能为空', trigger: 'blur' },
+                        { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
+                    ]
+
+
+                },
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
+                IsCreate: true,//是否新增
             }
-
-            , cols: [[
-                { type: 'checkbox', fixed: 'left' }
-                //, { field: 'id', width: 50, title: 'ID', sort: true, fixed: 'left' }
-                //, { field: 'messageId', title: '公告编号', sort: true, fixed: 'left' }
-                , { field: 'messageTitle', width: 180, title: '公告名称', sort: true }
-                //, { field: 'messageContent', title: '公告内容' }
-                , { field: 'importantFlag', width: 99, title: '是否重要', sort: true }
-                , { field: 'auditFlag', width: 130, title: '是否审核', sort: true }
-                , { field: 'auditedDate', title: '审核时间', sort: true }
-                , { field: 'auditedBy', title: '审核人', sort: true }
-                , { field: 'creationDate', title: '建立时间', sort: true }
-                , { field: 'createdBy', title: '建立人', sort: true }
-                //, { field: 'stOpenDate', title: '开业日期', sort: true }
-                //, { field: 'stCloseDate', title: '关店日期', sort: true }
-                //, { field: 'stTel', title: '电话', sort: true }
-                //, { field: 'stFax', title: '传真', sort: true }
-                //, { field: 'stSeat', title: '座位数', sort: true }
-                , { fixed: 'right', align: 'center', width: 177, toolbar: '#barDemo', fixed: 'right' } //这里的toolbar值是模板元素的选择器
-            ]]
-            , id: 'testReload'
-            , page: true,
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
-        table.on('checkbox(sysuser)', function (obj) {
-            console.log(obj)
-        });
-        //监听工具条
-        table.on('tool(sysuser)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'detail') {
-                layer.msg('Message_ID：' + data.messageId + ' 的查看操作');
-            } else if (obj.event === 'del') {
-                console.log("delete");
-                let confirm_title = "确认删除产品编号" + data.messageId + "的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios.delete('/api/SysMessageInfo/' + data.messageId)
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-                            obj.del();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-
-                });
-            } else if (obj.event === 'edit') {
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                console.log(data);
-                store_id = data.messageId;
-                layType = false;
-                showLayer(data);
-            } else if (obj.event === 'examine') {
-                console.log("审核");
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                vm.loading = true;
+                axios.get(`/api/SysMessageInfo/${vm.pageSize}/${vm.pageNum}?title=${vm.searchTitle}&creationby=${vm.searchCreationBy}&auditflag=${vm.searchAuditFlag}`)
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                        vm.loading = false;
+                    })
+                    .catch(function (error) {
+                        vm.loading = false;
+                        console.log(error)
+                    });
+            },
+            handleAudit: function (index, row) {
+                //审核
+                console.log(row);
+                let vm = this;
+                //已审核过的不能再审核
+                if (row.auditFlag === 1 || row.auditFlag === 0) {
+                    this.$message.error('已审核信息不能再次审核!');
+                    return false;
+                }
 
                 let url = "/api/SysMessageInfo/UpdateExamine";
                 let method = "POST";
-                let confirm_title = "公告名称为：【" + data.messageTitle + "】";
+                let confirm_title = "公告名称为：【" + row.messageTitle + "】";
 
                 layer.confirm(confirm_title, {
                     btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
@@ -234,11 +241,10 @@
 
                     }
 
-
                 }, function (index, layero) {
                     let model = {
-                        Message_ID: data.messageId,
-                        AuditFlag: 1
+                        Message_ID: row.messageId,
+                        Audit_Flag: 1
                     };
                     axios({ url: url, method: method, data: model })
                         .then(function (response) {
@@ -246,18 +252,20 @@
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
-                                tableReload(datatable);
+
                             }
+                            layer.close(index);
+                            vm.fetchList();
 
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
                 }, function (index) {
-                    //alert("不通过");
+
                     let model = {
-                        Message_ID: data.messageId,
-                        AuditFlag: 0
+                        Message_ID: row.messageId,
+                        Audit_Flag: 0
                     };
                     axios({ url: url, method: method, data: model })
                         .then(function (response) {
@@ -265,365 +273,206 @@
                             layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
                                 return;
-                                tableReload(datatable);
-                            }
 
+                            }
+                            layer.close(index);
+                            vm.fetchList();
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
                 }
                 );
-            }
-        });
-        var $ = layui.$, active = {
-            getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('testReload')
-                    , data = checkStatus.data;
+            },
+            handleEdit: function (index, row) {
+                //编辑器初始化
+                var ue = UE.getEditor('editor');
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
 
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑公告信息"
+                vm.form = formdata;
+                vm.importantFlag = formdata.importantFlag == 1 ? '是' : '否'
+                //搞不懂的道理，直接设置默认值无效，添加一个定时方法即可(可能是要先等Ue富文本编辑器先初始化)
 
-                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
-                    layer.close(index);
+                //ue.addListener('ready', function () {
+                //    ue.setContent(formdata.messageContent);
+                //})
 
-                    let Message_IDs = [];
-                    let parms = "?";
-                    for (let i = 0; i < data.length; i++) {
-                        Message_IDs.push(data[i].messageId);
-                        parms += "Message_IDs=" + data[i].messageId + "&";
-                    }
-                    parms = parms.substring(0, parms.length - 1);
-                    //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/SysMessageInfo/batchdelete/" + parms)
+                setTimeout(function () {
+                    ue.setContent(formdata.messageContent);
+
+                    //文本框获取焦点时清空默认显示的内容
+                    //ue.addListener("focus", function () {
+                    //    ue.setContent('');
+                    //});
+                }, 800)
+
+                vm.centerDialogVisible = true
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+                //删除
+                this.$confirm('此操作将删除公告信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysMessageInfo/' + row.messageId)
                         .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
                             if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
                                 return;
                             }
-
-                            //移除
-                            let tabledata = table.cache.testReload;
-                            //for (let i = 0; i < tabledata.length; i++) {
-                            //    for (let j = 0; j < ids.length; j++) {
-                            //        if (tabledata[i].user_Id == ids[j]) {
-                            //            tabledata.splice(i, 1);
-                            //        }
-                            //    }
-                            //}
-                            //console.log(tabledata);
-                            tableReload(tabledata);
-
-
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
                         })
                         .catch(function (error) {
-                            layer.msg("发生了预料之外的错误!");
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
                             console.log(error);
                         });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
 
+            },
+            handleAdd: function () {
+                //实例化编辑器
+                var ue = UE.getEditor('editor');
+                let vm = this;
+                vm.IsCreate = true;
+                vm.resetForm();
 
-            },
-            search: function () {
-                console.log('reload');
-                let pars = {
-                    //limit: 10,
-                    //page: 1,
-                    Message_title: $("#searchMESSAGE_TITLE").val(),
-                    Created_By: $("#searchCreated_By").val(),
-                    Audit_Flag: $("#searchauditFlag").val(),
-                    //Audited_Date: $("#searchAuditedDate").val(),
-                }
-                //执行重载
-                console.log(pars);
-                table.reload('testReload', {
-                    where: pars,
-                    contentType: 'application/json',
-                    method: 'post'
-                });
-            },
-            showGenerateLayer: function () {
-                console.log('show');
-                layType = true;
-                showLayer();
-            },
-            closeGenerateLayer: function () {
-                layer.close(generateLayer_index);
-            },
+                setTimeout(function () {
+                    ue.setContent('');
+                }, 2000)
 
-        };
 
-        form.on('submit(submit)', function () {
-            //console.log(data);
-            console.log('save');
-            //alert($("#Message_ID").val());
-            //获取纯文本内容
-            //var txt = ue.getContentTxt();
-            //alert(data.messageContent);
-            let model = {
-                Message_ID: $("#Message_ID").val(),
-                Message_title: $("#MESSAGETITLE").val(),
-                Message_Content: $("#MESSAGECONTENT").val(), 
-                Important_Flag: $("#Important_Flag").val(),
-                //Audit_Flag: $("#colorName").val(),
-                //Audited_Date: $("#category").val(),
-                //Audited_By: $("#code").val(),
-                //Creation_Date: $("#name").val(),
-                //Creation_By: $("#price").val(),
-                //Last_Updata_Date: $("#cost").val(),
-                //Last_Updata_By: $("#colorName").val(),
-            };
-             
-            console.log(model);
-            let url = "/api/SysMessageInfo/add";
-            let method = "POST";
-            if (layType != true) {
-                url = "/api/SysMessageInfo/" + store_id;
-                method = "PUT";
-            }
-            axios({ url: url, method: method, data: model })
-                .then(function (response) {
-                    console.log(response);
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
+                vm.dialogTitle = "添加系统公告信息";
+                vm.centerDialogVisible = true
+            },
+            dialogCancel: function () {
+                let vm = this;
+
+                vm.centerDialogVisible = false
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                console.log(vm.$refs[formName])
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/SysMessageInfo/";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/SysMessageInfo/${vm.form.messageId}`;
+                            method = "PUT";
+                        }
+                        var ue = UE.getEditor('editor');
+                        vm.form.messageContent = ue.getContent();
+                        vm.form.importantFlag = vm.importantFlag == '是' ? 1 : 0;
+
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
                         return;
                     }
-                    let datatable = table.cache.testReload;
-                    console.log(datatable);
-                    if (layType != true) {
-                        //修改
-                        for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].Message_ID == response.data.content.Message_ID) {
-                                datatable.splice(i, 1, response.data.content);
-                                break;
+                });
+            },
+            resetForm() {
+                let vm = this;
+                vm.form.messageTitle = ''
+                vm.form.messageContent = ''
+                vm.form.importantFlag = ''
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                this.pageNum = val;
+                this.fetchList();
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
+            },
+            batchDelete() {
+                let batchdatas = this.multipleSelection;
+                if (batchdatas.length == 0) {
+                    return;
+                }
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&MessageIds=${batchdatas[i].messageId}`;
+                };
+                ids = ids.substring(1, ids.length)
+                let vm = this
+                vm.$confirm(`此操作将删除${batchdatas.length}条公告信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysMessageInfo/BatchDelete?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
                             }
-                        }
-                    }
-                    else {
-                        //新增
-                        datatable.unshift(response.content)
-                    }
-                    tableReload(datatable)
-                    layer.close(generateLayer_index);
-                })
-                .catch(function (error) {
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
 
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
-
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        }),
-            $('.layui-btn').on('click', function () {
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
-        //function examineLayer(data) {
-
-        //    console.log(table);
-        //    console.log(table.cache);
-        //    initFormValue(data);
-
-        //        let title = "审核";
-        //        document.getElementById("Message_ID").disabled = true;
-        //        document.getElementById("examine_btn").innerHTML = "立即审核";
-
-        //    generateLayer_indexT = layer.open({
-        //        type: 1
-        //        , title: "审核" //不显示标题栏
-        //        , closeBtn: false
-        //        , area: ['50%', '60%']
-        //        , shade: 0.8
-        //        , id: 'LAY_examine' //设定一个id，防止重复弹出
-        //        //, btn: ['火速围观', '残忍拒绝']
-        //        , btnAlign: 'c'
-        //        , moveType: 1 //拖拽模式，0或者1
-        //        , content: $('#examine_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-
-        //    });
-        //};
-
-        function showLayer(data) {
-
-            console.log(table);
-            console.log(table.cache);
-            initFormValue(data);
-            let title = "新增";
-             
-            document.getElementById("generate_btn").innerHTML = "立即创建";
-            if (layType != true) {
-                title = "编辑";
-                
-                document.getElementById("generate_btn").innerHTML = "立即修改";
+                console.log(this.multipleSelection);
             }
-            generateLayer_index = layer.open({
-                type: 1
-                , title: title //不显示标题栏
-                , closeBtn: false
-                , area: ['50%', '60%']
-                , closeBtn: 2
-                , shade: 0.8
-                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 1 //拖拽模式，0或者1
-                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
 
-            });
-        };
-        function initFormValue(data) {
-            if (data == undefined) {
-
-                form.val("generate-form", {
-                    Message_ID: "",
-                    MESSAGETITLE: "",
-                    MESSAGECONTENT: "",
-                    Important_Flag: ""
-                    //colorName: "",
-                    //category: ""
-                })
-                return;
-            }
-            form.val("generate-form", {
-                Message_ID: data.messageId,
-                MESSAGETITLE: data.messageTitle,
-                MESSAGECONTENT: data.messageContent,
-                Important_Flag: data.importantFlag,
-
-                //colorName: data.dish_Color,
-                //category: data.category
-            })
         }
-        function tableReload(datatable) {
-            console.log(datatable);
-            table.reload("testReload", {
-                data: datatable
-            })
-        }
-
-
-        $.ajax({
-            url: "/api/SysMessageInfo/GetUser",
-            success: function (data) {
-                console.log(data);
-                $.each(data, function (index, item) {
-                    $('#searchCreated_By').append(new Option(item.userName));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
 
     });
 </script>
-@*<script type="text/javascript">
-
-    //实例化编辑器
-    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
-    var ue = UE.getEditor('editor');
-
-
-    function isFocus(e) {
-        alert(UE.getEditor('editor').isFocus());
-        UE.dom.domUtils.preventDefault(e)
-    }
-    function setblur(e) {
-        UE.getEditor('editor').blur();
-        UE.dom.domUtils.preventDefault(e)
-    }
-    function insertHtml() {
-        var value = prompt('插入html代码', '');
-        UE.getEditor('editor').execCommand('insertHtml', value)
-    }
-    function createEditor() {
-        enableBtn();
-        UE.getEditor('editor');
-    }
-    function getAllHtml() {
-        alert(UE.getEditor('editor').getAllHtml())
-    }
-    function getContent() {
-        var arr = [];
-        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
-        arr.push("内容为：");
-        arr.push(UE.getEditor('editor').getContent());
-        alert(arr.join("\n"));
-    }
-    function getPlainTxt() {
-        var arr = [];
-        arr.push("使用editor.getPlainTxt()方法可以获得编辑器的带格式的纯文本内容");
-        arr.push("内容为：");
-        arr.push(UE.getEditor('editor').getPlainTxt());
-        alert(arr.join('\n'))
-    }
-    function setContent(isAppendTo) {
-        var arr = [];
-        arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
-        UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
-        alert(arr.join("\n"));
-    }
-    function setDisabled() {
-        UE.getEditor('editor').setDisabled('fullscreen');
-        disableBtn("enable");
-    }
-
-    function setEnabled() {
-        UE.getEditor('editor').setEnabled();
-        enableBtn();
-    }
-
-    function getText() {
-        //当你点击按钮时编辑区域已经失去了焦点，如果直接用getText将不会得到内容，所以要在选回来，然后取得内容
-        var range = UE.getEditor('editor').selection.getRange();
-        range.select();
-        var txt = UE.getEditor('editor').selection.getText();
-        alert(txt)
-    }
-
-    function getContentTxt() {
-        var arr = [];
-        arr.push("使用editor.getContentTxt()方法可以获得编辑器的纯文本内容");
-        arr.push("编辑器的纯文本内容为：");
-        arr.push(UE.getEditor('editor').getContentTxt());
-        alert(arr.join("\n"));
-    }
-    function hasContent() {
-        var arr = [];
-        arr.push("使用editor.hasContents()方法判断编辑器里是否有内容");
-        arr.push("判断结果为：");
-        arr.push(UE.getEditor('editor').hasContents());
-        alert(arr.join("\n"));
-    }
-    function setFocus() {
-        UE.getEditor('editor').focus();
-    }
-    function deleteEditor() {
-        disableBtn();
-        UE.getEditor('editor').destroy();
-    }
-    function disableBtn(str) {
-        var div = document.getElementById('btns');
-        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
-        for (var i = 0, btn; btn = btns[i++];) {
-            if (btn.id == str) {
-                UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
-            } else {
-                btn.setAttribute("disabled", "true");
-            }
-        }
-    }
-    function enableBtn() {
-        var div = document.getElementById('btns');
-        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
-        for (var i = 0, btn; btn = btns[i++];) {
-            UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
-        }
-    }
-
-    function getLocalData() {
-        alert(UE.getEditor('editor').execCommand("getlocaldata"));
-    }
-
-    function clearLocalData() {
-        UE.getEditor('editor').execCommand("clearlocaldata");
-        alert("已清空草稿箱")
-    }
-</script>*@

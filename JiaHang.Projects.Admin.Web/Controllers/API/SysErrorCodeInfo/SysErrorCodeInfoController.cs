@@ -13,15 +13,14 @@ using Microsoft.Extensions.Caching.Memory;
 namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
 {
     [Route("api/[controller]")]
-    //[ApiController]
     public class SysErrorCodeInfoController : ControllerBase
     {
-        private readonly SysErrorCodeInfoBLL storeService;
+        private readonly SysErrorCodeInfoBLL errorCode;
         private readonly IMemoryCache cache;
         public SysErrorCodeInfoController(DataContext dataContext, IMemoryCache cache)
         {
             this.cache = cache;
-            storeService = new SysErrorCodeInfoBLL(dataContext);
+            errorCode = new SysErrorCodeInfoBLL(dataContext);
         }
 
         /// <summary>
@@ -38,7 +37,25 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
                 model.page = 0;
             }
 
-            return storeService.Select(model);
+            return errorCode.Select(model);
+
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("Search1")]
+        [HttpPost]
+        public FuncResult Select([FromBody] SearchSysErrorCodesInfo model)
+        {
+            model.PageNum--; if (model.PageNum < 0)
+            {
+                model.PageNum = 0;
+            }
+
+            return errorCode.Select(model);
 
         }
 
@@ -50,7 +67,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
         [HttpGet("{code}")]
         public async Task<FuncResult> Select(string MessageId)
         {
-            return await storeService.Details(MessageId);
+            return await errorCode.Details(MessageId);
         }
 
         /// <summary>
@@ -66,7 +83,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
             {
                 return new FuncResult() { IsSuccess = false, Message = "参数错误" };
             }
-            return await storeService.Add(model, HttpContext.CurrentUser(cache).UserName);
+            return await errorCode.Add(model, HttpContext.CurrentUser(cache).UserName);
         }
 
         /// <summary>
@@ -75,10 +92,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
         /// <param name="code"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPut("{MessageId}")]
-        public async Task<FuncResult> Update(string MessageId, [FromBody]SysErrorCodeInfoModel model)
+        [HttpPut("{ErrorCodeId}")]
+        public async Task<FuncResult> Update(string ErrorCodeId, [FromBody]SysErrorCodeInfoModel model)
         {
-            FuncResult data = await storeService.Update(MessageId, model, HttpContext.CurrentUser(cache).UserName);
+            FuncResult data = await errorCode.Update(ErrorCodeId, model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
 
@@ -87,16 +104,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        [HttpDelete("{MessageId}")]
-        public async Task<FuncResult> Delete([FromRoute]string MessageId)
+        [HttpDelete("{ErrorCodeId}")]
+        public async Task<FuncResult> Delete([FromRoute]string ErrorCodeId)
         {
-            return await storeService.Delete(MessageId, HttpContext.CurrentUser(cache).UserName);
+            return await errorCode.Delete(ErrorCodeId, HttpContext.CurrentUser(cache).UserName);
         }
         [Route("BatchDelete")]
         [HttpDelete]
-        public async Task<FuncResult> Delete(string[] MessageIds)
+        public async Task<FuncResult> Delete(string[] ErrorCodeId)
         {
-            return await storeService.Delete(MessageIds, HttpContext.CurrentUser(cache).Id);
+            return await errorCode.Delete(ErrorCodeId, HttpContext.CurrentUser(cache).Id);
 
         }
 
@@ -111,8 +128,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysErrorCodeInfo
         [HttpPost]
         public async Task<FuncResult> UpdateExamine([FromBody]SysErrorCodeInfoModel model)
         {
-            
-            FuncResult data = await storeService.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
+
+            FuncResult data = await errorCode.UpdateExamine(model, HttpContext.CurrentUser(cache).UserName);
             return data;
         }
     }

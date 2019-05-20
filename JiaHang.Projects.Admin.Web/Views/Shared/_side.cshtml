@@ -39,11 +39,22 @@
 
         let c_routes = routes[0];
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i].modelGroupId === current_moduleId) {
-                //generateMenu(side, [routes[i]], 1);
-                c_routes = routes[i];
-                break;
+            for (var j = 0; j < routes[i].modelGroups.length; j++) {
+                if (routes[i].modelGroups[j].modelGroupId === current_moduleId) {
+
+                    //generateMenu(side, [routes[i]], 1);
+                    //c_routes = routes[i];
+                    c_routes = routes[i].modelGroups[j];
+                    break;
+                }
             }
+
+            //if (routes[i].modelGroupId === current_moduleId) {
+              
+            //    //generateMenu(side, [routes[i]], 1);
+            //    c_routes = routes[i];
+            //    break;
+            //}
         }
         var data = [c_routes];       
         generateMenu(side, c_routes);

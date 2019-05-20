@@ -24,12 +24,9 @@ namespace JiaHang.Projects.Admin.BLL.DcsDataCatalogBLL
                          where (
                             (string.IsNullOrWhiteSpace(dataCatalogName) || a.DataCatalogName.Contains(dataCatalogName))
                             )
-                         join b in _context.SysDatasourceInfo on a.DataCatalogId equals b.DataCatalogId
-                          into a_temp
-                         from a_ifnull in a_temp.DefaultIfEmpty() orderby a.CreationDate descending
                          select new
                          {
-                            DataCatalogId=a.DataCatalogId,
+                             DataCatalogId=a.DataCatalogId,
                              DataCatalogCode=a.DataCatalogCode,
                              DataCatalogName= a.DataCatalogName,
                              ParentId=a.ParentId,
@@ -38,7 +35,6 @@ namespace JiaHang.Projects.Admin.BLL.DcsDataCatalogBLL
                              DataCountTree=a.DataCountTree,
                              ImageUrl=a.ImageUrl,
                              CreatedBy = a.CreatedBy,
-                             DatasourceName=a_ifnull.DatasourceName,
                              CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
                          };
             int total = querys.Count();

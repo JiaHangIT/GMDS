@@ -67,6 +67,36 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNum"></param>
+        /// <param name="title"></param>
+        /// <param name="creationby"></param>
+        /// <param name="auditflag"></param>
+        /// <returns></returns>
+        public FuncResult Select(int pageSize, int pageNum, string title, string creationby, int? auditflag)
+        {
+            try
+            {
+                var query = _context.SysMessageInfo.Where(s =>
+                              (string.IsNullOrWhiteSpace(title) || s.MessageTitle.Contains(title)) &&
+                              (string.IsNullOrWhiteSpace(creationby) || s.CreatedBy == creationby) &&
+                              (string.IsNullOrWhiteSpace(Convert.ToString(auditflag)) || s.AuditFlag == auditflag) &&
+                              (s.DeleteFlag == 0)).OrderByDescending(o => o.CreationDate).ToList();
+
+                int total = query.Count();
+                var data = query.Skip(pageSize * pageNum).Take(pageSize).ToList();
+
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Content = null, Message = ex.Message };
+            }
+        }
+
+        /// <summary>
         /// 查询单个
         /// </summary>
         /// <param name="code"></param>
@@ -98,6 +128,31 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
             //entity.AuditedDate = model.Audited_Date;
 
             //entity.AuditedBy = model.Audited_By;
+            entity.CreatedBy = currentuserId;
+            entity.LastUpdateDate = System.DateTime.Now;
+            entity.LastUpdatedBy = currentuserId;
+            _context.SysMessageInfo.Update(entity);
+            await _context.SaveChangesAsync();
+            return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
+        }
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<FuncResult> Update(string MessageId, SysMessageInfosModel model, string currentuserId)
+        {
+            SysMessageInfo entity = await _context.SysMessageInfo.FindAsync(MessageId);
+            if (entity == null)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
+            }
+            entity.MessageId = MessageId;
+            entity.MessageTitle = model.Messagetitle;
+            entity.MessageContent = model.MessageContent;
+            entity.ImportantFlag = model.ImportantFlag;
+
             entity.CreatedBy = currentuserId;
             entity.LastUpdateDate = System.DateTime.Now;
             entity.LastUpdatedBy = currentuserId;
@@ -156,53 +211,42 @@ namespace JiaHang.Projects.Admin.BLL.SysMessageInfoBLL
             return new FuncResult() { IsSuccess = true, Message = $"已成功删除{MessageIds.Length}条记录" };
 
         }
-        /// <summary>
+       /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Add(SysMessageInfoModel model, string currentUserId)
+        public async Task<FuncResult> Add(SysMessageInfosModel model, string currentUserId)
         {
-            if (_context.SysMessageInfo.Count(e => e.MessageId == model.Message_ID) > 0)
+            if (_context.SysMessageInfo.Count(e => e.MessageTitle == model.Messagetitle) > 0)
             {
-                return new FuncResult() { IsSuccess = false, Message = "已经存在相同的公告编码。" };
+                return new FuncResult() { IsSuccess = false, Message = "已经存在相同的公告名。" };
             }
-            SysMessageInfo entity = new SysMessageInfo
+            try
             {
-                MessageId = Guid.NewGuid().ToString(),
-                MessageTitle = model.Message_title,
-                MessageContent = model.Message_Content,
-                ImportantFlag = model.Important_Flag,
-                AuditFlag = model.Audit_Flag,
-                AuditedDate = model.Audited_Date,
-
-                AuditedBy = model.Audited_By,
-                CreationDate = System.DateTime.Now,
-                CreatedBy = currentUserId,
-                LastUpdateDate = System.DateTime.Now,
-                LastUpdatedBy = currentUserId,
-
-            };
-            await _context.SysMessageInfo.AddAsync(entity);
-
-            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
-            {
-                try
+                SysMessageInfo entity = new SysMessageInfo
                 {
-                    await _context.SaveChangesAsync();
-                    trans.Commit();
-                }
-                catch (Exception ex)
-                {
-                    trans.Rollback();
-                    Console.WriteLine(ex.Message);
-                    return new FuncResult() { IsSuccess = false, Content = ex.Message };
-                }
+                    MessageId = Guid.NewGuid().ToString(),
+                    MessageTitle = model.Messagetitle,
+                    MessageContent = model.MessageContent,
+                    ImportantFlag = model.ImportantFlag,
+                    AuditFlag = model.AuditFlag,
+                
+                    CreationDate = System.DateTime.Now,
+                    CreatedBy = currentUserId,
+                    LastUpdateDate = System.DateTime.Now,
+                    LastUpdatedBy = currentUserId,
+
+                };
+                await _context.SysMessageInfo.AddAsync(entity);
+                _context.SaveChanges();
+                return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
             }
-
-
-            return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false,  Message = ex.Message };
+            }
         }
         /// <summary>
         /// 审核

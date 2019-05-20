@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using UEditor.Core;
 
 namespace JiaHang.Projects.Admin.Web
 {
@@ -34,7 +35,10 @@ namespace JiaHang.Projects.Admin.Web
             string oracle_connection = Configuration.GetConnectionString("OracleConnection");
             //注入缓存服务
             services.AddMemoryCache();
-            
+
+            //注入依赖
+            services.AddUEditorService();
+
 
             services.AddDbContext<DataContext>(options =>
             {

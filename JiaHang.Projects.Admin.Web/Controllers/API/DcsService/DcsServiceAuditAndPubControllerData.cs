@@ -29,6 +29,24 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
         }
 
         /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="serviceno"></param>
+        /// <param name="servicecode"></param>
+        /// <param name="servicename"></param>
+        /// <returns></returns>
+        [HttpGet("{pageIndex}/{pageSize}")]
+        public FuncResult Select(int pageIndex, int pageSize, string serviceno, string servicecode, string servicename)
+        {
+            pageIndex--; if (pageIndex < 0)
+                pageIndex = 0;
+
+            return DcsServiceInfo.Select(pageIndex, pageSize, serviceno, servicecode, servicename);
+        }
+
+        /// <summary>
         /// 接口审核
         /// </summary>
         /// <param name="auditJson"></param>
@@ -45,13 +63,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsService
                 DcsServiceInfo serviceInfo = context.DcsServiceInfo.Find(model.ServiceId);
                 if (serviceInfo == null)
                 {
-                    return new FuncResult() { IsSuccess = false, Message = string.Format("Error:{0}","接口主键信息异常，或当前审核接口已被删除!") };
+                    return new FuncResult() { IsSuccess = false, Message = string.Format("Error:{0}", "接口主键信息异常，或当前审核接口已被删除!") };
                 }
                 serviceInfo.AuditFlag = model.AuditFlag;
                 serviceInfo.AuditDate = DateTime.Now;
                 serviceInfo.AuditedBy = HttpContext.CurrentUser(cache).Id;
+                context.DcsServiceInfo.Update(serviceInfo);
                 context.SaveChanges();
-                return new FuncResult() { IsSuccess = true,Message="Success" };
+                return new FuncResult() { IsSuccess = true, Message = "Success" };
             }
             catch (Exception ex)
             {

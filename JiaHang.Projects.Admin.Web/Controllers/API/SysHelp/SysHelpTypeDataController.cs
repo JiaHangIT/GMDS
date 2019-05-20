@@ -40,6 +40,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysHelpType
             return helpTypeService.Select(model);
 
         }
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string helptypename)
+        {
+            currentPage--;
+            return helpTypeService.ElemeSelect(pageSize, currentPage, helptypename);
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

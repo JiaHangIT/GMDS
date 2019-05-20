@@ -39,6 +39,22 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
         }
 
         /// <summary>
+        /// 分页
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNum"></param>
+        /// <param name="code"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpGet("{pageSize}/{pageNum}")]
+        public FuncResult Select(int pageSize, int pageNum, string code, string name)
+        {
+            pageNum--; if (pageNum < 0)
+                pageNum = 0;
+            return DcsserviceBll.Select(pageSize, pageNum, code, name);
+        }
+
+        /// <summary>
         /// 查询目录分类下的接口基本信息(仅需要service_group_id)
         /// </summary>
         /// <param name="model"></param>

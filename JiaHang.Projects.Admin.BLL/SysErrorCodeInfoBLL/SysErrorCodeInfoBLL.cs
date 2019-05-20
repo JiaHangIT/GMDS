@@ -69,6 +69,50 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
         }
 
         /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public FuncResult Select(SearchSysErrorCodesInfo model)
+        {
+            try
+            {
+
+                var query = _context.SysErrorCodeInfo.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(model.ErrorCode) || a.ErrorCodeCode.Contains(model.ErrorCode))
+                         && (string.IsNullOrWhiteSpace(model.ErrorName) || a.ErrorCodeName == (model.ErrorName))
+                        && (string.IsNullOrWhiteSpace(Convert.ToString(model.AuditFlag)) || a.AuditFlag == (model.AuditFlag))
+                        && (a.DeleteFlag != 1)
+                        ));
+                int total = query.Count();
+                var data = query.Skip(model.PageNum * model.PageSize).Take(model.PageSize);
+                //var data = query.Select(e => new
+                //{
+
+                //    errorCodeId = e.ErrorCodeId,
+                //    errorCodeCode = e.ErrorCodeCode ?? "",
+                //    errorCodeName = e.ErrorCodeName ?? "",
+                //    errorCodeDesc = e.ErrorCodeDesc ?? "",
+                //    importantFlag = e.ImportantFlag,
+                //    auditFlag = e.AuditFlag > 0 ? "通过审核" : "未通过审核",
+                //    auditedDate = e.AuditedDate != null ? Convert.ToDateTime(e.AuditedDate).ToString("yyyy-MM-dd") : "",
+                //    auditedBy = e.AuditedBy ?? "",
+                //    creationDate = e.CreationDate != null ? Convert.ToDateTime(e.CreationDate).ToString("yyyy-MM-dd") : "",
+                //    createdBy = e.CreatedBy
+                //});
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
         /// 查询单个
         /// </summary>
         /// <param name="code"></param>

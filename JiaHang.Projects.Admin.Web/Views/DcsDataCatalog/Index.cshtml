@@ -49,9 +49,6 @@
         <el-table-column label="数据目录名称"
                          prop="dataCatalogName">
         </el-table-column>
-        <el-table-column label="数据源名称"
-                         prop="datasourceName">
-        </el-table-column>
         <el-table-column label="本级目录数量"
                          prop="dataCountSelf">
         </el-table-column>
@@ -84,24 +81,38 @@
                width="30%"
                center>
         <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
-            <el-form-item label="数据目录代码" prop="connectionId" hidden>
-                <el-input v-model="form.connectionId"></el-input>
+            <el-form-item label="数据目录代码" prop="dataCatalogCode">
+                <el-input v-model="form.dataCatalogCode"></el-input>
             </el-form-item>
-            <el-form-item label="数据类型名称：">
-                <el-select v-model="form.databaseTypeId" placeholder="请选择">
-                    <el-option v-for="item in databasetypename"
-                               :key="item.databaseTypeId"
-                               :label="item.databaseTypeName"
-                               :value="item.databaseTypeId"
-                               :disabled="item.disabled">
-                    </el-option>
-                </el-select>
+            <el-form-item label="数据目录名称" prop="dataCatalogName">
+                <el-input v-model="form.dataCatalogName"></el-input>
             </el-form-item>
-            <el-form-item label="连接名称" prop="connectionName">
-                <el-input v-model="form.connectionName"></el-input>
+            <el-form-item label="父级ID" prop="parentId">
+                <el-input v-model="form.parentId"></el-input>
             </el-form-item>
-            <el-form-item label="连接字符串" prop="connectionString">
-                <el-input type="textarea" :rows="5" v-model="form.connectionString"></el-input>
+            <el-form-item label="父级ID树" prop="parentIdTree">
+                <el-input v-model="form.parentIdTree"></el-input>
+            </el-form-item>
+            <el-form-item label="本级目录数据量" prop="dataCountSelf">
+                <el-input v-model.number="form.dataCountSelf"></el-input>
+            </el-form-item>
+            <el-form-item label="本级加子级的数据量" prop="dataCountTree">
+                <el-input v-model.number="form.dataCountTree"></el-input>
+            </el-form-item>
+            <el-form-item label="数据目录图片" prop="imageUrl">
+                <el-upload class="upload-demo"
+                           action="/api/dcsservicegroupdata/upload/"
+                           :on-preview="handlePreview"
+                           :on-remove="handleRemove"
+                           :file-list="imageUrl"
+                           :on-success="handleAvatarSuccess"
+                           multiple
+                           :limit="1"
+                           :on-exceed="handleExceed"
+                           list-type="picture">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                </el-upload>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -119,7 +130,6 @@
     })
 </script>
 <script>
-    let connectionId = "";
     new Vue({
         el: "#app",
         data: function () {
@@ -129,17 +139,45 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                imageUrl:[],
                 multipleSelection: [],//获取批量选择的数据
                 searchDataCatalogName: '',
+
                 form: {
-                  
+                    dataCatalogCode:'',
+                    dataCatalogName: '',
+                    parentId: '',
+                    parentIdTree: '',
+                    dataCountSelf: '',
+                    dataCountTree: '',
+                    imageUrl:''
                 },
                 rules: {
-                    connectionName: [
-                        { required: true, message: '连接名称不能为空', trigger: 'blur' },
+                    dataCatalogCode: [
+                        { required: true, message: '数据目录代码不能为空', trigger: 'blur' },
                     ],
-                    connectionString: [
-                        { required: true, message: '连接字符串不能为空', trigger: 'blur' }
+                    dataCatalogName: [
+                        { required: true, message: '数据目录名称不能为空', trigger: 'blur' }
+                    ],
+                    parentId: [
+                        { required: true, message: '父级ID不能为空', trigger: 'blur' },
+                    ],
+                    parentIdTree: [
+                        { required: true, message: '父级ID树不能为空', trigger: 'blur' },
+                    ],
+                    dataCountSelf: [
+                        { required: true, message: '本级目录数据量不能为空', trigger: 'blur' } , {
+                            type: 'number',
+                            message: '本级目录数据量必须为数字',
+                            trigger: 'blur'
+                        }
+                    ],
+                    dataCountTree: [
+                        { required: true, message: '本级加子级的数据量不能为空', trigger: 'blur' }, {
+                            type: 'number',
+                            message: '本级加子级的数据量必须为数字',
+                            trigger: 'blur'
+                        }
                     ],
                 },
                 formLabelWidth: '160px',
@@ -166,9 +204,12 @@
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
                 vm.IsCreate = false
-                vm.dialogTitle = "编辑连接信息"
+                vm.dialogTitle = "编辑信息"
+                vm.imageUrl = [];
+                if (row.imageUrl != null && row.imageUrl != "") {
+                    vm.imageUrl = [{ 'name': `${row.imageUrl}`, 'url': `${row.imageUrl}` }];
+                }
                 vm.form = formdata;
-                connectionId = vm.form.connectionId;
                 vm.centerDialogVisible = true
             },
             handleDelete: function (index, row) {
@@ -176,13 +217,13 @@
                 //删除
 
                 //弹出确认框
-
-                this.$confirm('此操作将删除该连接信息, 是否继续?', '提示', {
+                console.log(row.dataCatalogId);
+                this.$confirm('此操作将删除该目录信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.delete('/api/DcsDataCatalog/' + row.connectionId)
+                    axios.delete('/api/DcsDataCatalog/' + row.dataCatalogId)
                         .then(function (response) {
                             if (!response.data.isSuccess) {
                                 vm.$message({ title: '失败', message: response.data.message, type: 'error' })
@@ -205,10 +246,12 @@
                 });
 
             },
+
             handleAdd: function () {
                 let vm = this
                 vm.IsCreate = true
                 vm.resetForm()
+                vm.imageUrl = [];
                 vm.dialogTitle = "添加信息"
                 vm.centerDialogVisible = true
                 //添加
@@ -225,7 +268,7 @@
                         let url = "/api/DcsDataCatalog";
                         let method = "POST";
                         if (vm.IsCreate != true) {
-                            url = `/api/DcsDataCatalog/${vm.form.connectionId}`;
+                            url = `/api/DcsDataCatalog/${vm.form.dataCatalogId}`;
                             method = "PUT";
                         }
                         axios({ url: url, method: method, data: vm.form })
@@ -251,7 +294,14 @@
             },
             resetForm() {
                 let vm = this;
-                vm.form.databaseTypeId = ''
+                    vm.form.dataCatalogCode = ''
+                    vm.form.dataCatalogName = ''
+                    vm.form.parentId = ''
+                    vm.form.parentIdTree = ''
+                    vm.form.dataCountSelf = ''
+                    vm.form.dataCountTree = ''
+                    vm.form.imageUrl = ''
+
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
@@ -278,7 +328,7 @@
                 }
                 let ids = '';
                 for (let i = 0; i < batchdatas.length; i++) {
-                    ids += `&ids=${batchdatas[i].connectionId}`;
+                    ids += `&ids=${batchdatas[i].dataCatalogId}`;
                 };
                 ids = ids.substring(1, ids.length)
 
@@ -309,7 +359,26 @@
                     });
                 });
                 console.log(this.multipleSelection);
-            }
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            handleExceed(files, imageUrl) {
+                this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + imageUrl.length} 个文件`);
+            },
+
+            handleAvatarSuccess(res, file) {
+                let vm = this;
+                vm.form.imageUrl = res.content.src;
+
+            },
+            beforeRemove(file, imageUrl) {
+
+                return this.$confirm(`确定移除 ${file.name}？`);
+            },
         },
         mounted: function () {
             let vm = this
