@@ -150,7 +150,16 @@
                         </el-select>
 
                     </el-form-item>
-
+                    <el-form-item label="所属数据目录：">
+                        <el-select v-model="form.dataCatlog" placeholder="请选择">
+                            <el-option v-for="item in dataCatlogName"
+                                       :key="item.dataCatalogId"
+                                       :label="item.dataCatalogName"
+                                       :value="item.dataCatalogId"
+                                       :disabled="item.disabled">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                 </el-form>
                 <div style="margin-left:220px">
                     <el-button v-on:click="dialogCancel()">取 消</el-button>
@@ -259,6 +268,16 @@
                     </el-option>
                 </el-select>
 
+            </el-form-item>
+            <el-form-item label="所属数据目录：">
+                <el-select v-model="addform.dataCatlog" placeholder="请选择">
+                    <el-option v-for="item in dataCatlogName"
+                               :key="item.dataCatalogId"
+                               :label="item.dataCatalogName"
+                               :value="item.dataCatalogId"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -409,6 +428,7 @@
                 valuetype: '',
                 valueuse:'',
                 databaseName: [],
+                dataCatlogName:[],
                 fieldtypes:[],
                 rules: {
                     dataSourceCode: [
@@ -583,12 +603,14 @@
                     connectionId: '',
                     dataSourceType: '',
                     dataSourceUse: '',
+                    dataCatlog:'',
 
                 },
                 addform: {
                     dataSourceCode: '',
                     dataSourceName: '',
                     connectionId: '',
+                    dataCatlog:'',
                     dataSourceType: '',
                     dataSourceUse: '',
                 },
@@ -666,12 +688,25 @@
                         console.log(error);
                     });
             },
+            getDcsDataCatalog: function () {
+                let vm = this;
+                axios.get('/api/SysDataSource/SelectDcsDataCatalog')
+                    .then(function (response) {
+                        console.log(response.data.content)
+                        vm.dataCatlogName = response.data.content; 
+                        vm.dataCatlogName.unshift({ dataCatalogName: '请选择', dataCatalogId: '' });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             handleEdit: function (index, row) {
                 //编辑
                 let vm = this
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
                 vm.getSelect();
+                vm.getDcsDataCatalog();
                 vm.dialogTitle = "编辑数据源基础和字段信息"
                 vm.form = formdata;
                 dataSourceId = vm.form.dataSourceId;
@@ -897,6 +932,7 @@
                 vm.adddialogTitle = "添加数据源";
                 vm.resetForm();
                 vm.getSelect();
+                vm.getDcsDataCatalog();
                 vm.addcenterDialogVisible = true;
             },
             batchDelete(){
@@ -972,7 +1008,8 @@
                 vm.addform.dataSourceName= '';
                 vm.addform.connectionId = '';
                 vm.addform.dataSourceType = '';
-                vm.addform.dataSourceUse= ''
+                vm.addform.dataSourceUse = ''
+                vm.addform.dataCatlog=''
             },
             resetFieldForm() {
                 let vm = this;

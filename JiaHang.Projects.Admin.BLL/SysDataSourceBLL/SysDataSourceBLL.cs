@@ -140,6 +140,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                             DataSourceUse = a.DatasourceUse,
                             ConnectionId = a.ConnectionId,
                             CreationDate = a.CreationDate,
+                            DataCatalogId=a.DataCatalogId,
                             CreateBy = a.CreatedBy,
                             ConnectionName = a_ifnull.ConnectionName,
                             DataBaseTypeId = a_ifnull.DatabaseTypeId,
@@ -151,7 +152,22 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             var data = query.Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
-
+        //查询目录信息ID和Name
+        public async Task<FuncResult> SelectDcsDataCatalog()
+        {
+            var query = from a in _context.DcsDataCatalog
+                        select new
+                        {
+                            DataCatalogId = a.DataCatalogId,
+                            DataCatalogName = a.DataCatalogName
+                        };
+            object data = null;
+            await Task.Run(() =>
+            {
+                data = query.ToList();
+            });
+            return new FuncResult() { IsSuccess = true, Content = data };
+        }
         /// <summary>
         /// 查询数据源的所有字段
         /// </summary>
@@ -276,6 +292,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
                 DatasourceType=model.DatasourceType,
                 DatasourceUse=model.DatasourceUse,
                 ConnectionId=model.ConnectionId,
+                DataCatalogId=model.DataCatalogId,
                 CreatedBy=userId,
                 CreationDate = DateTime.Now
             };
@@ -367,6 +384,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDataSourceBLL
             entity.DatasourceUse = model.DatasourceUse;
             entity.ConnectionId = model.ConnectionId;
             entity.LastUpdatedBy = currentUserId;
+            entity.DataCatalogId = model.DataCatalogId;
             entity.LastUpdateDate = DateTime.Now;
 
             _context.SysDatasourceInfo.Update(entity);

@@ -65,6 +65,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysConnection
             return await connectionServers.SelectDatabaseType();
 
         }
+        
+        
         /// <summary>
         /// 添加
         /// </summary>

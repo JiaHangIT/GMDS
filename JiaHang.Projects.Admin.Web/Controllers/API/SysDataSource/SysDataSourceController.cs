@@ -48,7 +48,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysDataSource
 
             return dataSourceServers.SelectDataSourceInfo(model);
         }
+        /// <summary>
+        /// 查询数据目录信息
+        /// </summary>
+        /// <returns></returns>
+        [Route("SelectDcsDataCatalog")]
+        [HttpGet]
+        public async Task<FuncResult> SelectDcsDataCatalog()
+        {
+            return await dataSourceServers.SelectDcsDataCatalog();
 
+        }
         /// <summary>
         /// 查询主表信息
         /// </summary>

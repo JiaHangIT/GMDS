@@ -97,9 +97,6 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
         /// <returns></returns>
         public async Task<FuncResult> SelectDatabaseType() {
             var query = from a in _context.SysDatabaseType
-                        where (
-                                a.DeleteFlag == 0
-                               )
                         select new
                         {
                             DatabaseTypeId = a.DatabaseTypeId,
