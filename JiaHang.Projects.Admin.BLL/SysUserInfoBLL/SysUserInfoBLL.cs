@@ -52,9 +52,9 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 User_Ower = UserOwerType.Kds,
                 Language_Code = e.LanguageCode,
 
-                Eff_Start_Date = e.EffStartDate.ToString("yyyy-MM-dd"),
-                Eff_End_Date = e.EffEndDate.ToString("yyyy-MM-dd"),
-                CreationDate = e.CreationDate.ToString("yyyy-MM-dd")
+                Eff_Start_Date = e.EffStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                Eff_End_Date = e.EffEndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                CreationDate = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
              return new FuncResult() { IsSuccess = true, Content = new { data, total } };

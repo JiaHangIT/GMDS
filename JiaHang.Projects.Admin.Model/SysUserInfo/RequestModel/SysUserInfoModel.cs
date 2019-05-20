@@ -52,12 +52,6 @@ namespace JiaHang.Projects.Admin.Model.SysUserInfo.RequestModel
         public string UserMobileNo { get; set; }
 
         /// <summary>
-        /// 用户系统归属(管理员：adm,领导层：led,kds报表用户:kds)
-        /// </summary>     
-        public UserOwerType UserOwer { get; set; }
-
-
-        /// <summary>
         /// 用户默认语言(zh-cn)
         /// </summary>
         [StringLength(30)]
