@@ -12,13 +12,10 @@
         padding: 15px;
         background-color: #fff;
     }
-    .aaa {
-    font-size:2px;
-    }
 </style>
 <div id="app">
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item label="数据源代码：" class="aaa">
+    <el-form :inline="true" >
+        <el-form-item label="数据源代码：">
             <el-input placeholder="数据源代码" v-model="searchDataSourceCode"></el-input>
         </el-form-item>
         <el-form-item label="数据源名称：" style="margin-left:18px">
