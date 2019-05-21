@@ -67,10 +67,10 @@
         <el-table-column label="数据源代码"
                          prop="dataSourceCode">
         </el-table-column>
-        <el-table-column label="数据源名称"
+        <el-table-column label="数据源名称" :show-overflow-tooltip="true"
                          prop="dataSourceName">
         </el-table-column>
-        <el-table-column label="数据源类型"
+        <el-table-column label="数据源类型" 
                          prop="dataSourceType">
         </el-table-column>
         <el-table-column label="数据源用途"
@@ -217,7 +217,7 @@
                 <div style="margin-left:220px">
 
                     <el-button type="primary" size="mini" v-on:click="addfield()">添加字段</el-button>
-                    <el-button type="danger" size="mini" v-on:click="deletebatchfield()">删除字段</el-button>
+                    <el-button type="danger" size="mini" v-on:click="deletebatchfield()">选中行删除</el-button>
                     <el-button size="mini" v-on:click="canclefield()">取消</el-button>
                 </div>
             </el-tab-pane>
@@ -703,6 +703,7 @@
             handleEdit: function (index, row) {
                 //编辑
                 let vm = this
+                console.log(row);
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
                 
@@ -710,7 +711,6 @@
                 vm.getDcsDataCatalog();
                 vm.dialogTitle = "编辑数据源基础和字段信息"
                 vm.form = formdata;
-                console.log(vm.form.dataCatalogId + vm.form.dataCatalogId)
                 dataSourceId = vm.form.dataSourceId;
                 vm.searchField();
                 vm.centerDialogVisible = true;
@@ -927,7 +927,10 @@
                     });
                 });
             },
-            canclefield: function () { },
+            canclefield: function () {
+                let vm = this;
+                vm.centerDialogVisible = false;
+            },
             dataSourceAdd: function () {
                 let vm = this;
                 //添加

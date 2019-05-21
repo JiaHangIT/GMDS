@@ -368,11 +368,12 @@
                 vm.$refs[formName].validate((valid) => {
                     if (valid) {
                         model = {
-                            helptypeid: vm.form.help_Type_Id,
-                            helptitle: vm.form.help_Title,
-                            helpcontent: vm.form.help_Content,
-                            importantflag: vm.form.important_Flag,
+                            HelpTypeId: vm.form.help_Type_Id,
+                            HelpTitle: vm.form.help_Title,
+                            HelpContent: vm.form.help_Content,
+                            ImportantFlag: vm.form.important_Flag == "否" ? 0 : 1,
                         };
+                        console.log(model);
                         let url = "/api/syshelpinfodata";
                         let method = "POST";
                         if (vm.IsCreate != true) {
