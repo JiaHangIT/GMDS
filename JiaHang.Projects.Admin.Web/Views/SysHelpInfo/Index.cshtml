@@ -196,8 +196,9 @@
                 ],
                 searchoptauditFlag: [
                     { value: '', label: '请选择' },
-                    { value: '1', label: '是' },
-                    { value: '0', label: '否' },
+                    { value: '1', label: '审核通过' },
+                    { value: '0', label: '审核不通过' },
+                    { value: '2', label: '未审核' },
                 ],
                 optImportantFlag: [
                     { value: '', label: '请选择' },
@@ -371,9 +372,9 @@
                             HelpTypeId: vm.form.help_Type_Id,
                             HelpTitle: vm.form.help_Title,
                             HelpContent: vm.form.help_Content,
-                            ImportantFlag: vm.form.important_Flag == "否" ? 0 : 1,
+                            ImportantFlag: vm.form.important_Flag,
                         };
-                        console.log(model);
+
                         let url = "/api/syshelpinfodata";
                         let method = "POST";
                         if (vm.IsCreate != true) {
