@@ -13,4 +13,14 @@ namespace JiaHang.Projects.Admin.Model.SysJobInfo.RequestModel
         public string Job_Type { get; set; }
         
     }
+
+    public class SearchSysJobInfo
+    {
+        public int pageSize { get; set; }
+        public int pageNum { get; set; }
+        public string Job_Code { get; set; }
+        public string Job_Name { get; set; }
+        public string Job_Type { get; set; }
+
+    }
 }

@@ -87,7 +87,7 @@ namespace JiaHang.Projects.Admin.BLL.SysErrorCodeInfoBLL
                         && (a.DeleteFlag != 1)
                         ));
                 int total = query.Count();
-                var data = query.Skip(model.PageNum * model.PageSize).Take(model.PageSize);
+                var data = query.Skip(model.PageNum * model.PageSize).Take(model.PageSize).OrderByDescending(o=>o.CreationDate);
                 //var data = query.Select(e => new
                 //{
 
