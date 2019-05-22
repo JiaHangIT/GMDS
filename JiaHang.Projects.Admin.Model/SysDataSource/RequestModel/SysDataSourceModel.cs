@@ -19,5 +19,6 @@ namespace JiaHang.Projects.Admin.Model.SysDataSource.RequestModel
         public int DeleteFlag { get; set; }
         public DateTime DeleteDate { get; set; }
         public string DeleteBy { get; set; }
+        public string DataCatalogId { get; set; }
     }
 }

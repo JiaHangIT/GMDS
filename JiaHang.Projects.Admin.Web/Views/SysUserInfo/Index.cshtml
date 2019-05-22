@@ -11,6 +11,7 @@
     }
     .layui-row .layui-col-md4 {
         padding-right: 5%;
+        margin-top: 4px;
     }
 
     .layui-row {
@@ -25,27 +26,27 @@
     
     <div class="layui-form layui-form-pane" style="background-color:#F2F2F2;padding:15px;margin-top:6px;">
         <div class="layui-row">
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class=" layui-col-md4 layui-col-xs4">
                 <label class="layui-form-label">用户账号：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_user_account" autocomplete="off">
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class="  layui-col-md4 layui-col-xs4">
                 <label class="layui-form-label">用户名称：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_user_name" autocomplete="off">
                 </div>
             </div>
-            <div class=" layui-col-md6 layui-col-xs6">
+            @*<div class="  layui-col-md4 layui-col-xs4">
                 <label class="layui-form-label">组织机构：</label>
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="search_demoReload" autocomplete="off">
                 </div>
-            </div>            
+            </div>*@            
         @*</div>
         <div class="layui-row">*@
-            <div class=" layui-col-md6 layui-col-xs6">
+            <div class="  layui-col-md4 layui-col-xs4">
                 <label class="layui-form-label"> 是否有效：</label>
                 <div class="layui-inline">
                     <select name="interest" id="search_user_is_ldap" lay-filter="aihao">
@@ -236,7 +237,7 @@
                 { type: 'checkbox', fixed: 'left', width: 40 }
                 , { title:'操作', align: 'center', toolbar: '#barDemo', fixed: 'left', width: 140 }//这里的toolbar值是模板元素的选择器
 
-                , { field: 'user_Id', width: 80, title: 'ID', sort: true,fixed: 'left'  }
+
                 , { field: 'user_Account', title: '用户账号' }
                 , { field: 'user_Name', title: '用户名', sort: true }
                 //, { field: 'user_Org_Id', title: '用户组别', }
@@ -248,7 +249,7 @@
                 , { field: 'user_Is_Lock', title: '是否锁定', sort: true }
                 //, { field: 'eff_Start_Date', title: '有效开始日期', sort: true }
                 //, { field: 'eff_End_Date', title: '有效结束日期', sort: true }
-                , { field: 'creation_Date', title: '创建时间', sort: true }
+                , { field: 'creationDate', title: '创建时间', sort: true }
             ]]
             , id: 'testReload'
             , page: true,

@@ -35,6 +35,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                          join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId
                           into a_temp
                          from a_ifnull in a_temp.DefaultIfEmpty()
+                         orderby a.CreationDate descending
                          select new
                          {
                              ConnectionId = a.ConnectionId,
@@ -73,6 +74,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                          join b in _context.SysDatabaseType on a.DatabaseTypeId equals b.DatabaseTypeId
                           into a_temp
                          from a_ifnull in a_temp.DefaultIfEmpty()
+                         orderby a.CreationDate descending
                          select new
                          {
                              ConnectionId = a.ConnectionId,
@@ -95,9 +97,6 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
         /// <returns></returns>
         public async Task<FuncResult> SelectDatabaseType() {
             var query = from a in _context.SysDatabaseType
-                        where (
-                                a.DeleteFlag == 0
-                               )
                         select new
                         {
                             DatabaseTypeId = a.DatabaseTypeId,

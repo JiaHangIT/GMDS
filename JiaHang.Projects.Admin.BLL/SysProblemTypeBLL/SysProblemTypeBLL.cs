@@ -40,6 +40,25 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemTypeBLL
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string problemTypeName)
+        {
+            IOrderedQueryable<SysProblemType> query = _context.SysProblemType.
+                Where(a =>
+                (
+                (string.IsNullOrWhiteSpace(problemTypeName) || a.ProblemTypeName.Contains(problemTypeName))
+                )
+                ).OrderByDescending(e => e.CreationDate);
+            int total = query.Count();
+            var data = query.Skip(pageSize * currentPage).Take(pageSize).ToList().Select(e => new
+            {
+
+                Problem_Type_Id = e.ProblemTypeId,
+                Problem_Type_Name = e.ProblemTypeName,
+                Creation_Date = e.CreationDate
+
+            });
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

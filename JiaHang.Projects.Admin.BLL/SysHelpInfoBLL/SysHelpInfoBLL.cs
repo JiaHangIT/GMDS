@@ -31,6 +31,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                         a.HelpTypeId equals b.HelpTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
                         where ((string.IsNullOrWhiteSpace(model.Help_Type_Id) || a_ifnull.HelpTypeId.Contains(model.Help_Type_Id))
                                 && (string.IsNullOrWhiteSpace(model.Help_Title) || a_ifnull.HelpTitle.Contains(model.Help_Title))
                                 && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
@@ -50,6 +51,35 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
                         };
             int total = query.Count();
             var data = query.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string helpTypeId, string helpTitle, int? auditFlag, int? importantFlag)
+        {
+            var query = from a in _context.SysHelpType
+                        join b in _context.SysHelpInfo on
+                        a.HelpTypeId equals b.HelpTypeId
+                        into a_temp
+                        from a_ifnull in a_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
+                        where ((string.IsNullOrWhiteSpace(helpTypeId) || a_ifnull.HelpTypeId.Contains(helpTypeId))
+                                && (string.IsNullOrWhiteSpace(helpTitle) || a_ifnull.HelpTitle.Contains(helpTitle))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(auditFlag)) || a_ifnull.AuditFlag == (auditFlag))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(importantFlag)) || a_ifnull.ImportantFlag == (importantFlag))
+                        )
+                        select new
+                        {
+                            Help_Id = a_ifnull.HelpId,
+                            Help_Type_Id = a_ifnull.HelpTypeId,
+                            Help_Title = a_ifnull.HelpTitle,
+                            Important_Flag = a_ifnull.ImportantFlag > 0 ? "是" : "否",
+                            Audit_Flag = a_ifnull.AuditFlag ,
+                            Audited_Date = a_ifnull.AuditedDate,
+                            Audited_By = a_ifnull.AuditedBy,
+                            help_Content = a_ifnull.HelpContent,
+                            help_Type_Name = a.HelpTypeName,
+                        };
+            int total = query.Count();
+            var data = query.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         /// <summary>

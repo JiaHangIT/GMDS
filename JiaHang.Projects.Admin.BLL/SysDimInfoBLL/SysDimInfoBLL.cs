@@ -66,6 +66,48 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
             }
 
         }
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string dimName, string createdBy)
+        {
+            try
+            {
+
+
+                int total = _context.SysDimInfo.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(dimName) || a.DimName.Contains(dimName))
+                        && (string.IsNullOrWhiteSpace(createdBy) || a.CreatedBy == (createdBy))
+                        && (a.DeleteFlag != 1)
+                        )).Count();
+
+                var result = _context.SysDimInfo.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(dimName) || a.DimName.Contains(dimName))
+                        && (string.IsNullOrWhiteSpace(createdBy) || a.CreatedBy == (createdBy))
+                        && (a.DeleteFlag != 1)
+                        )).Skip(pageSize * currentPage).Take(pageSize).ToList().OrderByDescending(a => a.CreationDate);
+                var data = result.Select(e => new
+                {
+                    dimId = e.DimId,
+                    dimTypecode = e.DimTypeCode,
+                    dimName = e.DimName ?? "",
+                    dimValue = e.DimValue ?? "",
+                    creationDate = e.CreationDate != null ? Convert.ToDateTime(e.CreationDate).ToString("yyyy-MM-dd") : "",
+                    createdBy = e.CreatedBy ?? "",
+                    lastUpdateDate = e.LastUpdateDate != null ? Convert.ToDateTime(e.LastUpdateDate).ToString("yyyy-MM-dd") : "",
+                    lastUpdatedBy = e.LastUpdatedBy ?? "",
+
+                });
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+
+        }
         /// <summary>
         /// 查询单个
         /// </summary>

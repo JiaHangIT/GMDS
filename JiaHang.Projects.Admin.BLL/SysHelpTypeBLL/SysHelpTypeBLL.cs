@@ -43,6 +43,26 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
             });
            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string helptypename)
+        {
+            IOrderedQueryable<SysHelpType> query = _context.SysHelpType.
+                Where(a =>
+                (
+                (string.IsNullOrWhiteSpace(helptypename) || a.HelpTypeName.Contains(helptypename))
+                )
+                ).OrderByDescending(e => e.CreationDate);
+            int total = query.Count();
+            var data = query.Skip(pageSize * currentPage).Take(pageSize).ToList().Select(e => new
+            {
+
+                Help_Type_Id = e.HelpTypeId,
+                Help_Type_Name = e.HelpTypeName,
+                Creation_Date = e.CreationDate
+                //e.HelpTypeId,
+                //e.HelpTypeName
+            });
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

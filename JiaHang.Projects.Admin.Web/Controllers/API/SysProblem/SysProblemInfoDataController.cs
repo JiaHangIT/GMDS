@@ -65,6 +65,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysProblem
             return await ProblemInfoService.Add(model, HttpContext.CurrentUser(cache).Id);
 
         }
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElemeSelect(int pageSize, int currentPage, string problemTypeId, string problemTitle, int? auditFlag)
+        {
+            currentPage--;
+            return ProblemInfoService.ElemeSelect(pageSize, currentPage, problemTypeId, problemTitle, auditFlag);
+        }
         /// <summary>
         /// 修改
         /// </summary>
