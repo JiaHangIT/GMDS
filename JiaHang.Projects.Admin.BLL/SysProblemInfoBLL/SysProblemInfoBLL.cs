@@ -70,11 +70,11 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemInfoBLL
                         a.ProblemTypeId equals b.ProblemTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
-                        orderby a.CreationDate descending
                         where ((string.IsNullOrWhiteSpace(model.Problem_Type_Id) || a_ifnull.ProblemTypeId.Contains(model.Problem_Type_Id))
                                && (string.IsNullOrWhiteSpace(model.Problem_Title) || a_ifnull.ProblemTitle.Contains(model.Problem_Title))
                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
                         )
+                        orderby a.CreationDate descending
                         select new {
                             Problem_Id = a_ifnull.ProblemId,
                             Problem_Type_Id = a_ifnull.ProblemTypeId,
