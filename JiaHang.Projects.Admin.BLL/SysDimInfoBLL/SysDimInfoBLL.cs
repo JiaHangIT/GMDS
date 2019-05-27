@@ -86,7 +86,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimInfoBLL
                         (string.IsNullOrWhiteSpace(dimName) || a.DimName.Contains(dimName))
                         && (string.IsNullOrWhiteSpace(createdBy) || a.CreatedBy == (createdBy))
                         && (a.DeleteFlag != 1)
-                        )).Skip(pageSize * currentPage).Take(pageSize).ToList().OrderByDescending(a => a.CreationDate);
+                        )).OrderByDescending(a => a.CreationDate).Skip(pageSize * currentPage).Take(pageSize).ToList();
                 var data = result.Select(e => new
                 {
                     dimId = e.DimId,

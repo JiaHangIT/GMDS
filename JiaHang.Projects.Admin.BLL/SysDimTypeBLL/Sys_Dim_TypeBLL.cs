@@ -73,7 +73,6 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
                         (
                         (string.IsNullOrWhiteSpace(dimTypeName) || a.DimTypeName.Contains(dimTypeName))
                         && (string.IsNullOrWhiteSpace(creationBy) || a.CreatedBy == (creationBy))
-                        && (a.DeleteFlag != 1)
 
                         )).Count();
 
@@ -82,8 +81,7 @@ namespace JiaHang.Projects.Admin.BLL.SysDimTypeBLL
                         (
                         (string.IsNullOrWhiteSpace(dimTypeName) || a.DimTypeName.Contains(dimTypeName))
                         && (string.IsNullOrWhiteSpace(creationBy) || a.CreatedBy == (creationBy))
-                        && (a.DeleteFlag != 1)
-                        )).Skip(pageSize * currentPage).Take(pageSize).ToList();
+                        )).OrderByDescending(a => a.CreationDate).Skip(pageSize * currentPage).Take(pageSize).ToList();
                 var data = result.Select(e => new
                 {
                     dimTypecode = e.DimTypeCode,
