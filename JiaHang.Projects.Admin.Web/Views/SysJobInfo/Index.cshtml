@@ -1,807 +1,854 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 <style>
-
-
-    .layui-layer-shade {
+    .v-modal {
         display: none;
     }
 
-    .layui-select-title input {
-        width: 180px;
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
     }
+
+    .customWidth {
+        width: 90%;
+    }
+
+    .abow_dialog {
+        display: flex;
+        justify-content: center;
+        align-items: Center;
+        overflow: hidden;
+    }
+
+        .abow_dialog .el-dialog {
+            margin: 0 auto !important;
+            height: 90%;
+            overflow: auto;
+        }
+
+            .abow_dialog .el-dialog.el-dialog__body {
+                position: absolute;
+                left: 0;
+                top: 54px;
+                bottom: 0;
+                right: 0;
+                padding: 0;
+                z-index: 1;
+                overflow: hidden;
+                overflow-y: auto;
+            }
 </style>
-<style type="text/css">
-    #myDiv {
-        display: none;
-    }
-    
-    #loopDiv {
-        display: none;
-    }
-    #frequencyDiv {
-        display: none;
-    }
-    #weekDiv {
-        display: none;
-    }
-    
-</style>
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="调度任务代码">
+            <el-input placeholder="调度任务代码" v-model="searchForm.Job_Code"></el-input>
+        </el-form-item>
+        <el-form-item label="调度任务名称">
+            <el-input placeholder="调度任务名称" v-model="searchForm.Job_NAME"></el-input>
+        </el-form-item>
+        <el-form-item label="调度类型">
+            <el-select v-model="searchForm.Job_TYPE">
+                <el-option v-for="item in SchedulingMode" v-key="item.key" :label="item.value" :value="item.key"></el-option>
+            </el-select>
+            @*<el-input placeholder="调度类型" v-model="searchForm.Job_TYPE"></el-input>*@
+        </el-form-item>
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="handleAdd">添加</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="danger" @@click="batchDelete">批量删除</el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              v-loading="loading"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @@selection-change="handleSelectionChange">
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
+        <el-table-column label="调度任务代码"
+                         prop="jobCode">
+        </el-table-column>
+        <el-table-column label="调度任务名称"
+                         prop="jobName">
+        </el-table-column>
+        <el-table-column label="调度任务类型"
+                         prop="jobType">
+            <template slot-scope="scope">
+                <p v-if="scope.row.jobType==='0'">手动调度</p>
+                <p v-else-if="scope.row.jobType==='1'">调度一次</p>
+                <p v-else-if="scope.row.jobType==='2'">循环调度</p>
+            </template>
+        </el-table-column>
+        <el-table-column label="是否有效"
+                         prop="enableFlag">
+            <template slot-scope="scope">
+                <p v-if="scope.row.enableFlag===0">否</p>
+                <p v-else-if="scope.row.enableFlag===1">是</p>
+            </template>
+        </el-table-column>
+
+        <el-table-column label="操作">
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 
 
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="searchForm.pageNum"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="searchForm.pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
 
-<div>
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               customClass="customWidth"
+               class="abow_dialog"
+               center>
+        <el-form :label-position="labelPosition" :inline="true" class="demo-form-inline" :model="form" :rules="rules" ref="form">
+            <el-row>
+                <el-form-item label="调度代码" prop="JobCode">
+                    <el-input v-model="form.jobCode" suffix-icon="el-icon-edit-outline"></el-input>
+                </el-form-item>
+                <el-form-item label="调度名称" prop="JobName">
+                    <el-input v-model="form.jobName" suffix-icon="el-icon-edit-outline"></el-input>
+                </el-form-item>
+            </el-row>
+            <el-row>
+                <el-form-item label="调度方式" prop="JobType">
+                    <el-select v-model="form.jobType" @@change="schedulingchange">
+                        <el-option v-for="item in SchedulingMode"
+                                   v-key="item.key"
+                                   :label="item.value"
+                                   :value="item.key"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="是否启用" prop="EnableFlag">
+                    <el-select v-model="form.enableFlag">
+                        <el-option v-for="item in Start"
+                                   v-key="item.key"
+                                   :label="item.value"
+                                   :value="item.key"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-row>
+            <el-row>
+                <el-label>调度说明</el-label>
+            </el-row>
+            <el-row>
+                <el-input type="textarea"
+                          v-rows="2"
+                          placeholder="请输入内容"
+                          style="width:70%"
+                          v-model="form.jobDesc"></el-input>
+            </el-row>
 
-    <div class="layui-form" style="background-color:#F2F2F2;padding:30px 20px;margin-top:20px;">
-        <div class="layui-form-item">
-            调度任务代码：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchJOB_CODE" id="searchJOB_CODE" autocomplete="off">
-            </div>
-            调度任务名称：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchJOB_Name" id="searchJOB_Name" autocomplete="off">
-            </div>
-            调度类型：
-            <div class="layui-inline">
-                <input class="layui-input" name="searchJOB_TYPE" id="searchJOB_TYPE" autocomplete="off">
-            </div>
+            <template v-if="SchedulingOnce">
+                <el-row style="margin-top:25px">
+                    <el-label>调度一次</el-label>
+                </el-row>
+                <el-row>
 
-            @*<div class="layui-inline">
-                    <label class="layui-form-label">审核时间</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="searchAuditedDate" id="searchAuditedDate" autocomplete="off" class="layui-input" lay-verify="date">
+                    <el-form-item label="日期时间" prop="OneTimesDate">
+                        <el-date-picker v-model="form.oneTimesDate"
+                                        type="date"
+                                        placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>
+                </el-row>
+            </template>
+            <template v-if="SchedulingManual">
 
-                    </div>
-                </div>*@
-            <button class="layui-btn layui-btn-warm" data-type="search">条件查询</button>
-            <button class="layui-btn" data-type="showGenerateLayer" style="width:120px">新增任务</button>
+            </template>
+            <template v-if="SchedulingCircle">
+                <el-row style="margin-top:25px">
+                    <el-label>频率</el-label>
+                </el-row>
+                <el-form-item label="执行" prop="" style="margin:0 30px 0 30px">
+                    <el-select v-model="form.cycleFrequeceType" @@change="ratechange">
+                        <el-option v-for="item in Rate"
+                                   v-key="item"
+                                   :label="item"
+                                   :value="item"></el-option>
+                    </el-select>
+                </el-form-item>
+                <div v-if="EveryWeek">
+                    <el-form-item label="执行日" prop="" style="margin-left:32px">
+                        <el-checkbox-group v-model="CheckedExecDay">
+                            <el-checkbox v-for="item in ExecDay"
+                                         v-value="item.key"
+                                         :label="item.value"
+                                         :key="item.key"
+                                         v-model="item.checked">
+                            </el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </div>
+
+                <div v-if="EveryMonth">
+
+                    <el-row v-if="EveryMonthOnce" style="margin-left:43px">
+                        <el-form-item label="第">
+                            <el-input v-model="form.cycleMonthDaytimes" :disabled="EveryMonthOnceChecked" suffix-icon="el-icon-edit-outline"></el-input>
+                        </el-form-item>
+                        <el-label>@*天（写整数，多项用"，"分开，如：1，2，3）*@</el-label>
+                        <el-form-item label="天（写整数，多项用'，'分开，如：1，2，3）">
+                            <el-radio v-model="EveryMonthChecked" label="1" @@change="everymonthradiochange">&nbsp;</el-radio>
+                        </el-form-item>
+
+                    </el-row>
+                    <el-row v-if="EveryMonthGap">
+                        <el-form-item label="执行间隔">
+                            <el-select v-model="form.cycleMonthWeekType" :disabled="EveryMonthGapChecked">
+                                <el-option v-for="item in Ths"
+                                           v-key="item.key"
+                                           :label="item.value"
+                                           :value="item.key">
+
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-select v-model="form.cycleMonthWeekNumber" :disabled="EveryMonthGapChecked">
+                                <el-option v-for="item in ExecDay"
+                                           v-key="item.key"
+                                           :label="item.value"
+                                           :value="item.key">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-radio v-model="EveryMonthChecked" label="2" @@change="everymonthradiochange">&nbsp;</el-radio>
+                        </el-form-item>
+                    </el-row>
+                </div>
+
+
+                <div v-if="EveryDay">
+                    <el-row style="margin-top:25px">
+                        <el-label>每天频率</el-label>
+                    </el-row>
+                    <el-row v-if="EveryDayOnce">
+                        <el-form-item label="执行一次">
+                            <el-time-picker v-model="form.cycleDayOnetimesTime"
+                                            :disabled="EveryDayOnceChecked"
+                                            placeholder="任意时间点">
+                            </el-time-picker>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-radio v-model="EveryDayChecked" label="1" @@change="radiochange">&nbsp;</el-radio>
+                        </el-form-item>
+
+                    </el-row>
+                    <el-row v-if="EveryDayGap">
+                        <el-form-item label="执行间隔">
+                            <el-input v-model="form.cycleDayFrequeceType" :disabled="EveryDayGapChecked" suffix-icon="el-icon-edit-outline"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-radio v-model="EveryDayChecked" label="2" @@change="radiochange">&nbsp;</el-radio>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-select v-model="form.cycleDayIntervalType" :disabled="EveryDayGapChecked">
+                                <el-option v-for="execute in ExecuteGap" :label="execute" :value="execute"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-row>
+                </div>
+
+                <el-row style="margin-top:25px">
+                    <el-label>持续时间</el-label>
+                </el-row>
+                <el-row>
+                    <el-form-item label="执行开始">
+                        <el-date-picker v-model="form.cycleStartDate"
+                                        type="date"
+                                        placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>
+
+                    <el-form-item label="执行结束" style="margin-left:10px">
+                        <el-date-picker v-model="form.cycleEndDate"
+                                        type="date"
+                                        placeholder="选择日期"
+                                        suffix-icon="el-icon-edit-outline">
+                        </el-date-picker>
+                    </el-form-item>
+
+                </el-row>
+            </template>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
         </div>
-        @*<div class="layui-form-item" style="margin-top:30px;">
+    </el-dialog>
 
-                <button class="layui-btn" data-type="showGenerateLayer">新增产品</button>
-                <button class="layui-btn layui-btn-danger" data-type="getCheckData">选中行删除</button>
-            </div>*@
-    </div>
-    <table class="layui-hide" id="test" lay-filter="sysuser"> </table>
+
 </div>
-<div id="generate_layer" style="display:none; padding:40px;">
-    <div class="layui-form layui-form-pane" action="" lay-filter="generate-form">
-        <div class="layui-form-item">
-
-            <div class="layui-inline">
-                <label class="layui-form-label">调度代码</label>
-                <div class="layui-input-block">
-                    <input type="text" name="JobCode" id="JobCode" autocomplete="off" placeholder="错误代码代码" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">调度名称</label>
-                <div class="layui-input-block">
-                    <input type="text" name="JobName" id="JobName" autocomplete="off" placeholder="错误代码名称" class="layui-input">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-
-            <div class="layui-inline">
-                <label class="layui-form-label">调度方式</label>
-                <div class="layui-inline">
-                    <select name="JobType" id="JobType" @*lay-verify="required"*@ onchange="func()" lay-filter="pid">
-                        <option value="">请选择</option>
-                        <option value="0">手动调度</option>
-                        <option value="1">调度一次</option>
-                        <option value="2">循环调度</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">是否启用</label>
-                <div class="layui-inline">
-                    <select name="EnableFlag" id="EnableFlag" @*lay-verify="required"*@ lay-filter="xmFilter">
-                        <option value="">请选择</option>
-                        <option value="1">是</option>
-                        <option value="0">否</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">调度说明</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" name="JobDesc" id="JobDesc" class="layui-textarea"></textarea>
-                </div>
-            </div>
-
-        </div>
-        <div class="layui-form-item" id="myDiv">
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>调度一次</legend>
-            </fieldset>
-            <div class="layui-inline">
-                <label class="layui-form-label">日期时间</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="OneTimesDate" id="OneTimesDate" @*lay-verify="date"*@ placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-        
-        <div class="layui-form-item" id="loopDiv">
-
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>频率</legend>
-            </fieldset>
-            <div class="layui-inline">
-               
-                <label class="layui-form-label">执行</label>
-                <div class="layui-inline">
-                    <select name="CycleFrequeceType" id="CycleFrequeceType" @*lay-verify="required"*@ onchange="funcFq()" lay-filter="Fqid">
-                        <option value="EVERYDAY">每天</option>
-                        <option value="WEEK">每周</option>
-                        <option value="MONTH">每月</option>
-                    </select>
-                </div>
-            </div>
-            <div id="weekDiv">
-                <div class="layui-form-item">
-                    <div class="layui-inline">                      
-                        <label class="layui-form-label">执行日</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="CycleWeekEnabledMon" lay-skin="primary" title="星期一">
-                            <input type="checkbox" name="CycleWeekEnabledTue" lay-skin="primary" title="星期二">
-                            <input type="checkbox" name="CycleWeekEnabledWed" lay-skin="primary" title="星期三">
-                            <input type="checkbox" name="CycleWeekEnabledThu" lay-skin="primary" title="星期四">
-                            <input type="checkbox" name="CycleWeekEnabledFri" lay-skin="primary" title="星期五">
-                            <input type="checkbox" name="CycleWeekEnabledSat" lay-skin="primary" title="星期六">
-                            <input type="checkbox" name="CycleWeekEnabledSun" lay-skin="primary" title="星期天">
-                        </div>
-                    </div>
-                </div>
-                </div>
-                <div id="frequencyDiv">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <input type="radio" name="freq" id="freq" value="CycleMonthDaytimes"checked="" lay-filter="freq">
-                            <label class="layui-form-label">第</label>
-                            <div class="layui-input-inline">                                
-                                <input class="layui-input" name="CycleMonthDaytimes" id="CycleMonthDaytimes" autocomplete="off">
-                            </div><div class="layui-form-mid layui-word-aux">天（写整数，多项亩用"，"分开，如：1，2，3）</div>
-                        </div>
-                        <div class="layui-inline">
-                            <input type="radio" name="freq" id="freq"  value="CycleMonthWeekType"lay-filter="freq">
-                            <label class="layui-form-label">执行间隔</label>
-                            <div class="layui-input-inline" style="width:180px" id="cyc">
-                                <select name="CycleMonthWeekType" id="CycleMonthWeekType" @*lay-verify="required"*@ lay-filter="xmFilter">
-                                    <option value="">请选择</option>
-                                    <option value="第一周">第一个</option>
-                                    <option value="第二周">第二个</option>
-                                    <option value="第三周">第三个</option>
-                                    <option value="第四周">第四个</option>
-                                </select>
-                            </div>
-                            <div class="layui-inline">
-                                <select name="CycleMonthWeekNumber" id="CycleMonthWeekNumber" @*lay-verify="required"*@ lay-filter="xmFilter">
-                                    <option value="">星期</option>
-                                    <option value="1">星期一</option>
-                                    <option value="2">星期二</option>
-                                    <option value="3">星期三</option>
-                                    <option value="4">星期四</option>
-                                    <option value="5">星期五</option>
-                                    <option value="6">星期六</option>
-                                    <option value="7">星期天</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend>每天频率</legend>
-                </fieldset>
-                <div class="layui-inline">
-                    <input type="radio" name="loop" id="loop" value="CycleDayOnetimesTime" checked="" lay-filter="loop">
-                    <label class="layui-form-label">执行一次</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="CycleDayOnetimesTime" id="CycleDayOnetimesTime" @*lay-verify="date"*@ placeholder=" " autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <input type="radio"  name="loop" id="loop" value="CycleDayFrequeceType" lay-filter="loop" >
-                    <label class="layui-form-label">执行间隔</label>
-                    <div class="layui-input-inline">
-                        <input class="layui-input" name="CycleDayFrequeceType" id="CycleDayFrequeceType" autocomplete="off">
-                    </div>
-                    <div class="layui-inline">
-                        <select name="CycleDayIntervalType" id="CycleDayIntervalType" @*lay-verify="required"*@ lay-filter="xmFilter">
-                            <option value="">小时</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                            <option value="24">24</option>
-                        </select>
-                    </div>
-                </div>
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend>持续时间</legend>
-                </fieldset>
-                <div class="layui-inline">
-                    <label class="layui-form-label">执行开始时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="CycleStartDate" id="CycleStartDate" @*lay-verify="date"*@ placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">执行结束时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="CycleEndDate" id="CycleEndDate" @*lay-verify="date"*@ placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-            </div>
-        <div class="layui-form-item">
-            <button class="layui-btn" data-type="generate" id="generate_btn" lay-submit lay-filter="submit">立即创建</button>
-            <button class="layui-btn layui-layer-btn1" lay-filter="demo2" data-type="closeGenerateLayer">取消</button>
-        </div>
-    </div>
-</div>
-
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    @*<a class="layui-btn layui-btn-xs" lay-event="examine">审核</a>*@
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
 </script>
 <script>
-    layui.use(['table', 'element', 'layer', 'form', 'laydate'], function () {
-        var table = layui.table;
-        var element = layui.element;
-        var layer = layui.layer;
-        var form = layui.form;
-        var laydate = layui.laydate;
-        var generateLayer_index = 0;
-        var layType = true;//true 新增  false 编辑
-        var store_id = "";
-        //日期
-        laydate.render({
-            elem: '#searchAuditedDate'
-        });
-        laydate.render({
-            elem: '#stCloseDate'
-        });
-        laydate.render({
-            elem: '#OneTimesDate'
-        });
-        laydate.render({
-            elem: '#CycleDayOnetimesTime'
-            , type: 'time'
-        });
-        laydate.render({
-            elem: '#CycleEndDate'
-        });
-        laydate.render({
-            elem: '#CycleStartDate'
-        });
-        table.render({
-            elem: '#test'
-            , url: '/api/SysJobInfo/search/'
-            , contentType: 'application/json'
-            , method: 'post'
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "status": res.isSuccess,
-                    "code": res.isSuccess == true ? 0 : 1, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.content.total, //解析数据长度
-                    "data": res.content.data //解析数据列表
-                };
+
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                loading: true,
+                SchedulingOnce: false,           //调度方式（调度一次）
+                SchedulingManual: false,         //调度方式（手动调度）
+                SchedulingCircle: false,         //高度方式（循环调度）
+                EveryDay: false,                 //执行频率 每天
+                EveryDayChecked:'1',             //每天的radio
+                EveryDayOnce: true,             //每天频率的方式（一次）
+                EveryDayOnceChecked: false,        //每天频率的方式（一次）是否可编辑
+                EveryDayGap: true,              //每天频率的方式（间隔）
+                EveryDayGapChecked: false,         //每天频率的方式（间隔）是否可编辑
+                EveryWeek: false,                //执行频率  每周
+                EveryMonthChecked: '1',           //每月的radio
+                EveryMonth: false,               //执行频率  每月
+                EveryMonthOnce: true,             //每月频率的方式（一次）
+                EveryMonthOnceChecked: false,             //每月频率的方式（一次）可编辑
+                EveryMonthGap: true,              //每月频率的方式（间隔）
+                EveryMonthGapChecked: false,              //每月频率的方式（间隔）可编辑
+                centerDialogVisible: false,
+
+                total: 0,
+                multipleSelection: [],//获取批量选择的数据
+
+                SchedulingMode: [{ key: '0', value: '手动调度' }, { key: '1', value: '调度一次' }, { key: '2', value: '循环调度' } ],
+                Start: [{ key: 0, value: '否' }, { key: 1, value: '是' }],
+                Rate: ['每天', '每周', '每月'],
+                ExecuteGap:['分钟','小时'],//执行间隔单位
+                Ths: [{ key: '1', value: '第一个' },
+                    { key: '2', value: '第二个' },
+                    { key: '3', value: '第三个' },
+                    { key: '4', value: '第四个' },],
+                CheckedExecDay: [],
+                ExecDay: [{ key: 1, value: '周一' },
+                    { key: 2, value: '周二' },
+                    { key: 3, value: '周三' },
+                    { key: 4, value: '周四' },
+                    { key: 5, value: '周五' },
+                    { key: 6, value: '周六' },
+                    { key: 7, value: '周天' },],
+
+                form: {
+                    createdBy: '',
+                    creationDate: null,
+                    cycleDayFrequeceType: '',
+                    cycleDayIntervalNumber: null,
+                    cycleDayIntervalType: '',
+                    cycleDayOnetimesTime: '',
+                    cycleEndDate: null,
+                    cycleFrequeceType: '',
+                    cycleMonthDaytimes: '',
+                    cycleMonthFrequeceType: '',
+                    cycleMonthIntervalNumber: null,
+                    cycleMonthIntervalType: '',
+                    cycleMonthOnetimesTime: '',
+                    cycleMonthType: '',
+                    cycleMonthWeekNumber: '',
+                    cycleMonthWeekType: '',
+                    cycleStartDate: null,
+                    cycleWeekEnabledFri: '',
+                    cycleWeekEnabledMon: '',
+                    cycleWeekEnabledSat: '',
+                    cycleWeekEnabledSun: '',
+                    cycleWeekEnabledThu: '',
+                    cycleWeekEnabledTue: '',
+                    cycleWeekEnabledWed: '',
+                    cycleWeekFrequeceType: '',
+                    cycleWeekIntervalNumber: null,
+                    cycleWeekIntervalType: '',
+                    cycleWeekOnetimesTime: '',
+                    deleteBy: '',
+                    deleteDate: null,
+                    deleteFlag: 0,
+                    enableFlag: 0,
+                    jobCode: '',
+                    jobDesc: '',
+                    jobId: '',
+                    jobLastRuntime: null,
+                    jobName: '',
+                    jobType: '',
+                    lastUpdateDate: null,
+                    lastUpdatedBy: '',
+                    onetimesDate: null,
+                },
+                searchForm: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    Job_Code: '',
+                    Job_NAME: '',
+                    Job_TYPE: ''
+                },
+                rules: {
+                    serviceGroupCode: [
+                        { required: true, message: '编号不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    serviceGroupName: [
+                        { required: true, message: '名字不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ]
+
+
+                },
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
+                IsCreate: true,//是否新增
             }
-
-            , cols: [[
-                { type: 'checkbox', fixed: 'left' }
-
-                , { field: 'jobCode', title: '调度任务代码', sort: true }
-                , { field: 'jobName', width: 155, title: '调度任务名称' }
-                , { field: 'jobType', title: '调度任务类型' }
-                , { field: 'enableFiag', title: '是否有效', sort: true }
-                , { field: 'jobDesc', title: '任务描述', sort: true }
-                , { field: 'creationDate', title: '建立时间', sort: true }
-                , { field: 'createdBy', title: '建立人', sort: true }
-                , { field: 'jobLastRuntime', width: 132, title: '最后更新时间', sort: true }
-                , { field: 'LastUpdatedBy', width: 132, title: '最后更新人', sort: true }
-
-                //, { field: 'stCloseDate', title: '关店日期', sort: true }
-                //, { field: 'stTel', title: '电话', sort: true }
-                //, { field: 'stFax', title: '传真', sort: true }
-                //, { field: 'stSeat', title: '座位数', sort: true }
-                , { fixed: 'right', align: 'center', width: 187, toolbar: '#barDemo', fixed: 'right' } //这里的toolbar值是模板元素的选择器
-            ]]
-            , id: 'testReload'
-            , page: true,
-            text: {
-                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
-        });
-        table.on('checkbox(sysuser)', function (obj) {
-            console.log(obj)
-        });
-        //监听工具条
-        table.on('tool(sysuser)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'detail') {
-                layer.msg('Message_ID：' + data.jobId + ' 的查看操作');
-            } else if (obj.event === 'del') {
-                console.log("delete");
-                let confirm_title = "确认删除产品编号" + data.jobId + "的记录么";
-                layer.confirm(confirm_title, function (index) {
-                    layer.close(index);
-                    axios.delete('/api/SysJobInfo/' + data.jobId)
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-                            obj.del();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-
-                });
-            } else if (obj.event === 'edit') {
-                // layer.alert('编辑行：<br>' + JSON.stringify(data))
-                console.log(data);
-                store_id = data.jobId;
-                layType = false;
-                showLayer(data);
-            } else if (obj.event === 'examine') {
-                console.log("审核");
-                console.log(data.jobId);
-
-                let url = "/api/SysJobInfo/UpdateExamine";
-                let method = "POST";
-                let confirm_title = "错误名称为：【" + data.errorCodeName + "】";
-
-
-
-                layer.confirm(confirm_title, {
-                    btn: ['通过审核', '不通过审核', '取消'], btn3: function (index, layero) {
-
-                        layer.close(index);
-
-                    }
-
-
-                }, function (index, layero) {
-                    let model = {
-                        ErrorCodeId: data.jobId,
-                        AuditFlag: 1
-                    };
-                    axios({ url: url, method: method, data: model })
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                                tableReload(datatable);
-                            }
-
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }, function (index) {
-                    //alert("不通过");
-                    let model = {
-                        ErrorCodeId: data.jobId,
-                        AuditFlag: 0
-                    };
-                    axios({ url: url, method: method, data: model })
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                                tableReload(datatable);
-                            }
-
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }
-                );
-            }
-        });
-        var $ = layui.$, active = {
-            getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('testReload')
-                    , data = checkStatus.data;
-
-
-                layer.confirm("确认删除" + data.length + "条记录么", function (index) {
-                    layer.close(index);
-
-                    let Message_IDs = [];
-                    let parms = "?";
-                    for (let i = 0; i < data.length; i++) {
-                        Message_IDs.push(data[i].errorCodeId);
-                        parms += "Message_IDs=" + data[i].Message_ID + "&";
-                    }
-                    parms = parms.substring(0, parms.length - 1);
-                    //layer.alert(JSON.stringify(data));
-                    axios.delete("/api/SysJobInfo/batchdelete/" + parms)
-                        .then(function (response) {
-                            console.log(response);
-                            layer.msg(response.data.message);
-                            if (!response.data.isSuccess) {
-                                return;
-                            }
-
-                            //移除
-                            let tabledata = table.cache.testReload;
-                            //for (let i = 0; i < tabledata.length; i++) {
-                            //    for (let j = 0; j < ids.length; j++) {
-                            //        if (tabledata[i].user_Id == ids[j]) {
-                            //            tabledata.splice(i, 1);
-                            //        }
-                            //    }
-                            //}
-                            //console.log(tabledata);
-                            tableReload(tabledata);
-
-
-                        })
-                        .catch(function (error) {
-                            layer.msg("发生了预料之外的错误!");
-                            console.log(error);
-                        });
-                });
-
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                vm.loading = true
+                axios({ url: `/api/SysJobInfo/Search1`, method: 'post', async: false, data: vm.searchForm })
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                        vm.loading = false
+                    })
+                    .catch(function (error) {
+                        vm.loading = false
+                        console.log(error)
+                    });
 
             },
-            search: function () {
-                console.log('reload');
-                let pars = {
-                    //limit: 10,
-                    //page: 1,
-                    Job_Code: $("#searchJOB_CODE").val(),
-                    Job_Name: $("#searchJOB_Name").val(),
-                    Job_Type: $("#searchJOB_TYPE").val(),           
-                }
-                //执行重载
-                console.log(pars);
-                table.reload('testReload', {
-                    where: pars,
-                    contentType: 'application/json',
-                    method: 'post'
-                });
-            },
-            showGenerateLayer: function () {
-                console.log('show');
-                layType = true;
-                showLayer();
-            },
-            closeGenerateLayer: function () {
-                layer.close(generateLayer_index);
-            },
 
-        };
-
-        form.on('submit(submit)', function () {
-            console.log('save');
-            //alert($("#Message_ID").val());
-            var lCycleWeekEnabledMon = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-            var lCycleWeekEnabledTue = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-            var lCycleWeekEnabledWed = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-            var lCycleWeekEnabledThu = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-            var lCycleWeekEnabledFri = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-            var lCycleWeekEnabledSat = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-            var lCycleWeekEnabledSun = $("input:checkbox[name='CycleWeekEnabledMon']:checked").val();
-          
-            
-            let model = {
-                //ErrorCodeId: $("#ErrorCodeId").val(),
-                JobCode: $("#JobCode").val(),
-                JobName: $("#JobName").val(),
-                EnableFlag: $("#EnableFlag").val(),
-                JobType: $("#JobType").val(),
-                JobDesc: $("#JobDesc").val(),
-                JobLastRuntime: $("#JobLastRuntime").val(),
-                OnetimesDate: $("#OnetimesDate").val(),
-                CycleFrequeceType: $("#CycleFrequeceType").val(),
-                CycleStartDate: $("#CycleStartDate").val(),
-                CycleEndDate: $("#CycleEndDate").val(),
-                CycleDayFrequeceType: $("#CycleDayFrequeceType").val(),
-                CycleDayOnetimesTime: $("#CycleDayOnetimesTime").val(),
-                CycleDayIntervalType: $("#CycleDayIntervalType").val(),
-                CycleDayIntervalNumber: $("#CycleDayIntervalNumber").val(),
-                CycleWeekEnabledMon: lCycleWeekEnabledMon,
-                CycleWeekEnabledTue: lCycleWeekEnabledTue,
-                CycleWeekEnabledWed: lCycleWeekEnabledWed,
-                CycleWeekEnabledThu: lCycleWeekEnabledThu,
-                CycleWeekEnabledFri: lCycleWeekEnabledFri,
-                CycleWeekEnabledSat: lCycleWeekEnabledSat,
-                CycleWeekEnabledSun: lCycleWeekEnabledSun,
-                CycleWeekFrequeceType: $("#CycleWeekFrequeceType").val(),
-                CycleWeekOnetimesTime: $("#CycleWeekOnetimesTime").val(),
-                CycleWeekIntervalType: $("#CycleWeekIntervalType").val(),
-                CycleWeekIntervalNumber: $("#CycleWeekIntervalNumber").val(),
-                CycleMonthType: $("#CycleMonthType").val(),
-                CycleMonthDaytimes: $("#CycleMonthDaytimes").val(),
-                CycleMonthWeekType: $("#CycleMonthWeekType").val(),
-                CycleMonthWeekNumber: $("#CycleMonthWeekNumber").val(),
-                CycleMonthFrequeceType: $("#CycleMonthFrequeceType").val(),
-                CycleMonthOnetimesTime: $("#CycleMonthOnetimesTime").val(),
-                CycleMonthIntervalType: $("#CycleMonthIntervalType").val(),
-                CycleMonthIntervalNumber: $("#CycleMonthIntervalNumber").val(),
-              
-                //Audit_Flag: $("#colorName").val(),
-                //Audited_Date: $("#category").val(),
-                //Audited_By: $("#code").val(),
-                //Creation_Date: $("#name").val(),
-                //Creation_By: $("#price").val(),
-                //Last_Updata_Date: $("#cost").val(),
-                //Last_Updata_By: $("#colorName").val(),
-            };
-
-            console.log(model);
-            let url = "/api/SysJobInfo/add";
-            let method = "POST";
-            if (layType != true) {
-                url = "/api/SysJobInfo/" + store_id;
-                method = "PUT";
-            }
-            axios({ url: url, method: method, data: model })
-                .then(function (response) {
-                    console.log(response);
-                    layer.msg(response.data.message);
-                    if (!response.data.isSuccess) {
-                        return;
-                    }
-                    let datatable = table.cache.testReload;
-                    console.log(datatable);
-                    if (layType != true) {
-                        //修改
-                        for (let i = 0; i < datatable.length; i++) {
-                            if (datatable[i].Message_ID == response.data.content.Message_ID) {
-                                datatable.splice(i, 1, response.data.content);
+            schedulingchange: function () {
+                //调度方式选择事件
+                let vm = this;
+                let schedulingmode = vm.form.jobType;
+                try {
+                    if (schedulingmode) {
+                        switch (schedulingmode) {
+                            case '1':
+                                vm.SchedulingOnce = true;
+                                vm.SchedulingCircle = false;
                                 break;
-                            }
+                            case '0':
+                                vm.SchedulingOnce = false;
+                                vm.SchedulingCircle = false;
+                                break;
+                            case '2':
+                                vm.SchedulingCircle = true;
+                                vm.SchedulingOnce = false;
+                                break;
+                            default:
+                                break;
                         }
                     }
-                    else {
-                        //新增
-                        datatable.unshift(response.content)
-                    }
-                    tableReload(datatable)
-                    layer.close(generateLayer_index);
-                })
-                .catch(function (error) {
+                } catch (e) {
+                    console.log(e);
+                }
+            },
 
-                    layer.msg("发生了预料之外的错误!");
-                    console.log(error);
+            ratechange: function () {
+                //频率选择事件
+                let vm = this;
+                vm.EveryDay = true;
+                vm.EveryWeek = false;
+                vm.EveryMonth = false;
+                let ratevalue = vm.form.cycleFrequeceType;
+                try {
+                    switch (ratevalue) {
+                        case '每天':
+                            vm.EveryDay = true;
+                            break;
+                        case '每周':
+                            vm.EveryWeek = true;
+                            break;
+                        case '每月':
+                            vm.EveryMonth = true;
+                            break;
+                        default:
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            },
+
+            radiochange: function () {
+                //每日频率内的radio点击事件
+                let vm = this;
+                let checkedvalue = vm.EveryDayChecked;
+
+                vm.EveryDayOnceChecked = false;
+                vm.EveryDayGapChecked = false;
+                try {
+                    switch (checkedvalue) {
+                        case '1':
+                            vm.EveryDayGapChecked = true;
+                            break;
+                        case '2':
+                            vm.EveryDayOnceChecked = true;
+                            break;
+                        default:
+                    }
+                } catch (e) {
+                    vm.$message({ title: '异常', message: e, type: 'error' })
+                }
+
+            },
+
+            everymonthradiochange: function () {
+                //每月频率内的radio点击事件
+                let vm = this;
+                let checkedvalue = vm.EveryMonthChecked;
+
+                vm.EveryMonthOnceChecked = false;
+                vm.EveryMonthGapChecked = false;
+                try {
+                    switch (checkedvalue) {
+                        case '1':
+                            vm.EveryMonthGapChecked = true;
+                            break;
+                        case '2':
+                            vm.EveryMonthOnceChecked = true;
+                            break;
+                        default:
+                    }
+                } catch (e) {
+                    vm.$message({ title: '异常', message: e, type: 'error' })
+                }
+            },
+
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑调度信息"
+                vm.form = formdata;
+                vm.CheckedExecDay =
+                    [this.isvalue(vm.form.cycleWeekEnabledMon) == true ? '周一' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledTue) == true ? '周二' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledWed) == true ? '周三' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledThu) == true ? '周四' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledFri) == true ? '周五' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledSat) == true ? '周六' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledSun) == true ? '周天' : ''];
+
+
+
+                //根据调度方式展开（一）
+                vm.schedulingchange();
+                vm.ratechange();
+
+
+                vm.radiochange();
+                vm.everymonthradiochange();
+
+                console.log(formdata);
+
+                vm.centerDialogVisible = true
+            },
+
+            isvalue(obj) {
+                if (obj != null && obj != '' && obj != undefined) {
+                    return true;
+                }
+                return false;
+            },
+
+            handleDelete: function (index, row) {
+                let vm = this
+                //删除
+
+                //弹出确认框
+
+                this.$confirm('此操作将删除该调度信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysJobInfo/' + row.jobId)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
 
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        }),
-            $('.layui-btn').on('click', function () {
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
+            },
+
+            handleAdd: function () {
+                let vm = this;
+                vm.IsCreate = true;
+                vm.resetForm();
+                vm.dialogTitle = "添加调度信息";
+                vm.EveryDayChecked = '1';
+                vm.radiochange();
+                vm.EveryMonthChecked = '1';
+                vm.everymonthradiochange();
+                vm.centerDialogVisible = true;
+
+                //添加
+            },
+
+            dialogCancel: function () {
+                let vm = this;
+
+                vm.centerDialogVisible = false
+            },
+
+            dialogSave: function (formName) {
+                let vm = this;
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/SysJobInfo/add";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/SysJobInfo/${vm.form.jobId}`;
+                            method = "PUT";
+                        }
+
+                        @* CycleWeekEnabledMon
+                        CycleWeekEnabledTue
+                        CycleWeekEnabledWed
+                        CycleWeekEnabledThu
+                        CycleWeekEnabledFri
+                        CycleWeekEnabledSat
+                        CycleWeekEnabledSun *@
+
+                        let checkeddays = vm.CheckedExecDay;
+                        if (vm.CheckedExecDay.length > 0) {
+                            vm.form.cycleWeekEnabledMon = '';
+                            vm.form.cycleWeekEnabledTue = '';
+                            vm.form.cycleWeekEnabledWed = '';
+                            vm.form.cycleWeekEnabledThu = '';
+                            vm.form.cycleWeekEnabledFri = '';
+                            vm.form.cycleWeekEnabledSat = '';
+                            vm.form.cycleWeekEnabledSun = '';
+                            $.each(vm.CheckedExecDay, function (index, item) {
+                                switch (item) {
+                                    case '周一':
+                                        vm.form.cycleWeekEnabledMon = '1';
+                                        break;
+                                    case '周二':
+                                        vm.form.cycleWeekEnabledTue = '2';
+                                        break;
+                                    case '周三':
+                                        vm.form.cycleWeekEnabledWed = '3';
+                                        break;
+                                    case '周四':
+                                        vm.form.cycleWeekEnabledThu = '4';
+                                        break;
+                                    case '周五':
+                                        vm.form.cycleWeekEnabledFri = '5';
+                                        break;
+                                    case '周六':
+                                        vm.form.cycleWeekEnabledSat = '6';
+                                        break;
+                                    case '周天':
+                                        vm.form.cycleWeekEnabledSun = '7';
+                                        break;
+                                    default:
+                                }
+                            })
+                        }
 
 
+                        console.log(checkeddays)
+                        console.log(vm.form);
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
 
-        function showLayer(data) {
+                    } else {
+                        console.log('error submit!!');
+                        return;
+                    }
+                });
 
-            console.log(table);
-            console.log(table.cache);
-            initFormValue(data);
-            let title = "新增";
+            },
+            resetForm() {
+                let vm = this;
+                vm.CheckedExecDay = [];
 
-            document.getElementById("generate_btn").innerHTML = "立即创建";
-            if (layType != true) {
-                title = "编辑";
+                vm.SchedulingOnce = false;           //调度方式（调度一次）
+                vm.SchedulingManual = false;         //调度方式（手动调度）
+                vm.SchedulingCircle = false;         //高度方式（循环调度）
+                vm.EveryDay = false;                 //执行频率 每天
+                vm.EveryDayChecked = '';             //每天的radio
+                vm.EveryDayOnce = true;             //每天频率的方式（一次）
+                vm.EveryDayOnceChecked = false;        //每天频率的方式（一次）是否可编辑
+                vm.EveryDayGap = true;              //每天频率的方式（间隔）
+                vm.EveryDayGapChecked = false;         //每天频率的方式（间隔）是否可编辑
+                vm.EveryWeek = false;                //执行频率  每周
+                vm.EveryMonthChecked = '';           //每月的radio
+                vm.EveryMonth = false;               //执行频率  每月
+                vm.EveryMonthOnce = true;             //每月频率的方式（一次）
+                vm.EveryMonthOnceChecked = false;             //每月频率的方式（一次）可编辑
+                vm.EveryMonthGap = true;              //每月频率的方式（间隔）
+                vm.EveryMonthGapChecked = false;              //每月频率的方式（间隔）可编辑
 
-                document.getElementById("generate_btn").innerHTML = "立即修改";
+                vm.form.createdBy = '';
+                vm.form.creationDate = null;
+                vm.form.cycleDayFrequeceType = '';
+                vm.form.cycleDayIntervalNumber = null;
+                vm.form.cycleDayIntervalType = '';
+                vm.form.cycleDayOnetimesTime = '';
+                vm.form.cycleEndDate = null;
+                vm.form.cycleFrequeceType = '';
+                vm.form.cycleMonthDaytimes = '';
+                vm.form.cycleMonthFrequeceType = '';
+                vm.form.cycleMonthIntervalNumber = null;
+                vm.form.cycleMonthIntervalType = '';
+                vm.form.cycleMonthOnetimesTime = '';
+                vm.form.cycleMonthType = '';
+                vm.form.cycleMonthWeekNumber = '';
+                vm.form.cycleMonthWeekType = '';
+                vm.form.cycleStartDate = null;
+                vm.form.cycleWeekEnabledFri = '';
+                vm.form.cycleWeekEnabledMon = '';
+                vm.form.cycleWeekEnabledSat = '';
+                vm.form.cycleWeekEnabledSun = '';
+                vm.form.cycleWeekEnabledThu = '';
+                vm.form.cycleWeekEnabledTue = '';
+                vm.form.cycleWeekEnabledWed = '';
+                vm.form.cycleWeekFrequeceType = '';
+                vm.form.cycleWeekIntervalNumber = null;
+                vm.form.cycleWeekIntervalType = '';
+                vm.form.cycleWeekOnetimesTime = '';
+                vm.form.deleteBy = '';
+                vm.form.deleteDate = null;
+                vm.form.deleteFlag = 0;
+                vm.form.enableFlag = 0;
+                vm.form.jobCode = '';
+                vm.form.jobDesc = '';
+                vm.form.jobId = '';
+                vm.form.jobLastRuntime = null;
+                vm.form.jobName = '';
+                vm.form.jobType = '';
+                vm.form.lastUpdateDate = null;
+                vm.form.lastUpdatedBy = '';
+                vm.form.onetimesDate = null;
+
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.searchForm.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                this.searchForm.pageNum = val;
+                this.fetchList();
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
+            },
+            batchDelete() {
+                let batchdatas = this.multipleSelection;
+                if (batchdatas.length == 0) {
+                    return;
+                }
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&ids=${batchdatas[i].jobId}`;
+                };
+                ids = ids.substring(1, ids.length)
+                let vm = this
+                vm.$confirm(`此操作将删除${batchdatas.length}条调度信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/SysJobInfo/BatchDelete?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             }
-            generateLayer_index = layer.open({
-                type: 1
-                , title: title //不显示标题栏
-                , closeBtn: false
-                , area: ['55%', '60%']
-                , closeBtn: 2
-                , shade: 0.8
-                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                //, btn: ['火速围观', '残忍拒绝']
-                , btnAlign: 'c'
-                , moveType: 1 //拖拽模式，0或者1
-                , content: $('#generate_layer') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-
-            });
-        };
-        function initFormValue(data) {
-            if (data == undefined) {
-
-                form.val("generate-form", {
-                    JobCode: "",
-                    JobName: "",
-                    EnableFlag: "",
-                    JobType: "",
-                    JobDesc: "",
-                    JobLastRuntime: "",
-                    OnetimesDate: "",
-                    CycleFrequeceType: "",
-                    CycleStartDate: "",
-                    CycleEndDate: "",
-                    CycleDayFrequeceType: "",
-                    CycleDayOnetimesTime: "",
-                    CycleDayIntervalType: "",
-                    CycleDayIntervalNumber: "",
-                    CycleWeekEnabledMon: "",
-                    CycleWeekEnabledTue: "",
-                    CycleWeekEnabledWed: "",
-                    CycleWeekEnabledThu: "",
-                    CycleWeekEnabledFri: "",
-                    CycleWeekEnabledSat: "",
-                    CycleWeekEnabledSun: "",
-                    CycleWeekFrequeceType: "",
-                    CycleWeekOnetimesTime: "",
-                    CycleWeekIntervalType: "",
-                    CycleWeekIntervalNumber: "",
-                    CycleMonthType: "",
-                    CycleMonthDaytimes: "",
-                    CycleMonthWeekType: "",
-                    CycleMonthWeekNumber: "",
-                    CycleMonthFrequeceType: "",
-                    CycleMonthOnetimesTime: "",
-                    CycleMonthIntervalType: "",
-                    CycleMonthIntervalNumber: ""
-                    
-                })
-                return;
-            }
-            form.val("generate-form", {              
-                JobCode: data.jobCode,
-                JobName: data.jobName,
-                EnableFlag: data.enableFiag,
-                JobType: data.jobType,
-                JobDesc: data.jobDesc,
-                JobLastRuntime: data.jobLastRuntime,
-                OnetimesDate: data.onetimesDate,
-                CycleFrequeceType: data.cycleFrequeceType,
-                CycleStartDate: data.cycleStartDate,
-                CycleEndDate: data.cycleEndDate,
-                CycleDayFrequeceType: data.cycleDayFrequeceType,
-                CycleDayOnetimesTime: data.cycleDayOnetimesTime,
-                CycleDayIntervalType: data.cycleDayIntervalType,
-                CycleDayIntervalNumber: data.cycleDayIntervalNumber,
-                CycleWeekEnabledMon: data.cycleWeekEnabledMon,
-                CycleWeekEnabledTue: data.cycleWeekEnabledTue,
-                CycleWeekEnabledWed: data.cycleWeekEnabledWed,
-                CycleWeekEnabledThu: data.cycleWeekEnabledThu,
-                CycleWeekEnabledFri: data.cycleWeekEnabledFri,
-                CycleWeekEnabledSat: data.cycleWeekEnabledSat,
-                CycleWeekEnabledSun: data.cycleWeekEnabledSun,
-                CycleWeekFrequeceType: data.cycleWeekFrequeceType,
-                CycleWeekOnetimesTime: data.cycleWeekOnetimesTime,
-                CycleWeekIntervalType: data.cycleWeekIntervalType,
-                CycleWeekIntervalNumber: data.cycleWeekIntervalNumber,
-                CycleMonthType: data.cycleMonthType,
-                CycleMonthDaytimes: data.cycleMonthDaytimes,
-                CycleMonthWeekType: data.cycleMonthWeekType,
-                CycleMonthWeekNumber: data.cycleMonthWeekNumber,
-                CycleMonthFrequeceType: data.cycleMonthFrequeceType,
-                CycleMonthOnetimesTime: data.cycleMonthOnetimesTime,
-                CycleMonthIntervalType: data.cycleMonthIntervalType,
-                CycleMonthIntervalNumber: data.ccleMonthIntervalNumber
-                //colorName: data.dish_Color,
-                //category: data.category
-            })
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
         }
-        function tableReload(datatable) {
-            console.log(datatable);
-            table.reload("testReload", {
-                data: datatable
-            })
-        }
-
-
-        //<input type="button" id="ch" value="出现">
-        // <div id="myDiv"></div>
-        form.on('select(pid)', function (data) {
-            //console.log(data.elem); //得到select原始DOM对象
-            //console.log(data.value); //得到被选中的值]
-            if (data.value == 0) {
-                var oDiv = document.getElementById('myDiv');
-                oDiv.style.display = "none";
-                var lDiv = document.getElementById('loopDiv');
-                lDiv.style.display = "none";
-            }
-            if (data.value == 1) {
-                var lDiv = document.getElementById('loopDiv');
-                lDiv.style.display = "none";
-                var oDiv = document.getElementById('myDiv');
-                oDiv.style.display = (oDiv.style.display === "none") ? "block" : "none";
-            } if (data.value == 2) {
-                //loopDiv
-                var oDiv = document.getElementById('myDiv');
-                oDiv.style.display = "none";
-                var lDiv = document.getElementById('loopDiv');
-                lDiv.style.display = (lDiv.style.display === "none") ? "block" : "none";
-            }
-        });
-
-        form.on('select(Fqid)', function (data) {
-            if (data.value == "EVERYDAY") {
-                var frDiv = document.getElementById('frequencyDiv');
-                frDiv.style.display = "none";
-                var wDiv = document.getElementById('weekDiv');
-                wDiv.style.display = "none";
-            }
-            if (data.value == "WEEK") {
-                var frDiv = document.getElementById('frequencyDiv');
-                frDiv.style.display = "none";
-                var wDiv = document.getElementById('weekDiv');
-                wDiv.style.display = (wDiv.style.display === "none") ? "block" : "none";
-            }
-            if (data.value == "MONTH") {
-                var wDiv = document.getElementById('weekDiv');
-                wDiv.style.display = "none";
-                var frDiv = document.getElementById('frequencyDiv');
-                frDiv.style.display = (frDiv.style.display === "none") ? "block" : "none";;
-            }
-        });
-        //var oBtn = $("#ch")[0];
-        form.on('radio(freq)', function (data) {
-            //console.log(data.elem); //得到radio原始DOM对象
-            //console.log(data.value); //被点击的radio的value值           
-            if (data.value == "CycleMonthDaytimes") {               
-                //$("#cyc").attr("disabled", "disabled");
-                //$("#CycleMonthWeekNumber").attr("disabled", "disabled");
-                document.getElementById("CycleMonthDaytimes").disabled = false;
-                document.getElementById("CycleMonthWeekType").disabled = true;
-                document.getElementById("CycleMonthWeekNumber").disabled = true;
-            } else if (data.value == "CycleMonthWeekType") {               
-                document.getElementById("CycleMonthDaytimes").disabled = true;
-            }            
-
-        });
-        form.on('radio(loop)', function (data) {
-            //console.log(data.elem); //得到radio原始DOM对象
-           
-            if (data.value == "CycleDayOnetimesTime") {              
-                document.getElementById("CycleDayOnetimesTime").disabled = false;
-                document.getElementById("CycleDayFrequeceType").disabled = true;
-                document.getElementById("CycleDayIntervalType").disabled = true;
-            } else if (data.value == "CycleDayFrequeceType") {
-                document.getElementById("CycleDayOnetimesTime").disabled = true;
-                document.getElementById("CycleDayFrequeceType").disabled = false;
-            }
-
-        });
-
-
 
     });
 </script>
