@@ -37,7 +37,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
 
                 Help_Type_Id = e.HelpTypeId,
                 Help_Type_Name = e.HelpTypeName,
-                Creation_Date=e.CreationDate
+                Creation_Date=e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
                 //e.HelpTypeId,
                 //e.HelpTypeName
             });
@@ -57,7 +57,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpTypeBLL
 
                 Help_Type_Id = e.HelpTypeId,
                 Help_Type_Name = e.HelpTypeName,
-                Creation_Date = e.CreationDate
+                Creation_Date = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
                 //e.HelpTypeId,
                 //e.HelpTypeName
             });

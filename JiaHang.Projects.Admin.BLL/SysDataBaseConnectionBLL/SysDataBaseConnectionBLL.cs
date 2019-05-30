@@ -45,7 +45,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                              DatabaseTypeCode = a_ifnull.DatabaseTypeCode,
                              DatabaseTypeName = a_ifnull.DatabaseTypeName,
                              DatabaseTypeId = a_ifnull.DatabaseTypeId,
-                             CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                             CreationDate = a.CreationDate != null ? Convert.ToDateTime(a.CreationDate).ToString("yyyy-MM-dd") : ""
                          };
             int total = querys.Count();
             var data = querys.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
@@ -84,7 +84,7 @@ namespace JiaHang.Projects.Admin.BLL.SysConnectionBLL
                              DatabaseTypeCode = a_ifnull.DatabaseTypeCode,
                              DatabaseTypeName = a_ifnull.DatabaseTypeName,
                              DatabaseTypeId = a_ifnull.DatabaseTypeId,
-                             CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                             CreationDate = a.CreationDate!= null ? Convert.ToDateTime(a.CreationDate).ToString("yyyy-MM-dd") : ""
                          };
             int total = querys.Count();
             var data = querys.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();

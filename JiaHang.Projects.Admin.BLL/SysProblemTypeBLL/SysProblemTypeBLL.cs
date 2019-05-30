@@ -35,7 +35,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemTypeBLL
 
                 Problem_Type_Id = e.ProblemTypeId,
                 Problem_Type_Name = e.ProblemTypeName,
-                Creation_Date = e.CreationDate
+                Creation_Date = e.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
 
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
@@ -54,7 +54,7 @@ namespace JiaHang.Projects.Admin.BLL.SysProblemTypeBLL
 
                 Problem_Type_Id = e.ProblemTypeId,
                 Problem_Type_Name = e.ProblemTypeName,
-                Creation_Date = e.CreationDate
+                Creation_Date = e.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
 
             });
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };

@@ -59,7 +59,40 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
 
              return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+        public FuncResult ElementSelect(int pageSize, int currentPage,string userAccount,string userName,int? userIsLdap,int? userOwer)
+        {
+            IOrderedQueryable<SysUserInfo> query = _context.SysUserInfo.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(userAccount) || a.UserAccount.Contains(userAccount))
+                        && (string.IsNullOrWhiteSpace(userName) || a.UserName.Contains(userName))
+                        && (userIsLdap == null || a.UserIsLdap == userIsLdap)
+                        && (userOwer == null || userOwer == 0)
+                        )
+                        ).OrderByDescending(e => e.CreationDate);
+            int total = query.Count();
+            var data = query.Skip(pageSize * currentPage).Take(pageSize).ToList().Select(e => new
+            {
+                User_Id = e.UserId,
+                User_Account = e.UserAccount,
+                User_Name = e.UserName,
+                User_Org_Id = e.UserOrgId,
+                User_Group_Names = e.UserGroupNames,
+                User_Email = e.UserEmail,
+                User_Is_Ldap = e.UserIsLdap == 1 ? "是" : "否",
+                User_Password = e.UserPassword,
+                User_Is_Lock = e.UserIsLock == 1 ? "是" : "否",
+                User_Mobile_No = e.UserMobile,
+                User_Ower = UserOwerType.Kds,
+                Language_Code = e.LanguageCode,
 
+                Eff_Start_Date = e.EffStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                Eff_End_Date = e.EffEndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                CreationDate = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询一条
         /// </summary>
@@ -86,12 +119,11 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             }
             entity.UserName = model.UserName;
             entity.UserPassword = model.UserPassword;
-            entity.UserOrgId = model.UserOrgId;
+            //entity.UserOrgId = model.UserOrgId;
             entity.UserGroupNames = model.UserGroupNames;
             entity.UserEmail = model.UserEmail;
             entity.UserIsLdap = model.UserIsLdap;
             entity.UserMobile = model.UserMobileNo;
-            entity.LanguageCode = model.LanguageCode;
             entity.UserIsLock = model.UserIsLock;
             entity.EffStartDate = model.EffStartDate;
             entity.EffEndDate = model.EffEndDate;
@@ -156,12 +188,12 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 UserAccount = model.UserAccount,
                 UserName = model.UserName,
                 UserPassword = model.UserPassword,
-                UserOrgId = model.UserOrgId,
+               // UserOrgId = model.UserOrgId,
                 UserGroupNames = model.UserGroupNames,
                 UserEmail = model.UserEmail,
                 UserIsLdap = model.UserIsLdap,
                 UserMobile = model.UserMobileNo,
-                LanguageCode = model.LanguageCode,
+                //LanguageCode = model.LanguageCode,
                 UserIsLock = model.UserIsLock,
                 EffStartDate = model.EffStartDate,
                 EffEndDate = model.EffEndDate,
