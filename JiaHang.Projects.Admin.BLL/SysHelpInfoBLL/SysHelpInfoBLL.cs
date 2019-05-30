@@ -26,28 +26,28 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         /// <returns></returns>
         public FuncResult Select(SearchSysHelpInfo model)
         {
-            var query = from a in _context.SysHelpType
-                        join b in _context.SysHelpInfo on
+            var query = from a in _context.SysHelpInfo
+                        join b in _context.SysHelpType on
                         a.HelpTypeId equals b.HelpTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
                         orderby a.CreationDate descending
-                        where ((string.IsNullOrWhiteSpace(model.Help_Type_Id) || a_ifnull.HelpTypeId.Contains(model.Help_Type_Id))
-                                && (string.IsNullOrWhiteSpace(model.Help_Title) || a_ifnull.HelpTitle.Contains(model.Help_Title))
-                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a_ifnull.AuditFlag == (model.Audit_Flag))
-                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a_ifnull.ImportantFlag == (model.Important_Flag))
+                        where ((string.IsNullOrWhiteSpace(model.Help_Type_Id) || a.HelpTypeId.Contains(model.Help_Type_Id))
+                                && (string.IsNullOrWhiteSpace(model.Help_Title) || a.HelpTitle.Contains(model.Help_Title))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Audit_Flag)) || a.AuditFlag == (model.Audit_Flag))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(model.Important_Flag)) || a.ImportantFlag == (model.Important_Flag))
                         )
                         select new
                         {
-                            Help_Id = a_ifnull.HelpId,
-                            Help_Type_Id = a_ifnull.HelpTypeId,
-                            Help_Title = a_ifnull.HelpTitle,
-                            Important_Flag = a_ifnull.ImportantFlag > 0 ? "是" : "否",
-                            Audit_Flag = a_ifnull.AuditFlag,
-                            Audited_Date = a_ifnull.AuditedDate,
-                            Audited_By = a_ifnull.AuditedBy,
-                            help_Content = a_ifnull.HelpContent,
-                            help_Type_Name = a.HelpTypeName,
+                            Help_Id = a.HelpId,
+                            Help_Type_Id = a.HelpTypeId,
+                            Help_Title = a.HelpTitle,
+                            Important_Flag = a.ImportantFlag > 0 ? "是" : "否",
+                            Audit_Flag = a.AuditFlag,
+                            Audited_Date = a.AuditedDate,
+                            Audited_By = a.AuditedBy,
+                            help_Content = a.HelpContent,
+                            help_Type_Name = a_ifnull.HelpTypeName,
                         };
             int total = query.Count();
             var data = query.ToList().Skip(model.limit * model.page).Take(model.limit).ToList();
@@ -55,28 +55,28 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
         }
         public FuncResult ElemeSelect(int pageSize, int currentPage, string helpTypeId, string helpTitle, int? auditFlag, int? importantFlag)
         {
-            var query = from a in _context.SysHelpType
-                        join b in _context.SysHelpInfo on
+            var query = from a in _context.SysHelpInfo
+                        join b in _context.SysHelpType on
                         a.HelpTypeId equals b.HelpTypeId
                         into a_temp
                         from a_ifnull in a_temp.DefaultIfEmpty()
                         orderby a.CreationDate descending
-                        where ((string.IsNullOrWhiteSpace(helpTypeId) || a_ifnull.HelpTypeId.Contains(helpTypeId))
-                                && (string.IsNullOrWhiteSpace(helpTitle) || a_ifnull.HelpTitle.Contains(helpTitle))
-                                && (string.IsNullOrWhiteSpace(Convert.ToString(auditFlag)) || a_ifnull.AuditFlag == (auditFlag))
-                                && (string.IsNullOrWhiteSpace(Convert.ToString(importantFlag)) || a_ifnull.ImportantFlag == (importantFlag))
+                        where ((string.IsNullOrWhiteSpace(helpTypeId) || a.HelpTypeId.Contains(helpTypeId))
+                                && (string.IsNullOrWhiteSpace(helpTitle) || a.HelpTitle.Contains(helpTitle))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(auditFlag)) || a.AuditFlag == (auditFlag))
+                                && (string.IsNullOrWhiteSpace(Convert.ToString(importantFlag)) || a.ImportantFlag == (importantFlag))
                         )
                         select new
                         {
-                            Help_Id = a_ifnull.HelpId,
-                            Help_Type_Id = a_ifnull.HelpTypeId,
-                            Help_Title = a_ifnull.HelpTitle,
-                            Important_Flag = a_ifnull.ImportantFlag > 0 ? "是" : "否",
-                            Audit_Flag = a_ifnull.AuditFlag ,
-                            Audited_Date = a_ifnull.AuditedDate,
-                            Audited_By = a_ifnull.AuditedBy,
-                            help_Content = a_ifnull.HelpContent,
-                            help_Type_Name = a.HelpTypeName,
+                            Help_Id = a.HelpId,
+                            Help_Type_Id = a.HelpTypeId,
+                            Help_Title = a.HelpTitle,
+                            Important_Flag = a.ImportantFlag > 0 ? "是" : "否",
+                            Audit_Flag = a.AuditFlag ,
+                            Audited_Date = a.AuditedDate,
+                            Audited_By = a.AuditedBy,
+                            help_Content = a.HelpContent,
+                            help_Type_Name = a_ifnull.HelpTypeName,
                         };
             int total = query.Count();
             var data = query.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
@@ -105,7 +105,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "公告ID错误!" };
+                return new FuncResult() { IsSuccess = false, Message = "帮助ID错误!" };
             }
             entity.HelpTypeId = model.HelpTypeId;
             entity.HelpTitle = model.HelpTitle;
@@ -131,7 +131,7 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(id);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "公告ID不存在!" };
+                return new FuncResult() { IsSuccess = false, Message = "帮助ID不存在!" };
             }
             entity.DeleteFlag = 1;
             //entity.DeleteFlag = true;
@@ -225,12 +225,10 @@ namespace JiaHang.Projects.Admin.BLL.SysHelpInfoBLL
             SysHelpInfo entity = await _context.SysHelpInfo.FindAsync(model.HelpTypeId);
             if (entity == null)
             {
-                return new FuncResult() { IsSuccess = false, Message = "公告编号错误!" };
+                return new FuncResult() { IsSuccess = false, Message = "帮助ID错误!" };
             }
-
             entity.AuditFlag = model.AuditFlag;
             entity.AuditedDate = System.DateTime.Now;
-
             entity.AuditedBy = currentuserId;
             entity.LastUpdateDate = System.DateTime.Now;
             entity.LastUpdatedBy = currentuserId;
