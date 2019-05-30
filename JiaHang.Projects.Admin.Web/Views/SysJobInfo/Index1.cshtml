@@ -200,7 +200,6 @@
                                          :label="item.value"
                                          :key="item.key"
                                          v-model="item.checked">
-                                {{item.value}}
                             </el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
@@ -550,18 +549,35 @@
                 vm.IsCreate = false
                 vm.dialogTitle = "编辑调度信息"
                 vm.form = formdata;
+                vm.CheckedExecDay =
+                    [this.isvalue(vm.form.cycleWeekEnabledMon) == true ? '周一' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledTue) == true ? '周二' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledWed) == true ? '周三' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledThu) == true ? '周四' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledFri) == true ? '周五' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledSat) == true ? '周六' : '',
+                    this.isvalue(vm.form.cycleWeekEnabledSun) == true ? '周天' : ''];
+                
+
 
                 //根据调度方式展开（一）
                 vm.schedulingchange();
                 vm.ratechange();
+
+
                 vm.radiochange();
                 vm.everymonthradiochange();
-
-
-
+                
                 console.log(formdata);
 
                 vm.centerDialogVisible = true
+            },
+
+            isvalue(obj) {
+                if (obj != null && obj != '' && obj != undefined) {
+                    return true;
+                }
+                return false;
             },
 
             handleDelete: function (index, row) {
@@ -640,6 +656,13 @@
 
                         let checkeddays = vm.CheckedExecDay;
                         if (vm.CheckedExecDay.length > 0) {
+                            vm.form.cycleWeekEnabledMon = '';
+                            vm.form.cycleWeekEnabledTue = '';
+                            vm.form.cycleWeekEnabledWed = '';
+                            vm.form.cycleWeekEnabledThu = '';
+                            vm.form.cycleWeekEnabledFri = '';
+                            vm.form.cycleWeekEnabledSat = '';
+                            vm.form.cycleWeekEnabledSun = '';
                             $.each(vm.CheckedExecDay, function (index, item) {
                                 switch (item) {
                                     case '周一':
