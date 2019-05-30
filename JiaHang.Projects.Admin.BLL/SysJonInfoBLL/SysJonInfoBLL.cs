@@ -66,6 +66,37 @@ namespace JiaHang.Projects.Admin.BLL.SysJonInfoBLL
             }
 
         }
+
+        /// <summary>
+        /// 查询（分页）
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public FuncResult Select(SearchSysJobInfo model)
+        {
+            try
+            {
+
+                var query = _context.SysJobInfo.
+                        Where(a =>
+                        (
+                        (string.IsNullOrWhiteSpace(model.Job_Code) || a.JobCode.Contains(model.Job_Code))
+                        && (string.IsNullOrWhiteSpace(model.Job_Name) || a.JobName == (model.Job_Name))
+                        && (string.IsNullOrWhiteSpace(model.Job_Type) || a.JobType == (model.Job_Type))
+                        && (a.DeleteFlag != 1)
+                        ));
+                int total = query.Count();
+                var data = query.Skip(model.pageSize * model.pageNum).Take(model.pageSize).ToList();
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = true, Message = "数据错误" };
+                throw ex;
+            }
+        }
+
+
         /// <summary>
         /// 查询单个
         /// </summary>

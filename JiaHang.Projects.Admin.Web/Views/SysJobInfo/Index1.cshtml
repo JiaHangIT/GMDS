@@ -14,7 +14,6 @@
         padding: 15px;
         background-color: #fff;
     }
-
     .customWidth {
         width: 90%;
     }
@@ -24,8 +23,8 @@
         justify-content: center;
         align-items: Center;
         overflow: hidden;
+    
     }
-
         .abow_dialog .el-dialog {
             margin: 0 auto !important;
             height: 90%;
@@ -172,7 +171,7 @@
                     <el-label>调度一次</el-label>
                 </el-row>
                 <el-row>
-
+                    
                     <el-form-item label="日期时间" prop="OneTimesDate">
                         <el-date-picker v-model="form.oneTimesDate"
                                         type="date"
@@ -208,12 +207,12 @@
                         </el-checkbox-group>
                     </el-form-item>
                 </div>
-
+              
                 <div v-if="EveryMonth">
-
+                    
                     <el-row v-if="EveryMonthOnce" style="margin-left:43px">
                         <el-form-item label="第">
-                            <el-input v-model="form.cycleMonthDaytimes" :disabled="EveryMonthOnceChecked" suffix-icon="el-icon-edit-outline"></el-input>
+                            <el-input v-model="form.cycleMonthDaytimes" :disabled="EveryMonthOnceChecked" suffix-icon="el-icon-edit-outline" ></el-input>
                         </el-form-item>
                         <el-label>@*天（写整数，多项用"，"分开，如：1，2，3）*@</el-label>
                         <el-form-item label="天（写整数，多项用'，'分开，如：1，2，3）">
@@ -246,7 +245,7 @@
                         </el-form-item>
                     </el-row>
                 </div>
-
+          
 
                 <div v-if="EveryDay">
                     <el-row style="margin-top:25px">
@@ -335,7 +334,7 @@
                 EveryDayGapChecked: false,         //每天频率的方式（间隔）是否可编辑
                 EveryWeek: false,                //执行频率  每周
                 EveryMonthChecked: '1',           //每月的radio
-                EveryMonth: false,               //执行频率  每月
+                EveryMonth: false,               //执行频率  每月 
                 EveryMonthOnce: true,             //每月频率的方式（一次）
                 EveryMonthOnceChecked: false,             //每月频率的方式（一次）可编辑
                 EveryMonthGap: true,              //每月频率的方式（间隔）
@@ -520,7 +519,7 @@
                 } catch (e) {
                     vm.$message({ title: '异常', message: e, type: 'error' })
                 }
-
+                
             },
 
             everymonthradiochange: function () {
@@ -561,7 +560,7 @@
                     this.isvalue(vm.form.cycleWeekEnabledFri) == true ? '周五' : '',
                     this.isvalue(vm.form.cycleWeekEnabledSat) == true ? '周六' : '',
                     this.isvalue(vm.form.cycleWeekEnabledSun) == true ? '周天' : ''];
-
+                
 
 
                 //根据调度方式展开（一）
@@ -571,7 +570,7 @@
 
                 vm.radiochange();
                 vm.everymonthradiochange();
-
+                
                 console.log(formdata);
 
                 vm.centerDialogVisible = true
@@ -629,7 +628,7 @@
                 vm.EveryMonthChecked = '1';
                 vm.everymonthradiochange();
                 vm.centerDialogVisible = true;
-
+                
                 //添加
             },
 
@@ -718,7 +717,7 @@
                         return;
                     }
                 });
-
+                
             },
             resetForm() {
                 let vm = this;
@@ -735,7 +734,7 @@
                 vm.EveryDayGapChecked = false;         //每天频率的方式（间隔）是否可编辑
                 vm.EveryWeek = false;                //执行频率  每周
                 vm.EveryMonthChecked = '';           //每月的radio
-                vm.EveryMonth = false;               //执行频率  每月
+                vm.EveryMonth = false;               //执行频率  每月 
                 vm.EveryMonthOnce = true;             //每月频率的方式（一次）
                 vm.EveryMonthOnceChecked = false;             //每月频率的方式（一次）可编辑
                 vm.EveryMonthGap = true;              //每月频率的方式（间隔）

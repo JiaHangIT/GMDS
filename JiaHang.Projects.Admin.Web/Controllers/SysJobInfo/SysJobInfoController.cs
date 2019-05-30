@@ -12,5 +12,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.SysJobInfo
         {
             return View();
         }
+
+        public IActionResult Index1()
+        {
+            return View();
+        }
     }
 }

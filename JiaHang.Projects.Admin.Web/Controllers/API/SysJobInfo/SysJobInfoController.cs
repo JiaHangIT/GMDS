@@ -13,7 +13,6 @@ using Microsoft.Extensions.Caching.Memory;
 namespace JiaHang.Projects.Admin.Web.Controllers.API.SysJobInfo
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class SysJobInfoController : ControllerBase
     {
         private readonly SysJonInfoBLL storeService;
@@ -40,6 +39,24 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysJobInfo
             return storeService.Select(model);
 
         }
+
+        /// <summary>
+        /// 查询（分页）
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("Search1")]
+        [HttpPost]
+        public FuncResult Select([FromBody] SearchSysJobInfo model)
+        {
+            model.pageNum--; if (model.pageNum < 0)
+            {
+                model.pageNum = 0;
+            }
+
+            return storeService.Select(model);
+        }
+
         /// <summary>
         /// 查询一条
         /// </summary>
