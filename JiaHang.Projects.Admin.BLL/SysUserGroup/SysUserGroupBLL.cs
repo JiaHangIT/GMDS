@@ -52,6 +52,38 @@ namespace JiaHang.Projects.Admin.BLL
 
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
+        public FuncResult ElementSelect(int pageSize, int currentPage,int level,string name)
+        {
+            var query = from a in _context.SysUserGroup
+                        where (level == 0 || a.UserGroupLevel == level) && (string.IsNullOrWhiteSpace(name) || a.UserGroupName.Contains(name))
+                        join b in _context.SysUserGroup on a.ParentId equals b.UserGroupId
+                        into a_temp
+                        from a_ifnull in a_temp.DefaultIfEmpty()
+                        join c in _context.SysUserGroup on a_ifnull.ParentId equals c.UserGroupId
+                        into b_temp
+                        from c_ifnul in b_temp.DefaultIfEmpty()
+                        orderby a.CreationDate descending
+                        select new
+                        {
+                            Id = a.UserGroupId,
+                            Name = a.UserGroupName,
+                            Level = ChineseCharacter(a.UserGroupLevel),
+                            firstId = c_ifnul != null ? c_ifnul.UserGroupId : a_ifnull == null ? "" : a_ifnull.UserGroupId,
+                            firstName = c_ifnul != null ? c_ifnul.UserGroupName : a_ifnull == null ? "未选择" : a_ifnull.UserGroupName,
+                            //firstModuleName = a_ifnull != null ? a_ifnull.ModuleName : c_ifnul == null ? "未选择" : c_ifnul.ModuleName,
+                            firstLevel = c_ifnul != null ? ChineseCharacter(c_ifnul.UserGroupLevel) : a_ifnull == null ? "" : ChineseCharacter(a_ifnull.UserGroupLevel),
+                            secondId = c_ifnul == null ? "" : a_ifnull.UserGroupId,
+                            secondName = c_ifnul == null ? "未选择" : a_ifnull.UserGroupName,
+                            secondLevel = c_ifnul == null ? "" : ChineseCharacter(a_ifnull.UserGroupLevel),
+                            CreationDate = a.CreationDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                        };
+
+            int total = query.Count();
+            // var data = query.Skip(model.limit * model.page).Take(model.limit);
+            var data = query.ToList().Skip(pageSize * currentPage);//.Take(model.limit).ToList();
+
+            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
         /// <summary>
         /// 查询一条
         /// </summary>

@@ -1,0 +1,312 @@
+﻿
+@{
+    ViewData["Title"] = "ElemeIndex";
+}
+
+<style>
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+</style>
+<div id="app">
+
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="用户账号：">
+            <el-input placeholder="用户组名：" v-model="searchName"></el-input>
+        </el-form-item>
+        <el-form-item label="级别：">
+            <el-select v-model="searchLevel" placeholder="请选择">
+                <el-option v-for="item in optLevel"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="是否有效：">
+            <el-select v-model="searchuserIsladp" placeholder="请选择">
+                <el-option v-for="item in optuserIsladp"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="fetchList">条件查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="handleAdd">新增用户组</el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              tooltip-effect="dark"
+              style="width: 100%"
+            >
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
+        <el-table-column label="用户组名称"
+                         prop="name">
+        </el-table-column>
+        <el-table-column label="当前用户组级别"
+                         prop="level">
+        </el-table-column>
+        <el-table-column label="所属一级用户组"
+                         prop="firstName">
+        </el-table-column>
+        <el-table-column label="所属二级用户组"
+                         prop="secondName">
+        </el-table-column>
+        <el-table-column label="建立时间"
+                         prop="creationDate">
+        </el-table-column>
+        <el-table-column label="操作">
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="30%"
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="ID：" prop="ID" hidden>
+                <el-input placeholder="id" v-model="form.user_Id"></el-input>
+            </el-form-item>
+            <el-form-item label="用户组名称：" prop="name">
+                <el-input placeholder="登录账号" v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="用户组等级" prop="level">
+                <el-input placeholder="用户组等级" v-model.number="form.user_Mobile_No"></el-input>
+            </el-form-item>
+            <el-form-item label="一级用户组：">
+                <el-select v-model="form.firstName" placeholder="请选择">
+                    <el-option v-for="item in optfirstName"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
+                <el-form-item label="二级用户组：">
+                    <el-select v-model="form.secondName" placeholder="请选择">
+                        <el-option v-for="item in optsecondName"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value"
+                                   :disabled="item.disabled">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                centerDialogVisible: false,
+                currentPage: 1,
+                pageSize: 10,
+                searchLevel: '',
+                searchName: '',
+                firstName:'',
+                secondName:'',
+                userOwer: 0,
+                optLevel: [
+                    { value: '', label: '请选择' },
+                    { value: '1', label: '一级用户' },
+                    { value: '2', label: '二级用户' },
+                    { value: '3', label: '三级用户' },
+                ],
+             
+             
+                form: {
+                   
+                },
+                rules: {
+                    user_Account: [
+                        { required: true, message: '登录账号不能为空', trigger: 'blur' },
+
+                    ],
+                    user_Password: [
+                        { required: true, message: '用户密码不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    user_Name: [
+                        { required: true, message: '用户名称不能为空', trigger: 'blur' },
+                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                    ],
+                    user_Email: [
+                        { required: true, type: 'email', message: '输入正确邮箱', trigger: 'blur' }
+                    ],
+                    user_Mobile_No: [
+                        {
+                            required: true,
+                            message: '请输入手机号',
+                            trigger: 'blur'
+                        },
+                        {
+                            pattern: /^1[34578]\d{9}$/,
+                            message: '手机号格式不对',
+                            trigger: 'blur'
+                        }
+                    ],
+                },
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
+                IsCreate: true,//是否新增
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                axios.get(`/api/sysusergroupdata/${vm.pageSize}/${vm.currentPage}?name=${vm.searchName}&level=${vm.}&userIsLdap=${vm.searchuserIsladp}&userOwer=${vm.userOwer}`)
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑信息"
+                vm.form = formdata;
+                console.log(formdata);
+                console.log(vm.form);
+                vm.centerDialogVisible = true
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+                this.$confirm(`确认删除该账号${row.user_Account}的记录么?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/sysuserinfodata/' + row.user_Id)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+            },
+            handleAdd: function () {
+                let vm = this
+                vm.IsCreate = true
+                vm.resetForm();
+                vm.dialogTitle = "添加信息"
+                vm.centerDialogVisible = true
+                //添加
+            },
+            dialogCancel: function () {
+                let vm = this;
+
+                vm.centerDialogVisible = false
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                let model = ''
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/sysuserinfodata";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/sysuserinfodata/${vm.form.user_Id}`;
+                            method = "PUT";
+
+                        }
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
+                        return;
+                    }
+                });
+            },
+            resetForm() {
+                let vm = this;
+                vm.form.user_Id = ''
+              
+
+            },
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>
+
+
+

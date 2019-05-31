@@ -120,7 +120,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             entity.UserName = model.UserName;
             entity.UserPassword = model.UserPassword;
             //entity.UserOrgId = model.UserOrgId;
-            entity.UserGroupNames = model.UserGroupNames;
+            entity.UserAccount = model.UserAccount;
+            //entity.UserGroupNames = model.UserGroupNames;
             entity.UserEmail = model.UserEmail;
             entity.UserIsLdap = model.UserIsLdap;
             entity.UserMobile = model.UserMobileNo;
@@ -259,7 +260,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                         LanguageCode = model.LanguageCode,
                         UserIsLock = model.UserIsLock,
                         EffStartDate = model.EffStartDate,
-                        EffEndDate = model.EffEndDate,
+                        EffEndDate =model.EffEndDate,
 
                         CreationDate = DateTime.Now,
                         CreatedBy = "admin"
@@ -277,7 +278,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
 
         {
 
-            var comlumHeadrs = new[] { "用户ID", "登录帐号", "用户名称", "用户组织ID", "用户组别名称", "用户电子邮件地址", "用户手机号码", "创建时间" };
+            //var comlumHeadrs = new[] { "用户ID", "登录帐号", "用户名称", "用户组织ID", "用户组别名称", "用户电子邮件地址", "用户手机号码", "创建时间" };
+            var comlumHeadrs = new[] { "用户ID", "登录帐号", "用户名称", "用户电子邮件地址", "用户手机号码", "创建时间" };
             byte[] result;
             var data = _context.SysUserInfo.ToList();
             var package = new ExcelPackage();
@@ -300,11 +302,9 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                     worksheet.Cells["A" + j].Value = obj.UserId;
                     worksheet.Cells["B" + j].Value = obj.UserAccount;
                     worksheet.Cells["C" + j].Value = obj.UserName;
-                    worksheet.Cells["D" + j].Value = obj.UserOrgId;
-                    worksheet.Cells["E" + j].Value = obj.UserGroupNames;
-                    worksheet.Cells["F" + j].Value = obj.UserEmail;
-                    worksheet.Cells["G" + j].Value = obj.UserMobile;
-                    worksheet.Cells["H" + j].Value = obj.CreationDate;
+                    worksheet.Cells["D" + j].Value = obj.UserEmail;
+                    worksheet.Cells["E" + j].Value = obj.UserMobile;
+                    worksheet.Cells["F" + j].Value = obj.CreationDate.ToString("yyyy-MM-dd HH:mm:ss");
                     j++;
                 }
             });

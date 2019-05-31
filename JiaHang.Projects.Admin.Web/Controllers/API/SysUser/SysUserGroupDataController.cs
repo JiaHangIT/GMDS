@@ -39,7 +39,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysUser
             return userGroupService.Select(model);
 
         }
-
+        [HttpGet("{pageSize}/{currentPage}")]
+        public FuncResult ElementSelect(int pageSize, int currentPage, int level, string name)
+        {
+            currentPage--;
+            return userGroupService.ElementSelect(pageSize, currentPage, level,name);
+        }
         /// <summary>
         /// 查询一条
         /// </summary>
