@@ -81,10 +81,10 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public FuncResult SelectRelateServiceInfo(SearchDesServiceGroup model)
+        public FuncResult SelectRelateServiceInfo(string serviceGroupId)
         {
             var query = (from a in _context.DcsServiceInfo
-                         join b in _context.DcsServiceGroup.Where(w => (string.IsNullOrWhiteSpace(model.Service_Group_Id) || w.ServiceGroupId.Contains(model.Service_Group_Id)))
+                         join b in _context.DcsServiceGroup.Where(w => (string.IsNullOrWhiteSpace(serviceGroupId) || w.ServiceGroupId.Contains(serviceGroupId)))
                          on a.ServiceGroupId equals b.ServiceGroupId
                          select new
                          {
@@ -99,7 +99,7 @@ namespace JiaHang.Projects.Admin.BLL.DcsService
                              Service_Status = a.ServiceStatus
                          }).ToList();
             var total = query.Count;
-            var data = query.Skip(model.page * model.limit).Take(model.limit);
+            var data = query;
 
             return new FuncResult() { IsSuccess = true, Content = new { total, data } };
         }

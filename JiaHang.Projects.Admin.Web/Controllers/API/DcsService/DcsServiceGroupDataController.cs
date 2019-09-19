@@ -59,14 +59,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DcsServiceGroup
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route("SearchRelateServiceInfo")]
-        [HttpPost]
-        public FuncResult SelectRelateServiceInfo([FromBody] SearchDesServiceGroup model)
+        [Route("SearchRelateServiceInfo/{serviceGroupId}")]
+        [HttpGet]
+        public FuncResult SelectRelateServiceInfo(string serviceGroupId)
         {
-            model.page--; if (model.page < 0)
-                model.page = 0;
 
-            return DcsserviceBll.SelectRelateServiceInfo(model);
+            return DcsserviceBll.SelectRelateServiceInfo(serviceGroupId);
         }
 
         /// <summary>
