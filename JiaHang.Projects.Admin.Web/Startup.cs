@@ -42,7 +42,9 @@ namespace JiaHang.Projects.Admin.Web
 
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseOracle(oracle_connection);
+                //,e=>e.UseOracleSQLCompatibility("11")  生成sql适用于oracle 11g
+                options.UseOracle(oracle_connection,e=>e.UseOracleSQLCompatibility("11"));
+                
             }, ServiceLifetime.Scoped);
 
             services.AddSwaggerGen(c =>
