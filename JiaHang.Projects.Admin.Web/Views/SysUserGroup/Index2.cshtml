@@ -172,7 +172,7 @@
              
                 let confirm_title = "确认删除[" + data.name + "]系统用户组的记录么?";
                 if (data.level!="三级用户组")
-                    confirm_title += "<Br/>" +"&nbsp;&nbsp;该用户组下的所有用户组也将被删除!"
+                    confirm_title += "该用户组下的所有用户组也将被删除!"
                 layer.confirm(confirm_title, function (index) {
                     layer.close(index);
                     axios.delete('/api/sysusergroupdata/' + data.id)
