@@ -1,7 +1,6 @@
 ﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.DcsCustomerServiceParams.RequestModel;
 using JiaHang.Projects.Admin.Model.SysOperRightParamsModel.RequestModel;
 using JiaHang.Projects.Admin.Model.SysUserInfo.RequestModel;
 using System;

@@ -10,7 +10,7 @@ namespace JiaHang.Projects.Admin.DAL
 {
     public class OracleDbHelper
     {
-        const string connectionString = @"DATA SOURCE=10.86.2.46:1521/orclpdb;PASSWORD=kdsreport;PERSIST SECURITY INFO=True;USER ID=kdsreport";
+        const string connectionString = @"DATA SOURCE=10.86.2.46:1521/orcl;PASSWORD=kdsreport;PERSIST SECURITY INFO=True;USER ID=gao_ming";
 
         public static List<T> Query<T>(string cmdstr, List<SqlParameter> parameters = null)
         {
