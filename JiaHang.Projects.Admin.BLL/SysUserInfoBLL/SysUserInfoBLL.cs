@@ -32,8 +32,6 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                         (
                         (string.IsNullOrWhiteSpace(model.User_Account) || a.UserAccount.Contains(model.User_Account))
                         && (string.IsNullOrWhiteSpace(model.User_Name) || a.UserName.Contains(model.User_Name))
-                        && (model.User_Is_Ldap == null || a.UserIsLdap == model.User_Is_Ldap)
-                        && (model.User_Ower == null || model.User_Ower == 0)
                         )
                         ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
@@ -45,29 +43,20 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 User_Org_Id = e.UserOrgId,
                 User_Group_Names = e.UserGroupNames,
                 User_Email = e.UserEmail,
-                User_Is_Ldap = e.UserIsLdap==1?"是":"否",
                 User_Password = e.UserPassword,
-                User_Is_Lock = e.UserIsLock == 1 ? "是" : "否",
                 User_Mobile_No = e.UserMobile,
-                User_Ower = UserOwerType.Kds,
-                Language_Code = e.LanguageCode,
-
-                Eff_Start_Date = e.EffStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                Eff_End_Date = e.EffEndDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 CreationDate = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
              return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
-        public FuncResult ElementSelect(int pageSize, int currentPage,string userAccount,string userName,int? userIsLdap,int? userOwer)
+        public FuncResult ElementSelect(int pageSize, int currentPage,string userAccount,string userName)
         {
             IOrderedQueryable<SysUserInfo> query = _context.SysUserInfo.
                         Where(a =>
                         (
                         (string.IsNullOrWhiteSpace(userAccount) || a.UserAccount.Contains(userAccount))
                         && (string.IsNullOrWhiteSpace(userName) || a.UserName.Contains(userName))
-                        && (userIsLdap == null || a.UserIsLdap == userIsLdap)
-                        && (userOwer == null || userOwer == 0)
                         )
                         ).OrderByDescending(e => e.CreationDate);
             int total = query.Count();
@@ -79,15 +68,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 User_Org_Id = e.UserOrgId,
                 User_Group_Names = e.UserGroupNames,
                 User_Email = e.UserEmail,
-                User_Is_Ldap = e.UserIsLdap == 1 ? "是" : "否",
                 User_Password = e.UserPassword,
-                User_Is_Lock = e.UserIsLock == 1 ? "是" : "否",
                 User_Mobile_No = e.UserMobile,
-                User_Ower = UserOwerType.Kds,
-                Language_Code = e.LanguageCode,
-
-                Eff_Start_Date = e.EffStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                Eff_End_Date = e.EffEndDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 CreationDate = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
@@ -123,11 +105,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             entity.UserAccount = model.UserAccount;
             //entity.UserGroupNames = model.UserGroupNames;
             entity.UserEmail = model.UserEmail;
-            entity.UserIsLdap = model.UserIsLdap;
             entity.UserMobile = model.UserMobileNo;
-            entity.UserIsLock = model.UserIsLock;
-            entity.EffStartDate = model.EffStartDate;
-            entity.EffEndDate = model.EffEndDate;
             entity.LastUpdatedBy = currentUserId;
             entity.LastUpdateDate = DateTime.Now;
 
@@ -192,13 +170,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                // UserOrgId = model.UserOrgId,
                 UserGroupNames = model.UserGroupNames,
                 UserEmail = model.UserEmail,
-                UserIsLdap = model.UserIsLdap,
                 UserMobile = model.UserMobileNo,
                 //LanguageCode = model.LanguageCode,
-                UserIsLock = model.UserIsLock,
-                EffStartDate = model.EffStartDate,
-                EffEndDate = model.EffEndDate,
-
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
                 CreationDate = DateTime.Now,
@@ -255,13 +228,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                         UserOrgId = model.UserOrgId,
                         UserGroupNames = model.UserGroupNames,
                         UserEmail = Guid.NewGuid().ToString("N").Substring(0, 6) + "@gmail.com",
-                        UserIsLdap = model.UserIsLdap,
                         UserMobile = model.UserMobileNo,
-                        LanguageCode = model.LanguageCode,
-                        UserIsLock = model.UserIsLock,
-                        EffStartDate = model.EffStartDate,
-                        EffEndDate =model.EffEndDate,
-
                         CreationDate = DateTime.Now,
                         CreatedBy = "admin"
 

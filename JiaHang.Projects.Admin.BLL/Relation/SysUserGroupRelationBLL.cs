@@ -31,14 +31,11 @@ namespace JiaHang.Projects.Admin.BLL.Relation
                         {
                             SysUserGroupName = a.UserGroupName,
                             SysUserGroupId = a.UserGroupId,
-
                             userid = c_ifnull != null ? c_ifnull.UserId : "",
                             username = c_ifnull != null ? c_ifnull.UserName : null,
                             UserAccount = c_ifnull != null ? c_ifnull.UserAccount : null,
                             UserMobileNo = c_ifnull != null ? c_ifnull.UserMobile : null,
-                            UserIsLdap = c_ifnull != null ? c_ifnull.UserIsLdap : 0,
                             RelationId = b_ifnull != null ? b_ifnull.SysUserGroupRelationId : null,
-
                             UserExists = c_ifnull != null
                         };
             var data = query.GroupBy(e => e.SysUserGroupId).Select(c => new
@@ -50,7 +47,6 @@ namespace JiaHang.Projects.Admin.BLL.Relation
                     s.RelationId,
                     s.UserAccount,
                     s.UserMobileNo,
-                    s.UserIsLdap,
                     id = s.userid,
                     name = s.username
                 })
@@ -72,7 +68,6 @@ namespace JiaHang.Projects.Admin.BLL.Relation
                 id = c.UserId,
                 name = c.UserName,
                 UserAccount = c.UserAccount,
-                UserIsLdap = c.UserIsLdap,
                 UserMobileNo = c.UserMobile
             }).Where(e=>string.IsNullOrWhiteSpace(condition)||(e.name.Contains(condition)||e.UserAccount.Contains(condition)));
             return new FuncResult() { IsSuccess = true, Content = data };

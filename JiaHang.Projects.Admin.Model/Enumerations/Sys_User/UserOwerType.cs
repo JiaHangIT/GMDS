@@ -24,7 +24,5 @@ namespace JiaHang.Projects.Admin.Model.Enumerations.Sys_User
         /// <summary>
         /// kds报表用户
         /// </summary>
-        [Description("kds报表用户")]
-        Kds = 4,
     }
 }

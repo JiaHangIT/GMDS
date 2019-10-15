@@ -1,7 +1,7 @@
 ﻿
 <div class="layui-header">
     <div class="layui-logo" style="width: 100%;text-align: left;font-size: 20px;color: #B5C0C2;padding-left:15px;">
-        高明区企业搞质量发展综合评价体系数据采集及应用平台
+        高明区企业高质量发展综合评价体系数据应用系统
     </div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
@@ -54,7 +54,8 @@
     let ul = document.getElementById("head_menu");
     var current_moduleId = window.localStorage.getItem("current_moduleId");
 
-    for (let i = header_modules.length-1; i >= 0; i--) { 
+    for (let i = header_modules.length - 1; i >= 0; i--) { 
+        console.log("id",header_modules[i].moduleId)
         var li = document.createElement("li");
         let licn = "layui-nav-item";
         console.log(header_modules[i].moduleId)

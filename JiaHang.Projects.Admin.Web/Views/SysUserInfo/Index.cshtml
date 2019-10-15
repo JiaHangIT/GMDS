@@ -23,17 +23,6 @@
         <el-form-item label="用户名称：">
             <el-input placeholder="用户名称" v-model="searchuserName"></el-input>
         </el-form-item>
-        <el-form-item label="是否有效：">
-            <el-select v-model="searchuserIsladp" placeholder="请选择">
-                <el-option v-for="item in optuserIsladp"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value"
-                           :disabled="item.disabled">
-                </el-option>
-            </el-select>
-        </el-form-item>
-       
     </el-form>
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item>
@@ -67,12 +56,6 @@
         </el-table-column>
         <el-table-column label="邮箱地址"
                          prop="user_Email">
-        </el-table-column>
-        <el-table-column label="是否ldap用户"
-                         prop="user_Is_Ldap">
-        </el-table-column>
-        <el-table-column label="是否锁定"
-                         prop="user_Is_Lock">
         </el-table-column>
         <el-table-column label="建立时间"
                          prop="creationDate">
@@ -119,44 +102,6 @@
             <el-form-item label="手机号码" prop="user_Mobile_No">
                 <el-input placeholder="手机号码" v-model.number="form.user_Mobile_No"></el-input>
             </el-form-item>
-            <el-form-item label="是否ldap：">
-                <el-select v-model="form.user_Is_Ldap" placeholder="请选择">
-                    <el-option v-for="item in optuser_Is_Ldap"
-                               :key="item.value"
-                               :label="item.label"
-                               :value="item.value"
-                               :disabled="item.disabled">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="开始日期">
-                <el-date-picker v-model="form.eff_Start_Date"
-                                type="date"
-                                :picker-options="pickerBeginDateBefore"
-                                value-format="yyyy-MM-dd"
-                                @@change="chageStartDate"
-                                placeholder="">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item label="结束日期" >
-                <el-date-picker v-model="form.eff_End_Date"
-                                type="date"
-                                value-format="yyyy-MM-dd"
-                                 @@change="chageEndDate"
-                                :picker-options="pickerBeginDateAfter"
-                                placeholder="">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item label="锁定用户：">
-                <el-select v-model="form.user_Is_Lock" placeholder="请选择">
-                    <el-option v-for="item in optuser_Is_Lock"
-                               :key="item.value"
-                               :label="item.label"
-                               :value="item.value"
-                               :disabled="item.disabled">
-                    </el-option>
-                </el-select>
-            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click="dialogCancel()">取 消</el-button>
@@ -182,25 +127,8 @@
                 pageSize: 10,
                 total: 0,
                 multipleSelection: [],//获取批量选择的数据
-                searchuserIsladp:'',
                 searchuserAccount: '',
                 searchuserName: '',
-                userOwer:0,
-                optuserIsladp: [
-                    { value: '', label: '请选择' },
-                    { value: '1', label: '无效' },
-                    { value: '0', label: '有效' },
-                ],
-                optuser_Is_Ldap: [
-                    { value: '', label: '请选择' },
-                    { value: '1', label: '是' },
-                    { value: '0', label: '否' },
-                ],
-                optuser_Is_Lock: [
-                    { value: '', label: '请选择' },
-                    { value: '1', label: '是' },
-                    { value: '0', label: '否' },
-                ],
                 form: {
                     user_Id:'',
                     user_Account: '',
@@ -208,26 +136,6 @@
                     user_Name: '',
                     user_Email: '',
                     user_Mobile_No: '',
-                    user_Is_Ldap: '',
-                    eff_Start_Date: '',
-                    eff_End_Date:'',
-                    user_Is_Lock:'',
-                },
-                pickerBeginDateBefore: {
-                    disabledDate: (time) => {
-                        let beginDateVal = this.form.eff_End_Date+1;
-                        if (beginDateVal) {
-                            return time.getTime() > beginDateVal;
-                        }
-                    }
-                },
-                pickerBeginDateAfter: {
-                    disabledDate: (time) => {
-                        let beginDateVal = this.form.eff_Start_Date+1;
-                        if (beginDateVal) {
-                            return time.getTime() < beginDateVal;
-                        }
-                    }
                 },
                 rules: {
                     user_Account: [
@@ -267,7 +175,7 @@
         methods: {
             fetchList: function () {
                 let vm = this
-                axios.get(`/api/sysuserinfodata/${vm.pageSize}/${vm.currentPage}?userAccount=${vm.searchuserAccount}&userName=${vm.searchuserName}&userIsLdap=${vm.searchuserIsladp}&userOwer=${vm.userOwer}`)
+                axios.get(`/api/sysuserinfodata/${vm.pageSize}/${vm.currentPage}?userAccount=${vm.searchuserAccount}&userName=${vm.searchuserName}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
@@ -281,8 +189,6 @@
                 let vm = this
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
-                formdata.user_Is_Lock == "否" ? 0 : 1
-                formdata.user_Is_Ldap == "否" ? 0 : 1
                 vm.IsCreate = false
                 vm.dialogTitle = "编辑信息"
                 vm.form = formdata;
@@ -328,15 +234,8 @@
                 vm.centerDialogVisible = true
                 //添加
             },
-            chageStartDate(val) {
-                this.eff_Start_Date = val;
-            },
-            chageEndDate(val) {
-                this.eff_End_Date = val;
-            },
             dialogCancel: function () {
                 let vm = this;
-
                 vm.centerDialogVisible = false
             },
             dialogSave: function (formName) {
@@ -358,11 +257,7 @@
                             username: vm.form.user_Name,
                             userpassword: vm.form.user_Password,
                             useremail: vm.form.user_Email,
-                            userisldap: vm.form.user_Is_Ldap ,
                             usermobileno: vm.form.user_Mobile_No,
-                            userislock: vm.form.user_Is_Lock,
-                            effstartdate: vm.form.eff_Start_Date,
-                            effenddate: vm.form.eff_End_Date,
                         };
                         console.log(model);
                         axios({ url: url, method: method, data: model })
@@ -394,10 +289,6 @@
                 vm.form.user_Name = ''
                 vm.form.user_Email = ''
                 vm.form.user_Mobile_No = ''
-                vm.form.user_Is_Ldap = ''
-                vm.form.eff_Start_Date = ''
-                vm.form.eff_End_Date = ''
-                vm.form.user_Is_Lock = ''
                
             },
             handleSizeChange(val) {

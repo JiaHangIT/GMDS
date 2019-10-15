@@ -56,9 +56,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
                 UserName = result.Content.UserName,
                 UserAccount = result.Content.UserAccount,
                 Email = result.Content.UserEmail,
-                IsLock = result.Content.UserIsLock,
                 MobileNo = result.Content.UserMobile,
-                UserIsLdap = result.Content.UserIsLdap
             };
             //获取用户资源
             //var routes_data = currentUserRouteBLL.GetRoutes(account.Id,result.Content.UserAccount=="admin");
@@ -72,7 +70,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
             // 加当前用户所拥有的route 写入缓存
             credentialsManage.SetAccountRoute(routes_data.Content, token);
 
-            var defaultUrl = "/";
+            var defaultUrl = "/ApdFctOrgIndexV/main";
             //try
             //{
             //    defaultUrl = routes_data.ViewRoutes.First().Controllers.First().Methods.First().CompletePath;

@@ -1,0 +1,398 @@
+﻿
+@{
+    ViewData["Title"] = "图表";
+}
+
+<style>
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-bottom: 50px;
+        padding: 15px;
+        background-color: #fff;
+        height: 400px;
+        width:40%
+    }
+
+    #main {
+        padding-top: 10px
+    }
+
+    #main2 {
+
+    }
+</style>
+
+<div id="app" class="layui-inline">
+    <el-table :data="tableData6"
+              border
+              show-summary
+              style="width: 800px">
+        <el-table-column prop="pfjg"
+                         label="评分结构"
+                         width="180">
+        </el-table-column>
+        <el-table-column prop="qynum"
+                         label="企业数(户)">
+        </el-table-column>
+        <el-table-column prop="slbz"
+                         sortable
+                         label="数量比重(%)">
+        </el-table-column>
+    </el-table>
+</div>
+<div class="layui-tab layui-inline" lay-filter="test1">
+    <ul class="layui-tab-title">
+        <li class="layui-this">企业数量</li>
+        <li>亩均税收</li>
+        <li>亩均增加值</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item"></div>
+        <div class="layui-tab-item"></div>
+        <div class="layui-tab-item"></div>
+    </div>
+    <div class="layui-inline" id="main" style="width: 700px;height:400px;"></div>
+    <div class="layui-inline" id="mjss" style="width: 700px;height:400px;display:none"></div>
+    <div class="layui-inline" id="mjzjz" style="width: 700px;height:400px;display:none"></div>
+</div>
+
+<div id="main2" style="width: 60%;height:400px;"></div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+        var element = layui.element;
+        var myChart = echarts.init(document.getElementById('main'));
+        var myChart2 = echarts.init(document.getElementById('main2'));
+        var myChart3 = echarts.init(document.getElementById('mjss'));
+        var myChart4 = echarts.init(document.getElementById('mjzjz'));
+        // 指定图表的配置项和数据
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: { title: '下载图片' },
+                    myTool1: {
+                        show: true,
+                        title: '下载文档',
+                        icon: 'path://M256.9 191h447.6v128H256.9z.M256.9 416.2h447.6v64H256.9zM256.9 576h319.8v64H256.9zM256.9 735.8h255.9v64H256.9z.M927 797.3L764.4 960 601.8 797.3V659.1l98.7 98.8V524.5h127.8v233.4l98.7-98.8z.M627.2 960H97V64h767.3v392.5h-63.9V128H160.9v768h466.3z',
+                        onclick: function () {
+                            alert('myToolHandler1')
+                        }
+                    }
+                },
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: ['天河区', '白云区', '番禺区', '越秀区', '南沙区', '海珠区', '广州开发区', '花都区', '荔湾区',
+                    '增城区', '从化区']
+            },
+            series: [
+                {
+                    name: '数据',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        { value: 3, name: '天河区' },
+                        { value: 310, name: '白云区' },
+                        { value: 24, name: '番禺区' },
+                        { value: 135, name: '越秀区' },
+                        { value: 10, name: '南沙区' },
+                        { value: 14, name: '海珠区' },
+                        { value: 12, name: '广州开发区' },
+                        { value: 13, name: '花都区' },
+                        { value: 11, name: '荔湾区' },
+                        { value: 12, name: '增城区' },
+                        { value: 18, name: '从化区' }
+                    ]
+                }
+            ]
+        };
+        var mjss = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: { title: '下载图片' },
+                    myTool1: {
+                        show: true,
+                        title: '下载文档',
+                        icon: 'path://M256.9 191h447.6v128H256.9z.M256.9 416.2h447.6v64H256.9zM256.9 576h319.8v64H256.9zM256.9 735.8h255.9v64H256.9z.M927 797.3L764.4 960 601.8 797.3V659.1l98.7 98.8V524.5h127.8v233.4l98.7-98.8z.M627.2 960H97V64h767.3v392.5h-63.9V128H160.9v768h466.3z',
+                        onclick: function () {
+                            alert('下载文档实现中...')
+                        }
+                    }
+                },
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: ['天河区', '白云区', '番禺区', '越秀区', '南沙区', '海珠区', '广州开发区', '花都区', '荔湾区',
+                    '增城区', '从化区']
+            },
+            series: [
+                {
+                    name: '数据',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    center:['400','200'],
+                    //label: {
+                    //    emphasis: {
+                    //        show: true,
+                    //        textStyle: {
+                    //            fontSize: '30',
+                    //            fontWeight: 'bold'
+                    //        }
+                    //    }
+                    //},
+
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: '{b} : {c} ({d}%)'
+                            },
+                            labelLine: { show: true },
+                            emphasis: {
+                                show: true,
+                                textStyle: {
+                                    fontSize: '30',
+                                    fontWeight: 'bold'
+                                }
+                            }
+                        }
+                    } ,
+                    data: [
+                        { value: 35, name: '天河区' },
+                        { value: 310, name: '白云区' },
+                        { value: 234, name: '番禺区' },
+                        { value: 135, name: '越秀区' },
+                        { value: 10, name: '南沙区' },
+                        { value: 14, name: '海珠区' },
+                        { value: 12, name: '广州开发区' },
+                        { value: 13, name: '花都区' },
+                        { value: 110, name: '荔湾区' },
+                        { value: 12, name: '增城区' },
+                        { value: 18, name: '从化区' }
+                    ],
+                }
+            ]
+        };
+        var mjzjz = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: { title: '下载图片' },
+                    myTool1: {
+                        show: true,
+                        title: '下载文档',
+                        icon: 'path://M256.9 191h447.6v128H256.9z.M256.9 416.2h447.6v64H256.9zM256.9 576h319.8v64H256.9zM256.9 735.8h255.9v64H256.9z.M927 797.3L764.4 960 601.8 797.3V659.1l98.7 98.8V524.5h127.8v233.4l98.7-98.8z.M627.2 960H97V64h767.3v392.5h-63.9V128H160.9v768h466.3z',
+                        onclick: function () {
+                            alert('myToolHandler1')
+                        }
+                    }
+                },
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: ['天河区', '白云区', '番禺区', '越秀区', '南沙区', '海珠区', '广州开发区', '花都区', '荔湾区',
+                    '增城区', '从化区']
+            },
+            series: [
+                {
+                    name: '数据',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        { value: 55, name: '天河区' },
+                        { value: 310, name: '白云区' },
+                        { value: 234, name: '番禺区' },
+                        { value: 135, name: '越秀区' },
+                        { value: 10, name: '南沙区' },
+                        { value: 114, name: '海珠区' },
+                        { value: 12, name: '广州开发区' },
+                        { value: 130, name: '花都区' },
+                        { value: 11, name: '荔湾区' },
+                        { value: 12, name: '增城区' },
+                        { value: 18, name: '从化区' }
+                    ]
+                }
+            ]
+        };
+        var option2 = {
+            legend: {},
+            tooltip: {},
+            axisLabel: {},
+            dataset: {
+                source: [
+                    ['product', '2018', '2019'],
+                    ['科技', 43.3, 85.8],
+                    ['制造', 83.1, 73.4],
+                    ['信息', 86.4, 65.2],
+                    ['批零', 72.4, 53.9],
+                    ['租商', 72.4, 53.9],
+                    ['交邮', 72.4, 53.9],
+                    ['文娱', 72.4, 53.9],
+                    ['水利', 72.4, 53.9],
+                    ['居民', 72.4, 53.9],
+                ]
+            },
+            xAxis: { type: 'category' },
+            yAxis: {
+                type: 'value',
+                name: '企业数(户)',
+                min: 0,
+                max: 150,
+                interval: 30, //间隔
+                minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            },
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+                { type: 'bar' },
+                { type: 'bar' }
+            ]
+        };
+        myChart.setOption(option);
+        myChart2.setOption(option2);
+        myChart3.setOption(mjss);
+        myChart4.setOption(mjzjz);
+        // 使用刚指定的配置项和数据显示图表。
+        element.on('tab(test1)', function (data) {
+            console.log(this); //当前Tab标题所在的原始DOM元素
+            console.log(data.index); //得到当前Tab的所在下标
+            console.log(data.elem); //得到当前的Tab大容器
+            if (data.index == 0) {
+                $('#main').show()
+                $('#mjss').hide()
+                $('#mjzjz').hide()
+            }
+            if (data.index == 1) {
+                $('#main').hide()
+                $('#mjss').show()
+                $('#mjzjz').hide()
+            }
+            if (data.index == 2) {
+                $('#main').hide()
+                $('#mjss').hide()
+                $('#mjzjz').show()
+            }
+        });
+    })
+</script>
+<script>
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                tableData6: [{
+                    pfjg: '90分以上',
+                    qynum: '409',
+                    slbz: '65.65',
+                }, {
+                    pfjg: '80-90分',
+                    qynum: '107',
+                    slbz: '17.17',
+                }, {
+                    pfjg: '60-80分',
+                    qynum: '62',
+                    slbz: '9.95',
+                }, {
+                    pfjg: '60分以下',
+                    qynum: '45',
+                    slbz: '7.22',
+                }]
+            }
+        },
+        methods: {
+            getSummaries(param) {
+                const { columns, data } = param;
+                const sums = [];
+                columns.forEach((column, index) => {
+                    if (index === 0) {
+                        sums[index] = '总价';
+                        return;
+                    }
+                    const values = data.map(item => Number(item[column.property]));
+                    if (!values.every(value => isNaN(value))) {
+                        sums[index] = values.reduce((prev, curr) => {
+                            const value = Number(curr);
+                            if (!isNaN(value)) {
+                                return prev + curr;
+                            } else {
+                                return prev;
+                            }
+                        }, 0);
+                        sums[index] += ' 元';
+                    } else {
+                        sums[index] = 'N/A';
+                    }
+                });
+
+                return sums;
+            }
+
+        },
+        mounted: function () {
+            let vm = this
+
+        }
+
+    });
+</script>

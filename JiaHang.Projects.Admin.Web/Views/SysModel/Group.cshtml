@@ -247,6 +247,7 @@
             },
             dialogSave: function (formName) {
                 let vm = this;
+                console.log("1111")
                 vm.$refs[formName].validate((valid) => {
                     if (valid) {
                         let url = "/api/SysModelGroupData";
@@ -257,6 +258,7 @@
                         }
                         axios({ url: url, method: method, data: vm.form })
                             .then(function (response) {
+                                console.log("成功")
                                 if (!response.data.isSuccess) {
                                     vm.$message({ title: '失败', message: response.data.message, type: 'error' })
                                     return;
@@ -266,6 +268,7 @@
                                 vm.centerDialogVisible = false
                             })
                             .catch(function (error) {
+                                console.log("123123")
                                 vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
                                 console.log(error);
                             });

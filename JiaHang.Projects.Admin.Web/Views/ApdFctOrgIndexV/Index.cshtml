@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewData["Title"] = "企业评分排序";
+}
+<style>
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+</style>
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="企业名称：">
+            <el-input placeholder="企业名称" v-model="OrgName"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @@selection-change="handleSelectionChange">
+        <el-table-column label="企业名称"
+                         prop="orgName">
+            <template slot-scope="scope">
+                <el-button v-on:click="handleClick(scope.$index, scope.row)" type="text" size="small">{{scope.row.orgName}}</el-button>
+            </template>
+        </el-table-column>
+        <el-table-column label="所属行业"
+                         prop="industry">
+        </el-table-column>
+        <el-table-column label="综合评分"
+                         sortable
+                         prop="compositeScore">
+        </el-table-column>
+        <el-table-column label="亩均税收"
+                         sortable
+                         prop="taxPerMu">
+        </el-table-column>
+        <el-table-column label="亩均增加值"
+                         sortable
+                         prop="addValuePerMu">
+        </el-table-column>
+        <el-table-column label="全员劳动生产率"
+                         sortable
+                         prop="productivity">
+        </el-table-column>
+    </el-table>
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="50%"
+               top="5%">
+        <hr />
+        <el-row>
+            <el-col :span="12"><div class="grid-content bg-purple">历史名称：小米科技有限公司</div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple-light">登记状态：在营企业</div></el-col>
+        </el-row>
+        <el-row style="margin-top:20px">
+            <el-col :span="12" ><div class="grid-content bg-purple"></div>统一社会信用代码：91110108991385082Q</el-col>
+            <el-col :span="12"><div class="grid-content bg-purple-light">注册资本（万元）：1000</div></el-col>
+        </el-row>
+        <el-row style="margin-top:20px">
+            <el-col :span="12"><div class="grid-content bg-purple"></div>法定代表人：雷军</el-col>
+            <el-col :span="12"><div class="grid-content bg-purple-light">企业类型：有限责任公司（自然人投资或股控）</div></el-col>
+        </el-row>
+        <el-row style="margin-top:20px">
+            <el-col :span="12">成立日期：2010-03-03</el-col>
+            <el-col :span="12">注册地址：北京市海淀区</el-col>
+        </el-row>
+        <el-row style="margin-top:20px">
+            <el-col :span="12">所属行业：科学研究和技术服务业</el-col>
+        </el-row>
+    </el-dialog>
+</div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                currentPage: 1,
+                pageSize: 10,
+                total: 0,
+                OrgName: '',
+                dialogTitle: '基本信息',
+                centerDialogVisible:false
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                axios.get(`/api/ApdFctOrgIndexV/${vm.pageSize}/${vm.currentPage}?OrgName=${vm.OrgName}`)
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleClick: function (index, row) {
+                let vm=this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.centerDialogVisible = true
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.fetchList();
+            },
+
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
+            },
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>

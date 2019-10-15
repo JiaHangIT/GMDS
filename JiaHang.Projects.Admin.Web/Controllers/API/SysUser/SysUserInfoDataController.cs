@@ -39,10 +39,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.SysUser
 
         }
         [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult ElementSelect(int pageSize, int currentPage, string userAccount, string userName, int? userIsLdap, int? userOwer)
+        public FuncResult ElementSelect(int pageSize, int currentPage, string userAccount, string userName)
         {
             currentPage--;
-            return userInfoService.ElementSelect(pageSize, currentPage, userAccount, userName, userIsLdap, userOwer);
+            return userInfoService.ElementSelect(pageSize, currentPage, userAccount, userName);
         }
         /// <summary>
         /// 查询一条

@@ -143,7 +143,7 @@ namespace JiaHang.Projects.Admin.BLL.SysModelBLL
             model.LastUpdateDate = DateTime.Now;
             model.CreatedBy = currentUserId;
             model.CreationDate = DateTime.Now;
-
+            model.DeleteFlag = 0;
             await _context.SysModelInfo.AddAsync(model);
 
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())

@@ -40,36 +40,14 @@ namespace JiaHang.Projects.Admin.Model.SysUserInfo.RequestModel
         public string UserEmail { get; set; }
 
         /// <summary>
-        /// 是否是ldap用户（是：y,否：n）
-        /// </summary>
-        public int UserIsLdap { get; set; }
-
-
-        /// <summary>
         /// 用户手机号码
         /// </summary>
         [StringLength(30)]
         public string UserMobileNo { get; set; }
 
-        /// <summary>
-        /// 用户默认语言(zh-cn)
-        /// </summary>
-        [StringLength(30)]
-        public string LanguageCode { get; set; }
 
-        /// <summary>
-        /// 是否锁定该用户（是：y,否：n）
-        /// </summary>
-        public int UserIsLock { get; set; }
 
-        /// <summary>
-        /// 有效开始日期
-        /// </summary>
-        public DateTime EffStartDate { get; set; }
 
-        /// <summary>
-        /// 有效结束日期
-        /// </summary>
-        public DateTime EffEndDate { get; set; }
+
     }
 }

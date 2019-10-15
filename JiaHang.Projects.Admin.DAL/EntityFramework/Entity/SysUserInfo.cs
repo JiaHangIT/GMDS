@@ -12,13 +12,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string UserOrgId { get; set; }
         public string UserGroupNames { get; set; }
         public string UserEmail { get; set; }
-        public int? UserIsLdap { get; set; }
         public string UserMobile { get; set; }
         public string UserTel { get; set; }
-        public string LanguageCode { get; set; }
-        public int? UserIsLock { get; set; }
-        public DateTime EffStartDate { get; set; }
-        public DateTime EffEndDate { get; set; }
         public DateTime CreationDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime LastUpdateDate { get; set; }

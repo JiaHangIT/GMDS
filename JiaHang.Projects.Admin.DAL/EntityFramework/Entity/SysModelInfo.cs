@@ -9,7 +9,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public string ModelCode { get; set; }
         public string ModelName { get; set; }
         public string ModelUrl { get; set; }
-        public int? OutUrlFlag { get; set; }
+        public int OutUrlFlag { get; set; }
         public string ModelGroupId { get; set; }
         public int? SortKey { get; set; }
         public int? EnableFlag { get; set; }
