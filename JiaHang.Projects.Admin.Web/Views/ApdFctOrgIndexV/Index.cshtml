@@ -6,11 +6,67 @@
     .v-modal {
         display: none;
     }
-
     #app {
         margin-top: 15px;
         padding: 15px;
         background-color: #fff;
+    }
+    .tableCss {
+        text-align: center;
+        border: 1px solid black;
+    }
+
+        .tableCss td {
+            border: 1px solid black;
+        }
+
+    .tableCss2 {
+        text-align: center;
+    }
+
+        .tableCss2 td {
+            text-align: center;
+        }
+
+    .divWhite {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        background-color: #f1e7e7;
+        border-color: Black;
+        margin: auto;
+    }
+
+    .divGreen {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        background-color: green;
+        margin: auto;
+    }
+
+    .divRed {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        background-color: Red;
+        margin: auto;
+    }
+
+    .divYellow {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        background-color: Yellow;
+        margin: auto;
     }
 </style>
 <div id="app">
@@ -21,37 +77,90 @@
         <el-form-item>
             <el-button size="small" type="primary" @@click="fetchList">查询</el-button>
         </el-form-item>
+        <el-form-item label="所属行业：">
+            <el-select v-model="searchshhys" placeholder="请选择" @@change="IndustrySel">
+                <el-option v-for="item in searchshhy"
+                           :key="item.name"
+                           :label="item.name"
+                           :value="item.name"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="所在街道（园区）：">
+            <el-select v-model="searchjds" placeholder="请选择" @@change="TownSel">
+                <el-option v-for="item in searchjd"
+                           :key="item.name"
+                           :label="item.name"
+                           :value="item.name"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+
     </el-form>
     <el-table ref="multipleTable"
               :data="data"
-              :border="true"
+             :border="true"
               tooltip-effect="dark"
-              style="width: 100%"
-              @@selection-change="handleSelectionChange">
+              height="550"
+              style="width: 100%">
         <el-table-column label="企业名称"
-                         prop="orgName">
+                         fixed
+                          width="150"
+                         prop="orG_NAME">
             <template slot-scope="scope">
-                <el-button v-on:click="handleClick(scope.$index, scope.row)" type="text" size="small">{{scope.row.orgName}}</el-button>
+                <el-button v-on:click="handleClick(scope.$index, scope.row)" type="text" size="small">{{scope.row.orG_NAME}}</el-button>
             </template>
         </el-table-column>
         <el-table-column label="所属行业"
+                          width="150"
                          prop="industry">
+        </el-table-column>
+        <el-table-column label="所在街道（园区）"
+                          width="150"
+                         prop="town">
         </el-table-column>
         <el-table-column label="综合评分"
                          sortable
-                         prop="compositeScore">
+                          width="150"
+                         align="center"
+                         prop="compositE_SCORE">
         </el-table-column>
-        <el-table-column label="亩均税收"
+        <el-table-column label="亩均税收得分"
                          sortable
-                         prop="taxPerMu">
+                          width="150"
+                         prop="taX_PER_MU">
         </el-table-column>
-        <el-table-column label="亩均增加值"
+        <el-table-column label="亩均增加值得分"
                          sortable
-                         prop="addValuePerMu">
+                          width="150"
+                         prop="adD_VALUE_PER_MU">
         </el-table-column>
-        <el-table-column label="全员劳动生产率"
+        <el-table-column label="单位能耗增加值得分"
                          sortable
+                          width="180"
+                         prop="energY_CONSUMPTION">
+        </el-table-column>
+        <el-table-column label="单位排污增加值得分"
+                         sortable
+                          width="180"
+                         prop="pollutanT_DISCHARGE">
+        </el-table-column>
+        <el-table-column label="全员劳动生产率得分"
+                         sortable
+                          width="180"
                          prop="productivity">
+        </el-table-column>
+        <el-table-column label="净资产收益率得分"
+                         sortable
+                          width="180"
+                         prop="neT_ASSETS_PROFIT">
+        </el-table-column>
+        <el-table-column label="研发经费投入比得分"
+                         sortable
+                          width="180"
+                         prop="r_D_EXPENDITURE_RATIO">
         </el-table-column>
     </el-table>
     <el-pagination @@size-change="handleSizeChange"
@@ -62,30 +171,310 @@
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
     </el-pagination>
+
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
-               width="50%"
+               width="60%"
                top="5%">
-        <hr />
-        <el-row>
-            <el-col :span="12"><div class="grid-content bg-purple">历史名称：小米科技有限公司</div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple-light">登记状态：在营企业</div></el-col>
-        </el-row>
-        <el-row style="margin-top:20px">
-            <el-col :span="12" ><div class="grid-content bg-purple"></div>统一社会信用代码：91110108991385082Q</el-col>
-            <el-col :span="12"><div class="grid-content bg-purple-light">注册资本（万元）：1000</div></el-col>
-        </el-row>
-        <el-row style="margin-top:20px">
-            <el-col :span="12"><div class="grid-content bg-purple"></div>法定代表人：雷军</el-col>
-            <el-col :span="12"><div class="grid-content bg-purple-light">企业类型：有限责任公司（自然人投资或股控）</div></el-col>
-        </el-row>
-        <el-row style="margin-top:20px">
-            <el-col :span="12">成立日期：2010-03-03</el-col>
-            <el-col :span="12">注册地址：北京市海淀区</el-col>
-        </el-row>
-        <el-row style="margin-top:20px">
-            <el-col :span="12">所属行业：科学研究和技术服务业</el-col>
-        </el-row>
+        <div style="padding-top:-100px">
+            <el-tabs  v-model="activeName" @@tab-click="">
+                <el-tab-pane label="基本信息" name="first">
+                    <el-row>
+                        <el-col :span="12"><div class="grid-content bg-purple">企业名称：<span id="industryName"></span></div></el-col>
+                        <el-col :span="12"><div class="grid-content bg-purple-light">登记状态：<span id="registratioN_STATUS"></span></div></el-col>
+                    </el-row>
+                    <el-row style="margin-top:20px">
+                        <el-col :span="12"><div class="grid-content bg-purple"></div>统一社会信用代码：<span id="orgCode"></span></el-col>
+                        <el-col :span="12"><div class="grid-content bg-purple-light">注册资本（万元）：<span id="registratioN_MONEY"></span></div></el-col>
+                    </el-row>
+                    <el-row style="margin-top:20px">
+                        <el-col :span="12"><div class="grid-content bg-purple"></div>法定代表人：<span id="legaL_REPRESENTATIVE"></span></el-col>
+                        <el-col :span="12"><div class="grid-content bg-purple-light">企业类型：<span id="registratioN_TYPE"></span></div></el-col>
+                    </el-row>
+                    <el-row style="margin-top:20px">
+                        <el-col :span="12">成立日期：<span id="registratioN_DATE"></span></el-col>
+                        <el-col :span="12">注册地址：<span id="address"></span></el-col>
+                    </el-row>
+                    <el-row style="margin-top:20px">
+                        <el-col :span="12">所属行业：<span id="Industry"></span></el-col>
+                    </el-row>
+                    <el-table ref="multipleTable"
+                              :data="data1"
+                              :border="true"
+                              tooltip-effect="dark"
+                              style="width: 100%"
+                              >
+                        <el-table-column label="分支机构名称"
+                                         prop="suB_ORG_NAME">
+                        </el-table-column>
+                        <el-table-column label="所属省份"
+                                         prop="province">
+                        </el-table-column>
+                        <el-table-column label="登记状态"
+                                         prop="registratioN_STATUS">
+                        </el-table-column>
+                        <el-table-column label="成立日期"
+                                         sortable
+                                         prop="creatioN_DATE">
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination @@size-change="handleSizeChange1"
+                                   @@current-change="handleCurrentChange1"
+                                   :current-page="currentPage1"
+                                   :page-sizes="[5, 10, 15, 20]"
+                                   :page-size="pageSize1"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="total1">
+                    </el-pagination>
+                </el-tab-pane>
+                <el-tab-pane label="企业综合效益展示" name="second">
+                    <table class="tableCss" style="width: 100%; text-align: center;">
+                        <tr>
+                            <td>
+                                评<br />
+                                定<br />
+                                分<br />
+                                类
+                            </td>
+                            <td>
+                                A
+                            </td>
+                            <td>
+                                评<br />
+                                定<br />
+                                排<br />
+                                名
+                            </td>
+                            <td>
+                                6|329
+                            </td>
+                            <td>
+                                综<br />
+                                合<br />
+                                评<br />
+                                分
+                            </td>
+                            <td>
+                                89
+                            </td>
+                            <td>
+                                分<br />
+                                类<br />
+                                评<br />
+                                分
+                            </td>
+                            <td>
+                                6<br />
+                                <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
+                                </div>
+                                6|329
+                            </td>
+                            <td>
+                                1<br />
+                                <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
+                                </div>
+                                6|329
+                            </td>
+                            <td>
+                                X<br />
+                                <div style="width: 90%; height: 1px; background-color: Black; margin:auto;">
+                                </div>
+                                6|329
+                            </td>
+                        </tr>
+                    </table>
+                    <p>
+                        &nbsp;
+                    </p>
+                    <table class="tableCss2" style="width: 100%;">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="divWhite">
+                                    税收实际贡献<br />
+                                    6000万元
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="divWhite">
+                                    综合能耗<br />
+                                    6000吨标煤
+                                </div>
+                            </td>
+                            <td colspan="3">
+                                <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
+                            </td>
+                            <td>
+                                <div class="divRed">
+                                    单位能耗<br />
+                                    <span id="dwnh"></span>万元/吨标煤
+                                </div>
+                            </td>
+                            <td rowspan="5">
+                                <div style="float:left;width: 2px;height: 350px; background: #2fd1f6;"></div>
+                            </td>
+                            <td>
+                                <div class="divWhite">
+                                    净利润<br />
+                                    1000万
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="divWhite">
+                                    研发经费支出<br />
+                                    100万
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="height: 30px;">
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/up.png" style="width: 20px; height: 30px" />
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="divGreen">
+                                    亩均增加值<br />
+                                    <span id="mjzjz"></span>万元/亩
+                                </div>
+                            </td>
+                            <td>
+                                <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
+                            </td>
+                            <td>
+                                <div class="divWhite">
+                                    用地面积<br />
+                                    600亩
+                                </div>
+                            </td>
+                            <td>
+                                <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
+                            </td>
+                            <td>
+                                <div class="divWhite">
+                                    工业增加值<br />
+                                    60000万元
+                                </div>
+                            </td>
+                            <td>
+                                <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
+                            </td>
+                            <td>
+                                <div class="divWhite">
+                                    年均职工人数<br />
+                                    600人
+                                </div>
+                            </td>
+                            <td>
+                                <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
+                            </td>
+                            <td>
+                                <div class="divYellow">
+                                    全员劳动生产率<br />
+                                    <span id="qyldscl"></span>万元/人.年
+                                </div>
+                            </td>
+                            <td>
+                                <div class="divWhite">
+                                    净资产<br />
+                                    1000万
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="divWhite">
+                                    主营业务收入<br />
+                                    900万
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="height: 15px;">
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="divGreen">
+                                    亩均税收<br />
+                                    <span id="mjss"></span>万元/亩
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="divWhite">
+                                    排污权<br />
+                                    6000吨
+                                </div>
+                            </td>
+                            <td colspan="3">
+                                <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
+                            </td>
+                            <td>
+                                <div class="divRed">
+                                    单位排污权增加值<br />
+                                    <span id="dwpwqzjz"></span>万元/吨
+                                </div>
+                            </td>
+                            <td>
+                                <div class="divGreen">
+                                    净资产收益率<br />
+                                    <span id="jzcsyl"></span>%
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <div class="divYellow">
+                                    研发经费投入比<br />
+                                    <span id="yfjftrb"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </el-tab-pane>
+               
+            </el-tabs>
+        </div>
+
     </el-dialog>
 </div>
 <script>
@@ -101,12 +490,22 @@
         data: function () {
             return {
                 data: [],
+                data1:[],
                 currentPage: 1,
                 pageSize: 10,
+                activeName: 'first',
                 total: 0,
+                total1:0,
+                searchjds: '',
+                searchshhys: '',
+                searchjd: [],
+                searchshhy: [],
                 OrgName: '',
-                dialogTitle: '基本信息',
-                centerDialogVisible:false
+                dialogTitle: '',
+                centerDialogVisible: false,
+                historyname: '',
+                pageSize1: 5,
+                currentPage1: 1,
             }
         },
         methods: {
@@ -121,14 +520,104 @@
                         console.log(error)
                     });
             },
+            IndustrySel: function (val) {
+                let vm = this;
+                axios.get(`/api/ApdFctOrgIndexV/SelectIndustryData/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Industry=${val}`)
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            TownSel: function (val) {
+                let vm = this;
+                axios.get(`/api/ApdFctOrgIndexV/SelectTownDdata/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Town=${val}`)
+                    .then(function (response) {
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            getTownInfo: function () {
+                let vm = this;
+                axios.get('/api/ApdFctOrgIndexV/GetTown')
+                    .then(function (response) {
+                        vm.searchjd = response.data.content.list;
+                        vm.searchjd.unshift({ code: '', name: '全部' });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            getIndustyInfo: function () {
+                let vm = this;
+                axios.get('/api/ApdFctOrgIndexV/GetIndustry')
+                    .then(function (response) {
+                        vm.searchshhy = response.data.content.list;
+                        vm.searchshhy.unshift({ code: '', name: '全部' });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             handleClick: function (index, row) {
                 let vm=this
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
+                console.log(formdata.orG_CODE)
+                axios.get(`/api/ApdFctOrgIndexV/IndustryDetail?code=${formdata.orG_CODE}`)
+                    .then(function (response) {
+                        console.log(  response.data.content.list[0]);
+                        vm.histroyname = response.data.content.list[0].orG_NAME
+                        $('#industryName').html(response.data.content.list[0].orG_NAME)
+                        $('#registratioN_STATUS').html(response.data.content.list[0].registratioN_STATUS)
+                        $('#orgCode').html(response.data.content.list[0].orG_CODE)
+                        $('#registratioN_MONEY').html(response.data.content.list[0].registratioN_MONEY)
+                        $('#legaL_REPRESENTATIVE').html(response.data.content.list[0].legaL_REPRESENTATIVE)
+                        $('#registratioN_TYPE').html(response.data.content.list[0].registratioN_TYPE)
+                        $('#registratioN_DATE').html(response.data.content.list[0].registratioN_DATE)
+                        $('#address').html(response.data.content.list[0].address)
+                        console.log('历史名称',response.data.content.list[0].orG_NAME)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                axios.get(`/api/ApdFctOrgIndexV/SelectORGInfo?pageSize=${vm.pageSize1}&currentPage=${vm.currentPage1}&OrgCode=${formdata.orG_CODE}`)
+                    .then(function (response) {
+                        vm.data1 = response.data.content.data;
+                        vm.total1 = response.data.content.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+                axios.get(`/api/ApdFctOrgIndexV/BenefiteValuationInfo?code=${formdata.orG_CODE}`)
+                    .then(function (response) {
+                        console.log(response.data.content.list[0]);
+                        $('#mjss').html(response.data.content.list[0].taX_PER_MU)
+                        $('#mjzjz').html(response.data.content.list[0].adD_VALUE_PER_MU)
+                        $('#qyldscl').html(response.data.content.list[0].productivity)
+                        $('#dwpwqzjz').html(response.data.content.list[0].pollutanT_DISCHARGE)
+                        $('#dwnh').html(response.data.content.list[0].energY_CONSUMPTION)
+                        $('#jzcsyl').html(response.data.content.list[0].neT_ASSETS_PROFIT)
+                        $('#yfjftrb').html(response.data.content.list[0].r_D_EXPENDITURE_RATIO)
+                       
+                       
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 vm.centerDialogVisible = true
             },
             handleSizeChange(val) {
                 this.pageSize = val;
+                this.fetchList();
+            },
+            handleSizeChange1(val) {
+                this.pageSize1 = val;
                 this.fetchList();
             },
             handleCurrentChange(val) {
@@ -136,14 +625,16 @@
                 this.fetchList();
             },
 
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-
+            handleCurrentChange1(val) {
+                this.currentPage1 = val;
+                this.fetchList();
             },
         },
         mounted: function () {
             let vm = this
             vm.fetchList();
+            vm.getIndustyInfo();
+            vm.getTownInfo()
         }
 
     });

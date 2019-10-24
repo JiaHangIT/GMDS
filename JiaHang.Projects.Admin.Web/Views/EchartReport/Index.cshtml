@@ -1,398 +1,723 @@
 ﻿
 @{
-    ViewData["Title"] = "图表";
+    ViewData["Title"] = "结构特征分布";
 }
-
-<style>
-    .v-modal {
-        display: none;
+<style type="text/CSS">
+    .divSelected {
+        width: 23%;
+        height: 100px;
+        float: left;
+        background-color: white;
+        margin-right: 10px;
     }
 
-    #app {
-        margin-bottom: 50px;
-        padding: 15px;
-        background-color: #fff;
-        height: 400px;
-        width:40%
+    .divSelectedTitle {
+        margin: auto;
+        height: 28px;
+        color: #0975c2;
+        text-align: center;
+        line-height: 30px;
+        border: solid 1px #2497f3;
+        font-size: 22px;
     }
 
-    #main {
-        padding-top: 10px
+    .divSelectedSplit {
+        height: 1px;
+        background-color: white;
     }
 
-    #main2 {
+    .divSelectedDesc {
+        margin: auto;
+        height: 68px;
+        color: red;
+        text-align: center;
+        line-height: 70px;
+        border: solid 1px #2497f3;
+        font-size: 24px;
+    }
+    .divUnSelected1 {
+        width: 23%;
+        height: 100px;
+        float: left;
+        background-color: white;
+        margin-right: 10px;
+    }
 
+    .divUnSelectedTitle1 {
+        margin: auto;
+        height: 28px;
+        color: #0975c2;
+        text-align: center;
+        line-height: 30px;
+        border: solid 1px #2497f3;
+        font-size: 22px;
+    }
+
+    .divUnSelectedSplit1 {
+        height: 1px;
+        background-color: white;
+    }
+
+    .divUnSelectedDesc1 {
+        margin: auto;
+        height: 68px;
+        color: red;
+        text-align: center;
+        line-height: 70px;
+        border: solid 1px #2497f3;
+        font-size: 24px;
+    }
+    .divUnSelected2 {
+        width: 23%;
+        height: 100px;
+        float: left;
+        background-color: white;
+        margin-right: 10px;
+    }
+
+    .divUnSelectedTitle2 {
+        margin: auto;
+        height: 28px;
+        color: #0975c2;
+        text-align: center;
+        line-height: 30px;
+        border: solid 1px #2497f3;
+        font-size: 22px;
+    }
+
+    .divUnSelectedSplit2 {
+        height: 1px;
+        background-color: white;
+    }
+
+    .divUnSelectedDesc2 {
+        margin: auto;
+        height: 68px;
+        color: red;
+        text-align: center;
+        line-height: 70px;
+        border: solid 1px #2497f3;
+        font-size: 24px;
+    }
+    .divUnSelected3 {
+        width: 23%;
+        height: 100px;
+        float: left;
+        background-color: #2497f3;
+        margin-right: 10px;
+    }
+
+    .divUnSelectedTitle3 {
+        margin: auto;
+        height: 28px;
+        color: white;
+        text-align: center;
+        line-height: 30px;
+        border: solid 1px #2497f3;
+        font-size: 22px;
+    }
+
+    .divUnSelectedSplit3 {
+        height: 1px;
+        background-color: white;
+    }
+
+    .divUnSelectedDesc3 {
+        margin: auto;
+        height: 68px;
+        color: white;
+        text-align: center;
+        line-height: 70px;
+        border: solid 1px #2497f3;
+        font-size: 24px;
     }
 </style>
-
-<div id="app" class="layui-inline">
-    <el-table :data="tableData6"
-              border
-              show-summary
-              style="width: 800px">
-        <el-table-column prop="pfjg"
-                         label="评分结构"
-                         width="180">
-        </el-table-column>
-        <el-table-column prop="qynum"
-                         label="企业数(户)">
-        </el-table-column>
-        <el-table-column prop="slbz"
-                         sortable
-                         label="数量比重(%)">
-        </el-table-column>
-    </el-table>
-</div>
-<div class="layui-tab layui-inline" lay-filter="test1">
-    <ul class="layui-tab-title">
-        <li class="layui-this">企业数量</li>
-        <li>亩均税收</li>
-        <li>亩均增加值</li>
-    </ul>
-    <div class="layui-tab-content">
-        <div class="layui-tab-item"></div>
-        <div class="layui-tab-item"></div>
-        <div class="layui-tab-item"></div>
-    </div>
-    <div class="layui-inline" id="main" style="width: 700px;height:400px;"></div>
-    <div class="layui-inline" id="mjss" style="width: 700px;height:400px;display:none"></div>
-    <div class="layui-inline" id="mjzjz" style="width: 700px;height:400px;display:none"></div>
-</div>
-
-<div id="main2" style="width: 60%;height:400px;"></div>
 <script>
-    layui.use(['element', 'layer'], function () {
+    layui.use(['element', 'layer', 'form'], function () {
         var layer = layui.layer
         var form = layui.form;
         var $ = layui.$
-        var element = layui.element;
-        var myChart = echarts.init(document.getElementById('main'));
-        var myChart2 = echarts.init(document.getElementById('main2'));
-        var myChart3 = echarts.init(document.getElementById('mjss'));
-        var myChart4 = echarts.init(document.getElementById('mjzjz'));
-        // 指定图表的配置项和数据
-        var option = {
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: { title: '下载图片' },
-                    myTool1: {
-                        show: true,
-                        title: '下载文档',
-                        icon: 'path://M256.9 191h447.6v128H256.9z.M256.9 416.2h447.6v64H256.9zM256.9 576h319.8v64H256.9zM256.9 735.8h255.9v64H256.9z.M927 797.3L764.4 960 601.8 797.3V659.1l98.7 98.8V524.5h127.8v233.4l98.7-98.8z.M627.2 960H97V64h767.3v392.5h-63.9V128H160.9v768h466.3z',
-                        onclick: function () {
-                            alert('myToolHandler1')
-                        }
-                    }
-                },
-            },
-            legend: {
-                orient: 'vertical',
-                x: 'left',
-                data: ['天河区', '白云区', '番禺区', '越秀区', '南沙区', '海珠区', '广州开发区', '花都区', '荔湾区',
-                    '增城区', '从化区']
-            },
-            series: [
-                {
-                    name: '数据',
-                    type: 'pie',
-                    radius: ['50%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        normal: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            show: true,
-                            textStyle: {
-                                fontSize: '30',
-                                fontWeight: 'bold'
+        var element = layui.element
+        var fs1 = -1;
+        var fs2 = 60;
+        function inittable1(name, score1, score2) {
+            var datas = [];
+            var countdata = [];
+            axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}`)
+                .then(function (res) {
+                    console.log("进入")
+                    datas.splice(0, datas.length);
+                    countdata.splice(0, countdata.length);
+                    $.each(res.data.content.list, function (index, item) {
+                        datas.push(item.industry)
+                        countdata.push(item.count)
+                    })
+                    var myChart1 = echarts.init(document.getElementById('main1'));
+                    var option = {
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                             }
-                        }
-                    },
-                    labelLine: {
-                        normal: {
-                            show: false
-                        }
-                    },
-                    data: [
-                        { value: 3, name: '天河区' },
-                        { value: 310, name: '白云区' },
-                        { value: 24, name: '番禺区' },
-                        { value: 135, name: '越秀区' },
-                        { value: 10, name: '南沙区' },
-                        { value: 14, name: '海珠区' },
-                        { value: 12, name: '广州开发区' },
-                        { value: 13, name: '花都区' },
-                        { value: 11, name: '荔湾区' },
-                        { value: 12, name: '增城区' },
-                        { value: 18, name: '从化区' }
-                    ]
-                }
-            ]
-        };
-        var mjss = {
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: { title: '下载图片' },
-                    myTool1: {
-                        show: true,
-                        title: '下载文档',
-                        icon: 'path://M256.9 191h447.6v128H256.9z.M256.9 416.2h447.6v64H256.9zM256.9 576h319.8v64H256.9zM256.9 735.8h255.9v64H256.9z.M927 797.3L764.4 960 601.8 797.3V659.1l98.7 98.8V524.5h127.8v233.4l98.7-98.8z.M627.2 960H97V64h767.3v392.5h-63.9V128H160.9v768h466.3z',
-                        onclick: function () {
-                            alert('下载文档实现中...')
-                        }
-                    }
-                },
-            },
-            legend: {
-                orient: 'vertical',
-                x: 'left',
-                data: ['天河区', '白云区', '番禺区', '越秀区', '南沙区', '海珠区', '广州开发区', '花都区', '荔湾区',
-                    '增城区', '从化区']
-            },
-            series: [
-                {
-                    name: '数据',
-                    type: 'pie',
-                    radius: ['50%', '70%'],
-                    avoidLabelOverlap: false,
-                    center:['400','200'],
-                    //label: {
-                    //    emphasis: {
-                    //        show: true,
-                    //        textStyle: {
-                    //            fontSize: '30',
-                    //            fontWeight: 'bold'
-                    //        }
-                    //    }
-                    //},
-
-                    itemStyle: {
-                        normal: {
-                            label: {
-                                show: true,
-                                formatter: '{b} : {c} ({d}%)'
-                            },
-                            labelLine: { show: true },
-                            emphasis: {
-                                show: true,
-                                textStyle: {
-                                    fontSize: '30',
-                                    fontWeight: 'bold'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: datas,
+                                axisTick: {
+                                    alignWithLabel: true
                                 }
                             }
-                        }
-                    } ,
-                    data: [
-                        { value: 35, name: '天河区' },
-                        { value: 310, name: '白云区' },
-                        { value: 234, name: '番禺区' },
-                        { value: 135, name: '越秀区' },
-                        { value: 10, name: '南沙区' },
-                        { value: 14, name: '海珠区' },
-                        { value: 12, name: '广州开发区' },
-                        { value: 13, name: '花都区' },
-                        { value: 110, name: '荔湾区' },
-                        { value: 12, name: '增城区' },
-                        { value: 18, name: '从化区' }
-                    ],
-                }
-            ]
-        };
-        var mjzjz = {
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: { title: '下载图片' },
-                    myTool1: {
-                        show: true,
-                        title: '下载文档',
-                        icon: 'path://M256.9 191h447.6v128H256.9z.M256.9 416.2h447.6v64H256.9zM256.9 576h319.8v64H256.9zM256.9 735.8h255.9v64H256.9z.M927 797.3L764.4 960 601.8 797.3V659.1l98.7 98.8V524.5h127.8v233.4l98.7-98.8z.M627.2 960H97V64h767.3v392.5h-63.9V128H160.9v768h466.3z',
-                        onclick: function () {
-                            alert('myToolHandler1')
-                        }
-                    }
-                },
-            },
-            legend: {
-                orient: 'vertical',
-                x: 'left',
-                data: ['天河区', '白云区', '番禺区', '越秀区', '南沙区', '海珠区', '广州开发区', '花都区', '荔湾区',
-                    '增城区', '从化区']
-            },
-            series: [
-                {
-                    name: '数据',
-                    type: 'pie',
-                    radius: ['50%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        normal: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            show: true,
-                            textStyle: {
-                                fontSize: '30',
-                                fontWeight: 'bold'
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
                             }
-                        }
-                    },
-                    labelLine: {
-                        normal: {
-                            show: false
-                        }
-                    },
-                    data: [
-                        { value: 55, name: '天河区' },
-                        { value: 310, name: '白云区' },
-                        { value: 234, name: '番禺区' },
-                        { value: 135, name: '越秀区' },
-                        { value: 10, name: '南沙区' },
-                        { value: 114, name: '海珠区' },
-                        { value: 12, name: '广州开发区' },
-                        { value: 130, name: '花都区' },
-                        { value: 11, name: '荔湾区' },
-                        { value: 12, name: '增城区' },
-                        { value: 18, name: '从化区' }
-                    ]
-                }
-            ]
-        };
-        var option2 = {
-            legend: {},
-            tooltip: {},
-            axisLabel: {},
-            dataset: {
-                source: [
-                    ['product', '2018', '2019'],
-                    ['科技', 43.3, 85.8],
-                    ['制造', 83.1, 73.4],
-                    ['信息', 86.4, 65.2],
-                    ['批零', 72.4, 53.9],
-                    ['租商', 72.4, 53.9],
-                    ['交邮', 72.4, 53.9],
-                    ['文娱', 72.4, 53.9],
-                    ['水利', 72.4, 53.9],
-                    ['居民', 72.4, 53.9],
-                ]
-            },
-            xAxis: { type: 'category' },
-            yAxis: {
-                type: 'value',
-                name: '企业数(户)',
-                min: 0,
-                max: 150,
-                interval: 30, //间隔
-                minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
-                axisLabel: {
-                    formatter: '{value}'
-                }
-            },
-            // Declare several bar series, each will be mapped
-            // to a column of dataset.source by default.
-            series: [
-                { type: 'bar' },
-                { type: 'bar' }
-            ]
-        };
-        myChart.setOption(option);
-        myChart2.setOption(option2);
-        myChart3.setOption(mjss);
-        myChart4.setOption(mjzjz);
-        // 使用刚指定的配置项和数据显示图表。
-        element.on('tab(test1)', function (data) {
-            console.log(this); //当前Tab标题所在的原始DOM元素
-            console.log(data.index); //得到当前Tab的所在下标
-            console.log(data.elem); //得到当前的Tab大容器
-            if (data.index == 0) {
-                $('#main').show()
-                $('#mjss').hide()
-                $('#mjzjz').hide()
-            }
-            if (data.index == 1) {
-                $('#main').hide()
-                $('#mjss').show()
-                $('#mjzjz').hide()
-            }
-            if (data.index == 2) {
-                $('#main').hide()
-                $('#mjss').hide()
-                $('#mjzjz').show()
-            }
+                        ],
+                        series: [
+                            {
+                                name: '数据',
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: countdata
+                            }
+                        ]
+                    };
+                    myChart1.setOption(option);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        }
+        function inittable2(name, score1, score2) {
+            var datas2 = [];
+            var countdata2 = [];
+            axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}`)
+                .then(function (res) {
+                    datas2.splice(0, datas2.length);
+                    countdata2.splice(0, countdata2.length);
+                    $.each(res.data.content.list, function (index, item) {
+                        console.log(item)
+                        datas2.push(item.town)
+                        countdata2.push(item.count)
+                    })
+
+                    var myChart2 = echarts.init(document.getElementById('main2'));
+                    var option2 = {
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: datas2,
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '数据',
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: countdata2
+                            }
+                        ]
+                    };
+                    myChart2.setOption(option2);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        }
+        function table1(name, score1, score2) {
+            var datas = [];
+            var countdata = [];
+            axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}`)
+                .then(function (res) {
+                    datas.splice(0, datas.length);
+                    countdata.splice(0, countdata.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            datas.push(item.industry)
+                            countdata.push(item.count)
+                        })
+                        var myChart1 = echarts.init(document.getElementById('main1'));
+                        var option = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata
+                                }
+                            ]
+                        };
+                        myChart1.setOption(option);
+                    })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        }
+        
+        function table2(name,score1, score2) {
+            var datas2 = [];
+            var countdata2 = [];
+            axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}`)
+                .then(function (res) {
+                    datas2.splice(0, datas2.length);
+                    countdata2.splice(0, countdata2.length);
+                    $.each(res.data.content.list, function (index, item) {
+                        console.log(item)
+                        datas2.push(item.town)
+                        countdata2.push(item.count)
+                    })
+
+                    var myChart2 = echarts.init(document.getElementById('main2'));
+                    var option2 = {
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: datas2,
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '数据',
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: countdata2
+                            }
+                        ]
+                    };
+                    myChart2.setOption(option2);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+            //form.on('select(myselect2)', function (data) {
+            //    console.log(data.value)
+            //    axios.get(`/api/EchartReportParms/GetTownData?name=${data.value}&score1=${score1}&score2=${score2}`)
+            //        .then(function (res) {
+            //            datas2.splice(0, datas2.length);
+            //            countdata2.splice(0, countdata2.length);
+            //            $.each(res.data.content.list, function (index, item) {
+            //                console.log(item)
+            //                datas2.push(item.town)
+            //                countdata2.push(item.count)
+            //            })
+
+            //            var myChart2 = echarts.init(document.getElementById('main2'));
+            //            var option2 = {
+            //                color: ['#3398DB'],
+            //                tooltip: {
+            //                    trigger: 'axis',
+            //                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            //                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            //                    }
+            //                },
+            //                grid: {
+            //                    left: '3%',
+            //                    right: '4%',
+            //                    bottom: '3%',
+            //                    containLabel: true
+            //                },
+            //                xAxis: [
+            //                    {
+            //                        type: 'category',
+            //                        data: datas2,
+            //                        axisTick: {
+            //                            alignWithLabel: true
+            //                        }
+            //                    }
+            //                ],
+            //                yAxis: [
+            //                    {
+            //                        type: 'value'
+            //                    }
+            //                ],
+            //                series: [
+            //                    {
+            //                        name: '数据',
+            //                        type: 'bar',
+            //                        barWidth: '60%',
+            //                        data: countdata2
+            //                    }
+            //                ]
+            //            };
+            //            myChart2.setOption(option2);
+            //        })
+            //        .catch(function (error) {
+            //            console.log(error)
+            //        });
+            //})
+        }
+        form.on('select(myselect)', function (data) {
+                axios.get(`/api/EchartReportParms/GetIndustryData?name=${data.value}&score1=${fs1}&score2=${fs2}`)
+                    .then(function (res) {
+                        var datas = [];
+                        var countdata = [];
+                        datas.splice(0, datas.length);
+                        countdata.splice(0, countdata.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            datas.push(item.industry)
+                            countdata.push(item.count)
+                        })
+                        var myChart1 = echarts.init(document.getElementById('main1'));
+                        var option = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata
+                                }
+                            ]
+                        };
+                        myChart1.setOption(option);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            })
+        form.on('select(myselect2)', function (data) {
+                console.log(data.value)
+                axios.get(`/api/EchartReportParms/GetTownData?name=${data.value}&score1=${fs1}&score2=${fs2}`)
+                    .then(function (res) {
+                        var datas2 = [];
+                        var countdata2 = [];
+                        datas2.splice(0, datas2.length);
+                        countdata2.splice(0, countdata2.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            console.log(item)
+                            datas2.push(item.town)
+                            countdata2.push(item.count)
+                        })
+
+                        var myChart2 = echarts.init(document.getElementById('main2'));
+                        var option2 = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas2,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata2
+                                }
+                            ]
+                        };
+                        myChart2.setOption(option2);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            })
+        //鼠标悬浮变小指头
+        $(".divSelected").mouseover(function () {
+            $(".divSelected").css("cursor", "pointer");
         });
+        $(".divUnSelected1").mouseover(function () {
+            $(".divUnSelected1").css("cursor", "pointer");
+        });
+        $(".divUnSelected2").mouseover(function () {
+            $(".divUnSelected2").css("cursor", "pointer");
+        });
+        $(".divUnSelected3").mouseover(function () {
+            $(".divUnSelected3").css("cursor", "pointer");
+        });
+        //鼠标点击切换Div的颜色
+        $('.divSelected').click(function () {
+            table1($('#myselect').val(),90, 150)
+            table2($('#myselect2').val(), 90, 150)
+            fs1 = 90;
+            fs2 = 150;
+            $('.divSelectedTitle').css("color", 'white')
+            $('.divUnSelectedTitle1').css("color", '#2497f3')
+            $('.divUnSelectedTitle2').css("color", '#2497f3')
+            $('.divUnSelectedTitle3').css("color", '#2497f3')
+            $('.divSelectedDesc').css("color", 'white')
+            $('.divUnSelectedDesc1').css("color", 'red')
+            $('.divUnSelectedDesc2').css("color", 'red')
+            $('.divUnSelectedDesc3').css("color", 'red')
+            $('.divSelected').css("background-color", '#2497f3')
+            $(".divUnSelected1").css("background-color", 'white')
+            $(".divUnSelected2").css("background-color", 'white')
+            $(".divUnSelected3").css("background-color", 'white')
+        })
+        $('.divUnSelected1').click(function () {
+            table1($('#myselect').val(),80, 90)
+            table2($('#myselect2').val(), 80, 90)
+            fs1 = 80;
+            fs2 = 90;
+            $('.divSelectedTitle').css("color", '#2497f3')
+            $('.divUnSelectedTitle1').css("color", 'white')
+            $('.divUnSelectedTitle2').css("color", '#2497f3')
+            $('.divUnSelectedTitle3').css("color", '#2497f3')
+            $('.divSelectedDesc').css("color", 'red')
+            $('.divUnSelectedDesc1').css("color", 'white')
+            $('.divUnSelectedDesc2').css("color", 'red')
+            $('.divUnSelectedDesc3').css("color", 'red')
+            $('.divSelected').css("background-color", 'white')
+            $(".divUnSelected1").css("background-color", '#2497f3')
+            $(".divUnSelected2").css("background-color", 'white')
+            $(".divUnSelected3").css("background-color", 'white')
+            
+        })
+        $('.divUnSelected2').click(function () {
+            table1($('#myselect').val(),60, 80)
+            table2($('#myselect2').val(), 60, 80)
+            fs1 = 60;
+            fs2 = 80;
+            $('.divSelectedTitle').css("color", '#2497f3')
+            $('.divUnSelectedTitle1').css("color", '#2497f3')
+            $('.divUnSelectedTitle2').css("color", 'white')
+            $('.divUnSelectedTitle3').css("color", '#2497f3')
+            $('.divSelectedDesc').css("color", 'red')
+            $('.divUnSelectedDesc1').css("color", 'red')
+            $('.divUnSelectedDesc2').css("color", 'white')
+            $('.divUnSelectedDesc3').css("color", 'red')
+            $('.divSelected').css("background-color", 'white')
+            $(".divUnSelected1").css("background-color", 'white')
+            $(".divUnSelected2").css("background-color", '#2497f3')
+            $(".divUnSelected3").css("background-color", 'white')
+        })
+        $('.divUnSelected3').click(function () {
+            table1($('#myselect').val(),-1, 60)
+            table2($('#myselect2').val(), -1, 60)
+            fs1 = -1;
+            fs2 = 60;
+            $('.divSelectedTitle').css("color", '#2497f3')
+            $('.divUnSelectedTitle1').css("color", '#2497f3')
+            $('.divUnSelectedTitle2').css("color", '#2497f3')
+            $('.divUnSelectedTitle3').css("color", 'white')
+            $('.divSelectedDesc').css("color", 'red')
+            $('.divUnSelectedDesc1').css("color", 'red')
+            $('.divUnSelectedDesc2').css("color", 'red')
+            $('.divUnSelectedDesc3').css("color", 'white')
+            $('.divSelected').css("background-color", 'white')
+            $(".divUnSelected1").css("background-color", 'white')
+            $(".divUnSelected2").css("background-color", 'white')
+            $(".divUnSelected3").css("background-color", '#2497f3')
+        })
+        axios.get(`/api/EchartReportParms/GetScorePercentage?`).then(function (res) {
+            console.log(res.data.content.value1)
+            //赋值
+            $('#value1').html(res.data.content.value1)
+            $('#value11').html(res.data.content.list1percentage)
+            $('#value2').html(res.data.content.value2)
+            $('#value22').html(res.data.content.list2percentage)
+            $('#value3').html(res.data.content.value3)
+            $('#value33').html(res.data.content.list3percentage)
+            $('#value4').html(res.data.content.value4)
+            $('#value44').html(res.data.content.list4percentage)
+        }).catch(function (error) {
+            console.log(error)
+            });
+        $(function () {
+            inittable1("", -1, 60);
+            inittable2("", -1, 60);
+        })
     })
 </script>
-<script>
-    new Vue({
-        el: "#app",
-        data: function () {
-            return {
-                tableData6: [{
-                    pfjg: '90分以上',
-                    qynum: '409',
-                    slbz: '65.65',
-                }, {
-                    pfjg: '80-90分',
-                    qynum: '107',
-                    slbz: '17.17',
-                }, {
-                    pfjg: '60-80分',
-                    qynum: '62',
-                    slbz: '9.95',
-                }, {
-                    pfjg: '60分以下',
-                    qynum: '45',
-                    slbz: '7.22',
-                }]
-            }
-        },
-        methods: {
-            getSummaries(param) {
-                const { columns, data } = param;
-                const sums = [];
-                columns.forEach((column, index) => {
-                    if (index === 0) {
-                        sums[index] = '总价';
-                        return;
-                    }
-                    const values = data.map(item => Number(item[column.property]));
-                    if (!values.every(value => isNaN(value))) {
-                        sums[index] = values.reduce((prev, curr) => {
-                            const value = Number(curr);
-                            if (!isNaN(value)) {
-                                return prev + curr;
-                            } else {
-                                return prev;
-                            }
-                        }, 0);
-                        sums[index] += ' 元';
-                    } else {
-                        sums[index] = 'N/A';
-                    }
-                });
-
-                return sums;
-            }
-
-        },
-        mounted: function () {
-            let vm = this
-
-        }
-
-    });
-</script>
+<div style="margin-left:18px">
+    <div style="width: 100%;padding-top:15px">
+        <div><div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div><h3>综合评分结构分布</h3></div>
+        <div style="padding-top:10px">
+        <div class="divSelected" id="divSelected" >
+            <div class="divSelectedTitle">
+                90分以上
+            </div>
+            <div class="divSelectedSplit">
+            </div>
+            <div class="divSelectedDesc">
+                <span id='value1'></span> 户<span id="value11"></span>
+            </div>
+        </div>
+        <div class="divUnSelected1">
+            <div class="divUnSelectedTitle1">
+                80分-90分(含)
+            </div>
+            <div class="divUnSelectedSplit1">
+            </div>
+            <div class="divUnSelectedDesc1">
+                <span id='value2'></span>户 <span id="value22"></span>
+            </div>
+        </div>
+        <div class="divUnSelected2">
+            <div class="divUnSelectedTitle2">
+                60分-80分(含)
+            </div>
+            <div class="divUnSelectedSplit2">
+            </div>
+            <div class="divUnSelectedDesc2">
+                <span id='value3'></span> 户<span id="value33"></span>
+            </div>
+        </div>
+        <div class="divUnSelected3">
+            <div class="divUnSelectedTitle3">
+                60分(含)以下
+            </div>
+            <div class="divUnSelectedSplit3">
+            </div>
+            <div class="divUnSelectedDesc3">
+                <span id='value4'></span>户 <span id="value44"></span>
+            </div>
+        </div>
+            </div>
+    </div>
+    <div class="layui-inline" style="padding-top:30px">
+        <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div> <h3 >行业结构特征分布</h3>
+        <div class="layui-form" style="padding-top:10px">
+            <select name="" id="myselect" lay-filter="myselect">
+                <option value="">企业数量</option>
+                <option value="TAX_PER_MU">亩均税收规模</option>
+                <option value="ADD_VALUE_PER_MU">亩均增加值规模</option>
+                <option value="PRODUCTIVITY">全员劳动生产率</option>
+                <option value="pollutant_discharge">单位排污权增加值</option>
+                <option value="Energy_consumption">单位能耗增加值</option>
+                <option value="NET_ASSETS_PROFIT">净资产收益率</option>
+                <option value="R_D_EXPENDITURE_RATIO">研发经费投入比</option>
+            </select>
+        </div>
+    </div>
+    <div id="main1" style="width: 98%;height:300px;padding-top:-10px"></div>
+    <div class="layui-inline" style="padding-top:30px" >
+        <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div> <h3>空间结构特征分布</h3>
+        <div class="layui-form" style="padding-top:10px">
+            <select name="" id="myselect2" lay-filter="myselect2">
+                <option value="">企业数量</option>
+                <option value="TAX_PER_MU">亩均税收规模</option>
+                <option value="ADD_VALUE_PER_MU">亩均增加值规模</option>
+                <option value="PRODUCTIVITY">全员劳动生产率</option>
+                <option value="pollutant_discharge">单位排污权增加值</option>
+                <option value="Energy_consumption">单位能耗增加值</option>
+                <option value="NET_ASSETS_PROFIT">净资产收益率</option>
+                <option value="R_D_EXPENDITURE_RATIO">研发经费投入比</option>
+            </select>
+        </div>
+    </div>
+    <div id="main2" style="width: 98%;height:300px;"></div>
+</div>
