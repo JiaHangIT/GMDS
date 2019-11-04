@@ -50,7 +50,7 @@ namespace JiaHang.Projects.Admin.BLL
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         public FuncResult GetScorePercentage() {
-            string sql= "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL";
+            string sql= "select count(*) as count  from JH_APD.apd_dim_org";
             string sql1 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 90";
             string sql2 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 80 and COMPOSITE_SCORE <=90";
             string sql3 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 60 and COMPOSITE_SCORE <=80";

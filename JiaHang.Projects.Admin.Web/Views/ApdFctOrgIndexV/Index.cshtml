@@ -246,7 +246,7 @@
                                 名
                             </td>
                             <td>
-                                6|329
+                                <span id="COMPOSITE_RANK"></span>|<span id="pdpm"></span>
                             </td>
                             <td>
                                 综<br />
@@ -255,7 +255,7 @@
                                 分
                             </td>
                             <td>
-                                89
+                                <span id="COMPOSITE_SCORE"></span>
                             </td>
                             <td>
                                 分<br />
@@ -267,19 +267,19 @@
                                 6<br />
                                 <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
                                 </div>
-                                6|329
+                                <span id="sixpm"></span>|<span id="sixflpf"></span>
                             </td>
                             <td>
                                 1<br />
                                 <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
                                 </div>
-                                6|329
+                                <span id="onepm"></span>|<span id="onepf"></span>
                             </td>
                             <td>
                                 X<br />
                                 <div style="width: 90%; height: 1px; background-color: Black; margin:auto;">
                                 </div>
-                                6|329
+                                6|<span id="xpf"></span>
                             </td>
                         </tr>
                     </table>
@@ -293,14 +293,14 @@
                             <td>
                                 <div class="divWhite">
                                     税收实际贡献<br />
-                                    6000万元
+                                   <span id="fact_tax"></span>万元
                                 </div>
                             </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
                                     综合能耗<br />
-                                    6000吨标煤
+                                  <span id="Energy_consumption2"></span>吨标煤
                                 </div>
                             </td>
                             <td colspan="3">
@@ -318,14 +318,14 @@
                             <td>
                                 <div class="divWhite">
                                     净利润<br />
-                                    1000万
+                                    <span id="PROFIT"></span>万
                                 </div>
                             </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
                                     研发经费支出<br />
-                                    100万
+                                    <span id="R_D_EXPENDITURE"></span>万
                                 </div>
                             </td>
                         </tr>
@@ -364,7 +364,7 @@
                             <td>
                                 <div class="divWhite">
                                     用地面积<br />
-                                    600亩
+                                   <span id="LAND_AREA"></span>亩
                                 </div>
                             </td>
                             <td>
@@ -373,7 +373,7 @@
                             <td>
                                 <div class="divWhite">
                                     工业增加值<br />
-                                    60000万元
+                                    <span id="Industrial_added_value"></span>万元
                                 </div>
                             </td>
                             <td>
@@ -382,7 +382,7 @@
                             <td>
                                 <div class="divWhite">
                                     年均职工人数<br />
-                                    600人
+                                   <span id="WORKER_MONTH"></span>人
                                 </div>
                             </td>
                             <td>
@@ -397,14 +397,14 @@
                             <td>
                                 <div class="divWhite">
                                     净资产<br />
-                                    1000万
+                                   <span id="ASSETS"></span>万
                                 </div>
                             </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
                                     主营业务收入<br />
-                                    900万
+                                   <span id="MAIN_BUSINESS_INCOME"></span>万
                                 </div>
                             </td>
                         </tr>
@@ -442,8 +442,8 @@
                             <td></td>
                             <td>
                                 <div class="divWhite">
-                                    排污权<br />
-                                    6000吨
+                                    主要污染物排放当量<br />
+                                    <span id="pollutant_discharge"></span>
                                 </div>
                             </td>
                             <td colspan="3">
@@ -503,7 +503,6 @@
                 OrgName: '',
                 dialogTitle: '',
                 centerDialogVisible: false,
-                historyname: '',
                 pageSize1: 5,
                 currentPage1: 1,
             }
@@ -604,8 +603,26 @@
                         $('#dwnh').html(response.data.content.list[0].energY_CONSUMPTION)
                         $('#jzcsyl').html(response.data.content.list[0].neT_ASSETS_PROFIT)
                         $('#yfjftrb').html(response.data.content.list[0].r_D_EXPENDITURE_RATIO)
-                       
-                       
+
+                        $('#pollutant_discharge').html(response.data.content.list[0].pollutant_discharge2)
+                        $('#MAIN_BUSINESS_INCOME').html(response.data.content.list[0].maiN_BUSINESS_INCOME)
+                        $('#ASSETS').html(response.data.content.list[0].assets)
+                        $('#WORKER_MONTH').html(response.data.content.list[0].workeR_MONTH)
+                        $('#Industrial_added_value').html(response.data.content.list[0].industrial_added_value)
+                        $('#LAND_AREA').html(response.data.content.list[0].lanD_AREA)
+                        $('#R_D_EXPENDITURE').html(response.data.content.list[0].r_D_EXPENDITURE)
+                        $('#PROFIT').html(response.data.content.list[0].profit)
+                        //综合能耗
+                        $('#Energy_consumption2').html(response.data.content.list[0].energy_consumption2)
+                        $('#fact_tax').html(response.data.content.list[0].fact_tax)
+                        $('#COMPOSITE_SCORE').html(response.data.content.list[0].compositE_SCORE)
+                        $('#sixflpf').html(response.data.content.industyCount)
+                        $('#xpf').html(response.data.content.industyCount)
+                        $('#onepf').html(response.data.content.industyCount)
+                        $('#onepm').html(response.data.content.list[0].onE_RANK)
+                        $('#sixpm').html(response.data.content.list[0].siX_RANK)
+                        $('#pdpm').html(response.data.content.industyCount)
+                        $('#COMPOSITE_RANK').html(response.data.content.list[0].compositE_RANK)
                     })
                     .catch(function (error) {
                         console.log(error);

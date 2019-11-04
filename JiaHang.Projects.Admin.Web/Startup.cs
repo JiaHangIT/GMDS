@@ -81,7 +81,7 @@ namespace JiaHang.Projects.Admin.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=dashboard}/{action=Index}/{id?}");
+                    template: "{controller=ApdFctOrgIndexV}/{action=main}/{id?}");
             });
             app.UseSwagger();
 

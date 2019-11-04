@@ -16,9 +16,10 @@ namespace JiaHang.Projects.Admin.BLL
         }
         //查询所有
         public FuncResult Select(int pageSize, int currentPage, string OrgName) {
-
+            try { 
             StringBuilder sql = new StringBuilder("select * from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL");
-            List<string> wheres = new List<string>();
+             
+                List<string> wheres = new List<string>();
             if (OrgName != null)
             {
                 wheres.Add(" ORG_NAME like '%" + OrgName + "%'");
@@ -30,9 +31,12 @@ namespace JiaHang.Projects.Admin.BLL
                 sql.Append(" where " + wh);
             }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
+               
             int total = list.Count();
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); };
         }
         //根据城镇下拉框改变获取数据
         public FuncResult SelectTownDdata(int pageSize, int currentPage, string Town)
@@ -110,11 +114,20 @@ namespace JiaHang.Projects.Admin.BLL
         }
         public FuncResult BenefiteValuationInfo(string code) {
             StringBuilder sql = new StringBuilder("select * from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where ORG_CODE="+"'"+code+"'");
+            string sql2 = "select count(*) as count  from JH_APD.apd_dim_org";
+            List<Counts> result = OracleDbHelper.Query<Counts>(sql2.ToString());
+            decimal industyCount = 0;
+            foreach (var item in result) {
+                industyCount = item.Count;
+            }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
-            return new FuncResult() { IsSuccess = true, Content = new { list } };
+            return new FuncResult() { IsSuccess = true, Content = new { list , industyCount } };
         }
     }
-
+    public class Counts
+    {
+        public decimal Count { get; set; }
+    }
     public class Town {
         public string Code { get; set; }
         public string Name { get; set; }
@@ -137,6 +150,29 @@ namespace JiaHang.Projects.Admin.BLL
         public decimal ENERGY_CONSUMPTION { get; set; }
         public decimal NET_ASSETS_PROFIT { get; set; }
         public decimal R_D_EXPENDITURE_RATIO { get; set; }
+        //年职工人数
+        public decimal WORKER_MONTH { get; set; }
+        //工业增加值
+        public decimal Industrial_added_value { get; set; }
+        //主要污染排放量
+        public decimal pollutant_discharge2 { get; set; }
+        //税收实际贡献
+        public decimal fact_tax { get; set; }
+        //用地面积
+        public decimal LAND_AREA { get; set; }
+        //净利润
+        public decimal PROFIT { get; set; }
+        //净资产
+        public decimal ASSETS { get; set; }
+        //主营业务收入
+        public decimal MAIN_BUSINESS_INCOME { get; set; }
+        //研发经费支出
+        public decimal R_D_EXPENDITURE { get; set; }
+        //综合能耗
+        public decimal Energy_consumption2 { get; set; }
+        public decimal ONE_RANK { get; set; }
+        public decimal SIX_RANK { get; set; }
+        public decimal COMPOSITE_RANK { get; set; }
     }
     public class IndustryInfo {
         public string ORG_CODE { get; set; }
