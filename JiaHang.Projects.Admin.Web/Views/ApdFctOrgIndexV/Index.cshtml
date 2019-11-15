@@ -3,6 +3,10 @@
     ViewData["Title"] = "企业评分排序";
 }
 <style>
+    .el-dialog {
+        left: 10%;       
+    }
+
     .v-modal {
         display: none;
     }
@@ -101,65 +105,64 @@
     </el-form>
     <el-table ref="multipleTable"
               :data="data"
-             :border="true"
+              :border="true"
               tooltip-effect="dark"
-              height="550"
               style="width: 100%">
         <el-table-column label="企业名称"
                          fixed
-                          width="150"
+                         width="150"
                          prop="orG_NAME">
             <template slot-scope="scope">
                 <el-button v-on:click="handleClick(scope.$index, scope.row)" type="text" size="small">{{scope.row.orG_NAME}}</el-button>
             </template>
         </el-table-column>
         <el-table-column label="所属行业"
-                          width="150"
+                         width="150"
                          prop="industry">
         </el-table-column>
         <el-table-column label="所在街道（园区）"
-                          width="150"
+                         width="150"
                          prop="town">
         </el-table-column>
         <el-table-column label="综合评分"
                          sortable
-                          width="150"
+                         width="150"
                          align="center"
                          prop="compositE_SCORE">
         </el-table-column>
         <el-table-column label="亩均税收得分"
                          sortable
-                          width="150"
+                         width="150"
                          prop="taX_PER_MU">
         </el-table-column>
         <el-table-column label="亩均增加值得分"
                          sortable
-                          width="150"
+                         width="150"
                          prop="adD_VALUE_PER_MU">
         </el-table-column>
         <el-table-column label="单位能耗增加值得分"
                          sortable
-                          width="180"
+                         width="180"
                          prop="energY_CONSUMPTION">
         </el-table-column>
         <el-table-column label="单位排污增加值得分"
                          sortable
-                          width="180"
+                         width="180"
                          prop="pollutanT_DISCHARGE">
         </el-table-column>
         <el-table-column label="全员劳动生产率得分"
                          sortable
-                          width="180"
+                         width="180"
                          prop="productivity">
         </el-table-column>
         <el-table-column label="净资产收益率得分"
                          sortable
-                          width="180"
+                         width="180"
                          prop="neT_ASSETS_PROFIT">
         </el-table-column>
         <el-table-column label="研发经费投入比得分"
                          sortable
-                          width="180"
+                         width="180"
                          prop="r_D_EXPENDITURE_RATIO">
         </el-table-column>
     </el-table>
@@ -171,312 +174,311 @@
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
     </el-pagination>
+    
+        <el-dialog :title="dialogTitle"
+                   :visible.sync="centerDialogVisible"
+                   width="1011px"
+                   top="10%">
+            <div style="padding-top:-100px">
+                <el-tabs v-model="activeName" @@tab-click="">
+                    <el-tab-pane label="基本信息" name="first">
+                        <el-row>
+                            <el-col :span="12"><div class="grid-content bg-purple">企业名称：<span id="industryName"></span></div></el-col>
+                            <el-col :span="12"><div class="grid-content bg-purple-light">登记状态：<span id="registratioN_STATUS"></span></div></el-col>
+                        </el-row>
+                        <el-row style="margin-top:20px">
+                            <el-col :span="12"><div class="grid-content bg-purple"></div>统一社会信用代码：<span id="orgCode"></span></el-col>
+                            <el-col :span="12"><div class="grid-content bg-purple-light">注册资本（万元）：<span id="registratioN_MONEY"></span></div></el-col>
+                        </el-row>
+                        <el-row style="margin-top:20px">
+                            <el-col :span="12"><div class="grid-content bg-purple"></div>法定代表人：<span id="legaL_REPRESENTATIVE"></span></el-col>
+                            <el-col :span="12"><div class="grid-content bg-purple-light">企业类型：<span id="registratioN_TYPE"></span></div></el-col>
+                        </el-row>
+                        <el-row style="margin-top:20px">
+                            <el-col :span="12">成立日期：<span id="registratioN_DATE"></span></el-col>
+                            <el-col :span="12">注册地址：<span id="address"></span></el-col>
+                        </el-row>
+                        <el-row style="margin-top:20px">
+                            <el-col :span="12">所属行业：<span id="Industry"></span></el-col>
+                        </el-row>
+                        <el-table ref="multipleTable"
+                                  :data="data1"
+                                  :border="true"
+                                  tooltip-effect="dark"
+                                  style="width: 100%">
+                            <el-table-column label="分支机构名称"
+                                             prop="suB_ORG_NAME">
+                            </el-table-column>
+                            <el-table-column label="所属省份"
+                                             prop="province">
+                            </el-table-column>
+                            <el-table-column label="登记状态"
+                                             prop="registratioN_STATUS">
+                            </el-table-column>
+                            <el-table-column label="成立日期"
+                                             sortable
+                                             prop="creatioN_DATE">
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination @@size-change="handleSizeChange1"
+                                       @@current-change="handleCurrentChange1"
+                                       :current-page="currentPage1"
+                                       :page-sizes="[5, 10, 15, 20]"
+                                       :page-size="pageSize1"
+                                       layout="total, sizes, prev, pager, next, jumper"
+                                       :total="total1">
+                        </el-pagination>
+                    </el-tab-pane>
+                    <el-tab-pane label="企业综合效益展示" name="second">
+                        <table class="tableCss" style="width: 100%; text-align: center;">
+                            <tr>
+                                <td>
+                                    评<br />
+                                    定<br />
+                                    分<br />
+                                    类
+                                </td>
+                                <td>
+                                    A
+                                </td>
+                                <td>
+                                    评<br />
+                                    定<br />
+                                    排<br />
+                                    名
+                                </td>
+                                <td>
+                                    <span id="COMPOSITE_RANK"></span>|<span id="pdpm"></span>
+                                </td>
+                                <td>
+                                    综<br />
+                                    合<br />
+                                    评<br />
+                                    分
+                                </td>
+                                <td>
+                                    <span id="COMPOSITE_SCORE"></span>
+                                </td>
+                                <td>
+                                    分<br />
+                                    类<br />
+                                    评<br />
+                                    分
+                                </td>
+                                <td>
+                                    6<br />
+                                    <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
+                                    </div>
+                                    <span id="sixpm"></span>|<span id="sixflpf"></span>
+                                </td>
+                                <td>
+                                    1<br />
+                                    <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
+                                    </div>
+                                    <span id="onepm"></span>|<span id="onepf"></span>
+                                </td>
+                                <td>
+                                    X<br />
+                                    <div style="width: 90%; height: 1px; background-color: Black; margin:auto;">
+                                    </div>
+                                    6|<span id="xpf"></span>
+                                </td>
+                            </tr>
+                        </table>
+                        <p>
+                            &nbsp;
+                        </p>
+                        <table class="tableCss2" style="width: 100%;">
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div class="divWhite">
+                                        税收实际贡献<br />
+                                        <span id="fact_tax"></span>万元
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="divWhite">
+                                        综合能耗<br />
+                                        <span id="Energy_consumption2"></span>吨标煤
+                                    </div>
+                                </td>
+                                <td colspan="3">
+                                    <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
+                                </td>
+                                <td>
+                                    <div class="divRed">
+                                        单位能耗<br />
+                                        <span id="dwnh"></span>万元/吨标煤
+                                    </div>
+                                </td>
+                                <td rowspan="5">
+                                    <div style="float:left;width: 2px;height: 350px; background: #2fd1f6;"></div>
+                                </td>
+                                <td>
+                                    <div class="divWhite">
+                                        净利润<br />
+                                        <span id="PROFIT"></span>万
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="divWhite">
+                                        研发经费支出<br />
+                                        <span id="R_D_EXPENDITURE"></span>万
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="height: 30px;">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/up.png" style="width: 20px; height: 30px" />
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="divGreen">
+                                        亩均增加值<br />
+                                        <span id="mjzjz"></span>万元/亩
+                                    </div>
+                                </td>
+                                <td>
+                                    <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
+                                </td>
+                                <td>
+                                    <div class="divWhite">
+                                        用地面积<br />
+                                        <span id="LAND_AREA"></span>亩
+                                    </div>
+                                </td>
+                                <td>
+                                    <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
+                                </td>
+                                <td>
+                                    <div class="divWhite">
+                                        工业增加值<br />
+                                        <span id="Industrial_added_value"></span>万元
+                                    </div>
+                                </td>
+                                <td>
+                                    <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
+                                </td>
+                                <td>
+                                    <div class="divWhite">
+                                        年均职工人数<br />
+                                        <span id="WORKER_MONTH"></span>人
+                                    </div>
+                                </td>
+                                <td>
+                                    <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
+                                </td>
+                                <td>
+                                    <div class="divYellow">
+                                        全员劳动生产率<br />
+                                        <span id="qyldscl"></span>万元/人.年
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="divWhite">
+                                        净资产<br />
+                                        <span id="ASSETS"></span>万
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="divWhite">
+                                        主营业务收入<br />
+                                        <span id="MAIN_BUSINESS_INCOME"></span>万
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="height: 15px;">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div class="divGreen">
+                                        亩均税收<br />
+                                        <span id="mjss"></span>万元/亩
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="divWhite">
+                                        主要污染物排放当量<br />
+                                        <span id="pollutant_discharge"></span>
+                                    </div>
+                                </td>
+                                <td colspan="3">
+                                    <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
+                                </td>
+                                <td>
+                                    <div class="divRed">
+                                        单位排污权增加值<br />
+                                        <span id="dwpwqzjz"></span>万元/吨
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="divGreen">
+                                        净资产收益率<br />
+                                        <span id="jzcsyl"></span>%
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="divYellow">
+                                        研发经费投入比<br />
+                                        <span id="yfjftrb"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </el-tab-pane>
 
-    <el-dialog :title="dialogTitle"
-               :visible.sync="centerDialogVisible"
-               width="60%"
-               top="5%">
-        <div style="padding-top:-100px">
-            <el-tabs  v-model="activeName" @@tab-click="">
-                <el-tab-pane label="基本信息" name="first">
-                    <el-row>
-                        <el-col :span="12"><div class="grid-content bg-purple">企业名称：<span id="industryName"></span></div></el-col>
-                        <el-col :span="12"><div class="grid-content bg-purple-light">登记状态：<span id="registratioN_STATUS"></span></div></el-col>
-                    </el-row>
-                    <el-row style="margin-top:20px">
-                        <el-col :span="12"><div class="grid-content bg-purple"></div>统一社会信用代码：<span id="orgCode"></span></el-col>
-                        <el-col :span="12"><div class="grid-content bg-purple-light">注册资本（万元）：<span id="registratioN_MONEY"></span></div></el-col>
-                    </el-row>
-                    <el-row style="margin-top:20px">
-                        <el-col :span="12"><div class="grid-content bg-purple"></div>法定代表人：<span id="legaL_REPRESENTATIVE"></span></el-col>
-                        <el-col :span="12"><div class="grid-content bg-purple-light">企业类型：<span id="registratioN_TYPE"></span></div></el-col>
-                    </el-row>
-                    <el-row style="margin-top:20px">
-                        <el-col :span="12">成立日期：<span id="registratioN_DATE"></span></el-col>
-                        <el-col :span="12">注册地址：<span id="address"></span></el-col>
-                    </el-row>
-                    <el-row style="margin-top:20px">
-                        <el-col :span="12">所属行业：<span id="Industry"></span></el-col>
-                    </el-row>
-                    <el-table ref="multipleTable"
-                              :data="data1"
-                              :border="true"
-                              tooltip-effect="dark"
-                              style="width: 100%"
-                              >
-                        <el-table-column label="分支机构名称"
-                                         prop="suB_ORG_NAME">
-                        </el-table-column>
-                        <el-table-column label="所属省份"
-                                         prop="province">
-                        </el-table-column>
-                        <el-table-column label="登记状态"
-                                         prop="registratioN_STATUS">
-                        </el-table-column>
-                        <el-table-column label="成立日期"
-                                         sortable
-                                         prop="creatioN_DATE">
-                        </el-table-column>
-                    </el-table>
-                    <el-pagination @@size-change="handleSizeChange1"
-                                   @@current-change="handleCurrentChange1"
-                                   :current-page="currentPage1"
-                                   :page-sizes="[5, 10, 15, 20]"
-                                   :page-size="pageSize1"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="total1">
-                    </el-pagination>
-                </el-tab-pane>
-                <el-tab-pane label="企业综合效益展示" name="second">
-                    <table class="tableCss" style="width: 100%; text-align: center;">
-                        <tr>
-                            <td>
-                                评<br />
-                                定<br />
-                                分<br />
-                                类
-                            </td>
-                            <td>
-                                A
-                            </td>
-                            <td>
-                                评<br />
-                                定<br />
-                                排<br />
-                                名
-                            </td>
-                            <td>
-                                <span id="COMPOSITE_RANK"></span>|<span id="pdpm"></span>
-                            </td>
-                            <td>
-                                综<br />
-                                合<br />
-                                评<br />
-                                分
-                            </td>
-                            <td>
-                                <span id="COMPOSITE_SCORE"></span>
-                            </td>
-                            <td>
-                                分<br />
-                                类<br />
-                                评<br />
-                                分
-                            </td>
-                            <td>
-                                6<br />
-                                <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
-                                </div>
-                                <span id="sixpm"></span>|<span id="sixflpf"></span>
-                            </td>
-                            <td>
-                                1<br />
-                                <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
-                                </div>
-                                <span id="onepm"></span>|<span id="onepf"></span>
-                            </td>
-                            <td>
-                                X<br />
-                                <div style="width: 90%; height: 1px; background-color: Black; margin:auto;">
-                                </div>
-                                6|<span id="xpf"></span>
-                            </td>
-                        </tr>
-                    </table>
-                    <p>
-                        &nbsp;
-                    </p>
-                    <table class="tableCss2" style="width: 100%;">
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <div class="divWhite">
-                                    税收实际贡献<br />
-                                   <span id="fact_tax"></span>万元
-                                </div>
-                            </td>
-                            <td></td>
-                            <td>
-                                <div class="divWhite">
-                                    综合能耗<br />
-                                  <span id="Energy_consumption2"></span>吨标煤
-                                </div>
-                            </td>
-                            <td colspan="3">
-                                <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
-                            </td>
-                            <td>
-                                <div class="divRed">
-                                    单位能耗<br />
-                                    <span id="dwnh"></span>万元/吨标煤
-                                </div>
-                            </td>
-                            <td rowspan="5">
-                                <div style="float:left;width: 2px;height: 350px; background: #2fd1f6;"></div>
-                            </td>
-                            <td>
-                                <div class="divWhite">
-                                    净利润<br />
-                                    <span id="PROFIT"></span>万
-                                </div>
-                            </td>
-                            <td></td>
-                            <td>
-                                <div class="divWhite">
-                                    研发经费支出<br />
-                                    <span id="R_D_EXPENDITURE"></span>万
-                                </div>
-                            </td>
-                        </tr>
-                        <tr style="height: 30px;">
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/up.png" style="width: 20px; height: 30px" />
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="divGreen">
-                                    亩均增加值<br />
-                                    <span id="mjzjz"></span>万元/亩
-                                </div>
-                            </td>
-                            <td>
-                                <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
-                            </td>
-                            <td>
-                                <div class="divWhite">
-                                    用地面积<br />
-                                   <span id="LAND_AREA"></span>亩
-                                </div>
-                            </td>
-                            <td>
-                                <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
-                            </td>
-                            <td>
-                                <div class="divWhite">
-                                    工业增加值<br />
-                                    <span id="Industrial_added_value"></span>万元
-                                </div>
-                            </td>
-                            <td>
-                                <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
-                            </td>
-                            <td>
-                                <div class="divWhite">
-                                    年均职工人数<br />
-                                   <span id="WORKER_MONTH"></span>人
-                                </div>
-                            </td>
-                            <td>
-                                <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
-                            </td>
-                            <td>
-                                <div class="divYellow">
-                                    全员劳动生产率<br />
-                                    <span id="qyldscl"></span>万元/人.年
-                                </div>
-                            </td>
-                            <td>
-                                <div class="divWhite">
-                                    净资产<br />
-                                   <span id="ASSETS"></span>万
-                                </div>
-                            </td>
-                            <td></td>
-                            <td>
-                                <div class="divWhite">
-                                    主营业务收入<br />
-                                   <span id="MAIN_BUSINESS_INCOME"></span>万
-                                </div>
-                            </td>
-                        </tr>
-                        <tr style="height: 15px;">
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                            <td></td>
-                            <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <div class="divGreen">
-                                    亩均税收<br />
-                                    <span id="mjss"></span>万元/亩
-                                </div>
-                            </td>
-                            <td></td>
-                            <td>
-                                <div class="divWhite">
-                                    主要污染物排放当量<br />
-                                    <span id="pollutant_discharge"></span>
-                                </div>
-                            </td>
-                            <td colspan="3">
-                                <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
-                            </td>
-                            <td>
-                                <div class="divRed">
-                                    单位排污权增加值<br />
-                                    <span id="dwpwqzjz"></span>万元/吨
-                                </div>
-                            </td>
-                            <td>
-                                <div class="divGreen">
-                                    净资产收益率<br />
-                                    <span id="jzcsyl"></span>%
-                                </div>
-                            </td>
-                            <td></td>
-                            <td>
-                                <div class="divYellow">
-                                    研发经费投入比<br />
-                                    <span id="yfjftrb"></span>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </el-tab-pane>
-               
-            </el-tabs>
-        </div>
+                </el-tabs>
+            </div>
 
-    </el-dialog>
-</div>
+        </el-dialog>
+    </div>
 <script>
     layui.use(['element', 'layer'], function () {
         var layer = layui.layer
