@@ -3,10 +3,33 @@
     ViewData["Title"] = "企业评分排序";
 }
 <style>
+    .el-table__body tr {     
+        height: 12px;
+    }
+    .eltable th {
+        padding: 5px
+    }
+    .eltable td {
+        padding: 0px
+    }
+    .eltablet th {
+        padding: 3px
+    }
+    .eltablet td {
+        padding: 3px
+    }
+    .el-dialog__header {
+        background-color: #eef1f6;
+    }
+    .el-dialog__body {
+        background-color: #eef1f6;
+    }
     .el-dialog {
         left: 10%;       
     }
-
+    /*.table-th {
+        background-color:red
+    }*/
     .v-modal {
         display: none;
     }
@@ -103,11 +126,14 @@
         </el-form-item>
 
     </el-form>
-    <el-table ref="multipleTable"
+    <el-table :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+              ref="multipleTable"
               :data="data"
               :border="true"
               tooltip-effect="dark"
-              style="width: 100%">
+              class="eltable"
+              style="width: 100%"
+              >
         <el-table-column label="企业名称"
                          fixed
                          width="150"
@@ -205,6 +231,7 @@
                                   :data="data1"
                                   :border="true"
                                   tooltip-effect="dark"
+                                  class="eltablet"
                                   style="width: 100%">
                             <el-table-column label="分支机构名称"
                                              prop="suB_ORG_NAME">
@@ -648,6 +675,9 @@
                 this.currentPage1 = val;
                 this.fetchList();
             },
+            //headerStyle({ row,rowIdex }) {
+            //    return 'table-th'
+            //}
         },
         mounted: function () {
             let vm = this
