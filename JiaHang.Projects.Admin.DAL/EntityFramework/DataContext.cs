@@ -69,6 +69,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<SysUserRouteCondition> SysUserRouteCondition { get; set; }
         public virtual DbSet<DcsDataCatalog> DcsDataCatalog { get; set; }
         public virtual DbSet<ApdFctOrgIndexV> ApdFctOrgIndexV { get; set; }
+
+        public virtual DbSet<ApdFctLandTown> ApdFctLandTown { get; set; }
+        public virtual DbSet<ApdFctLandTown2> ApdFctLandTown2 { get; set; }
+        public virtual DbSet<ApdDimOrg> ApdDimOrg { get; set; }
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
 
@@ -85,6 +89,219 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         {
             //modelBuilder.HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
             //    .HasAnnotation("Relational:DefaultSchema", "DCSP_USER");
+
+            modelBuilder.Entity<ApdDimOrg>(entity =>
+            {
+                entity.HasKey(e => new { e.OrgCode, e.PeriodYear })
+                    .HasName("APD_DIM_ORG_PK");
+
+                entity.ToTable("APD_DIM_ORG");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_DIM_ORG_UX");
+
+                entity.HasIndex(e => new { e.OrgCode, e.PeriodYear })
+                    .HasName("APD_DIM_ORG_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.OrgCode)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("ADDRESS")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.Industry)
+                    .HasColumnName("INDUSTRY")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.LegalRepresentative)
+                    .HasColumnName("LEGAL_REPRESENTATIVE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.LinkMan)
+                    .HasColumnName("LINK_MAN")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.OrgName)
+                    .HasColumnName("ORG_NAME")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.Phone)
+                    .HasColumnName("PHONE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.Phone2)
+                    .HasColumnName("PHONE2")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.RegistrationDate)
+                    .HasColumnName("REGISTRATION_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.RegistrationMoney)
+                    .HasColumnName("REGISTRATION_MONEY")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.RegistrationStatus)
+                    .HasColumnName("REGISTRATION_STATUS")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.RegistrationType)
+                    .HasColumnName("REGISTRATION_TYPE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.Town)
+                    .HasColumnName("TOWN")
+                    .HasColumnType("NVARCHAR2(30)");
+            });
+
+            modelBuilder.Entity<ApdFctLandTown>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_LAND_TOWN_PK");
+
+                entity.ToTable("APD_FCT_LAND_TOWN");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_LAND_TOWN_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.OrgCode)
+                    .IsRequired()
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.OwnershipLand)
+                    .HasColumnName("OWNERSHIP_LAND")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.ProtectionLand)
+                    .HasColumnName("PROTECTION_LAND")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.ReduceLand)
+                    .HasColumnName("REDUCE_LAND")
+                    .HasColumnType("NUMBER");
+            });
+
+            modelBuilder.Entity<ApdFctLandTown2>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_LAND_TOWN2_PK");
+
+                entity.ToTable("APD_FCT_LAND_TOWN2");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_LAND_TOWN2_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.FactLand)
+                    .HasColumnName("FACT_LAND")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.LeaseLand)
+                    .HasColumnName("LEASE_LAND")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .IsRequired()
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(200)");
+
+                entity.Property(e => e.RentLand)
+                    .HasColumnName("RENT_LAND")
+                    .HasColumnType("NUMBER");
+            });
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>
             {
@@ -3387,23 +3604,23 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.Industry).HasColumnName("INDUSTRY")
              .HasColumnType("NVARCHAR2(30)");
             });
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-               //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
-               )
-            {
-                //foreach (var property in entityType.GetProperties()) {
-                //    property.Relational().ColumnName = property.Name.ToUpper();
-                //}
+            //foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+            //   //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
+            //   )
+            //{
+            //    //foreach (var property in entityType.GetProperties()) {
+            //    //    property.Relational().ColumnName = property.Name.ToUpper();
+            //    //}
 
-                modelBuilder.Entity(entityType.ClrType).Property<int>("DeleteFlag");
-                var parameter = Expression.Parameter(entityType.ClrType, "e");
-                var body = Expression.Equal(
-                    Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(int) }, parameter, Expression.Constant("DeleteFlag")),
-                Expression.Constant(0));
+            //    modelBuilder.Entity(entityType.ClrType).Property<int>("DeleteFlag");
+            //    var parameter = Expression.Parameter(entityType.ClrType, "e");
+            //    var body = Expression.Equal(
+            //        Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(int) }, parameter, Expression.Constant("DeleteFlag")),
+            //    Expression.Constant(0));
 
 
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
-            }
+            //    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
+            //}
 
 
             base.OnModelCreating(modelBuilder);
