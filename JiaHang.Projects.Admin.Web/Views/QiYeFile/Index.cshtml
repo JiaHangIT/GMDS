@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewData["Title"] = "数据展示";
+}
+<div id="app">
+    <el-upload class="upload-demo"
+               action="/api/qiyefile/upload"
+               :file-list="srcList">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
+    <template>
+        <el-table :data="data"
+                  :span-method="objectSpanMethod"
+                  style="width: 100%">
+            <el-table-column prop="orgName"
+                             label="企业名称"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="town"
+                             label="所属镇街"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="orgCode"
+                             label="统一社会信用代码"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="registrationType"
+                             label="登记注册类型"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="住所"
+                             width="150">
+            </el-table-column>
+            <el-table-column label="法定代表人">
+                <el-table-column prop="legalRepresentative"
+                                 label="姓名"
+                                 width="120">
+                </el-table-column>
+                <el-table-column prop="phone"
+                                 label="联系电话"
+                                 width="120">
+                </el-table-column>
+            </el-table-column>
+            <el-table-column label="日常联系人">
+                <el-table-column prop="linkMan"
+                                 label="姓名"
+                                 width="120">
+                </el-table-column>
+                <el-table-column prop="phone2"
+                                 label="联系电话"
+                                 width="120">
+                </el-table-column>
+            </el-table-column>
+            <el-table-column prop="ownershipLand"
+                             label="自有土地面积(平方米)"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="protectionLand"
+                             label="评价保护期土地面积(平方米)"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="reduceLand"
+                             label="新减土地面积(平方米)"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="factLand"
+                             label="事实用地总面积(平方米)"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="rentLand"
+                             label="租用土地总面积(平方米)"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="leaseLand"
+                             label="出租土地总面积(平方米)"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="remark"
+                             label="备注"
+                             width="120">
+            </el-table-column>
+        </el-table>
+    </template>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                array:[],
+                sym:0,
+                data: [],
+                url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+                srcList: [
+                    'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+                    'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+                ]
+            }
+        },
+        methods: {
+            fetchlist() {
+                axios.get(`/api/qiyefile/getlist`).then(res => {
+                    let vm = this;
+                    vm.data = res.data.content.data
+                    console.log(res.data.content.data)
+                    vm.array = res.data.content.array
+                }).catch(err => { console.log(err) })
+            },
+            objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+                let vm = this
+                let c = row.count
+                let rowspan = 1
+                console.log(row.count)
+                if (columnIndex < 9 || columnIndex > 11) {
+                    //只有一行返回count个，其他的返回0
+                    if (vm.array.find(item => { return item == rowIndex }) != null) {
+                        //if (columnIndex === 15) {
+                        //    vm.sym += c ;
+                        //}
+                        return {
+                            rowspan: c,
+                            colspan: 1
+                        };
+                    } else {
+                        return {
+                            rowspan: 0,
+                            colspan: 0
+                        };
+                    }
+                }
+            }
+        },
+        mounted() {
+            let vm = this;
+            vm.fetchlist()
+        }
+    })
+</script>
+
