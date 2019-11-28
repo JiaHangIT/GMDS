@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h2>ASP.NET Core 导入Excel xlsx 文件</h2>
+<hr />
+<body>
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+
+            <input type="file" id="files" name="files" multiple />
+            <input type="button" id="uploadExcel" value="Upload Selected Files" />
+
+        </div>
+    </div>
+    <script>
+        $("#uploadExcel").click(function (evt) {
+            var fileUpload = $("#files").get(0);
+            var files = fileUpload.files;
+            var file = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                file.append(files[i].name, files[i]);
+            }
+            console.log("参数",data)
+            $.ajax({
+                type: 'POST',
+                url: '/api/ApdFctTAxImport/importtax',
+                contentType: false,
+                processData: false,
+                data: file,
+                success: function (message) {
+
+                    alert(message);
+                    
+                    
+                },
+                error: function () {
+                    alert("There was error uploading files!");
+                }
+            });
+        });
+    </script>
+   
+</body>
