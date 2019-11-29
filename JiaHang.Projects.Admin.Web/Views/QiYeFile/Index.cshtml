@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "数据展示";
 }
-<div id="app">
+<div id="app"  v-loading="loading">
     <el-upload class="upload-demo"
                action="/api/qiyefile/upload"
                :file-list="srcList">
@@ -12,7 +12,9 @@
     <template>
         <el-table :data="data"
                   :span-method="objectSpanMethod"
-                  style="width: 100%">
+                   style="width: 100%;"
+                   :height="tableheight"
+                  >
             <el-table-column fixed
                              prop="orgName"
                              label="企业名称"
@@ -91,6 +93,8 @@
         el: '#app',
         data() {
             return {
+                tableheight: null,
+                loading: false,
                 array:[],
                 sym:0,
                 data: [],
@@ -103,24 +107,28 @@
         },
         methods: {
             fetchlist() {
+                let vm = this;
+                var top = $("#app").offset().top;
+                //自适应表高度
+                var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
+                vm.tableheight = height 
+
                 axios.get(`/api/qiyefile/getlist`).then(res => {
-                    let vm = this;
                     vm.data = res.data.content.data
                     console.log(res.data.content.data)
                     vm.array = res.data.content.array
-                }).catch(err => { console.log(err) })
+                    vm.loading = false
+                }).catch(err => { console.log(err); vm.loading = false })
             },
             objectSpanMethod({ row, column, rowIndex, columnIndex }) {
                 let vm = this
                 let c = row.count
-                let rowspan = 1
+
                 console.log(row.count)
                 if (columnIndex < 9 || columnIndex > 11) {
                     //只有一行返回count个，其他的返回0
                     if (vm.array.find(item => { return item == rowIndex }) != null) {
-                        //if (columnIndex === 15) {
-                        //    vm.sym += c ;
-                        //}
+
                         return {
                             rowspan: c,
                             colspan: 1
@@ -136,6 +144,7 @@
         },
         mounted() {
             let vm = this;
+            vm.loading = true
             vm.fetchlist()
         }
     })
