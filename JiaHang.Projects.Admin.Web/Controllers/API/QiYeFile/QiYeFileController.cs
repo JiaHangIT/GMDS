@@ -167,6 +167,16 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                             ORGCODE = s.Key.G3
                         }).Where(f => (f.FACTLAND != null && f.RENTLAND != null && f.LEASELAND != null) == true);
 
+                        decimal currenttown2key = 0;//本次apd_fct_town2表的主键
+                        var town2context = context.ApdFctLandTown2.OrderBy(o => o.RecordId).ToList();
+                        if (town2context == null || town2context.Count() <= 0)
+                        {
+                            currenttown2key = 1;
+                        }
+                        else
+                        {
+                            currenttown2key = town2context[0].RecordId + 1;
+                        }
                         //存在orgcode不存在的情况就整个都不写入
                         foreach (var item in groupdata_1)
                         {
@@ -186,7 +196,8 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                                 CreationDate = DateTime.Now,
                                 LastUpdateDate = DateTime.Now,
                                 PeriodYear = DateTime.Now.Year,
-                                RecordId = new Random().Next(1, 999)
+                                RecordId = new Random().Next(1, 999),
+                                T2Id = currenttown2key
                             };
                             context.ApdFctLandTown.Add(t1);
                         }
