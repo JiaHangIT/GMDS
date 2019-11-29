@@ -16,5 +16,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public decimal? CreatedBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public decimal? LastUpdatedBy { get; set; }
+        public decimal Count { get; set; }
     }
 }

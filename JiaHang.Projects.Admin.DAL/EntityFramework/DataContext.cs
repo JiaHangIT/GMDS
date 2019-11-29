@@ -305,6 +305,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.RentLand)
                     .HasColumnName("RENT_LAND")
                     .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Count)
+                   .HasColumnName("COUNT")
+                   .HasColumnType("NUMBER");
             });
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>

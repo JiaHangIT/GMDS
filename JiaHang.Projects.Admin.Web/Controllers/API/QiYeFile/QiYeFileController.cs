@@ -39,7 +39,7 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                         select new
                         {
                             //Array = listnew,
-                            Count = t2.PeriodYear,
+                            Count = t2.Count,
                             Key = t2.RecordId,
                             OrgName = o.OrgName,
                             Town = o.Town,
