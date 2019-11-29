@@ -32,11 +32,13 @@ namespace TestElement.Controllers.API
         {
             FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
 
+            //条件查询情况下，需要重新考虑Count值的问题
+
+
             var query = from t1 in context.ApdFctLandTown
                         join t2 in context.ApdFctLandTown2 on t1.T2Id equals t2.RecordId
-                        join o in
-context.ApdDimOrg on t1.OrgCode equals o.OrgCode
-                        select new
+                        join o in context.ApdDimOrg on t1.OrgCode equals o.OrgCode
+                        select new ReturnModel
                         {
                             //Array = listnew,
                             Count = t2.Count,
@@ -62,10 +64,22 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
             query = query.OrderBy(o => o.Create);
             var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand,g.Key }).OrderBy(o=>o.Key.Key);
 
+            
             var list = new List<int>();
+            //重新定义query里count的值
 
+            var queryr = new List<ReturnModel>();
             foreach (var item in l)
             {
+                //query.Where(f => f.Key == item.Key.Key).ToList().ForEach(p => p.Count = item.Count());
+
+                var currentquery = query.Where(f => f.Key == item.Key.Key).ToList();
+                foreach (var itemquery in currentquery)
+                {
+                    itemquery.Count = item.Count();
+                    queryr.Add(itemquery);
+                }
+                //listResut.Where(w => w.CategoryID > 30 && w.CategoryID < 40).ToList().ForEach(p => p.CategoryName = p.CategoryName + "bb");
                 int c = item.Count();
                 list.Add(c);
             }
@@ -83,10 +97,11 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                 }
                 else
                 {
-                    listnew.Add(list[i - 1] + list[i - 2]);
+                    //listnew.Add(list[i - 1] + list[i - 2]);
+                    listnew.Add(list.Take(i).Sum());
                 }
             }
-            result.Content = new { data = query, array = listnew };
+            result.Content = new { data = queryr, array = listnew };
             return result;
         }
 
@@ -292,6 +307,29 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
         public int? G15 { get; set; }
 
         public string G16 { get; set; }
+    }
+
+    public class ReturnModel
+    {
+        public decimal Count { get; set; }
+        public decimal Key { get; set; }
+        public string OrgName { get; set; }
+        public string Town { get; set; }
+        public string OrgCode { get; set; }
+        public string RegistrationType { get; set; }
+        public string Address { get; set; }
+        public string LegalRepresentative { get; set; }
+        public string Phone { get; set; }
+        public string LinkMan { get; set; }
+        public string Phone2 { get; set; }
+        public decimal? OwnershipLand { get; set; }
+        public decimal? ProtectionLand { get; set; }
+        public decimal? ReduceLand { get; set; }
+        public decimal? FactLand { get; set; }
+        public decimal? RentLand { get; set; }
+        public decimal? LeaseLand { get; set; }
+        public string Remark { get; set; }
+        public DateTime? Create { get; set; }
     }
 
     /// <summary>
