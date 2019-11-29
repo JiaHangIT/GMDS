@@ -8,10 +8,16 @@ using JiaHang.Projects.Admin.Common;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace TestElement.Controllers.API
 {
@@ -19,16 +25,18 @@ namespace TestElement.Controllers.API
     //[ApiController]
     public class QiYeFileController : ControllerBase
     {
-        public readonly DataContext context;
+        private readonly DataContext context;
 
-        public QiYeFileController(DataContext _context) { this.context = _context; }
+        private readonly IHostingEnvironment hosting;
+
+        public QiYeFileController(DataContext _context,IHostingEnvironment _hosting) { this.context = _context; this.hosting = _hosting; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetList")]
-        public FuncResult GetList()
+        [HttpPost("GetList")]
+        public FuncResult GetList([FromBody] RequestLandTown model = null)
         {
             FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
 
@@ -61,7 +69,10 @@ namespace TestElement.Controllers.API
                             Remark = t2.Remark,
                             Create = t2.CreationDate
                         };
-            query = query.OrderBy(o => o.Create);
+            query = query.Where(f=> (
+            (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode))&&
+            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname))
+            )).OrderBy(o => o.Create);
             var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand,g.Key }).OrderBy(o=>o.Key.Key);
 
             
@@ -106,7 +117,152 @@ namespace TestElement.Controllers.API
         }
 
         /// <summary>
-        /// excel数据导入到数据库(mapcoderela表)
+        /// 数据导出到excel
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export")]
+        public FileResult Export()
+        {
+            try
+            {
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                var data = (List<ReturnModel>)((dynamic)GetList(new RequestLandTown() { orgname="",orgcode=""}).Content).data;
+                
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业土地使用情况取数表格式（六类土地）-高明街镇、西江产业新城.xls";
+                FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
+
+                var xssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
+                //从row7开始，B到Q(1到16)
+                //sheet1.GetRow(7).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
+                //sheet1.GetRow(8).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
+                //sheet1.GetRow(9).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
+                for (int i = 6; i < data.Count + 6; i++)
+                {
+                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i-6].OrgName);
+                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 6].Town);
+                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 6].OrgCode);
+                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 6].RegistrationType);
+                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 6].Address);
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].LegalRepresentative);
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 6].Phone);
+                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].LinkMan);
+                    sheet1.GetRow(i).GetCell(9).SetCellValue(data[i - 6].Phone2);
+                    sheet1.GetRow(i).GetCell(10).SetCellValue(Convert.ToDouble(data[i - 6].OwnershipLand));
+                    sheet1.GetRow(i).GetCell(11).SetCellValue(Convert.ToDouble(data[i - 6].ProtectionLand));
+                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].ReduceLand));
+                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToDouble(data[i - 6].FactLand));
+                    sheet1.GetRow(i).GetCell(14).SetCellValue(Convert.ToDouble(data[i - 6].RentLand));
+                    sheet1.GetRow(i).GetCell(15).SetCellValue(Convert.ToDouble(data[i - 6].LeaseLand));
+                    sheet1.GetRow(i).GetCell(16).SetCellValue(data[i - 6].Remark);
+                }
+
+
+                //转为字节数组
+                var stream = new MemoryStream();
+                xssfworkbook.Write(stream);
+                var buf = stream.ToArray();
+                return File(buf, "application/ms-excel", $"{DateTime.Now.ToString("yyyy-MM-dd:hh:mm:ss")}.xls");
+
+
+                #region 原有方法
+                //byte[] result;
+
+                //using (var package = new ExcelPackage())
+                //{
+                //    var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                //    worksheet.Cells["A1:H1"].Merge = true;
+                //    //worksheet.Cells[1, 1].Value = string.IsNullOrEmpty(model.searchcondition) ? "全国" : model.searchcondition;
+                //    //worksheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                //    //for (int i = 0; i < comlumHeadrs.Count(); i++)
+                //    //{
+                //    //    worksheet.Cells[2, i + 1].Value = comlumHeadrs[i];
+                //    //    worksheet.Cells[2, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                //    //}
+                //    //如果是空数据 直接返回
+                //    if (data.Count() <= 1)
+                //    {
+                //        //return package.GetAsByteArray();
+                //        //return File(package.GetAsByteArray(), "application/ms-excel", "test");
+                //    }
+                //    var j = 3;//数据行
+                //    foreach (var item in data)
+                //    {
+                //        var rt = item.GetType();
+                //        var rp = rt.GetProperties();
+
+                //        //B到Q
+                //        worksheet.Cells["B" + j].Value = item.OrgName;
+                //        worksheet.Cells["C" + j].Value = item.Town;
+                //        worksheet.Cells["D" + j].Value = item.OrgCode;
+                //        worksheet.Cells["E" + j].Value = item.RegistrationType;
+                //        worksheet.Cells["F" + j].Value = item.Address;
+                //        worksheet.Cells["G" + j].Value = item.LegalRepresentative;
+                //        worksheet.Cells["H" + j].Value = item.Phone;
+                //        worksheet.Cells["I" + j].Value = item.LinkMan;
+                //        worksheet.Cells["J" + j].Value = item.Phone2;
+                //        worksheet.Cells["K" + j].Value = item.OwnershipLand;
+                //        worksheet.Cells["L" + j].Value = item.ProtectionLand;
+                //        worksheet.Cells["M" + j].Value = item.ReduceLand;
+                //        worksheet.Cells["N" + j].Value = item.FactLand;
+                //        worksheet.Cells["O" + j].Value = item.RentLand;
+                //        worksheet.Cells["P" + j].Value = item.LeaseLand;
+                //        worksheet.Cells["Q" + j].Value = item.Remark;
+
+                //        j++;
+                //    }
+
+                //    result = package.GetAsByteArray();
+                //}
+
+                //return File(result, "application/ms-excel", $"{DateTime.Now.ToString("yyyy-MM-dd:hh:mm:ss")}.xls");
+                #endregion
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error",ex);
+            }
+        }
+
+        /// <summary>
+        /// 下载模板
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("downtemplate")]
+        public FileResult DownTemplate()
+        {
+            try
+            {
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业土地使用情况取数表格式（六类土地）-高明街镇、西江产业新城.xls";
+                FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
+
+                var xssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
+                //可操作
+
+                
+                //转为字节数组
+                var stream = new MemoryStream();
+                xssfworkbook.Write(stream);
+                var buf = stream.ToArray();
+                return File(buf, "application/ms-excel", $"企业土地使用情况取数表格式（六类土地）-高明街镇、西江产业新城.xls");
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error",ex);
+            }
+        }
+
+        /// <summary>
+        /// excel数据导入到数据库(apdfctlandtown、apdfctlandtown2表)
         /// </summary>
         /// <param name="excelfile"></param>
         /// <returns></returns>
@@ -397,5 +553,12 @@ namespace TestElement.Controllers.API
         /// G3
         /// </summary>
         public string ORGCODE { get; set; }
+    }
+
+    public class RequestLandTown
+    {
+        public string orgname { get; set; }
+
+        public string orgcode { get; set; }
     }
 }
