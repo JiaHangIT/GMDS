@@ -56,10 +56,11 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                             FactLand = t2.FactLand,
                             RentLand = t2.RentLand,
                             LeaseLand = t2.LeaseLand,
-                            Remark = t2.Remark
+                            Remark = t2.Remark,
+                            Create = t2.CreationDate
                         };
-
-            var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand });
+            query = query.OrderBy(o => o.Create);
+            var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand,g.Key }).OrderBy(o=>o.Key.Key);
 
             var list = new List<int>();
 
@@ -168,7 +169,7 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                         }).Where(f => (f.FACTLAND != null && f.RENTLAND != null && f.LEASELAND != null) == true);
 
                         decimal currenttown2key = 0;//本次apd_fct_town2表的主键
-                        var town2context = context.ApdFctLandTown2.OrderBy(o => o.RecordId).ToList();
+                        var town2context = context.ApdFctLandTown2.OrderByDescending(o => o.RecordId).ToList();
                         if (town2context == null || town2context.Count() <= 0)
                         {
                             currenttown2key = 1;
@@ -214,7 +215,8 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                                 PeriodYear = DateTime.Now.Year,
                                 RecordId = new Random().Next(1, 999),
                                 CreationDate = DateTime.Now,
-                                LastUpdateDate = DateTime.Now
+                                LastUpdateDate = DateTime.Now,
+                                Count = groupdata_1.Count()
                             };
                             context.ApdFctLandTown2.Add(t2);
                         }
