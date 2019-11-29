@@ -240,6 +240,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.ReduceLand)
                     .HasColumnName("REDUCE_LAND")
                     .HasColumnType("NUMBER");
+
+                entity.Property(e => e.T2Id)
+                    .HasColumnName("T2_ID")
+                    .HasColumnType("NUMBER");
             });
 
             modelBuilder.Entity<ApdFctLandTown2>(entity =>

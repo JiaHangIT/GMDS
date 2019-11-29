@@ -33,14 +33,14 @@ namespace TestElement.Controllers.API
             FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
 
             var query = from t1 in context.ApdFctLandTown
-                        join t2 in context.ApdFctLandTown2 on t1.OrgCode equals t2.OrgCode
-                        where Convert.ToDateTime(t1.CreationDate).ToString("yyyy-MM-dd:hh-mm").Equals(Convert.ToDateTime(t2.CreationDate).ToString("yyyy-MM-dd:hh-mm"))
+                        join t2 in context.ApdFctLandTown2 on t1.T2Id equals t2.RecordId
                         join o in
-context.ApdDimOrg.Where(f => f.RegistrationType != null && f.RegistrationType != "") on t1.OrgCode equals o.OrgCode
+context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                         select new
                         {
                             //Array = listnew,
                             Count = t2.PeriodYear,
+                            Key = t2.RecordId,
                             OrgName = o.OrgName,
                             Town = o.Town,
                             OrgCode = o.OrgCode,
@@ -60,35 +60,9 @@ context.ApdDimOrg.Where(f => f.RegistrationType != null && f.RegistrationType !=
                         };
 
             var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand });
-            var t = from t1 in context.ApdFctLandTown
-                    join t2 in context.ApdFctLandTown2 on t1.OrgCode equals t2.OrgCode
-                    
-                    join o in
-context.ApdDimOrg on t1.OrgCode equals o.OrgCode
-                    select new
-                    {
-                        //Array = listnew,
-                        Count = t2.PeriodYear,
-                        OrgName = o.OrgName,
-                        Town = o.Town,
-                        OrgCode = o.OrgCode,
-                        RegistrationType = o.RegistrationType,
-                        Address = o.Address,
-                        LegalRepresentative = o.LegalRepresentative,
-                        Phone = o.Phone,
-                        LinkMan = o.LinkMan,
-                        Phone2 = o.Phone2,
-                        OwnershipLand = t1.OwnershipLand,
-                        ProtectionLand = t1.ProtectionLand,
-                        ReduceLand = t1.ReduceLand,
-                        FactLand = t2.FactLand,
-                        RentLand = t2.RentLand,
-                        LeaseLand = t2.LeaseLand,
-                        Remark = t2.Remark
-                    };
+
             var list = new List<int>();
-            query = t;
-            l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand });
+
             foreach (var item in l)
             {
                 int c = item.Count();
