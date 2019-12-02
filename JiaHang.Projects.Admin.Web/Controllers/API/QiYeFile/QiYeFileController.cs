@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -126,8 +127,9 @@ namespace TestElement.Controllers.API
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var data = (List<ReturnModel>)((dynamic)GetList(new RequestLandTown() { orgname="",orgcode=""}).Content).data;
-                
+                var summarydata = GetList(new RequestLandTown() { orgname = "", orgcode = "" });
+                var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
+                var groupdata = (List<int>)((dynamic)summarydata.Content).array;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业土地使用情况取数表格式（六类土地）-高明街镇、西江产业新城.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
@@ -157,6 +159,52 @@ namespace TestElement.Controllers.API
                     sheet1.GetRow(i).GetCell(15).SetCellValue(Convert.ToDouble(data[i - 6].LeaseLand));
                     sheet1.GetRow(i).GetCell(16).SetCellValue(data[i - 6].Remark);
                 }
+
+                /*
+                 *
+                 * 处理部分行合并(测试B1到J9)
+                 * CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
+                 * 合并的列是一样的，只需要处理好行的关系即可
+                 * 模板是从第7行(即行坐标为6)开始写数据
+                 * **/
+
+                int currentIndex = 6;
+                //groupdata.RemoveAt(groupdata.Count- 1);
+                for (int i = 0; i < groupdata.Count; i++)
+                {
+                    if (i == groupdata.Count - 1)
+                    {
+                        for (int j = 1; j < 17; j++)
+                        {
+                            sheet1.AddMergedRegion(new CellRangeAddress(currentIndex, currentIndex + data.Count - groupdata[i]  - 1, j, j));
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 1; j < 17; j++)
+                        {
+                            sheet1.AddMergedRegion(new CellRangeAddress(currentIndex, currentIndex + groupdata[i + 1] - groupdata[i] - 1, j, j));
+                        }
+                    }
+                    if (i < groupdata.Count - 1)
+                    {
+                        currentIndex += groupdata[i + 1] - groupdata[i];
+                    }
+                   
+                }
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 1, 1));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 2, 2));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 3, 3));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 4, 4));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 5, 5));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 6, 6));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 7, 7));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 8, 8));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 9, 9));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 13, 13));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 14, 14));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 15, 15));
+                //sheet1.AddMergedRegion(new CellRangeAddress(6, 8, 16, 16));
 
 
                 //转为字节数组
