@@ -89,7 +89,7 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
             var list = new List<int>();
             query = t;
             l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand });
-            foreach (var item in l)
+            foreach (var item  in l)
             {
                 int c = item.Count();
                 list.Add(c);
@@ -135,6 +135,7 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                     string filename = excelfile.FileName;//文件名即为区域名
                     //利用IFormFile里面的OpenReadStream()方法直接读取文件流
                     dt = ExcelHelper.ExcelToDatatable(excelfile.OpenReadStream(), Path.GetExtension(excelfile.FileName), out strMsg);
+                    var filenameliu = excelfile.OpenReadStream();
                     if (!string.IsNullOrEmpty(strMsg))
                     {
                         result.IsSuccess = false;
@@ -145,6 +146,7 @@ context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                     {
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
+                        var lista = JsonConvert.SerializeObject(dt);
                         datalist = JsonConvert.DeserializeObject<List<Demo>>(JsonConvert.SerializeObject(dt));
                         List<Demo> filterdata = datalist.Where(f => !(f.G1 == "" && f.G2 == "" && f.G3 == "" && f.G4 == "" && f.G5 == "" && f.G6 == "" && f.G7 == "" && f.G8 == "")).ToList();
 

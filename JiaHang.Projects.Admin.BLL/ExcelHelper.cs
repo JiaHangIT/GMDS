@@ -57,7 +57,7 @@ namespace JiaHang.Projects.Admin.BLL
                 }
                 if (sheet != null)
                 {
-                    IRow firstRow = sheet.GetRow(6);
+                    IRow firstRow = sheet.GetRow(3);
                     int cellCount = firstRow.LastCellNum;
                     for (int i = firstRow.FirstCellNum+1; i < cellCount; i++)
                     {
@@ -94,8 +94,8 @@ namespace JiaHang.Projects.Admin.BLL
                         for (int i = row.FirstCellNum; i < cellCount-1; i++)
                         {
                             ICell cellData = row.GetCell(i+1);
-                           
-                            if (cellData.StringCellValue != "" || cellData.RichStringCellValue.Length != 0)
+
+                            if (cellData != null)
                             {
                                 //判断是否为数字型，必须加这个判断不然下面的日期判断会异常
                                 if (cellData.CellType == CellType.Numeric)

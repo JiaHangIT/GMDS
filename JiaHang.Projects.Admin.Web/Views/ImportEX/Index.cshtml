@@ -1,47 +1,188 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "数据展示";
 }
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="企业名称：">
+            <el-input placeholder="企业名称" v-model="OrgName"></el-input>
+        </el-form-item>
+        
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>        
+    </el-form>
+    <el-upload class="upload-demo"
+               :data="data"
+               action="/api/ApdFctTAxImport/importtax"
+               :file-list="srcList"
+               @@selection-change="handleSelectionChange">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传Excel文件</div>
+    </el-upload>
+    <template>
+        <el-table ref="multipleTable"
+                  :data="data"
+                  :span-method="objectSpanMethod"
+                  :border="true"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  @@selection-change="handleSelectionChange">
+            <el-table-column prop="orgName"
+                             label="企业名称"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="town"
+                             label="所属镇街"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="orgCode"
+                             label="统一社会信用代码"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="registrationType"
+                             label="登记注册类型"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="住所"
+                             width="150">
+            </el-table-column>
+            <el-table-column label="法定代表人">
+                <el-table-column prop="legalRepresentative"
+                                 label="姓名"
+                                 width="120">
+                </el-table-column>
+                <el-table-column prop="phone"
+                                 label="联系电话"
+                                 width="120">
+                </el-table-column>
+            </el-table-column>
+            <el-table-column label="日常联系人">
+                <el-table-column prop="linkMan"
+                                 label="姓名"
+                                 width="120">
+                </el-table-column>
+                <el-table-column prop="phone2"
+                                 label="联系电话"
+                                 width="120">
+                </el-table-column>
+            </el-table-column>
+            <el-table-column prop="ENT_PAID_TAX"
+                             label="企业实缴税金（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="EMPLOYEE_REMUNERATION"
+                             label="职工薪酬（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="DEPRECIATION"
+                             label="固定资产折旧（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="PROFIT"
+                             label="营业利润（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="MAIN_BUSINESS_INCOME"
+                             label="主营业务收入（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="RAD_EXPENSES"
+                             label="允许扣除的研发费用（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="NUMBER_OF_EMPLOYEES"
+                             label="平均从业人数（人）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="OWNER_EQUITY"
+                             label="所有者权益（万元）"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="TOTAL_PROFIT"
+                             label="利润总额（万元）"
+                             width="120">
+            </el-table-column>
+            @*<el-table-column prop="remark"
+                         label="备注"
+                         width="120">
+        </el-table-column>*@
+        </el-table>
+        <el-pagination @@size-change="handleSizeChange"
+                       @@current-change="handleCurrentChange"
+                       :current-page="currentPage"
+                       :page-sizes="[10, 20, 30, 40]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </template>
+</div>
 
-
-<h2>ASP.NET Core 导入Excel xlsx 文件</h2>
-<hr />
-<body>
-    <div class="panel panel-default">
-
-        <div class="panel-body">
-
-            <input type="file" id="files" name="files" multiple />
-            <input type="button" id="uploadExcel" value="Upload Selected Files" />
-
-        </div>
-    </div>
-    <script>
-        $("#uploadExcel").click(function (evt) {
-            var fileUpload = $("#files").get(0);
-            var files = fileUpload.files;
-            var file = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                file.append(files[i].name, files[i]);
+<script>
+    new Vue({      
+        //////
+        el: "#app",
+        data: function () {
+            return {
+                data: [],              
+                currentPage: 1,
+                pageSize: 10,
+                total: 0,
+                OrgName: '',
+                formLabelWidth: '160px',
+                dialogTitle: '',
+                labelPosition: 'left',
             }
-            console.log("参数",data)
-            $.ajax({
-                type: 'POST',
-                url: '/api/ApdFctTAxImport/importtax',
-                contentType: false,
-                processData: false,
-                data: file,
-                success: function (message) {
-
-                    alert(message);
-                    
-                    
-                },
-                error: function () {
-                    alert("There was error uploading files!");
+        },
+        methods: {
+            fetchlist() {
+                axios.get(`/api/ApdFctTAxImport/GetList`).then(res => {
+                    let vm = this;
+                    vm.data = res.data.content.data
+                    console.log(res.data.content.data)
+                    vm.array = res.data.content.array
+                }).catch(err => { console.log(err) })
+            },
+           
+           
+            objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+                let vm = this
+                let c = row.count
+                let rowspan = 1
+                console.log(row.count)
+                if (columnIndex < 9 || columnIndex > 11) {
+                    //只有一行返回count个，其他的返回0
+                    if (vm.array.find(item => { return item == rowIndex }) != null) {
+                        //if (columnIndex === 15) {
+                        //    vm.sym += c ;
+                        //}
+                        return {
+                            rowspan: c,
+                            colspan: 1
+                        };
+                    } else {
+                        return {
+                            rowspan: 0,
+                            colspan: 0
+                        };
+                    }
                 }
-            });
-        });
-    </script>
-   
-</body>
+            }
+            
+            
+
+            
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+            
+        },
+
+    })
+</script>
+

@@ -242,7 +242,95 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("REDUCE_LAND")
                     .HasColumnType("NUMBER");
             });
+            modelBuilder.Entity<ApdFctTAx>(entity =>
+            {
+                entity.HasKey(e => e.RECORD_ID)
+                .HasName("APD_FCT_TAX_PK");
 
+                entity.ToTable("APD_FCT_TAX");
+
+                entity.HasIndex(e => e.RECORD_ID)
+                    .HasName("APD_FCT_TAX_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RECORD_ID)
+                    .HasColumnName("RECORD_ID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.EMPLOYEE_REMUNERATION)
+                    .HasColumnName("EMPLOYEE_REMUNERATION")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.DEPRECIATION)
+                    .HasColumnName("DEPRECIATION")
+                    .HasColumnType("NUMBER")
+                    ;
+
+                entity.Property(e => e.ORG_CODE)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.SOCIAL_INSURANCE)
+                    .HasColumnName("SOCIAL_INSURANCE")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.POLICY_DEDUCTION)
+                    .HasColumnName("POLICY_DEDUCTION")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CREATION_DATE)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.CREATED_BY)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.LAST_UPDATE_DATE)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.LAST_UPDATED_BY)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");               
+
+                entity.Property(e => e.PERIOD_YEAR)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.PROFIT)
+                    .HasColumnName("PROFIT")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.ASSETS)
+                    .HasColumnName("ASSETS")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.LIABILITIES)
+                    .HasColumnName("LIABILITIES")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.MAIN_BUSINESS_INCOME)
+                    .HasColumnName("MAIN_BUSINESS_INCOME")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.ENT_PAID_TAX)
+                    .HasColumnName("ENT_PAID_TAX")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.TOTAL_PROFIT)
+                    .HasColumnName("TOTAL_PROFIT")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OWNER_EQUITY)
+                    .HasColumnName("OWNER_EQUITY")
+                    .HasColumnType("NUMBER");
+                //entity.Property(e => e.LogType)
+                //    .HasColumnName("LOG_TYPE")
+                //    .HasColumnType("NVARCHAR2(30)");
+            });
             modelBuilder.Entity<ApdFctLandTown2>(entity =>
             {
                 entity.HasKey(e => e.RecordId)
@@ -438,79 +526,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("LOG_TYPE")
                     .HasColumnType("NVARCHAR2(30)");
             });
-            modelBuilder.Entity<ApdFctTAx>(entity =>
-            {
-                entity.HasKey(e => e.RECORD_ID);
 
-                entity.ToTable("APD_FCT_TAX");
-
-                entity.HasIndex(e => e.RECORD_ID)
-                    .HasName("PK_APD_FCT_TAX")
-                    .IsUnique();
-
-                entity.Property(e => e.RECORD_ID)
-                    .HasColumnName("LOG_ID")                    
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.EMPLOYEE_REMUNERATION)
-                    .HasColumnName("EMPLOYEE_REMUNERATION");
-
-                entity.Property(e => e.DEPRECIATION)
-                    .HasColumnName("DEPRECIATION")
-                    ;
-
-                entity.Property(e => e.ORG_CODE)
-                    .HasColumnName("ORG_CODE")
-                    .HasColumnType("NVARCHAR2(30)");
-
-                entity.Property(e => e.SOCIAL_INSURANCE)
-                    .HasColumnName("SOCIAL_INSURANCE")
-                    .HasColumnType("NVARCHAR2(30)");
-
-                entity.Property(e => e.POLICY_DEDUCTION)
-                    .HasColumnName("POLICY_DEDUCTION");
-
-                entity.Property(e => e.CREATION_DATE)
-                    .HasColumnName("CREATION_DATE")
-                    .HasColumnType("DATE");
-
-                entity.Property(e => e.CREATED_BY)
-                    .HasColumnName("CREATED_BY");
-
-                entity.Property(e => e.LAST_UPDATE_DATE)
-                    .HasColumnName("LAST_UPDATE_DATE")
-                    .HasColumnType("DATE");
-
-                entity.Property(e => e.LAST_UPDATED_BY)
-                    .HasColumnName("LAST_UPDATED_BY");
-
-                entity.Property(e => e.PERIOD_YEAR)
-                    .HasColumnName("PERIOD_YEAR");
-
-                entity.Property(e => e.PROFIT)
-                    .HasColumnName("PROFIT");
-
-                entity.Property(e => e.ASSETS)
-                    .HasColumnName("ASSETS");
-
-                entity.Property(e => e.LIABILITIES)
-                    .HasColumnName("LIABILITIES");
-
-                entity.Property(e => e.MAIN_BUSINESS_INCOME)
-                    .HasColumnName("MAIN_BUSINESS_INCOME");
-
-                entity.Property(e => e.ENT_PAID_TAX)
-                    .HasColumnName("ENT_PAID_TAX");
-
-                entity.Property(e => e.TOTAL_PROFIT)
-                    .HasColumnName("TOTAL_PROFIT");
-
-                entity.Property(e => e.OWNER_EQUITY)
-                    .HasColumnName("OWNER_EQUITY");
-                //entity.Property(e => e.LogType)
-                //    .HasColumnName("LOG_TYPE")
-                //    .HasColumnType("NVARCHAR2(30)");
-            });
             modelBuilder.Entity<DcsCustomerServices>(entity =>
             {
                 entity.HasKey(e => new { e.CustomerId, e.ServiceId });
