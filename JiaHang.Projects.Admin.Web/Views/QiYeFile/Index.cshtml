@@ -31,6 +31,13 @@
                 <el-form-item label="企业信用代码">
                     <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
                 </el-form-item>
+                <el-form-item label="请选择导出年份">
+                    <el-date-picker v-model="exportyear"
+                                    type="year"
+                                    format="yyyy"
+                                    placeholder="选择年">
+                    </el-date-picker>
+                </el-form-item>
             </div>
 
         </el-form>
@@ -46,7 +53,9 @@
         </el-form-item>
         <el-form-item>
             <el-upload class="upload-demo"
-                       action="/api/qiyefile/upload">
+                       action="/api/qiyefile/upload"
+                       :before-upload="beforeUpload"
+                       :data="model">
                 <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
         </el-form-item>
@@ -138,11 +147,13 @@
             return {
                 tableheight: null,
                 loading: false,
-                array:[],
-                sym:0,
+                array: [],
+                sym: 0,
                 data: [],
                 orgname: '',
-                orgcode:''
+                orgcode: '',
+                model: { year: '' },
+                exportyear:''
             }
         },
         methods: {
@@ -195,6 +206,15 @@
             },
             downtemplate() {
                 window.location.href = `/api/qiyefile/downtemplate`
+            },
+            beforeUpload() {
+                let vm = this
+                vm.model.year = vm.exportyear.getFullYear()
+                if (vm.model.year === '') {
+                    vm.$message.error('请先选择年份!');
+                    return false
+                }
+                
             }
         },
         mounted() {

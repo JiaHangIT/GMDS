@@ -244,6 +244,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.T2Id)
                     .HasColumnName("T2_ID")
                     .HasColumnType("NUMBER");
+
+                entity.Property(e => e.DeleteBy)
+                   .HasColumnName("DELETE_BY")
+                   .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
             });
 
             modelBuilder.Entity<ApdFctLandTown2>(entity =>
@@ -309,6 +321,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.Count)
                    .HasColumnName("COUNT")
                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.DeleteBy)
+                   .HasColumnName("DELETE_BY")
+                   .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
             });
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>

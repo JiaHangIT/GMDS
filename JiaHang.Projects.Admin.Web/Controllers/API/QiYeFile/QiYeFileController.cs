@@ -8,10 +8,12 @@ using JiaHang.Projects.Admin.Common;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
+using JiaHang.Projects.Admin.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -27,10 +29,10 @@ namespace TestElement.Controllers.API
     public class QiYeFileController : ControllerBase
     {
         private readonly DataContext context;
-
+        private readonly IMemoryCache cache;
         private readonly IHostingEnvironment hosting;
 
-        public QiYeFileController(DataContext _context,IHostingEnvironment _hosting) { this.context = _context; this.hosting = _hosting; }
+        public QiYeFileController(DataContext _context,IHostingEnvironment _hosting, IMemoryCache _cache) { this.context = _context; this.hosting = _hosting; this.cache = _cache; }
 
         /// <summary>
         /// 
@@ -44,8 +46,8 @@ namespace TestElement.Controllers.API
             //条件查询情况下，需要重新考虑Count值的问题
 
 
-            var query = from t1 in context.ApdFctLandTown
-                        join t2 in context.ApdFctLandTown2 on t1.T2Id equals t2.RecordId
+            var query = from t1 in context.ApdFctLandTown.Where(f=>f.DeleteFlag == 0)
+                        join t2 in context.ApdFctLandTown2.Where(f => f.DeleteFlag == 0) on t1.T2Id equals t2.RecordId
                         join o in context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                         select new ReturnModel
                         {
@@ -166,6 +168,7 @@ namespace TestElement.Controllers.API
                  * CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
                  * 合并的列是一样的，只需要处理好行的关系即可
                  * 模板是从第7行(即行坐标为6)开始写数据
+                 * 10、11、12列不合并
                  * **/
 
                 int currentIndex = 6;
@@ -176,13 +179,21 @@ namespace TestElement.Controllers.API
                     {
                         for (int j = 1; j < 17; j++)
                         {
-                            sheet1.AddMergedRegion(new CellRangeAddress(currentIndex, currentIndex + data.Count - groupdata[i]  - 1, j, j));
+                            if (j == 10 || j == 11 || j == 12 )
+                            {
+                                continue;
+                            }
+                            sheet1.AddMergedRegion(new CellRangeAddress(currentIndex, currentIndex + data.Count - groupdata[i] - 1, j, j));
                         }
                     }
                     else
                     {
                         for (int j = 1; j < 17; j++)
                         {
+                            if (j == 10 || j == 11 || j == 12)
+                            {
+                                continue;
+                            }
                             sheet1.AddMergedRegion(new CellRangeAddress(currentIndex, currentIndex + groupdata[i + 1] - groupdata[i] - 1, j, j));
                         }
                     }
@@ -311,11 +322,14 @@ namespace TestElement.Controllers.API
 
         /// <summary>
         /// excel数据导入到数据库(apdfctlandtown、apdfctlandtown2表)
+        /// 一个机构一年只有一批数据
         /// </summary>
         /// <param name="excelfile"></param>
         /// <returns></returns>
-        [HttpPost("upload")]
-        public FuncResult Import()
+        //[HttpPost("upload")]
+        [Route("upload")]
+        [HttpGet("{year}")]
+        public FuncResult Import(string year)
         {
             FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
             try
@@ -398,7 +412,8 @@ namespace TestElement.Controllers.API
                             currenttown2key = town2context[0].RecordId + 1;
                         }
                         //存在orgcode不存在的情况就整个都不写入
-                        foreach (var item in groupdata_1)
+                        //t2作为t1的主表
+                        foreach (var item in groupdata_2)
                         {
                             var currentorganization = listorgan.FirstOrDefault(f => f.OrgCode.Equals(item.ORGCODE));
                             if (currentorganization == null)
@@ -407,23 +422,34 @@ namespace TestElement.Controllers.API
                                 result.Message = $"此机构号:{item.ORGCODE}找不到对应机构，导入失败！";
                                 return result;
                             }
-                            ApdFctLandTown t1 = new ApdFctLandTown()
+                            bool isalreadyexport = isAlreadyExport(item.ORGCODE, year);
+                            if (isalreadyexport)
                             {
-                                OrgCode = item.ORGCODE,
-                                OwnershipLand = item.OWNERSHIPLAND,
-                                ProtectionLand = item.PROTECTIONLAN,
-                                ReduceLand = item.REDUCELAND,
-                                CreationDate = DateTime.Now,
-                                LastUpdateDate = DateTime.Now,
-                                PeriodYear = DateTime.Now.Year,
-                                RecordId = new Random().Next(1, 999),
-                                T2Id = currenttown2key
-                            };
-                            context.ApdFctLandTown.Add(t1);
-                        }
+                                //删除(添加删除标记字段)
+                                var formatyear = Convert.ToDecimal(year);
+                                var alreadytown2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(item.ORGCODE) && f.PeriodYear.Equals(formatyear));
+                                var alreadytown = context.ApdFctLandTown.Where(f => alreadytown2.Select(g => g.RecordId).Contains(f.T2Id));
+                                //context.ApdFctLandTown2.RemoveRange();
+                                foreach (var town2 in alreadytown2)
+                                {
+                                    town2.DeleteBy = HttpContext.CurrentUser(cache).Id;
+                                    town2.DeleteDate = DateTime.Now;
+                                    town2.DeleteFlag = 1;
+                                    town2.LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
+                                    town2.LastUpdateDate = DateTime.Now;
+                                    context.ApdFctLandTown2.Update(town2);
+                                }
+                                foreach (var town in alreadytown)
+                                {
+                                    town.DeleteBy = HttpContext.CurrentUser(cache).Id;
+                                    town.DeleteDate = DateTime.Now;
+                                    town.DeleteFlag = 1;
+                                    town.LastUpdatedBy= Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
+                                    town.LastUpdateDate = DateTime.Now;
+                                    context.ApdFctLandTown.Update(town);
+                                }
 
-                        foreach (var item in groupdata_2)
-                        {
+                            }
                             ApdFctLandTown2 t2 = new ApdFctLandTown2()
                             {
                                 OrgCode = item.ORGCODE,
@@ -433,12 +459,35 @@ namespace TestElement.Controllers.API
                                 Remark = item.REMARK,
                                 PeriodYear = DateTime.Now.Year,
                                 RecordId = new Random().Next(1, 999),
+                                CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                                 CreationDate = DateTime.Now,
                                 LastUpdateDate = DateTime.Now,
+                                LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                                 Count = groupdata_1.Count()
                             };
                             context.ApdFctLandTown2.Add(t2);
                         }
+                        foreach (var item in groupdata_1)
+                        {
+                           
+                            ApdFctLandTown t1 = new ApdFctLandTown()
+                            {
+                                OrgCode = item.ORGCODE,
+                                OwnershipLand = item.OWNERSHIPLAND,
+                                ProtectionLand = item.PROTECTIONLAN,
+                                ReduceLand = item.REDUCELAND,
+                                CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
+                                CreationDate = DateTime.Now,
+                                LastUpdateDate = DateTime.Now,
+                                LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
+                                PeriodYear = DateTime.Now.Year,
+                                RecordId = new Random().Next(1, 999),
+                                T2Id = currenttown2key
+                            };
+                            context.ApdFctLandTown.Add(t1);
+                        }
+
+                       
 
                         using (IDbContextTransaction trans = context.Database.BeginTransaction())
                         {
@@ -475,6 +524,27 @@ namespace TestElement.Controllers.API
                 return result;
             }
 
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var town2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                return town2 != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error",ex);
+            }
         }
     }
 
