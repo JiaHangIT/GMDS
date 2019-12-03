@@ -22,7 +22,7 @@ using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
-namespace TestElement.Controllers.API
+namespace JiaHang.Projects.Admin.Web.Controllers.API
 {
     [Route("api/[controller]")]
     //[ApiController]
@@ -44,7 +44,10 @@ namespace TestElement.Controllers.API
             FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
 
             //条件查询情况下，需要重新考虑Count值的问题
-
+            model.page--; if (model.page < 0)
+            {
+                model.page = 0;
+            }
 
             var query = from t1 in context.ApdFctLandTown.Where(f=>f.DeleteFlag == 0)
                         join t2 in context.ApdFctLandTown2.Where(f => f.DeleteFlag == 0) on t1.T2Id equals t2.RecordId
@@ -76,9 +79,17 @@ namespace TestElement.Controllers.API
             (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode))&&
             (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname))
             )).OrderBy(o => o.Create);
-            var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand,g.Key }).OrderBy(o=>o.Key.Key);
 
+            /*
+             * 通过groupby data来分页
+             * groupby 处理后，再根据groupby data自来query data
+             * **/
+
+            var querygroup = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand, g.Key }).OrderBy(o => o.Key.Key);
+            int count = querygroup.Count();
+            var l = querygroup.Skip(model.limit * model.page).Take(model.limit);
             
+
             var list = new List<int>();
             //重新定义query里count的值
 
@@ -115,8 +126,174 @@ namespace TestElement.Controllers.API
                     listnew.Add(list.Take(i).Sum());
                 }
             }
-            result.Content = new { data = queryr, array = listnew };
+            result.Content = new { data = queryr, array = listnew,total = count };
             return result;
+        }
+
+        /// <summary>
+        /// 获取编辑数据
+        /// 连表查询
+        /// </summary>
+        /// <param name="recordid"></param>
+        /// <returns></returns>
+        [Route("edit/{recordid}")]
+        [HttpGet]
+        public async Task<FuncResult>  GetEditData(int recordid)
+        {
+            try
+            {
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                var query = from t1 in context.ApdFctLandTown.Where(f => f.DeleteFlag == 0)
+                            join t2 in context.ApdFctLandTown2.Where(f => f.DeleteFlag == 0 && f.RecordId.Equals(recordid)) on t1.T2Id equals t2.RecordId
+                            join o in context.ApdDimOrg on t1.OrgCode equals o.OrgCode
+                            select new
+                            {
+                                Key = t2.RecordId,
+                                RecordId = t2.RecordId,
+                                OrgName = o.OrgName,
+                                OwnershipLand = t1.OwnershipLand,
+                                ProtectionLand = t1.ProtectionLand,
+                                ReduceLand = t1.ReduceLand,
+                                FactLand = t2.FactLand,
+                                RentLand = t2.RentLand,
+                                LeaseLand = t2.LeaseLand,
+                                Remark = t2.Remark,
+                                Create = t2.CreationDate
+                            };
+                query = query.OrderBy(o => o.Create);
+
+                if (query == null || query.Count() <= 0)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "异常，未查到相关数据!";
+                    return fr;
+                }
+                fr.Content = query;
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error",ex);
+            }
+        }
+
+        /// <summary>
+        /// 更新详细数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("update/{key}")]
+        public async Task<FuncResult> UpdateDetailData(string key,[FromBody] ApdFctLandTowns model)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (model == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未正常接收参数!";
+                    return fr;
+                }
+                var town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(model.Key));
+                if (town2 == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未正常接收参数!";
+                    return fr;
+                }
+                town2.FactLand = model.FactLand;
+                town2.RentLand = model.RentLand;
+                town2.LeaseLand = model.LeaseLand;
+                town2.Remark = model.Remark;
+                context.ApdFctLandTown2.Update(town2);
+
+                foreach (var item in model.detaillist)
+                {
+                    var cd = context.ApdFctLandTown.FirstOrDefault(f => f.RecordId.Equals(item.RecordId));
+                    cd.OwnershipLand = item.OwnershipLand;
+                    cd.ProtectionLand = item.ProtectionLand;
+                    cd.ReduceLand = item.ReduceLand;
+                    context.ApdFctLandTown.Update(cd);
+                }
+
+
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        return fr;
+                        throw new Exception("error",ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error",ex);
+            }
+        }
+
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("delete/{key}")]
+        public async Task<FuncResult> DeleteData(string key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未接收到参数信息!";
+                }
+                var _key = Convert.ToDecimal(key);
+                ApdFctLandTown2 town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(_key));
+                if (town2 == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "异常参数，未找到数据!";
+                }
+                List<ApdFctLandTown> listtown = context.ApdFctLandTown.Where(f => f.T2Id.Equals(key)).ToList();
+
+                //删除
+                context.ApdFctLandTown2.Remove(town2);
+                context.ApdFctLandTown.RemoveRange(listtown);
+
+
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        throw new Exception("error",ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception("error",ex) ;
+            }
         }
 
         /// <summary>
@@ -426,28 +603,31 @@ namespace TestElement.Controllers.API
                             if (isalreadyexport)
                             {
                                 //删除(添加删除标记字段)
+                                //物理删除
                                 var formatyear = Convert.ToDecimal(year);
                                 var alreadytown2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(item.ORGCODE) && f.PeriodYear.Equals(formatyear));
                                 var alreadytown = context.ApdFctLandTown.Where(f => alreadytown2.Select(g => g.RecordId).Contains(f.T2Id));
-                                //context.ApdFctLandTown2.RemoveRange();
-                                foreach (var town2 in alreadytown2)
-                                {
-                                    town2.DeleteBy = HttpContext.CurrentUser(cache).Id;
-                                    town2.DeleteDate = DateTime.Now;
-                                    town2.DeleteFlag = 1;
-                                    town2.LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
-                                    town2.LastUpdateDate = DateTime.Now;
-                                    context.ApdFctLandTown2.Update(town2);
-                                }
-                                foreach (var town in alreadytown)
-                                {
-                                    town.DeleteBy = HttpContext.CurrentUser(cache).Id;
-                                    town.DeleteDate = DateTime.Now;
-                                    town.DeleteFlag = 1;
-                                    town.LastUpdatedBy= Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
-                                    town.LastUpdateDate = DateTime.Now;
-                                    context.ApdFctLandTown.Update(town);
-                                }
+                                context.ApdFctLandTown2.RemoveRange(alreadytown2);
+                                context.ApdFctLandTown.RemoveRange(alreadytown);
+
+                                //foreach (var town2 in alreadytown2)
+                                //{
+                                //    town2.DeleteBy = HttpContext.CurrentUser(cache).Id;
+                                //    town2.DeleteDate = DateTime.Now;
+                                //    town2.DeleteFlag = 1;
+                                //    town2.LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
+                                //    town2.LastUpdateDate = DateTime.Now;
+                                //    context.ApdFctLandTown2.Update(town2);
+                                //}
+                                //foreach (var town in alreadytown)
+                                //{
+                                //    town.DeleteBy = HttpContext.CurrentUser(cache).Id;
+                                //    town.DeleteDate = DateTime.Now;
+                                //    town.DeleteFlag = 1;
+                                //    town.LastUpdatedBy= Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
+                                //    town.LastUpdateDate = DateTime.Now;
+                                //    context.ApdFctLandTown.Update(town);
+                                //}
 
                             }
                             ApdFctLandTown2 t2 = new ApdFctLandTown2()
@@ -457,7 +637,7 @@ namespace TestElement.Controllers.API
                                 RentLand = item.RENTLAND,
                                 LeaseLand = item.LEASELAND,
                                 Remark = item.REMARK,
-                                PeriodYear = DateTime.Now.Year,
+                                PeriodYear = Convert.ToDecimal(year),
                                 RecordId = new Random().Next(1, 999),
                                 CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                                 CreationDate = DateTime.Now,
@@ -498,7 +678,7 @@ namespace TestElement.Controllers.API
                             }
                             catch (Exception ex)
                             {
-
+                                trans.Rollback();
                                 throw new Exception("error", ex);
                             }
                         }
@@ -678,5 +858,36 @@ namespace TestElement.Controllers.API
         public string orgname { get; set; }
 
         public string orgcode { get; set; }
+
+        /// <summary>
+        /// 页大小
+        /// </summary>
+        public int limit { get; set; }
+
+        /// <summary>
+        /// 页码
+        /// </summary>
+        public int page { get; set; }
+    }
+
+    /// <summary>
+    /// 数据更新接收实体
+    /// </summary>
+    public class ApdFctLandTowns
+    {
+        public decimal Key { get; set; }
+        public decimal? FactLand { get; set; }
+        public decimal? RentLand { get; set; }
+        public decimal? LeaseLand { get; set; }
+        public string Remark { get; set; }
+        public List<ApdFctDetailTown> detaillist { get; set; }
+    }
+
+    public class ApdFctDetailTown
+    {
+        public decimal RecordId { get; set; }
+        public decimal? OwnershipLand { get; set; }
+        public decimal? ProtectionLand { get; set; }
+        public decimal? ReduceLand { get; set; }
     }
 }
