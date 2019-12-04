@@ -149,7 +149,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                             select new
                             {
                                 Key = t2.RecordId,
-                                RecordId = t2.RecordId,
+                                RecordId = t1.RecordId,
                                 OrgName = o.OrgName,
                                 OwnershipLand = t1.OwnershipLand,
                                 ProtectionLand = t1.ProtectionLand,
@@ -183,7 +183,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// </summary>
         /// <returns></returns>
         [HttpPut("update/{key}")]
-        public async Task<FuncResult> UpdateDetailData(string key,[FromBody] ApdFctLandTowns model)
+        public FuncResult UpdateDetailData(string key,[FromBody] ApdFctLandTowns model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
@@ -221,7 +221,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 {
                     try
                     {
-                        await context.SaveChangesAsync();
+                        context.SaveChangesAsync();
                         trans.Commit();
                     }
                     catch (Exception ex)

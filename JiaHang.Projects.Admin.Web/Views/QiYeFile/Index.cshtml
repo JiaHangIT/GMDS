@@ -179,7 +179,7 @@
                 <el-row>
                     <e-col>
                         <el-form-item label="出租土地">
-                            <el-input placeholder="请输入出租土地总面积" v-model="mainform.rease"></el-input>
+                            <el-input placeholder="请输入出租土地总面积" v-model="mainform.lease"></el-input>
                         </el-form-item>
                     </e-col>
                     <e-col>
@@ -188,15 +188,6 @@
                         </el-form-item>
                     </e-col>
                 </el-row>
-                
-                @*<div class="layui-row">
-                    <el-form-item label="出租土地总面积">
-                        <el-input placeholder="请输入出租土地总面积" v-model="orgname"></el-input>
-                    </el-form-item>
-                    <el-form-item label="备注">
-                        <el-input placeholder="请输入备注信息" v-model="orgcode"></el-input>
-                    </el-form-item>
-                </div>*@
 
             </el-form>
             <template>
@@ -230,26 +221,6 @@
                             <el-input v-model="scope.row.reduceLand" placeholder="新减土地面积"></el-input>
                         </template>
                     </el-table-column>
-                    @*<el-table-column prop="factLand" label="事实用地总面积">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.factLand" placeholder="事实用地总面积"></el-input>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="rentLand" label="租用土地总面积">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.rentLand" placeholder="租用土地总面积"></el-input>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="leaseLand" label="出租土地总面积">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.leaseLand" placeholder="出租土地总面积"></el-input>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="remark" label="备注">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.remark" placeholder="备注"></el-input>
-                        </template>
-                    </el-table-column>*@
                 </el-table>
                 <div slot="footer" class="dialog-footer">
                     <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
