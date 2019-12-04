@@ -280,11 +280,16 @@
         methods: {
             fetchlist() {
                 let vm = this;
+                let y = ''
                 var top = $("#app").offset().top;
                 //自适应表高度
                 var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
-                vm.tableheight = height 
-                axios({ url: `/api/qiyefile/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage } }).then(res => {
+                vm.tableheight = height
+                if (vm.exportyear != '') {
+                    y = vm.exportyear.getFullYear()
+                }
+
+                axios({ url: `/api/qiyefile/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
                     vm.array = res.data.content.array
                     vm.total = res.data.content.total
