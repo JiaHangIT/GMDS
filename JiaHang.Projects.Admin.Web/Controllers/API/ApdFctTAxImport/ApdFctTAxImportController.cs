@@ -13,6 +13,7 @@ using JiaHang.Projects.Admin.Model.ApdFctTax;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -72,6 +73,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 Phone = o.Phone,
                                 LinkMan = o.LinkMan,
                                 Phone2 = o.Phone2,
+                                recordId=t1.RECORD_ID,
                                 Depreciation = t1.DEPRECIATION,
                                 EmployeeRemunerationON = t1.EMPLOYEE_REMUNERATION,
                                 PROFIT = t1.PROFIT,
@@ -452,7 +454,47 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             //await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
         }
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public async Task<FuncResult> Update(string id, [FromBody]ApdFctTAxModel model)
+        {
+            ApdFctTAx entity;
+            try
+            {
+                 entity = await context.ApdFctTAx.FirstOrDefaultAsync(m => m.RECORD_ID == model.RECORD_ID);
+            if (entity == null)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "用户ID错误!" };
+            }
+            entity.ORG_CODE = model.ORG_CODE;
+            entity.ENT_PAID_TAX = model.ENT_PAID_TAX;
+            entity.EMPLOYEE_REMUNERATION = model.EMPLOYEE_REMUNERATION;
+            entity.DEPRECIATION = model.DEPRECIATION;
+            entity.PROFIT = model.PROFIT;
+            entity.MAIN_BUSINESS_INCOME = model.MAIN_BUSINESS_INCOME;
+            entity.RAD_EXPENSES = model.RAD_EXPENSES;
+            entity.NUMBER_OF_EMPLOYEES = model.NUMBER_OF_EMPLOYEES;
+            entity.OWNER_EQUITY = model.OWNER_EQUITY;
+            entity.TOTAL_PROFIT = model.TOTAL_PROFIT;
+            //entity.LAST_UPDATED_BY = HttpContext.CurrentUser(cache).Id;
+            entity.LAST_UPDATE_DATE = DateTime.Now;
+           
+                context.ApdFctTAx.Update(entity);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {               
+                LogService.WriteError(ex);
+                return new FuncResult() { IsSuccess = false, Message = "修改时发生了意料之外的错误" };
+            }
+            return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
 
+        }
 
         public class Demo
         {
@@ -523,7 +565,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             public decimal? PROFIT { get; set; }
             public decimal? Depreciation { get; set; }
             public decimal? Pforit { get; set; }
-
+            public decimal? recordId { get; set; }
             public decimal? EntPaidTax { get; set; }
             public decimal? MainBusinessIncome { get; set; }
             public decimal? RadEexpenses { get; set; }

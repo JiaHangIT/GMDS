@@ -165,34 +165,32 @@
                     <el-input placeholder="主键" v-model="form.recordId"></el-input>
                 </el-form-item>
 
-                <el-table-column prop="orgName" label="企业名称" width="245">
-                    <template slot-scope="scope">
-                        <el-input disabled="true" v-model="form.ORG_CODE" placeholder="企业名称"></el-input>
-                    </template>
-                </el-table-column>
-                <el-form-item label="企业实缴税金（万元）：" prop="user_Account">
-                    <el-input placeholder="企业实缴税金（万元）" v-model="form.ENT_PAID_TAX"></el-input>
+                <el-form-item label="企业名称（万元）：" prop="orgCode">
+                    <el-input placeholder="企业名称" v-model="form.orgCode"></el-input>
                 </el-form-item>
-                <el-form-item label="职工薪酬（万元）" prop="user_Password">
-                    <el-input placeholder="职工薪酬（万元）" v-model="form.EMPLOYEE_REMUNERATION"></el-input>
+                <el-form-item label="企业实缴税金（万元）：" prop="entPaidTax">
+                    <el-input placeholder="企业实缴税金（万元）" v-model="form.entPaidTax"></el-input>
                 </el-form-item>
-                <el-form-item label="固定资产折旧（万元）" prop="user_Name">
-                    <el-input placeholder="固定资产折旧（万元）" v-model="form.DEPRECIATION"></el-input>
+                <el-form-item label="职工薪酬（万元）" prop="employeeRemunerationON">
+                    <el-input placeholder="职工薪酬（万元）" v-model="form.employeeRemunerationON"></el-input>
                 </el-form-item>
-                <el-form-item label="营业利润（万元）" prop="user_Email">
-                    <el-input placeholder="营业利润（万元）" v-model="form.PROFIT"></el-input>
+                <el-form-item label="固定资产折旧（万元）" prop="depreciation">
+                    <el-input placeholder="固定资产折旧（万元）" v-model="form.depreciation"></el-input>
                 </el-form-item>
-                <el-form-item label="主营业务收入（万元）" prop="user_Mobile_No">
-                    <el-input placeholder="主营业务收入（万元）" v-model.number="form.MAIN_BUSINESS_INCOME"></el-input>
+                <el-form-item label="营业利润（万元）" prop="profit">
+                    <el-input placeholder="营业利润（万元）" v-model="form.profit"></el-input>
                 </el-form-item>
-                <el-form-item label="允许扣除的研发费用（万元）" prop="user_Mobile_No">
-                    <el-input placeholder="允许扣除的研发费用（万元）" v-model.number="form.RAD_EXPENSES"></el-input>
+                <el-form-item label="主营业务收入（万元）" prop="mainBusinessIncome">
+                    <el-input placeholder="主营业务收入（万元）" v-model.number="form.mainBusinessIncome"></el-input>
                 </el-form-item>
-                <el-form-item label="平均从业人数（人）" prop="user_Mobile_No">
-                    <el-input placeholder="平均从业人数（人）" v-model.number="form.NUMBER_OF_EMPLOYEES"></el-input>
+                <el-form-item label="允许扣除的研发费用（万元）" prop="radEexpenses">
+                    <el-input placeholder="允许扣除的研发费用（万元）" v-model.number="form.radEexpenses"></el-input>
                 </el-form-item>
-                <el-form-item label="利润总额（万元）" prop="user_Mobile_No">
-                    <el-input placeholder="利润总额（万元）" v-model.number="form.PROFIT"></el-input>
+                <el-form-item label="平均从业人数（人）" prop="numberOfEmployees">
+                    <el-input placeholder="平均从业人数（人）" v-model.number="form.numberOfEmployees"></el-input>
+                </el-form-item>
+                <el-form-item label="利润总额（万元）" prop="totalProfit">
+                    <el-input placeholder="利润总额（万元）" v-model.number="form.totalProfit"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -272,26 +270,34 @@
                 console.log(vm.form);
                 vm.centerDialogVisible = true
             },
-            dialogSave: function (formName) {
+            dialogSave: function (formName) {                
                 let vm = this;
                 let model = ''
+                console.log("shuju数据：", vm.form.recordId);
+                
                 vm.$refs[formName].validate((valid) => {
                     if (valid) {
                         let url = "/api/apdfcttaximport";
                         let method = "POST";
                         if (vm.IsCreate != true) {
-                            url = `/api/apdfcttaximport/${vm.form.RECORD_ID}`;
+                            url = `/api/apdfcttaximport/${vm.form.recordId}`;
                             method = "PUT";
 
                         }
                         //console.log(vm.form.user_Is_Ldap);
                         //console.log(vm.form.user_Is_Lock);
                         model = {
-                            useraccount: vm.form.user_Account,
-                            username: vm.form.user_Name,
-                            userpassword: vm.form.user_Password,
-                            useremail: vm.form.user_Email,
-                            usermobileno: vm.form.user_Mobile_No,
+                            RECORD_ID:vm.form.recordId,
+                            ORG_CODE: vm.form.orgCode,
+                            ENT_PAID_TAX: vm.form.entPaidTax,
+                            EMPLOYEE_REMUNERATION: vm.form.employeeRemunerationON,
+                            DEPRECIATION: vm.form.depreciation,
+                            PROFIT: vm.form.profit,
+                            MAIN_BUSINESS_INCOME: vm.form.mainBusinessIncome,
+                            RAD_EXPENSES: vm.form.radEexpenses,
+                            OWNER_EQUITY: vm.form.ownerEquity,
+                            TOTAL_PROFIT: vm.form.totalProfit,
+                            NUMBER_OF_EMPLOYEES: vm.form.numberOfEmployees
                         };
                         console.log(model);
                         axios({ url: url, method: method, data: model })
@@ -301,7 +307,7 @@
                                     return;
                                 }
                                 vm.$message({ title: '成功', message: response.data.message, type: 'success' })
-                                vm.fetchList();
+                                vm.fetchlist();
                                 vm.centerDialogVisible = false
                             })
                             .catch(function (error) {
