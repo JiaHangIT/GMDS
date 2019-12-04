@@ -172,8 +172,7 @@
             },
             objectSpanMethod({ row, column, rowIndex, columnIndex }) {
                 let vm = this
-                let c = row.count
-
+                let c = row.count               
                 console.log(row.count)
                 if (columnIndex < 9 || columnIndex > 11) {
                     //只有一行返回count个，其他的返回0
