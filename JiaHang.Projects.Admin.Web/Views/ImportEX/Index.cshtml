@@ -63,7 +63,6 @@
 
     <div v-loading="loading">
         <el-table :data="data"
-                  
                   style="width: 100%;"
                   :height="822">
             <el-table-column prop="orgName"
@@ -146,7 +145,61 @@
                              label="备注"
                              width="120">
             </el-table-column>*@
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button size="mini"
+                               v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                    @*<el-button size="mini"
+                    type="danger"
+                    v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>*@
+                </template>
+            </el-table-column>
         </el-table>
+        <el-dialog :title="dialogTitle"
+                   :visible.sync="centerDialogVisible"
+                   width="30%"
+                   center>
+            <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+                <el-form-item label="ID：" prop="ID" hidden>
+                    <el-input placeholder="主键" v-model="form.recordId"></el-input>
+                </el-form-item>
+
+                <el-table-column prop="orgName" label="企业名称" width="245">
+                    <template slot-scope="scope">
+                        <el-input disabled="true" v-model="form.ORG_CODE" placeholder="企业名称"></el-input>
+                    </template>
+                </el-table-column>
+                <el-form-item label="企业实缴税金（万元）：" prop="user_Account">
+                    <el-input placeholder="企业实缴税金（万元）" v-model="form.ENT_PAID_TAX"></el-input>
+                </el-form-item>
+                <el-form-item label="职工薪酬（万元）" prop="user_Password">
+                    <el-input placeholder="职工薪酬（万元）" v-model="form.EMPLOYEE_REMUNERATION"></el-input>
+                </el-form-item>
+                <el-form-item label="固定资产折旧（万元）" prop="user_Name">
+                    <el-input placeholder="固定资产折旧（万元）" v-model="form.DEPRECIATION"></el-input>
+                </el-form-item>
+                <el-form-item label="营业利润（万元）" prop="user_Email">
+                    <el-input placeholder="营业利润（万元）" v-model="form.PROFIT"></el-input>
+                </el-form-item>
+                <el-form-item label="主营业务收入（万元）" prop="user_Mobile_No">
+                    <el-input placeholder="主营业务收入（万元）" v-model.number="form.MAIN_BUSINESS_INCOME"></el-input>
+                </el-form-item>
+                <el-form-item label="允许扣除的研发费用（万元）" prop="user_Mobile_No">
+                    <el-input placeholder="允许扣除的研发费用（万元）" v-model.number="form.RAD_EXPENSES"></el-input>
+                </el-form-item>
+                <el-form-item label="平均从业人数（人）" prop="user_Mobile_No">
+                    <el-input placeholder="平均从业人数（人）" v-model.number="form.NUMBER_OF_EMPLOYEES"></el-input>
+                </el-form-item>
+                <el-form-item label="利润总额（万元）" prop="user_Mobile_No">
+                    <el-input placeholder="利润总额（万元）" v-model.number="form.PROFIT"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogCancel()">取 消</el-button>
+                <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 
 </div>
@@ -161,10 +214,32 @@
                 array: [],
                 sym: 0,
                 data: [],
+                centerDialogVisible: false,
                 orgname: '',
                 orgcode: '',
+                form: {
+                    RECORD_ID:'',
+                    ORG_CODE: '',
+                    ENT_PAID_TAX: '',
+                    EMPLOYEE_REMUNERATION: '',
+                    DEPRECIATION: '',
+                    PROFIT: '',
+                    MAIN_BUSINESS_INCOME: '',
+                    RAD_EXPENSES: '',
+                    NUMBER_OF_EMPLOYEES: '',
+                    OWNER_EQUITY: '',
+                    TOTAL_PROFIT:''
+                },
+                rules: {
+                    RECORD_ID: [
+                        { required: true, message: '主键不能为空', trigger: 'blur' },
+
+                    ]
+                },
                 model: { year: '' },
-                exportyear: ''
+                exportyear: '',
+                dialogTitle: '',
+                labelPosition: 'left',
             }
         },
         methods: {
@@ -180,6 +255,93 @@
                     vm.array = res.data.content.array
                     vm.loading = false
                 }).catch(err => { console.log(err); vm.loading = false })
+            },
+            dialogCancel: function () {
+                let vm = this;
+                vm.centerDialogVisible = false
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.IsCreate = false
+                vm.dialogTitle = "编辑信息"
+                vm.form = formdata;
+                console.log(formdata);
+                console.log(vm.form);
+                vm.centerDialogVisible = true
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                let model = ''
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = "/api/apdfcttaximport";
+                        let method = "POST";
+                        if (vm.IsCreate != true) {
+                            url = `/api/apdfcttaximport/${vm.form.RECORD_ID}`;
+                            method = "PUT";
+
+                        }
+                        //console.log(vm.form.user_Is_Ldap);
+                        //console.log(vm.form.user_Is_Lock);
+                        model = {
+                            useraccount: vm.form.user_Account,
+                            username: vm.form.user_Name,
+                            userpassword: vm.form.user_Password,
+                            useremail: vm.form.user_Email,
+                            usermobileno: vm.form.user_Mobile_No,
+                        };
+                        console.log(model);
+                        axios({ url: url, method: method, data: model })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
+                        return;
+                    }
+                });
+            },
+            resetForm() {
+                let vm = this;
+                vm.form.RECORD_ID = ''
+                vm.form.ORG_CODE = ''
+                vm.form.ENT_PAID_TAX = ''
+                vm.form.EMPLOYEE_REMUNERATION = ''
+                vm.form.DEPRECIATION = ''
+                vm.form.PROFIT = ''
+
+                vm.form.MAIN_BUSINESS_INCOME = ''
+                vm.form.RAD_EXPENSES = ''
+                vm.form.NUMBER_OF_EMPLOYEES = ''
+                vm.form.OWNER_EQUITY = ''
+                vm.form.TOTAL_PROFIT = ''
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.fetchList();
+            },
+
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
             },
             objectSpanMethod({ row, column, rowIndex, columnIndex }) {
                 let vm = this

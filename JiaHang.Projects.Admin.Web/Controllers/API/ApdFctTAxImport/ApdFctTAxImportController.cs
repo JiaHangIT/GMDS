@@ -93,7 +93,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 //        )
                 //        ).ToList().OrderByDescending(e => e.LAST_UPDATE_DATE);
                 var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType}).OrderBy(o => o.Key.OrgCode);
-
+                int count = query.Count();
+                
+                //var l= itemList.Skip(model.limit * model.page).Take(model.limit);
                 var list = new List<int>();
                 //重新定义query里count的值
 
@@ -133,7 +135,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
                 //int total = listnew;
                 //var data = query.ToList();
-                result.Content = new { data = queryr, array = listnew };
+                result.Content = new { data = queryr, array = listnew , total =count};
                 //return new FuncResult() { IsSuccess = true, Content = new { data, total } };
             }
             catch (Exception ex)
@@ -493,6 +495,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             public string orgname { get; set; }
 
             public string orgcode { get; set; }
+
+            /// <summary>
+            /// 页大小
+            /// </summary>
+            public int limit { get; set; }
+
+            /// <summary>
+            /// 页码
+            /// </summary>
+            public int page { get; set; }
         }
 
         public class ReturnModel
