@@ -55,6 +55,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         select new ReturnModel
                         {
                             //Array = listnew,
+                            PeriodYear = t2.PeriodYear,
                             Count = t2.Count,
                             Key = t2.RecordId,
                             OrgName = o.OrgName,
@@ -77,7 +78,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         };
             query = query.Where(f=> (
             (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode))&&
-            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname))
+            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+            (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
             )).OrderBy(o => o.Create);
 
             /*
@@ -149,7 +151,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                             select new
                             {
                                 Key = t2.RecordId,
-                                RecordId = t2.RecordId,
+                                RecordId = t1.RecordId,
                                 OrgName = o.OrgName,
                                 OwnershipLand = t1.OwnershipLand,
                                 ProtectionLand = t1.ProtectionLand,
@@ -183,7 +185,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// </summary>
         /// <returns></returns>
         [HttpPut("update/{key}")]
-        public async Task<FuncResult> UpdateDetailData(string key,[FromBody] ApdFctLandTowns model)
+        public FuncResult UpdateDetailData(string key,[FromBody] ApdFctLandTowns model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
@@ -221,7 +223,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 {
                     try
                     {
-                        await context.SaveChangesAsync();
+                        context.SaveChangesAsync();
                         trans.Commit();
                     }
                     catch (Exception ex)
@@ -765,6 +767,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
     public class ReturnModel
     {
+        public decimal PeriodYear { get; set; }
         public decimal Count { get; set; }
         public decimal Key { get; set; }
         public string OrgName { get; set; }
@@ -855,6 +858,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
     public class RequestLandTown
     {
+        public string year { get; set; }
+
         public string orgname { get; set; }
 
         public string orgcode { get; set; }

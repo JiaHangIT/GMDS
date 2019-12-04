@@ -9,16 +9,19 @@ using JiaHang.Projects.Admin.Common;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
+using JiaHang.Projects.Admin.Model.DFetchData.Pollutant;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class PollutantController : ControllerBase
     {
         private readonly DataContext context;
@@ -37,9 +40,84 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// </summary>
         /// <returns></returns>
         [Route("GetListPagination")]
-        public FuncResult GetListPagination()
+        [HttpPost]
+        public async Task<FuncResult> GetListPagination([FromBody] SearchModel model)
         {
-            return null;
+            model.page--; if (model.page < 0)
+            {
+                model.page = 0;
+            }
+            return await pollutantBll.GetListPagination(model);
+        }
+
+        /// <summary>
+        /// 更新详细数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("update/{key}")]
+        public async Task<FuncResult> UpdateDetailData(string key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
+
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("delete/{key}")]
+        public async Task<FuncResult> DeleteData(string key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未接收到参数信息!";
+                }
+                var _key = Convert.ToDecimal(key);
+                ApdFctContaminants entity = context.ApdFctContaminants.FirstOrDefault(f => f.RecordId.Equals(_key));
+                if (entity == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "异常参数，未找到数据!";
+                }
+
+                //删除
+                context.ApdFctContaminants.Remove(entity);
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        throw new Exception("error", ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
 
         /// <summary>
@@ -78,7 +156,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var prefilter = datalist.Where(f => !(f.H1 == ""));
                         var filterdata = prefilter.Select(g => new ApdFctContaminants
                         {
-                            OrgCode = g.H1,
+                            RecordId = new Random().Next(1,99999),
+                            PeriodYear = Convert.ToDecimal(year),
+                            OrgCode = g.H3,
                             IsInSystem = g.H6,
                             Oxygen = g.H7 == "" ? null : Convert.ToDecimal(g.H7),
                             AmmoniaNitrogen = g.H8 == "" ? null : Convert.ToDecimal(g.H8),
@@ -91,7 +171,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             Remark = g.H15
                         });
 
-                        result.IsSuccess = pollutantBll.WriteData(filterdata);
+                        result.IsSuccess = pollutantBll.WriteData(filterdata,year);
                         
                     }
                     else
@@ -111,6 +191,91 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                 return result;
             }
 
+        }
+
+        /// <summary>
+        /// 下载模板
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("downtemplate")]
+        public FileResult DownTemplate()
+        {
+            try
+            {
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业污染物排放取数表格式-佛山市生态环境局高明分局.xls";
+                FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
+
+                var xssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
+                //可操作
+
+
+                //转为字节数组
+                var stream = new MemoryStream();
+                xssfworkbook.Write(stream);
+                var buf = stream.ToArray();
+                return File(buf, "application/ms-excel", $"企业污染物排放取数表格式-佛山市生态环境局高明分局.xls");
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
+
+        /// <summary>
+        /// 数据导出到excel
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export")]
+        public FileResult Export()
+        {
+            try
+            {
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                var summarydata = pollutantBll.GetList();
+                var data = (List<ReturnPollutantModel>)((dynamic)summarydata).Content;
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业污染物排放取数表格式-佛山市生态环境局高明分局.xls";
+                FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
+
+                var xssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
+
+
+                for (int i = 5; i < data.Count + 5; i++)
+                {
+                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 5].OrgName);
+                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 5].Town);
+                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
+                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
+                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 5].IsInSystem);
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Oxygen));
+                    sheet1.GetRow(i).GetCell(8).SetCellValue(Convert.ToDouble(data[i - 5].AmmoniaNitrogen));
+                    sheet1.GetRow(i).GetCell(9).SetCellValue(Convert.ToDouble(data[i - 5].SulfurDioxide));
+                    sheet1.GetRow(i).GetCell(10).SetCellValue(Convert.ToDouble(data[i - 5].NitrogenOxide));
+                    sheet1.GetRow(i).GetCell(11).SetCellValue(Convert.ToDouble(data[i - 5].Coal));
+                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 5].FuelOil));
+                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToDouble(data[i - 5].Hydrogen));
+                    sheet1.GetRow(i).GetCell(14).SetCellValue(Convert.ToDouble(data[i - 5].Firewood));
+                    sheet1.GetRow(i).GetCell(15).SetCellValue(data[i - 5].Remark);
+                }
+
+                //转为字节数组
+                var stream = new MemoryStream();
+                xssfworkbook.Write(stream);
+                var buf = stream.ToArray();
+                return File(buf, "application/ms-excel", $"{DateTime.Now.ToString("yyyy-MM-dd:hh:mm:ss")}.xls");
+
+                
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
     }
 }

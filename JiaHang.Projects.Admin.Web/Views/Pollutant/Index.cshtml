@@ -62,38 +62,76 @@
         </el-form-item>
     </el-form>
 
-    @*<template>
-        <el-table :data="tableData"
+    <template>
+        <el-table :data="data"
                   border
-                  style="width: 100%">
+                  style="width: 100%"
+                  v-loading="loading">
             <el-table-column fixed
-                             prop="date"
-                             label="日期"
+                             prop="orgName"
+                             label="企业名称"
                              width="150">
             </el-table-column>
-            <el-table-column prop="name"
-                             label="姓名"
+            <el-table-column prop="town"
+                             label="所属镇街"
                              width="120">
             </el-table-column>
-            <el-table-column prop="province"
-                             label="省份"
-                             width="120">
+            <el-table-column prop="orgCode"
+                             label="统一社会信用代码"
+                             width="150">
             </el-table-column>
-            <el-table-column prop="city"
-                             label="市区"
+            <el-table-column prop="registrationType"
+                             label="登记注册类型"
                              width="120">
             </el-table-column>
             <el-table-column prop="address"
-                             label="地址"
-                             width="300">
+                             label="住所"
+                             width="200">
             </el-table-column>
-            <el-table-column prop="zip"
-                             label="邮编"
+            <el-table-column prop="isInSystem"
+                             label="是否纳入环统范围"
+                             width="150">
+            </el-table-column>
+
+            <el-table-column prop="oxygen"
+                             label="化学需氧量排放当量"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="ammoniaNitrogen"
+                             label="氨氮排放当量"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="sulfurDioxide"
+                             label="二氧化硫排放当量"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="nitrogenOxide"
+                             label="氮氧化物排放当量"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="coal"
+                             label="煤炭"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="fuelOil"
+                             label="燃料油"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="hydrogen"
+                             label="氢气"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="firewood"
+                             label="薪柴"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="remark"
+                             label="备注"
                              width="120">
             </el-table-column>
             <el-table-column fixed="right"
                              label="操作"
-                             width="100">
+                             width="150">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -113,7 +151,7 @@
                    :page-size="pageSize"
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
-    </el-pagination>*@
+    </el-pagination>
 </div>
 
 
@@ -130,7 +168,9 @@
         el: '#app',
         data() {
             return {
-                total:100,
+                loading: false,
+                data:[],
+                total:0,
                 pageSize: 10,
                 currentPage:1,
                 value: '',
@@ -171,14 +211,71 @@
         },
         methods: {
             fetchlist() {
+                let vm = this;
+
+                axios({ url: `/api/pollutant/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage } }).then(res => {
+                    vm.data = res.data.content.data
+
+                    vm.total = res.data.content.total
+                    console.log(res.data.content.data)
+                    vm.loading = false
+                }).catch(err => { console.log(err); vm.loading = false })
                 console.log(111)
             },
-            querydata() { },
-            beforeUpload() { },
-            exportdata() { },
-            downtemplate() { },
+            querydata() {
+                let vm = this
+                vm.fetchlist()
+            },
+            beforeUpload() {
+                let vm = this
+                try {
+
+                    vm.model.year = vm.exportyear.getFullYear()
+                    if (vm.model.year === '') {
+                        vm.$message.error('请先选择年份!');
+                        return false
+                    }
+                } catch (e) {
+                    vm.$message.error('请先选择年份!');
+                    return false
+                }
+            },
+            exportdata() {
+                window.location.href = '/api/pollutant/export'
+            },
+            downtemplate() {
+                window.location.href = `/api/pollutant/downtemplate`
+            },
             handleEdit(index,row) { },
-            handleDelete(index, row) { },
+            handleDelete(index, row) {
+                let vm = this
+
+                vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = `/api/pollutant/delete/${row.recordId}`
+                    let method = 'get'
+                    axios({ url: url, method: method })
+                        .then(res => {
+                            if (res.data.isSuccess === true) {
+                                vm.$message.success('操作成功！');
+                                vm.fetchlist();
+                            }
+                            console.log(res)
+                        })
+                        .catch(error => {
+                            vm.$message.error('操作失败，意外的原因！');
+                            console.log(error)
+                        })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             handleSizeChange(val) {
                 let vm = this
                 vm.pageSize = val
@@ -194,6 +291,7 @@
         },
         mounted() {
             let vm = this
+            vm.loading = true
             vm.fetchlist()
         }
     })
