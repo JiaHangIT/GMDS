@@ -31,7 +31,7 @@
                 <el-form-item label="企业信用代码">
                     <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
                 </el-form-item>
-                <el-form-item label="请选择导出年份">
+                <el-form-item label="请选择导入年份">
                     <el-date-picker v-model="exportyear"
                                     type="year"
                                     format="yyyy"
@@ -46,7 +46,7 @@
             <el-button type="primary" @@click="querydata">查询</el-button>
         </el-form-item>
         <el-form-item>
-            <el-button type="success" @@click="query">导出</el-button>
+            <el-button type="success" @@click="exportdata">导出</el-button>
         </el-form-item>
         <el-form-item>
             <el-button type="success" @@click="downtemplate">下载模板</el-button>
@@ -61,7 +61,7 @@
         </el-form-item>
     </el-form>
 
-    <div v-loading="loading">
+    <el-row v-loading="loading">
         <el-table :data="data"
                   :span-method="objectSpanMethod"
                   style="width: 100%;"
@@ -135,16 +135,155 @@
                              label="备注"
                              width="120">
             </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button size="mini"
+                               v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                    <el-button size="mini"
+                               type="danger"
+                               v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
         </el-table>
-    </div>
+
+        <el-pagination @@size-change="handleSizeChange"
+                       @@current-change="handleCurrentChange"
+                       :current-page="currentPage"
+                       :page-sizes="[10, 20, 30, 40]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+
+        <el-dialog :title="dialogTitle"
+                   :visible.sync="centerDialogVisible"
+                   width="65%"
+                   center>
+
+            <el-form :inline="true" class="demo-form-inline">
+                <el-row>
+                    <e-col>
+                        <el-form-item label="事实用地">
+                            <el-input placeholder="请输入事实用地总面积" v-model="mainform.fact"></el-input>
+                        </el-form-item>
+                    </e-col>
+                    <e-col>
+                        <el-form-item label="租用土地">
+                            <el-input placeholder="请输入租用土地总面积" v-model="mainform.rent"></el-input>
+                        </el-form-item>
+                    </e-col>
+                  
+                </el-row>
+                <el-row>
+                    <e-col>
+                        <el-form-item label="出租土地">
+                            <el-input placeholder="请输入出租土地总面积" v-model="mainform.rease"></el-input>
+                        </el-form-item>
+                    </e-col>
+                    <e-col>
+                        <el-form-item label="备注信息">
+                            <el-input placeholder="请输入备注信息" v-model="mainform.remark"></el-input>
+                        </el-form-item>
+                    </e-col>
+                </el-row>
+                
+                @*<div class="layui-row">
+                    <el-form-item label="出租土地总面积">
+                        <el-input placeholder="请输入出租土地总面积" v-model="orgname"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注">
+                        <el-input placeholder="请输入备注信息" v-model="orgcode"></el-input>
+                    </el-form-item>
+                </div>*@
+
+            </el-form>
+            <template>
+
+                <el-table :data="detailData"
+                          style="width: 100%">
+                    @*不展示*@
+                    <el-table-column v-if="keyshow" label="主键">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.recordId" placeholder="主键"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="orgName" label="企业名称" width="245">
+                        <template slot-scope="scope">
+                            <el-input disabled="true" v-model="scope.row.orgName" placeholder="企业名称"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="ownershipLand" label="自有土地面积">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.ownershipLand" placeholder="自有土地面积"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="protectionLand" label="评价保护期土地面积">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.protectionLand" placeholder="评价保护期土地面积"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="reduceLand" label="新减土地面积">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.reduceLand" placeholder="新减土地面积"></el-input>
+                        </template>
+                    </el-table-column>
+                    @*<el-table-column prop="factLand" label="事实用地总面积">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.factLand" placeholder="事实用地总面积"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="rentLand" label="租用土地总面积">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.rentLand" placeholder="租用土地总面积"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="leaseLand" label="出租土地总面积">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.leaseLand" placeholder="出租土地总面积"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="remark" label="备注">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.remark" placeholder="备注"></el-input>
+                        </template>
+                    </el-table-column>*@
+                </el-table>
+                <div slot="footer" class="dialog-footer">
+                    <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
+                    <el-button type="primary" v-on:click="dialogSave('detailData')">确 定</el-button>
+                </div>
+            </template>
+
+        </el-dialog>
+    
 
 </div>
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
 
 <script>
     new Vue({
         el: '#app',
         data() {
             return {
+                keyshow: false,
+                detailData: [{
+                    recordId: '',
+                    orgName: '',
+                    ownershipLand: '',
+                    protectionLand: '',
+                    reduceLand: ''
+                }],
+                dialogTitle: '',
+                centerDialogVisible: false,
                 tableheight: null,
                 loading: false,
                 array: [],
@@ -153,7 +292,17 @@
                 orgname: '',
                 orgcode: '',
                 model: { year: '' },
-                exportyear:''
+                exportyear: '',
+                pageSize: 10,
+                currentPage: 1,
+                total: 0,
+                mainform: {
+                    key:'',
+                    fact: '',
+                    rent: '',
+                    lease: '',
+                    remark:''
+                }
             }
         },
         methods: {
@@ -163,10 +312,11 @@
                 ////自适应表高度
                 //var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
                 //vm.tableheight = height 
-                axios({ url: `/api/qiyefile/getlist`,method:'post', data: { orgname: vm.orgname, orgcode: vm.orgcode } }).then(res => {
+                axios({ url: `/api/qiyefile/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage } }).then(res => {
                     vm.data = res.data.content.data
-                    console.log(res.data.content.data)
                     vm.array = res.data.content.array
+                    vm.total = res.data.content.total
+                    console.log(res.data.content.data)
                     vm.loading = false
                 }).catch(err => { console.log(err); vm.loading = false })
             },
@@ -194,26 +344,149 @@
                 let vm = this
                 vm.fetchlist()
             },
-            query() {
-                //axios.get(`/api/qiyefile/export`).then(res => {
-                //    console.log(res)
-                //}).catch(err => {
-                //    console.log(err)
-                //})
+            exportdata() {
 
-                window.location.href ='/api/qiyefile/export'
+                window.location.href = '/api/qiyefile/export'
             },
             downtemplate() {
                 window.location.href = `/api/qiyefile/downtemplate`
             },
             beforeUpload() {
                 let vm = this
-                vm.model.year = vm.exportyear.getFullYear()
-                if (vm.model.year === '') {
+                try {
+
+                    vm.model.year = vm.exportyear.getFullYear()
+                    if (vm.model.year === '') {
+                        vm.$message.error('请先选择年份!');
+                        return false
+                    }
+                } catch (e) {
                     vm.$message.error('请先选择年份!');
                     return false
                 }
-                
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                console.log('index:', index)
+                console.log('rowdata', row)
+                console.log('key:', row.key)
+                //通过接口拿到数据
+                axios({ url: `/api/qiyefile/edit/${row.key}`, method: 'get', async: true }).then(res => {
+                    if (res.data.isSuccess === true) {
+                        var data = res.data.content
+                        vm.detailData = []
+                        for (var i = 0; i < data.length; i++) {
+
+                            var obj = {
+                                recordId: data[i].recordId,
+                                orgName: data[i].orgName,
+                                ownershipLand: data[i].ownershipLand,
+                                protectionLand: data[i].protectionLand,
+                                reduceLand: data[i].reduceLand
+                            }
+
+                            vm.detailData.push(obj)
+                        }
+                        vm.mainform = {
+                            key: data[0].key,
+                            fact: data[0].factLand,
+                            rent: data[0].rentLand,
+                            lease: data[0].leaseLand,
+                            remark: data[0].remark,
+                        }
+                    } else {
+                        vm.$message.error(res.data.message)
+                    }
+                    console.log(res)
+                }).catch(err => {
+                        vm.$message.error('数据请求异常!')
+                    })
+                vm.dialogTitle = "编辑信息"
+                vm.centerDialogVisible = true
+
+            },
+            dialogSave: function (form) {
+                let vm = this
+                debugger
+                //处理接收参数
+                var detaillist = []
+                for (var i = 0; i < vm.detailData.length; i++) {
+
+                    let cd = {
+                        RecordId: vm.detailData[i].recordId,
+                        OwnershipLand: vm.detailData[i].ownershipLand,
+                        ProtectionLand: vm.detailData[i].protectionLand,
+                        ReduceLand: vm.detailData[i].reduceLand
+                    }
+
+                    detaillist.push(cd)
+                }
+                var postdata = new Object()
+                postdata.Key = vm.mainform.key
+                postdata.FactLand = vm.mainform.fact
+                postdata.RentLand = vm.mainform.rent
+                postdata.LeaseLand = vm.mainform.lease
+                postdata.Remark = vm.mainform.remark
+                postdata.detaillist = detaillist
+                let url = `/api/qiyefile/update/${postdata.Key}`
+                let method = "PUT"
+                axios({ url: url, method: method, data: postdata })
+                    .then(res => {
+                        debugger
+                        vm.centerDialogVisible = false
+                        if (res.data.isSuccess === true) {
+                            vm.$message.success('操作成功！');
+                            vm.fetchlist();
+                        }
+                        console.log(res)
+                    })
+                    .catch(error => {
+                        vm.centerDialogVisible = false
+                        vm.$message.error('操作失败，意外的原因！');
+                        console.log(error)
+                    })
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+
+                vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = `/api/qiyefile/delete/${row.key}`
+                    let method = 'get'
+                    axios({ url: url, method: method })
+                        .then(res => {
+                            if (res.data.isSuccess === true) {
+                                vm.$message.success('操作成功！');
+                                vm.fetchlist();
+                            }
+                            console.log(res)
+                        })
+                        .catch(error => {
+                            vm.$message.error('操作失败，意外的原因！');
+                            console.log(error)
+                        })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleSizeChange(val) {
+                let vm = this
+                vm.pageSize = val
+                vm.fetchlist()
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                let vm = this
+                vm.currentPage = val
+                vm.fetchlist()
+                console.log(`当前页: ${val}`);
             }
         },
         mounted() {
