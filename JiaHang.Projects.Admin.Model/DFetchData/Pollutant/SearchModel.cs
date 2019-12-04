@@ -9,5 +9,7 @@ namespace JiaHang.Projects.Admin.Model.DFetchData.Pollutant
         public string orgname { get; set; }
 
         public string orgcode { get; set; }
+
+        public string year { get; set; }
     }
 }
