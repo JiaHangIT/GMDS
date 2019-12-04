@@ -1,0 +1,200 @@
+﻿
+@{
+    ViewData["Title"] = "企业污染物排放";
+}
+
+<style>
+    .layui-select-title input {
+        width: 194px;
+    }
+
+    .layui-form-pane .layui-form-select {
+        width: 194px;
+    }
+
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+</style>
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <div class="layui-row">
+            <el-form-item label="企业名称">
+                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+            </el-form-item>
+            <el-form-item label="企业信用代码">
+                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="exportyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+        </div>
+
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="querydata">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="exportdata">导出</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="downtemplate">下载模板</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-upload class="upload-demo"
+                       action="/api/pollutant/upload"
+                       :before-upload="beforeUpload"
+                       :data="model"
+                       :show-file-list="false">
+                <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+        </el-form-item>
+    </el-form>
+
+    @*<template>
+        <el-table :data="tableData"
+                  border
+                  style="width: 100%">
+            <el-table-column fixed
+                             prop="date"
+                             label="日期"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="name"
+                             label="姓名"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="province"
+                             label="省份"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="city"
+                             label="市区"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="地址"
+                             width="300">
+            </el-table-column>
+            <el-table-column prop="zip"
+                             label="邮编"
+                             width="120">
+            </el-table-column>
+            <el-table-column fixed="right"
+                             label="操作"
+                             width="100">
+                <template slot-scope="scope">
+                    <el-button size="mini"
+                               v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                    <el-button size="mini"
+                               type="danger"
+                               v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>*@
+</div>
+
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                total:100,
+                pageSize: 10,
+                currentPage:1,
+                value: '',
+                exportyear: '',
+                orgcode: '',
+                orgname: '',
+                model: { year: '' },
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1517 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1519 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1516 弄',
+                    zip: 200333
+                }]
+            }
+        },
+        methods: {
+            fetchlist() {
+                console.log(111)
+            },
+            querydata() { },
+            beforeUpload() { },
+            exportdata() { },
+            downtemplate() { },
+            handleEdit(index,row) { },
+            handleDelete(index, row) { },
+            handleSizeChange(val) {
+                let vm = this
+                vm.pageSize = val
+                vm.fetchlist()
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                let vm = this
+                vm.currentPage = val
+                vm.fetchlist()
+                console.log(`当前页: ${val}`);
+            }
+        },
+        mounted() {
+            let vm = this
+            vm.fetchlist()
+        }
+    })
+</script>

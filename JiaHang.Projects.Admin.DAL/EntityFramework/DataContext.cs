@@ -17,6 +17,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         {
         }
 
+        public virtual DbSet<ApdFctContaminants> ApdFctContaminants { get; set; }
         public virtual DbSet<DcsCustomerInfo> DcsCustomerInfo { get; set; }
         public virtual DbSet<DcsCustomerLogInfo> DcsCustomerLogInfo { get; set; }
         public virtual DbSet<DcsCustomerServices> DcsCustomerServices { get; set; }
@@ -333,6 +334,91 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
                     .HasDefaultValueSql(@"0");
+            });
+
+            modelBuilder.Entity<ApdFctContaminants>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_CONTAMINANTS_PK");
+
+                entity.ToTable("APD_FCT_CONTAMINANTS");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_CONTAMINANTS_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.AmmoniaNitrogen)
+                    .HasColumnName("AMMONIA_NITROGEN")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Coal)
+                    .HasColumnName("COAL")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.Firewood)
+                    .HasColumnName("FIREWOOD")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.FuelOil)
+                    .HasColumnName("FUEL_OIL")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Hydrogen)
+                    .HasColumnName("HYDROGEN")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.IsInSystem)
+                    .HasColumnName("IS_IN_SYSTEM")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.NitrogenOxide)
+                    .HasColumnName("NITROGEN_OXIDE")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .IsRequired()
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.Oxygen)
+                    .HasColumnName("OXYGEN")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.SulfurDioxide)
+                    .HasColumnName("SULFUR_DIOXIDE")
+                    .HasColumnType("NUMBER");
             });
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>
