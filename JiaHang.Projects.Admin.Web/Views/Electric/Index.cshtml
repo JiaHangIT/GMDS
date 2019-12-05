@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewData["Title"] = "企业用电";
+}
+
+<style>
+
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+</style>
+
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <div class="layui-row">
+            <el-form-item label="企业名称">
+                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+            </el-form-item>
+            <el-form-item label="企业信用代码">
+                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+            </el-form-item>
+            <el-form-item label="年份">
+                <el-date-picker v-model="orgyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+        </div>
+
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="querydata">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="exportdata">导出</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+
+    <el-dialog :title="buttontxt"
+               :visible.sync="showbutton"
+               width="20%"
+               center>
+        <el-form>
+            <el-form-item>
+                <el-button type="primary" @@click="downtemplate">下载模板</el-button>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="exportyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-upload class="upload-demo"
+                           action="/api/electric/upload"
+                           :before-upload="beforeUpload"
+                           :data="model"
+                           :show-file-list="false">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
+</div>
+
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                buttontxt: '',
+                showbutton: false,
+                centerDialogVisible: false,
+                loading: false,
+                dialogTitle: '',
+                data: [],
+                total: 0,
+                pageSize: 10,
+                currentPage: 1,
+                value: '',
+                exportyear: '',
+                orgyear: '',
+                orgcode: '',
+                orgname: '',
+                model: { year: '' },
+                form: {
+                    test: ''
+                }
+            }
+        },
+        methods: {
+            fetchlist() {
+                let vm = this;
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                axios({ url: `/api/electric/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
+                    vm.data = res.data.content.data
+
+                    vm.total = res.data.content.total
+                    console.log(res.data.content.data)
+                    vm.loading = false
+                }).catch(err => { console.log(err); vm.loading = false })
+                console.log(111)
+            },
+            querydata() {
+                let vm = this
+                vm.fetchlist()
+            },
+            beforeUpload() {
+                let vm = this
+                try {
+
+                    vm.model.year = vm.exportyear.getFullYear()
+                    if (vm.model.year === '') {
+                        vm.$message.error('请先选择年份!');
+                        return false
+                    }
+                } catch (e) {
+                    vm.$message.error('请先选择年份!');
+                    return false
+                }
+            },
+            exportdata() {
+                //window.location.href = '/api/rd/export'
+            },
+            downtemplate() {
+                //window.location.href = `/api/rd/downtemplate`
+            },
+            handleEdit(index, row) {
+                let vm = this
+
+
+            },
+            dialogSave() {
+
+            },
+            handleDelete(index, row) {
+                let vm = this
+
+                //vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                //    confirmButtonText: '确定',
+                //    cancelButtonText: '取消',
+                //    type: 'warning'
+                //}).then(() => {
+                //    let url = `/api/rd/delete/${row.recordId}`
+                //    let method = 'get'
+                //    axios({ url: url, method: method })
+                //        .then(res => {
+                //            if (res.data.isSuccess === true) {
+                //                vm.$message.success('操作成功！');
+                //                vm.fetchlist();
+                //            }
+                //            console.log(res)
+                //        })
+                //        .catch(error => {
+                //            vm.$message.error('操作失败，意外的原因！');
+                //            console.log(error)
+                //        })
+                //}).catch(() => {
+                //    vm.$message({
+                //        type: 'info',
+                //        message: '已取消删除'
+                //    });
+                //});
+            },
+            handleSizeChange(val) {
+
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+
+                console.log(`当前页: ${val}`);
+            }
+        },
+        mounted() {
+            let vm = this
+            vm.loading = true
+            vm.fetchlist()
+        }
+    })
+</script>
