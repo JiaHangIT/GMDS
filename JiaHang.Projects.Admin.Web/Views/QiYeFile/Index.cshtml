@@ -24,23 +24,23 @@
 
 <div id="app">
     <el-form :inline="true" class="demo-form-inline">
-            <div class="layui-row">
-                <el-form-item label="企业名称">
-                    <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
-                </el-form-item>
-                <el-form-item label="企业信用代码">
-                    <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
-                </el-form-item>
-                <el-form-item label="请选择导入年份">
-                    <el-date-picker v-model="exportyear"
-                                    type="year"
-                                    format="yyyy"
-                                    placeholder="选择年">
-                    </el-date-picker>
-                </el-form-item>
-            </div>
+        <div class="layui-row">
+            <el-form-item label="企业名称">
+                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+            </el-form-item>
+            <el-form-item label="企业信用代码">
+                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="orgyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+        </div>
 
-        </el-form>
+    </el-form>
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item>
             <el-button type="primary" @@click="querydata">查询</el-button>
@@ -49,6 +49,9 @@
             <el-button type="success" @@click="exportdata">导出</el-button>
         </el-form-item>
         <el-form-item>
+            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
+        </el-form-item>
+        @*<el-form-item>
             <el-button type="success" @@click="downtemplate">下载模板</el-button>
         </el-form-item>
         <el-form-item>
@@ -59,7 +62,7 @@
                        :show-file-list="false">
                 <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
-        </el-form-item>
+        </el-form-item>*@
     </el-form>
 
     <el-row v-loading="loading">
@@ -178,7 +181,7 @@
                             <el-input placeholder="请输入租用土地总面积" v-model="mainform.rent"></el-input>
                         </el-form-item>
                     </e-col>
-                  
+
                 </el-row>
                 <el-row>
                     <e-col>
@@ -233,8 +236,34 @@
             </template>
 
         </el-dialog>
-    
 
+        <el-dialog :title="buttontxt"
+                   :visible.sync="showbutton"
+                   width="20%"
+                   center>
+            <el-form>
+                <el-form-item>
+                    <el-button type="primary" @@click="downtemplate">下载模板</el-button>
+                </el-form-item>
+                <el-form-item label="请选择导入年份">
+                    <el-date-picker v-model="exportyear"
+                                    type="year"
+                                    format="yyyy"
+                                    placeholder="选择年">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-upload class="upload-demo"
+                               action="/api/qiyefile/upload"
+                               :before-upload="beforeUpload"
+                               :data="model"
+                               :show-file-list="false">
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+
+        </el-dialog>
 </div>
 
 <script>
@@ -250,6 +279,8 @@
         el: '#app',
         data() {
             return {
+                buttontxt: '',
+                showbutton: false,
                 keyshow: false,
                 detailData: [{
                     recordId: '',
@@ -267,6 +298,7 @@
                 data: [],
                 orgname: '',
                 orgcode: '',
+                orgyear:'',
                 model: { year: '' },
                 exportyear: '',
                 pageSize: 10,
@@ -289,8 +321,8 @@
                 //自适应表高度
                 var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
                 vm.tableheight = height
-                if (vm.exportyear != '' && vm.exportyear != null) {
-                    y = vm.exportyear.getFullYear()
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
                 }
 
                 axios({ url: `/api/qiyefile/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {

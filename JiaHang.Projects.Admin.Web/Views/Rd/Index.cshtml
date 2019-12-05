@@ -1,13 +1,8 @@
 ﻿
 @{
-    ViewData["Title"] = "企业污染物排放";
+    ViewData["Title"] = "企业研发经费";
 }
-
 <style>
-    tr {
-        margin-right: 5px
-    }
-
     .layui-select-title input {
         width: 194px;
     }
@@ -55,21 +50,12 @@
         <el-form-item>
             <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
         </el-form-item>
-        @*<el-form-item>
-            <el-upload class="upload-demo"
-                       action="/api/pollutant/upload"
-                       :before-upload="beforeUpload"
-                       :data="model"
-                       :show-file-list="false">
-                <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-        </el-form-item>*@
     </el-form>
 
     <template>
         <el-table :data="data"
                   border
-                  style="width: 100%"
+                  style="width: 90%"
                   v-loading="loading">
             <el-table-column fixed
                              prop="orgName"
@@ -96,50 +82,21 @@
                              label="住所"
                              width="200">
             </el-table-column>
-            <el-table-column prop="isInSystem"
-                             label="是否纳入环统范围"
-                             width="150">
+            <el-table-column prop="isHighTech"
+                             label="是否属于高新技术企业"
+                             width="170">
             </el-table-column>
 
-            <el-table-column prop="oxygen"
-                             label="化学需氧量排放当量"
-                             width="150">
-            </el-table-column>
-            <el-table-column prop="ammoniaNitrogen"
-                             label="氨氮排放当量"
-                             width="120">
-            </el-table-column>
-            <el-table-column prop="sulfurDioxide"
-                             label="二氧化硫排放当量"
-                             width="150">
-            </el-table-column>
-            <el-table-column prop="nitrogenOxide"
-                             label="氮氧化物排放当量"
-                             width="150">
-            </el-table-column>
-            <el-table-column prop="coal"
-                             label="煤炭"
-                             width="120">
-            </el-table-column>
-            <el-table-column prop="fuelOil"
-                             label="燃料油"
-                             width="120">
-            </el-table-column>
-            <el-table-column prop="hydrogen"
-                             label="氢气"
-                             width="120">
-            </el-table-column>
-            <el-table-column prop="firewood"
-                             label="薪柴"
-                             width="120">
+            <el-table-column prop="rdExpenditure"
+                             label="研发经费支出（万元）"
+                             width="170">
             </el-table-column>
             <el-table-column prop="remark"
                              label="备注"
                              width="120">
             </el-table-column>
             <el-table-column fixed="right"
-                             label="操作"
-                             width="150">
+                             label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -161,72 +118,6 @@
                    :total="total">
     </el-pagination>
 
-    <el-dialog :title="dialogTitle"
-               :visible.sync="centerDialogVisible"
-               width="40%"
-               center>
-
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
-            <el-row>
-                <el-form-item label="是否纳入环统范围">
-                    <el-input placeholder="请输入事实用地总面积" v-model="form.test"></el-input>
-                </el-form-item>
-                <el-form-item label="化学需氧量排放当量">
-                    <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
-                </el-form-item>
-
-            </el-row>
-            <el-row>
-                <el-form-item label="氮氧化物排放当量">
-                    <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
-                </el-form-item>
-                <el-form-item label="二氧化硫排放当量">
-                    <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
-                </el-form-item>
-            </el-row>
-
-            <el-row>
-
-                <el-form-item label="氨氮排放当量">
-                    <el-input placeholder="请输入出租土地总面积" v-model="form.test"></el-input>
-                </el-form-item>
-                <el-form-item label="煤炭">
-                    <el-input placeholder="请输入备注信息" v-model="form.test"></el-input>
-                </el-form-item>
-            </el-row>
-            <el-row>
-                <e-col>
-                    <el-form-item label="燃料油">
-                        <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="氢气">
-                        <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
-                    </el-form-item>
-                </e-col>
-
-            </el-row>
-            <el-row>
-                <e-col>
-                    <el-form-item label="薪柴">
-                        <el-input placeholder="请输入出租土地总面积" v-model="form.test"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="备注">
-                        <el-input placeholder="请输入备注信息" v-model="form.test"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
-            <el-button type="primary" v-on:click="dialogSave()">确 定</el-button>
-        </div>
-    </el-dialog>
-
-
     <el-dialog :title="buttontxt"
                :visible.sync="showbutton"
                width="20%"
@@ -244,7 +135,7 @@
             </el-form-item>
             <el-form-item>
                 <el-upload class="upload-demo"
-                           action="/api/pollutant/upload"
+                           action="/api/rd/upload"
                            :before-upload="beforeUpload"
                            :data="model"
                            :show-file-list="false">
@@ -252,10 +143,9 @@
                 </el-upload>
             </el-form-item>
         </el-form>
-          
+
     </el-dialog>
 </div>
-
 
 <script>
     layui.use(['element', 'layer'], function () {
@@ -265,6 +155,7 @@
     })
 </script>
 
+
 <script>
     new Vue({
         el: '#app',
@@ -272,10 +163,6 @@
             return {
                 buttontxt: '',
                 showbutton: false,
-                formInline: {
-                    user: '',
-                    region: ''
-                },
                 centerDialogVisible: false,
                 loading: false,
                 dialogTitle: '',
@@ -285,7 +172,7 @@
                 currentPage: 1,
                 value: '',
                 exportyear: '',
-                orgyear:'',
+                orgyear: '',
                 orgcode: '',
                 orgname: '',
                 model: { year: '' },
@@ -301,7 +188,7 @@
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
                 }
-                axios({ url: `/api/pollutant/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
+                axios({ url: `/api/rd/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
 
                     vm.total = res.data.content.total
@@ -329,18 +216,15 @@
                 }
             },
             exportdata() {
-                window.location.href = '/api/pollutant/export'
+                window.location.href = '/api/rd/export'
             },
             downtemplate() {
-                window.location.href = `/api/pollutant/downtemplate`
+                window.location.href = `/api/rd/downtemplate`
             },
             handleEdit(index, row) {
                 let vm = this
+
                 
-
-
-                //vm.dialogTitle = "编辑信息"
-                //vm.centerDialogVisible = true
             },
             dialogSave() {
 
@@ -353,7 +237,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let url = `/api/pollutant/delete/${row.recordId}`
+                    let url = `/api/rd/delete/${row.recordId}`
                     let method = 'get'
                     axios({ url: url, method: method })
                         .then(res => {
@@ -375,15 +259,11 @@
                 });
             },
             handleSizeChange(val) {
-                let vm = this
-                vm.pageSize = val
-                vm.fetchlist()
+
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
-                let vm = this
-                vm.currentPage = val
-                vm.fetchlist()
+
                 console.log(`当前页: ${val}`);
             }
         },
@@ -394,3 +274,5 @@
         }
     })
 </script>
+
+

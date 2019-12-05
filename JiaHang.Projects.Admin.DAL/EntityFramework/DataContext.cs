@@ -17,7 +17,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         {
         }
 
-        public virtual DbSet<ApdFctContaminants> ApdFctContaminants { get; set; }
+       
         public virtual DbSet<DcsCustomerInfo> DcsCustomerInfo { get; set; }
         public virtual DbSet<DcsCustomerLogInfo> DcsCustomerLogInfo { get; set; }
         public virtual DbSet<DcsCustomerServices> DcsCustomerServices { get; set; }
@@ -74,7 +74,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
         public virtual DbSet<ApdFctLandTown> ApdFctLandTown { get; set; }
         public virtual DbSet<ApdFctLandTown2> ApdFctLandTown2 { get; set; }
+        public virtual DbSet<ApdFctRD> ApdFctRD { get; set; }
         public virtual DbSet<ApdDimOrg> ApdDimOrg { get; set; }
+        public virtual DbSet<ApdFctContaminants> ApdFctContaminants { get; set; }
+        public virtual DbSet<ApdFctElectric> ApdFctElectric { get; set; }
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
 
@@ -425,6 +428,63 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasDefaultValueSql(@"0");
             });
 
+            modelBuilder.Entity<ApdFctRD>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_R_D_PK");
+
+                entity.ToTable("APD_FCT_R_D");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_R_D_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.IsHighTech)
+                    .HasColumnName("IS_HIGH_TECH")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.OrgCode)
+                    .IsRequired()
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.RDExpenditure)
+                    .HasColumnName("R_D_EXPENDITURE")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+            });
+
             modelBuilder.Entity<ApdFctContaminants>(entity =>
             {
                 entity.HasKey(e => e.RecordId)
@@ -507,6 +567,63 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.SulfurDioxide)
                     .HasColumnName("SULFUR_DIOXIDE")
+                    .HasColumnType("NUMBER");
+            });
+
+            modelBuilder.Entity<ApdFctElectric>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_ELECTRIC_PK");
+
+                entity.ToTable("APD_FCT_ELECTRIC");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_ELECTRIC_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.NetSupply)
+                    .HasColumnName("NET_SUPPLY")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .IsRequired()
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.Spontaneous)
+                    .HasColumnName("SPONTANEOUS")
                     .HasColumnType("NUMBER");
             });
 
