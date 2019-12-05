@@ -39,4 +39,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.5.5" />
     <PackageReference Include="UEditor.Core" Version="1.0.6" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\API\Excel\" />
+  </ItemGroup>
 </Project>

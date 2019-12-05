@@ -1,7 +1,308 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "企业用气情况";
 }
 
-<h2>Index</h2>
+<style>
+    tr {
+        margin-right: 5px
+    }
 
+    .layui-select-title input {
+        width: 194px;
+    }
+
+    .layui-form-pane .layui-form-select {
+        width: 194px;
+    }
+
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+</style>
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <div class="layui-row">
+            <el-form-item label="企业名称">
+                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+            </el-form-item>
+            <el-form-item label="企业信用代码">
+                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="exportyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+        </div>
+
+    </el-form>
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="querydata">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="exportdata">导出</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="downtemplate">下载模板</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-upload class="upload-demo"
+                       action="/api/GasImport/upload"
+                       :before-upload="beforeUpload"
+                       :data="model"
+                       :show-file-list="false">
+                <el-button type="primary">点击上传</el-button>
+            </el-upload>
+        </el-form-item>
+    </el-form>
+
+    <template>
+        <el-table :data="data"
+                  border
+                  style="width: 100%"
+                  v-loading="loading">
+            <el-table-column fixed
+                             prop="orgName"
+                             label="企业名称"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="periodYear"
+                             label="年份"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="town"
+                             label="所属镇街"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="orgCode"
+                             label="统一社会信用代码"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="registrationType"
+                             label="登记注册类型"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="住所"
+                             width="200">
+            </el-table-column>
+            <el-table-column prop="gas"
+                             label="天然气用气量（立方米）"
+                             width="150">
+            </el-table-column>
+
+            <el-table-column prop="other"
+                             label="其他方式燃气使用量（立方米）"
+                             width="150">
+            </el-table-column>
+            
+            <el-table-column prop="remark"
+                             label="备注"
+                             width="120">
+            </el-table-column>
+            <el-table-column fixed="right"
+                             label="操作"
+                             width="150">
+                <template slot-scope="scope">
+                    <el-button size="mini"
+                               v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                    <el-button size="mini"
+                               type="danger"
+                               v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="40%"
+               center>
+
+        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-row>
+                <el-form-item label="ID：" prop="ID" hidden>
+                    <el-input placeholder="主键" v-model="form.recordId"></el-input>
+                </el-form-item>
+
+                <el-form-item label="企业名称：" prop="orgName">
+                    <el-input disabled="true" placeholder="企业名称" v-model="form.orgName"></el-input>
+                </el-form-item>
+
+            </el-row>
+            <el-row>
+                <el-form-item label="天然气用气量（立方米）">
+                    <el-input placeholder="请输入天然气用气量（立方米）" v-model="form.test"></el-input>
+                </el-form-item>
+                <el-form-item label="其他方式燃气使用量（立方米）">
+                    <el-input placeholder="请输入其他方式燃气使用量（立方米）" v-model="form.test"></el-input>
+                </el-form-item>
+            </el-row>
+
+            <el-row>                
+                <e-col>
+                    <el-form-item label="备注">
+                        <el-input placeholder="请输入备注信息" v-model="form.test"></el-input>
+                    </el-form-item>
+                </e-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave()">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                formInline: {
+                    user: '',
+                    region: ''
+                },
+                centerDialogVisible: false,
+                loading: false,
+                dialogTitle: '',
+                data: [],
+                total: 0,
+                pageSize: 10,
+                currentPage: 1,
+                value: '',
+                exportyear: '',
+                orgcode: '',
+                orgname: '',
+                model: { year: '' },
+                form: {
+                    test: ''
+                }
+            }
+        },
+        methods: {
+            fetchlist() {
+                let vm = this;
+                let y = ''
+                if (vm.exportyear != '' && vm.exportyear != null) {
+                    y = vm.exportyear.getFullYear()
+                }
+                axios({ url: `/api/GasImport/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
+                    vm.data = res.data.content.data
+
+                    vm.total = res.data.content.total
+                    console.log(res.data.content.data)
+                    vm.loading = false
+                }).catch(err => { console.log(err); vm.loading = false })
+                console.log(111)
+            },
+            querydata() {
+                let vm = this
+                vm.fetchlist()
+            },
+            beforeUpload() {
+                let vm = this
+                try {
+
+                    vm.model.year = vm.exportyear.getFullYear()
+                    if (vm.model.year === '') {
+                        vm.$message.error('请先选择年份!');
+                        return false
+                    }
+                } catch (e) {
+                    vm.$message.error('请先选择年份!');
+                    return false
+                }
+            },
+            exportdata() {
+                window.location.href = '/api/GasImport/export'
+            },
+            downtemplate() {
+                window.location.href = `/api/GasImport/downtemplate`
+            },
+            handleEdit(index, row) {
+                let vm = this
+                //vm.dialogTitle = "编辑信息"
+                //vm.centerDialogVisible = true
+            },
+            dialogSave() {
+
+            },
+            handleDelete(index, row) {
+                let vm = this
+
+                vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = `/api/GasImport/delete/${row.recordId}`
+                    let method = 'get'
+                    axios({ url: url, method: method })
+                        .then(res => {
+                            if (res.data.isSuccess === true) {
+                                vm.$message.success('操作成功！');
+                                vm.fetchlist();
+                            }
+                            console.log(res)
+                        })
+                        .catch(error => {
+                            vm.$message.error('操作失败，意外的原因！');
+                            console.log(error)
+                        })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleSizeChange(val) {
+                let vm = this
+                vm.pageSize = val
+                vm.fetchlist()
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                let vm = this
+                vm.currentPage = val
+                vm.fetchlist()
+                console.log(`当前页: ${val}`);
+            }
+        },
+        mounted() {
+            let vm = this
+            vm.loading = true
+            vm.fetchlist()
+        }
+    })
+</script>
