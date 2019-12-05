@@ -157,8 +157,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         {
             try
             {
-
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\高明区2018年年主营业务收入2000万元及以上或年纳税额100万元及以上工业企业2018年度有关数据情况表-1.xls";
+                var YearS = DateTime.Now.Year;
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\高明区"+YearS+"年年主营业务收入2000万元及以上或年纳税额100万元及以上工业企业2018年度有关数据情况表-1.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -193,7 +193,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
                 var groupdata = (List<int>)((dynamic)summarydata.Content).array;
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\高明区2018年年主营业务收入2000万元及以上或年纳税额100万元及以上工业企业2018年度有关数据情况表-1.xls";
+                int Years = DateTime.Now.Year;
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\高明区"+ Years + "年年主营业务收入2000万元及以上或年纳税额100万元及以上工业企业" + Years + "年度有关数据情况表-1.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -283,9 +285,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// excel数据导入到数据库(mapcoderela表)
         /// </summary>
         /// <param name="excelfile"></param>
-        /// <returns></returns>       
-        [HttpPost("importtax")]
-        public FuncResult importtax()
+        /// <returns></returns> 
+        [Route("upload")]
+        [HttpGet("{year}")]
+        public FuncResult importtax(string year)
         {
             
 
@@ -360,6 +363,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 result.Message = $"此机构号:{item.ORG_CODE}找不到对应机构，导入失败！";
                                 return result;
                             }
+                            bool isalreadyexport = isAlreadyExport(item.ORG_CODE, year);
                             ApdFctTAx Datatb = new ApdFctTAx()
                             {
                                 EMPLOYEE_REMUNERATION = item.EMPLOYEE_REMUNERATION,
@@ -418,42 +422,62 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
         }
         /// <summary>
-        /// 修改
+        /// 处理某机构某年是否已导入数据
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
-        /// <param name="currentUserId"></param>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Update(string id, ApdFctTAxModel model, string currentUserId)
+        public bool isAlreadyExport(string orgcode, string year)
         {
-            ApdFctTAx entity = await context.ApdFctTAx.FindAsync(id);
-            if (entity == null)
+            try
             {
-                return new FuncResult() { IsSuccess = false, Message = "ID错误!" };
+                var formatyear = Convert.ToDecimal(year);
+                var town2 = context.ApdFctTAx.Where(f => f.ORG_CODE.Equals(orgcode) && f.PERIOD_YEAR.Equals(formatyear));
+                return town2 != null;
             }
-            entity.ORG_CODE = model.ORG_CODE;
-            entity.ENT_PAID_TAX = model.ENT_PAID_TAX;
-            entity.EMPLOYEE_REMUNERATION = model.EMPLOYEE_REMUNERATION;
-            entity.DEPRECIATION = model.DEPRECIATION;
-            entity.PROFIT = model.PROFIT;
-            entity.MAIN_BUSINESS_INCOME = model.MAIN_BUSINESS_INCOME;
-            entity.RAD_EXPENSES = model.RAD_EXPENSES;
-            entity.NUMBER_OF_EMPLOYEES = model.NUMBER_OF_EMPLOYEES;
-            entity.OWNER_EQUITY = model.OWNER_EQUITY;
-            entity.TOTAL_PROFIT = model.TOTAL_PROFIT;
+            catch (Exception ex)
+            {
 
-            entity.LAST_UPDATE_DATE = model.LAST_UPDATE_DATE;
-            //entity.BUSINESS_ID = model.BUSINESS_ID;
-            //entity.MATERIAL_ID = model.MATERIAL_ID;
-
-            //entity.LAST_UPDATED_BY = currentUserId;
-            //entity.LAST_UPDATE_DATE = DateTime.Now;
-
-
-            //_context.BusBusinessMaterialInfo.Update(entity);
-            //await _context.SaveChangesAsync();
-            return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
+                throw new Exception("error", ex);
+            }
         }
+        ///// <summary>
+        ///// 修改
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <param name="model"></param>
+        ///// <param name="currentUserId"></param>
+        ///// <returns></returns>
+        //public async Task<FuncResult> Update(string id, ApdFctTAxModel model, string currentUserId)
+        //{
+        //    ApdFctTAx entity = await context.ApdFctTAx.FindAsync(id);
+        //    if (entity == null)
+        //    {
+        //        return new FuncResult() { IsSuccess = false, Message = "ID错误!" };
+        //    }
+        //    entity.ORG_CODE = model.ORG_CODE;
+        //    entity.ENT_PAID_TAX = model.ENT_PAID_TAX;
+        //    entity.EMPLOYEE_REMUNERATION = model.EMPLOYEE_REMUNERATION;
+        //    entity.DEPRECIATION = model.DEPRECIATION;
+        //    entity.PROFIT = model.PROFIT;
+        //    entity.MAIN_BUSINESS_INCOME = model.MAIN_BUSINESS_INCOME;
+        //    entity.RAD_EXPENSES = model.RAD_EXPENSES;
+        //    entity.NUMBER_OF_EMPLOYEES = model.NUMBER_OF_EMPLOYEES;
+        //    entity.OWNER_EQUITY = model.OWNER_EQUITY;
+        //    entity.TOTAL_PROFIT = model.TOTAL_PROFIT;
+
+        //    entity.LAST_UPDATE_DATE = model.LAST_UPDATE_DATE;
+        //    //entity.BUSINESS_ID = model.BUSINESS_ID;
+        //    //entity.MATERIAL_ID = model.MATERIAL_ID;
+
+        //    //entity.LAST_UPDATED_BY = currentUserId;
+        //    //entity.LAST_UPDATE_DATE = DateTime.Now;
+
+
+        //    //_context.BusBusinessMaterialInfo.Update(entity);
+        //    //await _context.SaveChangesAsync();
+        //    return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
+        //}
         /// <summary>
         /// 修改
         /// </summary>

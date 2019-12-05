@@ -53,9 +53,10 @@
         </el-form-item>
         <el-form-item>
             <el-upload class="upload-demo"
-                       action="/api/ApdFctTAxImport/importtax"
+                       action="/api/ApdFctTAxImport/upload"
                        :before-upload="beforeUpload"
-                       :data="model">
+                       :data="model"
+                       :show-file-list="false">
                 <el-button  type="primary">点击上传</el-button>
             </el-upload>
         </el-form-item>
@@ -215,6 +216,8 @@
                 centerDialogVisible: false,
                 orgname: '',
                 orgcode: '',
+                model: { year: '' },
+                exportyear: '',
                 form: {
                     RECORD_ID:'',
                     ORG_CODE: '',
@@ -243,10 +246,12 @@
         methods: {
             fetchlist() {
                 let vm = this;
-                //var top = $("#app").offset().top;
-                ////自适应表高度
-                //var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
-                //vm.tableheight = height
+                //自适应表高度
+                var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
+                vm.tableheight = height
+                if (vm.exportyear != '' && vm.exportyear != null) {
+                    y = vm.exportyear.getFullYear()
+                }
                 axios({ url: `/api/apdfcttaximport/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode } }).then(res => {
                     vm.data = res.data.content.data
                     console.log("数据:",res.data.content.data)
@@ -387,13 +392,18 @@
             },
             beforeUpload() {
                 let vm = this
-                //vm.model.year = vm.exportyear.getFullYear()
-                //if (vm.model.year === '') {
-                //    vm.$message.error('请先选择年份!');
-                //    return false
-                //}
+                try {
 
-            }
+                    vm.model.year = vm.exportyear.getFullYear()
+                    if (vm.model.year === '') {
+                        vm.$message.error('请先选择年份!');
+                        return false
+                    }
+                } catch (e) {
+                    vm.$message.error('请先选择年份!');
+                    return false
+                }
+            },
         },
         mounted() {
             let vm = this;
