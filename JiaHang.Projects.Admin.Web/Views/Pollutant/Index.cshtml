@@ -4,6 +4,10 @@
 }
 
 <style>
+    tr {
+        margin-right: 5px
+    }
+
     .layui-select-title input {
         width: 194px;
     }
@@ -71,6 +75,10 @@
                              prop="orgName"
                              label="企业名称"
                              width="150">
+            </el-table-column>
+            <el-table-column prop="periodYear"
+                             label="年份"
+                             width="120">
             </el-table-column>
             <el-table-column prop="town"
                              label="所属镇街"
@@ -152,6 +160,71 @@
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
     </el-pagination>
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="40%"
+               center>
+
+        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-row>
+                <el-form-item label="是否纳入环统范围">
+                    <el-input placeholder="请输入事实用地总面积" v-model="form.test"></el-input>
+                </el-form-item>
+                <el-form-item label="化学需氧量排放当量">
+                    <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
+                </el-form-item>
+
+            </el-row>
+            <el-row>
+                <el-form-item label="氮氧化物排放当量">
+                    <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
+                </el-form-item>
+                <el-form-item label="二氧化硫排放当量">
+                    <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
+                </el-form-item>
+            </el-row>
+
+            <el-row>
+
+                <el-form-item label="氨氮排放当量">
+                    <el-input placeholder="请输入出租土地总面积" v-model="form.test"></el-input>
+                </el-form-item>
+                <el-form-item label="煤炭">
+                    <el-input placeholder="请输入备注信息" v-model="form.test"></el-input>
+                </el-form-item>
+            </el-row>
+            <el-row>
+                <e-col>
+                    <el-form-item label="燃料油">
+                        <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
+                    </el-form-item>
+                </e-col>
+                <e-col>
+                    <el-form-item label="氢气">
+                        <el-input placeholder="请输入租用土地总面积" v-model="form.test"></el-input>
+                    </el-form-item>
+                </e-col>
+
+            </el-row>
+            <el-row>
+                <e-col>
+                    <el-form-item label="薪柴">
+                        <el-input placeholder="请输入出租土地总面积" v-model="form.test"></el-input>
+                    </el-form-item>
+                </e-col>
+                <e-col>
+                    <el-form-item label="备注">
+                        <el-input placeholder="请输入备注信息" v-model="form.test"></el-input>
+                    </el-form-item>
+                </e-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave()">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
 
 
@@ -168,52 +241,35 @@
         el: '#app',
         data() {
             return {
+                formInline: {
+                    user: '',
+                    region: ''
+                },
+                centerDialogVisible: false,
                 loading: false,
-                data:[],
-                total:0,
+                dialogTitle: '',
+                data: [],
+                total: 0,
                 pageSize: 10,
-                currentPage:1,
+                currentPage: 1,
                 value: '',
                 exportyear: '',
                 orgcode: '',
                 orgname: '',
                 model: { year: '' },
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1517 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1516 弄',
-                    zip: 200333
-                }]
+                form: {
+                    test: ''
+                }
             }
         },
         methods: {
             fetchlist() {
                 let vm = this;
-
-                axios({ url: `/api/pollutant/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage } }).then(res => {
+                let y = ''
+                if (vm.exportyear != '' && vm.exportyear != null) {
+                    y = vm.exportyear.getFullYear()
+                }
+                axios({ url: `/api/pollutant/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
 
                     vm.total = res.data.content.total
@@ -246,7 +302,14 @@
             downtemplate() {
                 window.location.href = `/api/pollutant/downtemplate`
             },
-            handleEdit(index,row) { },
+            handleEdit(index, row) {
+                let vm = this
+                //vm.dialogTitle = "编辑信息"
+                //vm.centerDialogVisible = true
+            },
+            dialogSave() {
+
+            },
             handleDelete(index, row) {
                 let vm = this
 
