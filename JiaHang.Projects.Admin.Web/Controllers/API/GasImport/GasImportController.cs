@@ -109,7 +109,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                             OrgCode = g.Q3,
                             Gas = g.Q6 == "" ? null : Convert.ToDecimal(g.Q6),
                             Other = g.Q7 == "" ? null : Convert.ToDecimal(g.Q7),                           
-                            Remark = g.Q8
+                            Remark = g.Q8,
+                            CreationDate= DateTime.Now
                         });
 
                         result.IsSuccess = gasBll.WriteData(filterdata, year);

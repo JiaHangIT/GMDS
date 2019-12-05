@@ -204,12 +204,24 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("RECORD_ID")
                     .HasColumnType("NUMBER");
 
+                entity.Property(e => e.OrgCode)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
                 entity.Property(e => e.Gas)
                     .HasColumnName("GAS")
                     .HasColumnType("NUMBER");
 
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
                 entity.Property(e => e.Other)
                     .HasColumnName("OTHER")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
                     .HasColumnType("NUMBER");
 
                 entity.Property(e => e.CreatedBy)
