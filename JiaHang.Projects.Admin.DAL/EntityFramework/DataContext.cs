@@ -537,6 +537,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.Remark)
                     .HasColumnName("REMARK")
                     .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.DeleteBy)
+                  .HasColumnName("DELETE_BY")
+                  .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
             });
 
             modelBuilder.Entity<ApdFctContaminants>(entity =>
@@ -622,6 +634,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.SulfurDioxide)
                     .HasColumnName("SULFUR_DIOXIDE")
                     .HasColumnType("NUMBER");
+
+                entity.Property(e => e.DeleteBy)
+                  .HasColumnName("DELETE_BY")
+                  .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
             });
 
             modelBuilder.Entity<ApdFctElectric>(entity =>
@@ -679,6 +703,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.Spontaneous)
                     .HasColumnName("SPONTANEOUS")
                     .HasColumnType("NUMBER");
+
+                entity.Property(e => e.DeleteBy)
+                  .HasColumnName("DELETE_BY")
+                  .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
             });
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>
@@ -3981,23 +4017,23 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.Industry).HasColumnName("INDUSTRY")
              .HasColumnType("NVARCHAR2(30)");
             });
-            //foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-            //   //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
-            //   )
-            //{
-            //    //foreach (var property in entityType.GetProperties()) {
-            //    //    property.Relational().ColumnName = property.Name.ToUpper();
-            //    //}
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+               //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))
+               )
+            {
+                //foreach (var property in entityType.GetProperties()) {
+                //    property.Relational().ColumnName = property.Name.ToUpper();
+                //}
 
-            //    modelBuilder.Entity(entityType.ClrType).Property<int>("DeleteFlag");
-            //    var parameter = Expression.Parameter(entityType.ClrType, "e");
-            //    var body = Expression.Equal(
-            //        Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(int) }, parameter, Expression.Constant("DeleteFlag")),
-            //    Expression.Constant(0));
+                modelBuilder.Entity(entityType.ClrType).Property<int>("DeleteFlag");
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var body = Expression.Equal(
+                    Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(int) }, parameter, Expression.Constant("DeleteFlag")),
+                Expression.Constant(0));
 
 
-            //    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
-            //}
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
+            }
 
 
             base.OnModelCreating(modelBuilder);
