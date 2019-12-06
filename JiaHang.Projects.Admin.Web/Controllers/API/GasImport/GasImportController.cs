@@ -240,9 +240,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                     sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
                     sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
                     sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Gas));
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].Gas));
                     sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Other));                    
-                    sheet1.GetRow(i).GetCell(15).SetCellValue(data[i - 5].Remark);
+                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
                 }
 
                 //转为字节数组
