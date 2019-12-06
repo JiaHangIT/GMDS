@@ -32,6 +32,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
                                 OrgCode = o.OrgCode,
                                 RegistrationType = o.RegistrationType,
                                 Address = o.Address,
+                                PeriodYear = o.PeriodYear,
                                 Gas = c.Gas,
                                 Other = c.Other,
                                 Remark = c.Remark
@@ -66,7 +67,8 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
                                 Town = o.Town,
                                 OrgCode = o.OrgCode,
                                 RegistrationType = o.RegistrationType,
-                                Address = o.Address,                             
+                                Address = o.Address,    
+                                PeriodYear=o.PeriodYear,
                                 Gas = c.Gas,
                                 Other = c.Other,
                                 Remark = c.Remark
@@ -127,6 +129,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }
+        public decimal PeriodYear { get; set; }
         public string RegistrationType { get; set; }
         public string Address { get; set; }
         public decimal? Gas { get; set; }        
