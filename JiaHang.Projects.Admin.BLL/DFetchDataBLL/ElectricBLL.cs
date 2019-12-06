@@ -101,9 +101,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "未找到配置的企业信息!";
                     return fr;
                 }
-                //list.ToList().ForEach(c => c.PeriodYear = _year);
-                //context.ApdFctElectric.AddRange(list);
-                context.ApdFctElectric.AddRange(list);
+
+                context.ApdFctElectric.AddRange(list);  
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try

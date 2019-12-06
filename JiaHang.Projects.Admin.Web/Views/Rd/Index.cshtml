@@ -12,7 +12,7 @@
     }
 
     .v-modal {
-        display: none;
+        display: block;
     }
 
     #app {
@@ -121,6 +121,7 @@
     <el-dialog :title="buttontxt"
                :visible.sync="showbutton"
                width="20%"
+               :modal-append-to-body="false"
                center>
         <el-form>
             <el-form-item>

@@ -6,7 +6,7 @@
 <style>
 
     .v-modal {
-        display: none;
+        display: block;
     }
 
     #app {
@@ -60,6 +60,7 @@
                :visible.sync="showbutton"
                width="20%"
                modal="true"
+               :modal-append-to-body="false"
                center>
         <el-form>
             <el-form-item>
