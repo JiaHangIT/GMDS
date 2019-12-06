@@ -79,6 +79,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<ApdDimOrg> ApdDimOrg { get; set; }
         public virtual DbSet<ApdFctContaminants> ApdFctContaminants { get; set; }
         public virtual DbSet<ApdFctElectric> ApdFctElectric { get; set; }
+        public virtual DbSet<ApdFctWorker> ApdFctWorker { get; set; }
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
 
@@ -755,6 +756,71 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.DeleteBy)
                   .HasColumnName("DELETE_BY")
                   .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
+            });
+
+            modelBuilder.Entity<ApdFctWorker>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_WORKER_PK");
+
+                entity.ToTable("APD_FCT_WORKER");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_WORKER_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.OrgCode)
+                    .IsRequired()
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.WorkerMonth)
+                    .HasColumnName("WORKER_MONTH")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.DeleteBy)
+                 .HasColumnName("DELETE_BY")
+                 .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
