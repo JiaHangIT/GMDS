@@ -137,6 +137,8 @@
                 <el-upload class="upload-demo"
                            action="/api/rd/upload"
                            :before-upload="beforeUpload"
+                           :on-success="uploadSuccess"
+                           :on-error="uploadError"
                            :data="model"
                            :show-file-list="false">
                     <el-button size="small" type="primary">点击上传</el-button>
@@ -214,6 +216,22 @@
                     vm.$message.error('请先选择年份!');
                     return false
                 }
+            },
+            uploadSuccess(response, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                if (response.isSuccess == true) {
+                    vm.$message.success(response.message);
+                } else {
+                    vm.$message.error(response.message);
+                }
+                console.log(response);
+            },
+            uploadError(err, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                vm.$message.error('操作失败！' + err);
+                console.log(err)
             },
             exportdata() {
                 window.location.href = '/api/rd/export'

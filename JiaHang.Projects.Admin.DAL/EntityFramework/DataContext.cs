@@ -72,6 +72,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<DcsDataCatalog> DcsDataCatalog { get; set; }
         public virtual DbSet<ApdFctOrgIndexV> ApdFctOrgIndexV { get; set; }
 
+        public virtual DbSet<ApdDimTown> ApdDimTown { get; set; }
         public virtual DbSet<ApdFctLandTown> ApdFctLandTown { get; set; }
         public virtual DbSet<ApdFctLandTown2> ApdFctLandTown2 { get; set; }
         public virtual DbSet<ApdFctRD> ApdFctRD { get; set; }
@@ -188,6 +189,18 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.Town)
                     .HasColumnName("TOWN")
                     .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.DeleteBy)
+                 .HasColumnName("DELETE_BY")
+                 .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
             });
             modelBuilder.Entity<ApdFctGas>(entity =>
             {
@@ -244,6 +257,41 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NUMBER")
                     .HasDefaultValueSql("1");
             });
+
+            modelBuilder.Entity<ApdDimTown>(entity =>
+            {
+                entity.HasKey(e => e.Code)
+                    .HasName("APD_DIM_TOWN_PK");
+
+                entity.ToTable("APD_DIM_TOWN");
+
+                entity.HasIndex(e => e.Code)
+                    .HasName("APD_DIM_TOWN_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.Code)
+                    .HasColumnName("CODE")
+                    .HasColumnType("NVARCHAR2(30)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.DeleteBy)
+                 .HasColumnName("DELETE_BY")
+                 .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+                    .HasDefaultValueSql(@"0");
+            });
+
             modelBuilder.Entity<ApdFctLandTown>(entity =>
             {
                 entity.HasKey(e => e.RecordId)
