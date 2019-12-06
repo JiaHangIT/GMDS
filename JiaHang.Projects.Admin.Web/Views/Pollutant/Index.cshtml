@@ -155,6 +155,7 @@
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
                width="40%"
+               :modal-append-to-body="false"
                center>
 
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
