@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
+namespace JiaHang.Projects.Admin.Model.ApdFtcGas
 {
-    public class ApdFctGas
+    public class ApdFtcGasModel
     {
         public string OrgCode { get; set; }
         public decimal? Gas { get; set; }
@@ -16,8 +16,5 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public decimal? LastUpdatedBy { get; set; }
         public decimal PeriodYear { get; set; }
         public decimal RecordId { get; set; }
-        public int DeleteFlag { get; set; }
-        public DateTime? DeleteDate { get; set; }
-        public string DeleteBy { get; set; }
     }
 }
