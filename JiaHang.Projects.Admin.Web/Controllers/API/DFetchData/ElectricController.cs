@@ -41,7 +41,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         {
             try
             {
-                return null;
+                return eletricBll.GetList();
             }
             catch (Exception ex)
             {
@@ -60,7 +60,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         {
             try
             {
-                return null;
+                model.page--; if (model.page< 0)
+                {
+                    model.page = 0;
+                }
+                return eletricBll.GetListPagination(model);
             }
             catch (Exception ex)
             {
@@ -108,14 +112,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             RecordId = new Random().Next(1, 99999),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.D3,
-                            NetSupply = g.D6,
-                            Spontaneous = g.D7 == "" ? null : Convert.ToDecimal(g.K7),
+                            NetSupply = g.D6 == "" ? null : Convert.ToDecimal(g.D6),
+                            Spontaneous = g.D7 == "" ? null : Convert.ToDecimal(g.D7),
                             Remark = g.D8,
                             CreationDate = DateTime.Now,
-                            LastUpdateDate = DateTime.Now
+                            LastUpdateDate = DateTime.Now,
                         });
 
-                        result.IsSuccess = eletricBll.WriteData(filterdata, year);
+                        result = eletricBll.WriteData(filterdata, year);
 
                     }
                     else

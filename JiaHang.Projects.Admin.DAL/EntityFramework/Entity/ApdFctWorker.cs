@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
-    public partial class ApdFctRD
+    public partial class ApdFctWorker
     {
         public string OrgCode { get; set; }
-        public string IsHighTech { get; set; }
-        public decimal? RDExpenditure { get; set; }
+        public decimal? WorkerMonth { get; set; }
         public string Remark { get; set; }
         public DateTime? CreationDate { get; set; }
         public decimal? CreatedBy { get; set; }

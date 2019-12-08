@@ -17,7 +17,7 @@
     }
 
     .v-modal {
-        display: none;
+        display: block;
     }
 
     #app {
@@ -55,15 +55,6 @@
         <el-form-item>
             <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
         </el-form-item>
-        @*<el-form-item>
-            <el-upload class="upload-demo"
-                       action="/api/pollutant/upload"
-                       :before-upload="beforeUpload"
-                       :data="model"
-                       :show-file-list="false">
-                <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-        </el-form-item>*@
     </el-form>
 
     <template>
@@ -164,6 +155,7 @@
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
                width="40%"
+               :modal-append-to-body="false"
                center>
 
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
@@ -230,6 +222,7 @@
     <el-dialog :title="buttontxt"
                :visible.sync="showbutton"
                width="20%"
+               :modal-append-to-body="false"
                center>
         <el-form>
             <el-form-item>
@@ -246,6 +239,8 @@
                 <el-upload class="upload-demo"
                            action="/api/pollutant/upload"
                            :before-upload="beforeUpload"
+                           :on-success="uploadSuccess"
+                           :on-error="uploadError"
                            :data="model"
                            :show-file-list="false">
                     <el-button size="small" type="primary">点击上传</el-button>
@@ -327,6 +322,23 @@
                     vm.$message.error('请先选择年份!');
                     return false
                 }
+            },
+            uploadSuccess(response, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                if (response.isSuccess == true) {
+                    vm.$message.success(response.message);
+                } else {
+                    vm.$message.error(response.message);
+                }
+             
+                console.log(response);
+            },
+            uploadError(err, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                vm.$message.error('操作失败！' + err);
+                console.log(err)
             },
             exportdata() {
                 window.location.href = '/api/pollutant/export'

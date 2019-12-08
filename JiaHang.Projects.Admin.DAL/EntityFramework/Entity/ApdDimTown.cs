@@ -8,5 +8,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public int DeleteFlag { get; set; }
+        public DateTime? DeleteDate { get; set; }
+        public string DeleteBy { get; set; }
     }
 }
