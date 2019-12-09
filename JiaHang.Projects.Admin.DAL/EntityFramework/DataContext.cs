@@ -19,6 +19,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
         public virtual DbSet<ApdFctGas> ApdFctGas { get; set; }
         public virtual DbSet<ApdFctWaterDal> ApdFctWater { get; set; }
+        public virtual DbSet<ApdFctInsuranceDal> ApdFctInsuranceDal { get; set; }
         public virtual DbSet<DcsCustomerInfo> DcsCustomerInfo { get; set; }
         public virtual DbSet<DcsCustomerLogInfo> DcsCustomerLogInfo { get; set; }
         public virtual DbSet<DcsCustomerServices> DcsCustomerServices { get; set; }
@@ -235,6 +236,73 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("OTHER")
                     .HasColumnType("NUMBER");
 
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+
+                    .HasDefaultValueSql(@"0
+");
+
+            });
+            modelBuilder.Entity<ApdFctInsuranceDal>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_INSURANCE_PK");
+
+                entity.ToTable("APD_FCT_INSURANCE");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_INSURANCE_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.InsuranceMonth)
+                    .HasColumnName("GAS")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+                
                 entity.Property(e => e.PeriodYear)
                     .HasColumnName("PERIOD_YEAR")
                     .HasColumnType("NUMBER");

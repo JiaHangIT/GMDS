@@ -102,10 +102,10 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                 var _year = Convert.ToDecimal(year);
                 var dm = list.Where(f => !context.ApdFctWater.Select(g => g.OrgCode).Contains(f.OrgCode));
 
-                //if (dm != null && dm.Count() > 0)
-                //{
-                //    return false;
-                //}
+                if (dm != null && dm.Count() > 0)
+                {
+                    return false;
+                }
                 //list.ToList().ForEach(c => c.PeriodYear = _year);
                 context.ApdFctWater.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
