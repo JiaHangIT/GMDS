@@ -1,7 +1,7 @@
 ﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.DFetchData.Rd;
+using JiaHang.Projects.Admin.Model.DFetchData.Worker;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -10,61 +10,60 @@ using System.Text;
 
 namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 {
-    public class RdBLL
+    public class WorkerBLL
     {
         private readonly DataContext context;
 
-        public RdBLL(DataContext _context) { this.context = _context; }
+        public WorkerBLL(DataContext _context) { this.context = _context; }
+
 
         public FuncResult GetList()
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-                var query = from r in context.ApdFctRD
-                            join o in context.ApdDimOrg on r.OrgCode equals o.OrgCode
-                            select new ReturnRDModel()
+                var query = from w in context.ApdFctWorker
+                            join o in context.ApdDimOrg on w.OrgCode equals o.OrgCode
+                            select new ReturnWorkerModel()
                             {
-                                RecordId = r.RecordId,
+                                RecordId = w.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
                                 OrgCode = o.OrgCode,
                                 RegistrationType = o.RegistrationType,
                                 Address = o.Address,
-                                IsHighTech = r.IsHighTech,
-                                RDExpenditure = r.RDExpenditure,
-                                Remark = r.Remark
+                                WorkerMonth = w.WorkerMonth,
+                                Remark = w.Remark
                             };
 
                 fr.Content = query.ToList();
                 return fr;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error", ex);
+                throw;
             }
         }
 
-        public FuncResult GetListPagination(SearchRdModel model)
+        public FuncResult GetListPagination(SearchWorkerModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-                var query = from r in context.ApdFctRD
-                            join o in context.ApdDimOrg on r.OrgCode equals o.OrgCode
+                var query = from w in context.ApdFctWorker
+                            join o in context.ApdDimOrg on w.OrgCode equals o.OrgCode
                             select new
                             {
-                                PeriodYear = r.PeriodYear,
-                                RecordId = r.RecordId,
+                                PeriodYear = w.PeriodYear,
+                                RecordId = w.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
                                 OrgCode = o.OrgCode,
                                 RegistrationType = o.RegistrationType,
                                 Address = o.Address,
-                                IsHighTech = r.IsHighTech,
-                                RDExpenditure = r.RDExpenditure,
-                                Remark = r.Remark
+                                WorkerMonth = w.WorkerMonth,
+                                Remark = w.Remark
                             };
                 query = query.Where(f => (
                                     (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
@@ -76,14 +75,14 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 fr.Content = new { total = count, data = pagination };
                 return fr;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error", ex);
+                throw;
             }
         }
 
-        public FuncResult Update(string recordid, PostRdModel model)
+        public FuncResult Update(string recordid, PostWorkerModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
@@ -94,12 +93,11 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "参数接收异常!";
                     return fr;
                 }
-                ApdFctRD rd = context.ApdFctRD.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
-                rd.IsHighTech = model.IsHighTech;
-                rd.RDExpenditure = model.RDExpenditure;
-                rd.Remark = model.Remark;
+                ApdFctWorker worker = context.ApdFctWorker.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                worker.WorkerMonth = model.WorkerMonth;
+                worker.Remark = model.Remark;
 
-                context.ApdFctRD.Update(rd);
+                context.ApdFctWorker.Update(worker);
                 context.SaveChanges();
                 return fr;
             }
@@ -107,27 +105,22 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             {
                 fr.IsSuccess = false;
                 fr.Message = $"{ex.InnerException},{ex.Message}";
-                throw new Exception("error", ex);
+                throw new Exception("error",ex);
             }
         }
 
-        /// <summary>
-        /// 写数据
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="year"></param>
-        /// <returns></returns>
-        public FuncResult WriteData(IEnumerable<ApdFctRD> list,string year)
+        public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
+
                 var _year = Convert.ToDecimal(year);
                 var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
                 if (dm != null && dm.Count() > 0)
                 {
                     fr.IsSuccess = false;
-                    fr.Message = "未找到配置的企业信息";
+                    fr.Message = "未找到配置的企业信息!";
                     return fr;
                 }
                 foreach (var item in list)
@@ -136,10 +129,9 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     {
                         //continue;
                     }
-                    context.ApdFctRD.Add(item);
+                    context.ApdFctWorker.Add(item);
                 }
-                //list.ToList().ForEach(c => c.PeriodYear = _year);
-                //context.ApdFctRD.AddRange(list);
+                //context.ApdFctWorker.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -162,22 +154,10 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 fr.IsSuccess = false;
                 fr.Message = $"{ex.InnerException},{ex.Message}!";
                 return fr;
-                throw new Exception("error",ex);
+                throw new Exception("error", ex);
             }
+
             return fr;
-        }
-
-        public FuncResult Delete()
-        {
-            try
-            {
-                return null;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
         }
 
         /// <summary>
@@ -191,13 +171,13 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             try
             {
                 var formatyear = Convert.ToDecimal(year);
-                var rd = context.ApdFctRD.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
-                if (rd != null || rd.Count() > 0)
+                var worker = context.ApdFctWorker.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (worker != null || worker.Count() > 0)
                 {
-                    context.ApdFctRD.RemoveRange(rd);
+                    context.ApdFctWorker.RemoveRange(worker);
                     context.SaveChanges();
                 }
-                return rd != null;
+                return worker != null;
             }
             catch (Exception ex)
             {
@@ -207,7 +187,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         }
     }
 
-    public class ReturnRDModel
+    public class ReturnWorkerModel
     {
         public decimal RecordId { get; set; }
         public string OrgName { get; set; }
@@ -215,8 +195,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         public string OrgCode { get; set; }
         public string RegistrationType { get; set; }
         public string Address { get; set; }
-        public string IsHighTech { get; set; }
-        public decimal? RDExpenditure { get; set; }
+        public decimal? WorkerMonth { get; set; }
         public string Remark { get; set; }
     }
 }

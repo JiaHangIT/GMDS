@@ -13,7 +13,10 @@ using JiaHang.Projects.Admin.Model.DFetchData.Electric;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 {
@@ -74,6 +77,84 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recordid"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut("update/{recordid}")]
+        public FuncResult Update(string recordid, [FromBody] PostElectricModel model)
+        {
+            try
+            {
+                return eletricBll.Update(recordid, model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("Delete/{key}")]
+        public async Task<FuncResult> Delete(string key)
+        {
+            try
+            {
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(key))
+                    {
+                        fr.IsSuccess = false;
+                        fr.Message = "未接收到参数信息!";
+                    }
+                    var _key = Convert.ToDecimal(key);
+                    ApdFctElectric entity = context.ApdFctElectric.FirstOrDefault(f => f.RecordId.Equals(_key));
+                    if (entity == null)
+                    {
+                        fr.IsSuccess = false;
+                        fr.Message = "异常参数，未找到数据!";
+                    }
+
+                    //删除
+                    context.ApdFctElectric.Remove(entity);
+                    using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            await context.SaveChangesAsync();
+                            trans.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            trans.Rollback();
+                            fr.IsSuccess = false;
+                            fr.Message = $"{ex.InnerException},{ex.Message}";
+                            throw new Exception("error", ex);
+                        }
+                    }
+                    return fr;
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("error", ex);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
         /// excel数据导入到数据库(apdfctelectric)
         /// 一个机构一年只有一批数据
         /// </summary>
@@ -106,7 +187,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.D1 == ""));
+                        var prefilter = datalist.Where(f => !(f.D1 == "") && f.D1 != null);
+                        if (prefilter == null || prefilter.Count() <= 0)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
+                            return result;
+                        }
                         var filterdata = prefilter.Select(g => new ApdFctElectric
                         {
                             RecordId = new Random().Next(1, 99999),
@@ -117,6 +204,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             Remark = g.D8,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now,
+                            DeleteFlag = 0
                         });
 
                         result = eletricBll.WriteData(filterdata, year);
@@ -139,6 +227,84 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                 return result;
             }
 
+        }
+
+        /// <summary>
+        /// 数据导出到excel
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export")]
+        public FileResult Export()
+        {
+            try
+            {
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                var summarydata = eletricBll.GetList();
+                var data = (List<ReturnElectricModel>)((dynamic)summarydata).Content;
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用电情况取数表格式-高明供电局.xls";
+                FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
+
+                var xssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
+
+
+                for (int i = 5; i < data.Count + 5; i++)
+                {
+                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 5].OrgName);
+                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 5].Town);
+                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
+                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
+                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].NetSupply));
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Spontaneous));
+                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
+                }
+
+                //转为字节数组
+                var stream = new MemoryStream();
+                xssfworkbook.Write(stream);
+                var buf = stream.ToArray();
+                return File(buf, "application/ms-excel", $"{DateTime.Now.ToString("yyyy-MM-dd:hh:mm:ss")}.xls");
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
+
+        /// <summary>
+        /// 下载模板
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("downtemplate")]
+        public FileResult DownTemplate()
+        {
+            try
+            {
+
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用电情况取数表格式-高明供电局.xls";
+                FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
+
+                var xssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
+                //可操作
+
+
+                //转为字节数组
+                var stream = new MemoryStream();
+                xssfworkbook.Write(stream);
+                var buf = stream.ToArray();
+                return File(buf, "application/ms-excel", $"企业用电情况取数表格式-高明供电局.xls");
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
     }
 }

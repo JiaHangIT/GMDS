@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "企业用电";
+    ViewData["Title"] = "企业用工";
 }
 
 <style>
@@ -33,8 +33,8 @@
                 </el-date-picker>
             </el-form-item>
         </div>
-
     </el-form>
+
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item>
             <el-button type="primary" @@click="querydata">查询</el-button>
@@ -77,13 +77,9 @@
                              label="住所"
                              width="200">
             </el-table-column>
-            <el-table-column prop="netSupply"
-                             label="网供用电量"
+            <el-table-column prop="workerMonth"
+                             label="月平均用工人数"
                              width="120">
-            </el-table-column>
-            <el-table-column prop="spontaneous"
-                             label="企业自发自用的用电量"
-                             width="170">
             </el-table-column>
             <el-table-column prop="remark"
                              label="备注"
@@ -103,6 +99,7 @@
         </el-table>
     </template>
 
+
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
                width="40%"
@@ -112,13 +109,8 @@
         <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
             <el-row>
                 <e-col>
-                    <el-form-item label="网供用电量">
-                        <el-input placeholder="请输入" v-model="form.netSupply"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="企业自发自用的用电量">
-                        <el-input placeholder="请输入" v-model="form.spontaneous"></el-input>
+                    <el-form-item label="月平均用工人数">
+                        <el-input placeholder="请输入" v-model="form.workerMonth"></el-input>
                     </el-form-item>
                 </e-col>
                 <e-col>
@@ -126,6 +118,7 @@
                         <el-input placeholder="请输入" v-model="form.remark"></el-input>
                     </el-form-item>
                 </e-col>
+
             </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -162,7 +155,7 @@
             </el-form-item>
             <el-form-item>
                 <el-upload class="upload-demo"
-                           action="/api/electric/upload"
+                           action="/api/worker/upload"
                            :before-upload="beforeUpload"
                            :on-success="uploadSuccess"
                            :on-error="uploadError"
@@ -176,7 +169,6 @@
     </el-dialog>
 </div>
 
-
 <script>
     layui.use(['element', 'layer'], function () {
         var layer = layui.layer
@@ -184,7 +176,6 @@
         var $ = layui.$
     })
 </script>
-
 
 <script>
     new Vue({
@@ -207,9 +198,8 @@
                 orgname: '',
                 model: { year: '' },
                 form: {
-                    netSupply: '',
-                    spontaneous:'',
-                    remark: ''
+                    workerMonth: '',
+                    remark:''
                 }
             }
         },
@@ -220,7 +210,7 @@
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
                 }
-                axios({ url: `/api/electric/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
+                axios({ url: `/api/worker/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
 
                     vm.total = res.data.content.total
@@ -264,10 +254,10 @@
                 console.log(err)
             },
             exportdata() {
-                window.location.href = '/api/electric/export'
+                window.location.href = '/api/worker/export'
             },
             downtemplate() {
-                window.location.href = `/api/electric/downtemplate`
+                window.location.href = `/api/worker/downtemplate`
             },
             handleEdit(index, row) {
                 let vm = this
@@ -276,16 +266,17 @@
                 vm.form = JSON.parse(formdata)
 
                 vm.dialogTitle = '编辑信息'
-                vm.centerDialogVisible = true
+                vm.centerDialogVisible=true
+
             },
             dialogSave(formName) {
                 let vm = this
                 vm.$refs[formName].validate((valid) => {
                     if (valid) {
-                        let url = `/api/electric/update/${vm.form.recordId}`
+                        let url = `/api/worker/update/${vm.form.recordId}`
                         let method = `put`
 
-                        axios({ url: url, method: method, data: { NetSupply: vm.form.netSupply, Spontaneous: vm.form.spontaneous, Remark: vm.form.remark } })
+                        axios({ url: url, method: method, data: { WorkerMonth: vm.form.workerMonth, Remark: vm.form.remark } })
                             .then(res => {
                                 if (res.data.isSuccess == true) {
                                     vm.$message.success(res.data.message)
@@ -315,7 +306,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let url = `/api/electric/delete/${row.recordId}`
+                    let url = `/api/worker/delete/${row.recordId}`
                     let method = 'get'
                     axios({ url: url, method: method })
                         .then(res => {
@@ -356,3 +347,4 @@
         }
     })
 </script>
+

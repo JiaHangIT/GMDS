@@ -296,7 +296,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    ;
             });
             modelBuilder.Entity<ApdFctGas>(entity =>
             {
@@ -539,7 +539,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    ;
             });
 
             modelBuilder.Entity<ApdFctLandTown>(entity =>
@@ -612,7 +612,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    ;
             });
             modelBuilder.Entity<ApdFctTAx>(entity =>
             {
@@ -791,7 +791,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    ;
             });
 
             modelBuilder.Entity<ApdFctRD>(entity =>
@@ -860,7 +860,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    ;
             });
 
             modelBuilder.Entity<ApdFctContaminants>(entity =>
@@ -957,7 +957,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteFlag)
                     .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    ;
             });
 
             modelBuilder.Entity<ApdFctElectric>(entity =>
@@ -1025,8 +1025,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    .HasColumnName("DELETE_FLAG");
             });
 
             modelBuilder.Entity<ApdFctWorker>(entity =>
@@ -1090,8 +1089,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0");
+                    .HasColumnName("DELETE_FLAG");
             });
 
             modelBuilder.Entity<DcsCustomerInfo>(entity =>
@@ -1154,10 +1152,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.EffEndDate)
                     .HasColumnName("EFF_END_DATE")
@@ -1212,9 +1207,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    ;
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.LogDate)
                     .HasColumnName("LOG_DATE")
@@ -1261,9 +1254,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 ;
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    ;
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.LastAccessDate)
                     .HasColumnName("LAST_ACCESS_DATE")
@@ -1367,9 +1358,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    ;
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.ReturnDataNum)
                     .HasColumnName("RETURN_DATA_NUM")
@@ -1401,9 +1390,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(500)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    ;
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.ReturnResult)
                     .HasColumnName("RETURN_RESULT")
@@ -1442,9 +1429,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    ;
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -1523,9 +1508,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(60)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    ;
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -1972,9 +1955,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(2000)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2083,9 +2064,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2152,9 +2131,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -2929,10 +2906,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.HelpTypeName)
                     .IsRequired()
@@ -3228,10 +3202,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -3282,9 +3253,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -3560,9 +3529,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -3621,9 +3588,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")
@@ -3670,9 +3635,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("NVARCHAR2(36)");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
                 entity.Property(e => e.DeleteTime)
                     .HasColumnName("DELETE_TIME")

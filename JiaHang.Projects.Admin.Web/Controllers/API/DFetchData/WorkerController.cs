@@ -9,7 +9,7 @@ using JiaHang.Projects.Admin.Common;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.DFetchData.Rd;
+using JiaHang.Projects.Admin.Model.DFetchData.Worker;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,29 +22,29 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 {
     [Route("api/[controller]")]
     //[ApiController]
-    public class RdController : ControllerBase
+    public class WorkerController : ControllerBase
     {
         private readonly DataContext context;
-        private readonly RdBLL rdBll;
         private readonly IHostingEnvironment hosting;
+        private readonly WorkerBLL workerBll;
 
-        public RdController(DataContext _context,IHostingEnvironment _hosting)
+        public WorkerController(DataContext _context, IHostingEnvironment _hosting)
         {
-            this.context = _context;
-            this.hosting = _hosting;
-            rdBll = new RdBLL(_context);
+            context = _context;
+            hosting = _hosting;
+            workerBll = new WorkerBLL(_context);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetList")]
+        [HttpGet]
         public FuncResult GetList()
         {
             try
             {
-                return rdBll.GetList();
+                return null;
             }
             catch (Exception)
             {
@@ -56,89 +56,106 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("GetListPagination")]
-        public FuncResult GetListPagination([FromBody] SearchRdModel model)
+        public FuncResult GetListPagination([FromBody] SearchWorkerModel model)
         {
-            model.page--; if (model.page < 0)
-            {
-                model.page = 0;
-            }
-            return rdBll.GetListPagination(model);
-        }
-
-        /// <summary>
-        /// 更新详细数据
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut("update/{recordid}")]
-        public FuncResult Update(string recordid,[FromBody] PostRdModel model)
-        {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-
-                return rdBll.Update(recordid,model);
+                model.page--; if (model.page < 0)
+                {
+                    model.page = 0;
+                }
+                return workerBll.GetListPagination(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error", ex);
+                throw;
             }
         }
 
         /// <summary>
-        /// 删除数据
+        /// 
+        /// </summary>
+        /// <param name="recordid"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut("update/{recordid}")]
+        public FuncResult Update(string recordid, [FromBody] PostWorkerModel model)
+        {
+            try
+            {
+                return workerBll.Update(recordid,model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        [HttpGet("delete/{key}")]
-        public async Task<FuncResult> DeleteData(string key)
+        [HttpGet("Delete/{key}")]
+        public async Task<FuncResult> Delete(string key)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-                if (string.IsNullOrWhiteSpace(key))
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                try
                 {
-                    fr.IsSuccess = false;
-                    fr.Message = "未接收到参数信息!";
-                }
-                var _key = Convert.ToDecimal(key);
-                ApdFctRD entity = context.ApdFctRD.FirstOrDefault(f => f.RecordId.Equals(_key));
-                if (entity == null)
-                {
-                    fr.IsSuccess = false;
-                    fr.Message = "异常参数，未找到数据!";
-                }
-
-                //删除
-                context.ApdFctRD.Remove(entity);
-                using (IDbContextTransaction trans = context.Database.BeginTransaction())
-                {
-                    try
+                    if (string.IsNullOrWhiteSpace(key))
                     {
-                        await context.SaveChangesAsync();
-                        trans.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        trans.Rollback();
                         fr.IsSuccess = false;
-                        fr.Message = $"{ex.InnerException},{ex.Message}";
-                        throw new Exception("error", ex);
+                        fr.Message = "未接收到参数信息!";
                     }
+                    var _key = Convert.ToDecimal(key);
+                    ApdFctWorker entity = context.ApdFctWorker.FirstOrDefault(f => f.RecordId.Equals(_key));
+                    if (entity == null)
+                    {
+                        fr.IsSuccess = false;
+                        fr.Message = "异常参数，未找到数据!";
+                    }
+
+                    //删除
+                    context.ApdFctWorker.Remove(entity);
+                    using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            await context.SaveChangesAsync();
+                            trans.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            trans.Rollback();
+                            fr.IsSuccess = false;
+                            fr.Message = $"{ex.InnerException},{ex.Message}";
+                            throw new Exception("error", ex);
+                        }
+                    }
+                    return fr;
                 }
-                return fr;
+                catch (Exception ex)
+                {
+
+                    throw new Exception("error", ex);
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error", ex);
+                throw;
             }
         }
 
         /// <summary>
-        /// excel数据导入到数据库(apdfctrd)
+        /// excel数据导入到数据库(apdfctelectric)
         /// 一个机构一年只有一批数据
         /// </summary>
         /// <param name="excelfile"></param>
@@ -170,26 +187,26 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.K1 == "") && f.K1 != null);
+                        var prefilter = datalist.Where(f => !(f.Y1 == "") && f.Y1 != null);
                         if (prefilter == null || prefilter.Count() <= 0)
                         {
                             result.IsSuccess = false;
                             result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
                             return result;
                         }
-                        var filterdata = prefilter.Select(g => new ApdFctRD
+                        var filterdata = prefilter.Select(g => new ApdFctWorker
                         {
                             RecordId = new Random().Next(1, 99999),
                             PeriodYear = Convert.ToDecimal(year),
-                            OrgCode = g.K3,
-                            IsHighTech = g.K6,
-                            RDExpenditure = g.K7 == "" ? null : Convert.ToDecimal(g.K7),
-                            Remark = g.K8,
-                            CreationDate=DateTime.Now,
-                            LastUpdateDate=DateTime.Now
+                            OrgCode = g.Y3,
+                            WorkerMonth = g.Y6 == "" ? null : Convert.ToDecimal(g.Y6),
+                            Remark = g.Y7,
+                            CreationDate = DateTime.Now,
+                            LastUpdateDate = DateTime.Now,
+                            DeleteFlag = 0
                         });
 
-                        result = rdBll.WriteData(filterdata, year);
+                        result = workerBll.WriteData(filterdata, year);
 
                     }
                     else
@@ -221,10 +238,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = rdBll.GetList();
-                var data = (List<ReturnRDModel>)((dynamic)summarydata).Content;
+                var summarydata = workerBll.GetList();
+                var data = (List<ReturnWorkerModel>)((dynamic)summarydata).Content;
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业研发经费支出情况取数表格式-局高新合作交流科.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用工情况表取数格式-区人资社保局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -238,9 +255,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                     sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
                     sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
                     sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 5].IsHighTech);
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].RDExpenditure));
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].WorkerMonth));
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 5].Remark);
                 }
 
                 //转为字节数组
@@ -268,7 +284,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             try
             {
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业研发经费支出情况取数表格式-局高新合作交流科.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用工情况表取数格式-区人资社保局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -280,7 +296,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                 var stream = new MemoryStream();
                 xssfworkbook.Write(stream);
                 var buf = stream.ToArray();
-                return File(buf, "application/ms-excel", $"企业研发经费支出情况取数表格式-局高新合作交流科.xls");
+                return File(buf, "application/ms-excel", $"企业用工情况表取数格式-区人资社保局.xls");
             }
             catch (Exception ex)
             {
