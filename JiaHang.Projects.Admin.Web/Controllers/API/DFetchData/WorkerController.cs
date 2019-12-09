@@ -9,7 +9,7 @@ using JiaHang.Projects.Admin.Common;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.DFetchData.Electric;
+using JiaHang.Projects.Admin.Model.DFetchData.Worker;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,57 +21,57 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 {
     [Route("api/[controller]")]
     //[ApiController]
-    public class ElectricController : ControllerBase
+    public class WorkerController : ControllerBase
     {
         private readonly DataContext context;
-        private readonly ElectricBLL eletricBll;
         private readonly IHostingEnvironment hosting;
+        private readonly WorkerBLL workerBll;
 
-        public ElectricController(DataContext _context,IHostingEnvironment _hosting)
+        public WorkerController(DataContext _context, IHostingEnvironment _hosting)
         {
-            this.context = _context;
-            this.hosting = _hosting;
-            eletricBll = new ElectricBLL(context);
+            context = _context;
+            hosting = _hosting;
+            workerBll = new WorkerBLL(_context);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetList")]
+        [HttpGet]
         public FuncResult GetList()
         {
             try
             {
-                return eletricBll.GetList();
+                return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error",ex);
+                throw;
             }
         }
 
         /// <summary>
-        /// 分页
+        /// 
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("GetListPagination")]
-        public FuncResult GetListPagination([FromBody] SearchElectricModel model)
+        public FuncResult GetListPagination([FromBody] SearchWorkerModel model)
         {
             try
             {
-                model.page--; if (model.page< 0)
+                model.page--; if (model.page < 0)
                 {
                     model.page = 0;
                 }
-                return eletricBll.GetListPagination(model);
+                return workerBll.GetListPagination(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error",ex);
+                throw;
             }
         }
 
@@ -108,21 +108,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.D1 == ""));
-                        var filterdata = prefilter.Select(g => new ApdFctElectric
+                        var prefilter = datalist.Where(f => !(f.Y1 == ""));
+                        var filterdata = prefilter.Select(g => new ApdFctWorker
                         {
                             RecordId = new Random().Next(1, 99999),
                             PeriodYear = Convert.ToDecimal(year),
-                            OrgCode = g.D3,
-                            NetSupply = g.D6 == "" ? null : Convert.ToDecimal(g.D6),
-                            Spontaneous = g.D7 == "" ? null : Convert.ToDecimal(g.D7),
-                            Remark = g.D8,
+                            OrgCode = g.Y3,
+                            WorkerMonth = g.Y6 == "" ? null : Convert.ToDecimal(g.Y6),
+                            Remark = g.Y7,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now,
                             DeleteFlag = 0
                         });
 
-                        result = eletricBll.WriteData(filterdata, year);
+                        result = workerBll.WriteData(filterdata, year);
 
                     }
                     else
@@ -154,10 +153,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = eletricBll.GetList();
-                var data = (List<ReturnElectricModel>)((dynamic)summarydata).Content;
+                var summarydata = workerBll.GetList();
+                var data = (List<ReturnWorkerModel>)((dynamic)summarydata).Content;
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用电情况取数表格式-高明供电局.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用工情况表取数格式-区人资社保局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -171,9 +170,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                     sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
                     sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
                     sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].NetSupply));
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Spontaneous));
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].WorkerMonth));
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 5].Remark);
                 }
 
                 //转为字节数组
@@ -201,7 +199,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             try
             {
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用电情况取数表格式-高明供电局.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用工情况表取数格式-区人资社保局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -213,7 +211,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                 var stream = new MemoryStream();
                 xssfworkbook.Write(stream);
                 var buf = stream.ToArray();
-                return File(buf, "application/ms-excel", $"企业用电情况取数表格式-高明供电局.xls");
+                return File(buf, "application/ms-excel", $"企业用工情况表取数格式-区人资社保局.xls");
             }
             catch (Exception ex)
             {

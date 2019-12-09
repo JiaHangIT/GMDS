@@ -1,7 +1,7 @@
 ﻿using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.DFetchData.Electric;
+using JiaHang.Projects.Admin.Model.DFetchData.Worker;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -10,64 +10,60 @@ using System.Text;
 
 namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 {
-    public class ElectricBLL
+    public class WorkerBLL
     {
         private readonly DataContext context;
 
-        public ElectricBLL(DataContext _context)
-        {
-            this.context = _context;
-        }
+        public WorkerBLL(DataContext _context) { this.context = _context; }
+
 
         public FuncResult GetList()
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-                var query = from e in context.ApdFctElectric
-                            join o in context.ApdDimOrg on e.OrgCode equals o.OrgCode
-                            select new ReturnElectricModel()
+                var query = from w in context.ApdFctWorker
+                            join o in context.ApdDimOrg on w.OrgCode equals o.OrgCode
+                            select new ReturnWorkerModel()
                             {
-                                RecordId = e.RecordId,
+                                RecordId = w.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
                                 OrgCode = o.OrgCode,
                                 RegistrationType = o.RegistrationType,
                                 Address = o.Address,
-                                NetSupply = e.NetSupply,
-                                Spontaneous = e.Spontaneous,
-                                Remark = e.Remark
+                                WorkerMonth = w.WorkerMonth,
+                                Remark = w.Remark
                             };
 
                 fr.Content = query.ToList();
                 return fr;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error", ex);
+                throw;
             }
         }
 
-        public FuncResult GetListPagination(SearchElectricModel model)
+        public FuncResult GetListPagination(SearchWorkerModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-                var query = from e in context.ApdFctElectric
-                            join o in context.ApdDimOrg on e.OrgCode equals o.OrgCode
+                var query = from w in context.ApdFctWorker
+                            join o in context.ApdDimOrg on w.OrgCode equals o.OrgCode
                             select new
                             {
-                                PeriodYear = e.PeriodYear,
-                                RecordId = e.RecordId,
+                                PeriodYear = w.PeriodYear,
+                                RecordId = w.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
                                 OrgCode = o.OrgCode,
                                 RegistrationType = o.RegistrationType,
                                 Address = o.Address,
-                                NetSupply = e.NetSupply,
-                                Spontaneous = e.Spontaneous,
-                                Remark = e.Remark
+                                WorkerMonth = w.WorkerMonth,
+                                Remark = w.Remark
                             };
                 query = query.Where(f => (
                                     (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
@@ -79,20 +75,21 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 fr.Content = new { total = count, data = pagination };
                 return fr;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception("error", ex);
+                throw;
             }
         }
 
 
-        public FuncResult WriteData(IEnumerable<ApdFctElectric> list,string year)
+
+        public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-               
+
                 var _year = Convert.ToDecimal(year);
                 var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
                 if (dm != null && dm.Count() > 0)
@@ -102,7 +99,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     return fr;
                 }
 
-                context.ApdFctElectric.AddRange(list);  
+                context.ApdFctWorker.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -132,7 +129,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         }
     }
 
-    public class ReturnElectricModel
+    public class ReturnWorkerModel
     {
         public decimal RecordId { get; set; }
         public string OrgName { get; set; }
@@ -140,8 +137,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         public string OrgCode { get; set; }
         public string RegistrationType { get; set; }
         public string Address { get; set; }
-        public decimal? NetSupply { get; set; }
-        public decimal? Spontaneous { get; set; }
+        public decimal? WorkerMonth { get; set; }
         public string Remark { get; set; }
     }
 }
