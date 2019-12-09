@@ -188,6 +188,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
                         var prefilter = datalist.Where(f => !(f.Y1 == ""));
+                        if (prefilter == null || prefilter.Count() <= 0)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
+                            return result;
+                        }
                         var filterdata = prefilter.Select(g => new ApdFctWorker
                         {
                             RecordId = new Random().Next(1, 99999),

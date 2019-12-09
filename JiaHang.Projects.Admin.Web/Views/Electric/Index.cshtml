@@ -337,11 +337,15 @@
                 });
             },
             handleSizeChange(val) {
-
+                let vm = this
+                vm.pageSize = val
+                vm.fetchlist()
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
-
+                let vm = this
+                vm.currentPage = val
+                vm.fetchlist()
                 console.log(`当前页: ${val}`);
             }
         },
