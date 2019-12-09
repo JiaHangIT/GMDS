@@ -82,7 +82,32 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
+        public FuncResult Update(string recordid, PostWorkerModel model)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (string.IsNullOrWhiteSpace(recordid))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "参数接收异常!";
+                    return fr;
+                }
+                ApdFctWorker worker = context.ApdFctWorker.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                worker.WorkerMonth = model.WorkerMonth;
+                worker.Remark = model.Remark;
 
+                context.ApdFctWorker.Update(worker);
+                context.SaveChanges();
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}";
+                throw new Exception("error",ex);
+            }
+        }
 
         public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year)
         {
@@ -98,8 +123,15 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "未找到配置的企业信息!";
                     return fr;
                 }
-
-                context.ApdFctWorker.AddRange(list);
+                foreach (var item in list)
+                {
+                    if (isAlreadyExport(item.OrgCode,year))
+                    {
+                        //continue;
+                    }
+                    context.ApdFctWorker.Add(item);
+                }
+                //context.ApdFctWorker.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -126,6 +158,32 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
 
             return fr;
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var worker = context.ApdFctWorker.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (worker != null || worker.Count() > 0)
+                {
+                    context.ApdFctWorker.RemoveRange(worker);
+                    context.SaveChanges();
+                }
+                return worker != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
     }
 

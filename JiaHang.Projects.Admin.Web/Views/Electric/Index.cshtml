@@ -90,8 +90,7 @@
                              width="120">
             </el-table-column>
             <el-table-column fixed="right"
-                             label="操作"
-                             >
+                             label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -103,6 +102,37 @@
             </el-table-column>
         </el-table>
     </template>
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="40%"
+               :modal-append-to-body="false"
+               center>
+
+        <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
+            <el-row>
+                <e-col>
+                    <el-form-item label="网供用电量">
+                        <el-input placeholder="请输入" v-model="form.netSupply"></el-input>
+                    </el-form-item>
+                </e-col>
+                <e-col>
+                    <el-form-item label="企业自发自用的用电量">
+                        <el-input placeholder="请输入" v-model="form.spontaneous"></el-input>
+                    </el-form-item>
+                </e-col>
+                <e-col>
+                    <el-form-item label="备注">
+                        <el-input placeholder="请输入" v-model="form.remark"></el-input>
+                    </el-form-item>
+                </e-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
 
     <el-pagination @@size-change="handleSizeChange"
                    @@current-change="handleCurrentChange"
@@ -177,7 +207,9 @@
                 orgname: '',
                 model: { year: '' },
                 form: {
-                    test: ''
+                    netSupply: '',
+                    spontaneous:'',
+                    remark: ''
                 }
             }
         },
@@ -240,39 +272,69 @@
             handleEdit(index, row) {
                 let vm = this
 
+                let formdata = JSON.stringify(row)
+                vm.form = JSON.parse(formdata)
 
+                vm.dialogTitle = '编辑信息'
+                vm.centerDialogVisible = true
             },
-            dialogSave() {
+            dialogSave(formName) {
+                let vm = this
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = `/api/electric/update/${vm.form.recordId}`
+                        let method = `put`
 
+                        axios({ url: url, method: method, data: { NetSupply: vm.form.netSupply, Spontaneous: vm.form.spontaneous, Remark: vm.form.remark } })
+                            .then(res => {
+                                if (res.data.isSuccess == true) {
+                                    vm.$message.success(res.data.message)
+                                    console.log(111)
+                                } else {
+                                    vm.$message.error(res.data.message)
+                                }
+                                vm.fetchlist()
+                                vm.centerDialogVisible = false
+                                console.log(res)
+                            })
+                            .catch(err => {
+                                vm.$message.error('意料之外的错误!')
+                                console.log(err)
+                            })
+                    } else {
+                        vm.$message.error('error')
+                        console.log('error');
+                    }
+                })
             },
             handleDelete(index, row) {
                 let vm = this
 
-                //vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-                //    confirmButtonText: '确定',
-                //    cancelButtonText: '取消',
-                //    type: 'warning'
-                //}).then(() => {
-                //    let url = `/api/rd/delete/${row.recordId}`
-                //    let method = 'get'
-                //    axios({ url: url, method: method })
-                //        .then(res => {
-                //            if (res.data.isSuccess === true) {
-                //                vm.$message.success('操作成功！');
-                //                vm.fetchlist();
-                //            }
-                //            console.log(res)
-                //        })
-                //        .catch(error => {
-                //            vm.$message.error('操作失败，意外的原因！');
-                //            console.log(error)
-                //        })
-                //}).catch(() => {
-                //    vm.$message({
-                //        type: 'info',
-                //        message: '已取消删除'
-                //    });
-                //});
+                vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = `/api/electric/delete/${row.recordId}`
+                    let method = 'get'
+                    axios({ url: url, method: method })
+                        .then(res => {
+                            if (res.data.isSuccess === true) {
+                                vm.$message.success('操作成功！');
+                                vm.fetchlist();
+                            }
+                            console.log(res)
+                        })
+                        .catch(error => {
+                            vm.$message.error('操作失败，意外的原因！');
+                            console.log(error)
+                        })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             handleSizeChange(val) {
 

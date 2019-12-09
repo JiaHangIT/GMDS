@@ -171,7 +171,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             Remark = g.H15
                         });
 
-                        result.IsSuccess = pollutantBll.WriteData(filterdata,year);
+                        result = pollutantBll.WriteData(filterdata,year);
                         
                     }
                     else

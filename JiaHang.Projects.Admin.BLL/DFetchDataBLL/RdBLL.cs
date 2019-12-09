@@ -83,24 +83,63 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
+        public FuncResult Update(string recordid, PostRdModel model)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (string.IsNullOrWhiteSpace(recordid))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "参数接收异常!";
+                    return fr;
+                }
+                ApdFctRD rd = context.ApdFctRD.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                rd.IsHighTech = model.IsHighTech;
+                rd.RDExpenditure = model.RDExpenditure;
+                rd.Remark = model.Remark;
+
+                context.ApdFctRD.Update(rd);
+                context.SaveChanges();
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}";
+                throw new Exception("error", ex);
+            }
+        }
+
         /// <summary>
         /// 写数据
         /// </summary>
         /// <param name="list"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public bool WriteData(IEnumerable<ApdFctRD> list,string year)
+        public FuncResult WriteData(IEnumerable<ApdFctRD> list,string year)
         {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
                 var _year = Convert.ToDecimal(year);
                 var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
                 if (dm != null && dm.Count() > 0)
                 {
-                    return false;
+                    fr.IsSuccess = false;
+                    fr.Message = "未找到配置的企业信息";
+                    return fr;
+                }
+                foreach (var item in list)
+                {
+                    if (isAlreadyExport(item.OrgCode,year))
+                    {
+                        //continue;
+                    }
+                    context.ApdFctRD.Add(item);
                 }
                 //list.ToList().ForEach(c => c.PeriodYear = _year);
-                context.ApdFctRD.AddRange(list);
+                //context.ApdFctRD.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -111,17 +150,21 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     catch (Exception ex)
                     {
                         trans.Rollback();
-                        return false;
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}!";
+                        return fr;
                         throw new Exception("error", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                return false;
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}!";
+                return fr;
                 throw new Exception("error",ex);
             }
-            return true;
+            return fr;
         }
 
         public FuncResult Delete()
@@ -134,6 +177,32 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             {
 
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var rd = context.ApdFctRD.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (rd != null || rd.Count() > 0)
+                {
+                    context.ApdFctRD.RemoveRange(rd);
+                    context.SaveChanges();
+                }
+                return rd != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
             }
         }
     }

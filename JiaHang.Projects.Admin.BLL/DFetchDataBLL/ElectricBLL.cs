@@ -86,13 +86,42 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-
-        public FuncResult WriteData(IEnumerable<ApdFctElectric> list,string year)
+        public FuncResult Update(string recordid, PostElectricModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-               
+                if (string.IsNullOrWhiteSpace(recordid))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "参数接收异常!";
+                    return fr;
+                }
+                ApdFctElectric electric = context.ApdFctElectric.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                electric.NetSupply = model.NetSupply;
+                electric.Spontaneous = model.Spontaneous;
+                electric.Remark = model.Remark;
+
+                context.ApdFctElectric.Update(electric);
+                context.SaveChanges();
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}";
+                throw new Exception("error", ex);
+            }
+        }
+
+        public FuncResult WriteData(IEnumerable<ApdFctElectric> list,string year)
+        {
+            /*
+             * 同一年，一个企业只能导入一次
+             * **/
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
                 var _year = Convert.ToDecimal(year);
                 var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
                 if (dm != null && dm.Count() > 0)
@@ -101,8 +130,16 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "未找到配置的企业信息!";
                     return fr;
                 }
-
-                context.ApdFctElectric.AddRange(list);  
+                foreach (var item in list)
+                {
+                    if (isAlreadyExport(item.OrgCode,year))
+                    {
+                        //删掉
+                        //continue;
+                    }
+                    context.ApdFctElectric.Add(item);
+                }
+                //context.ApdFctElectric.AddRange(list);  
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -129,6 +166,32 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
 
             return fr;
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据(存在的话直接删掉，不用返回数据)
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var elec = context.ApdFctElectric.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (elec != null || elec.Count() > 0)
+                {
+                    context.ApdFctElectric.RemoveRange(elec);
+                    context.SaveChanges();
+                }
+                return elec != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
     }
 

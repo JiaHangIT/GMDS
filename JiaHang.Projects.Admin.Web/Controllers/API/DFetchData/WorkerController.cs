@@ -13,6 +13,7 @@ using JiaHang.Projects.Admin.Model.DFetchData.Worker;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -67,6 +68,84 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                     model.page = 0;
                 }
                 return workerBll.GetListPagination(model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recordid"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut("update/{recordid}")]
+        public FuncResult Update(string recordid, [FromBody] PostWorkerModel model)
+        {
+            try
+            {
+                return workerBll.Update(recordid,model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("Delete/{key}")]
+        public async Task<FuncResult> Delete(string key)
+        {
+            try
+            {
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(key))
+                    {
+                        fr.IsSuccess = false;
+                        fr.Message = "未接收到参数信息!";
+                    }
+                    var _key = Convert.ToDecimal(key);
+                    ApdFctWorker entity = context.ApdFctWorker.FirstOrDefault(f => f.RecordId.Equals(_key));
+                    if (entity == null)
+                    {
+                        fr.IsSuccess = false;
+                        fr.Message = "异常参数，未找到数据!";
+                    }
+
+                    //删除
+                    context.ApdFctWorker.Remove(entity);
+                    using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            await context.SaveChangesAsync();
+                            trans.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            trans.Rollback();
+                            fr.IsSuccess = false;
+                            fr.Message = $"{ex.InnerException},{ex.Message}";
+                            throw new Exception("error", ex);
+                        }
+                    }
+                    return fr;
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("error", ex);
+                }
             }
             catch (Exception)
             {

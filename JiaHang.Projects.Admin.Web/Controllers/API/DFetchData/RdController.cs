@@ -71,14 +71,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// 更新详细数据
         /// </summary>
         /// <returns></returns>
-        [HttpPut("update/{key}")]
-        public async Task<FuncResult> UpdateDetailData(string key)
+        [HttpPut("update/{recordid}")]
+        public FuncResult Update(string recordid,[FromBody] PostRdModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
 
-                return fr;
+                return rdBll.Update(recordid,model);
             }
             catch (Exception ex)
             {
@@ -183,7 +183,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             LastUpdateDate=DateTime.Now
                         });
 
-                        result.IsSuccess = rdBll.WriteData(filterdata, year);
+                        result = rdBll.WriteData(filterdata, year);
 
                     }
                     else

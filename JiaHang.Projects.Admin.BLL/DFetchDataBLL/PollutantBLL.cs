@@ -107,18 +107,29 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// ?
         /// </summary>
         /// <returns></returns>
-        public bool WriteData(IEnumerable<ApdFctContaminants> list,string year)
+        public FuncResult WriteData(IEnumerable<ApdFctContaminants> list,string year)
         {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
                 var _year = Convert.ToDecimal(year);
                 var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
                 if (dm != null && dm.Count() > 0)
                 {
-                    return false;
+                    fr.IsSuccess = false;
+                    fr.Message = "未找到配置的企业信息";
+                    return fr;
+                }
+                foreach (var item in list)
+                {
+                    if (isAlreadyExport(item.OrgCode,year))
+                    {
+                        //continue;
+                    }
+                    context.ApdFctContaminants.Add(item);
                 }
                 //list.ToList().ForEach(c => c.PeriodYear = _year);
-                context.ApdFctContaminants.AddRange(list);
+                //context.ApdFctContaminants.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -129,17 +140,48 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     catch (Exception ex)
                     {
                         trans.Rollback();
-                        return false;
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}!";
+                        return fr;
                         throw new Exception("error", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                return false;
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}!";
+                return fr;
                 throw new Exception("error",ex);
             }
-            return true;
+            return fr;
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var pollu = context.ApdFctContaminants.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (pollu != null || pollu.Count() > 0)
+                {
+                    context.ApdFctContaminants.RemoveRange(pollu);
+                    context.SaveChanges();
+                }
+                return pollu != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
     }
 
