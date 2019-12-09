@@ -533,7 +533,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<Demo>>(JsonConvert.SerializeObject(dt));
-                        List<Demo> filterdata = datalist.Where(f => !(f.G1 == "" && f.G2 == "" && f.G3 == "" && f.G4 == "" && f.G5 == "" && f.G6 == "" && f.G7 == "" && f.G8 == "")).ToList();
+                        List<Demo> filterdata = datalist.Where(f => !(f.G1 == "" && f.G2 == "" && f.G3 == "" && f.G4 == "" && f.G5 == "" && f.G6 == "" && f.G7 == "" && f.G8 == "") && f.G1 != null).ToList();
                         if (filterdata == null || filterdata.Count <= 0)
                         {
                             result.IsSuccess = false;

@@ -170,7 +170,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.K1 == ""));
+                        var prefilter = datalist.Where(f => !(f.K1 == "") && f.K1 != null);
                         if (prefilter == null || prefilter.Count() <= 0)
                         {
                             result.IsSuccess = false;
