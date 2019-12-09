@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JiaHang.Projects.Admin.Model.ExcelSearchMode.Gas
+namespace JiaHang.Projects.Admin.Model.InsuranceModel
 {
-    public class SearchExcelModel:Base
+    public class SearchInsModel: Base
     {
         public string orgname { get; set; }
 

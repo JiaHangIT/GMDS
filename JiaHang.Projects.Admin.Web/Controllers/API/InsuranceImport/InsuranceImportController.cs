@@ -4,13 +4,13 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL;
+using JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL;
 using JiaHang.Projects.Admin.Common;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
-using JiaHang.Projects.Admin.Model.ApdFtcWater;
-using JiaHang.Projects.Admin.Model.ExcelSearchMode.Gas;
+using JiaHang.Projects.Admin.Model.DFetchData.Rd;
+using JiaHang.Projects.Admin.Model.InsuranceModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,38 +19,123 @@ using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 
-namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
+namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
 {
     [Route("api/[controller]")]
     //[ApiController]
-    public class WaterImportController : ControllerBase
+    public class InsuranceImportController : ControllerBase
     {
         private readonly DataContext context;
+        private readonly InsuranceBll IMBll;
         private readonly IHostingEnvironment hosting;
-        private readonly WaterBll waterBll;
-        public WaterImportController(DataContext _context, IHostingEnvironment _hosting)
+
+        public InsuranceImportController(DataContext _context, IHostingEnvironment _hosting)
         {
             this.context = _context;
             this.hosting = _hosting;
-            this.waterBll = new WaterBll(_context);
+            IMBll = new InsuranceBll(_context);
         }
 
         /// <summary>
-        /// 获取数据
+        /// 
         /// </summary>
         /// <returns></returns>
-        [Route("GetListPagination")]
-        [HttpPost]
-        public async Task<FuncResult> GetListPagination([FromBody] SearchExcelModel model)
+        [HttpGet("GetList")]
+        public FuncResult GetList()
+        {
+            try
+            {
+                return IMBll.GetList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("GetListPagination")]
+        public FuncResult GetListPagination([FromBody] SearchInsModel model)
         {
             model.page--; if (model.page < 0)
             {
                 model.page = 0;
             }
-            return await waterBll.GetListPagination(model);
+            return IMBll.GetListPagination(model);
         }
         /// <summary>
-        /// excel数据导入到数据库(apdfctcontaminants)
+        /// 更新详细数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("update/{key}")]
+        public async Task<FuncResult> UpdateDetailData(string key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("delete/{key}")]
+        public async Task<FuncResult> DeleteData(string key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未接收到参数信息!";
+                }
+                var _key = Convert.ToDecimal(key);
+                ApdFctInsuranceDal entity = context.ApdFctInsurance.FirstOrDefault(f => f.RecordId.Equals(_key));
+                if (entity == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "异常参数，未找到数据!";
+                }
+
+                //删除
+                context.ApdFctInsurance.Remove(entity);
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        throw new Exception("error", ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
+        /// <summary>
+        /// excel数据导入到数据库(apdfctrd)
         /// 一个机构一年只有一批数据
         /// </summary>
         /// <param name="excelfile"></param>
@@ -82,20 +167,19 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.S1 == ""));
-                        var filterdata = prefilter.Select(g => new ApdFctWaterDal
+                        var prefilter = datalist.Where(f => !(f.B1 == ""));
+                        var filterdata = prefilter.Select(g => new ApdFctInsuranceDal
                         {
                             RecordId = new Random().Next(1, 99999),
                             PeriodYear = Convert.ToDecimal(year),
-                            OrgCode = g.S3,
-                            Water = g.S6 == "" ? null : Convert.ToDecimal(g.S6),
-                            Other = g.S7 == "" ? null : Convert.ToDecimal(g.S7),
-                            Remark = g.S8,
+                            OrgCode = g.B3,
+                            InsuranceMonth = g.B6 == "" ? null : Convert.ToDecimal(g.B6),
+                            Remark = g.B7,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now
                         });
 
-                        result.IsSuccess = waterBll.WriteData(filterdata, year);
+                        result.IsSuccess = IMBll.WriteData(filterdata, year);
 
                     }
                     else
@@ -117,67 +201,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
 
         }
         /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        [HttpGet("delete/{key}")]
-        public async Task<FuncResult> DeleteData(string key)
-        {
-            //try
-            //{
-
-            //    await gasBll.Delete(key);
-
-            //    return fr;
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    throw new Exception("error", ex);
-            //}
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-            try
-            {
-                if (string.IsNullOrWhiteSpace(key))
-                {
-                    fr.IsSuccess = false;
-                    fr.Message = "未接收到参数信息!";
-                }
-                var _key = Convert.ToDecimal(key);
-                ApdFctWaterDal entity = context.ApdFctWater.FirstOrDefault(f => f.RecordId.Equals(_key));
-                if (entity == null)
-                {
-                    fr.IsSuccess = false;
-                    fr.Message = "异常参数，未找到数据!";
-                }
-
-                //删除
-                context.ApdFctWater.Remove(entity);
-                using (IDbContextTransaction trans = context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        await context.SaveChangesAsync();
-                        trans.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        trans.Rollback();
-                        fr.IsSuccess = false;
-                        fr.Message = $"{ex.InnerException},{ex.Message}";
-                        throw new Exception("error", ex);
-                    }
-                }
-                return fr;
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("error", ex);
-            }
-        }
-        /// <summary>
         /// 下载模板
         /// </summary>
         /// <returns></returns>
@@ -187,7 +210,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
             try
             {
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用水情况取数表格式-佛山水业集团高明供水有限公司.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\月平均参保人数取数表格式-区社保基金局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -199,7 +222,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                 var stream = new MemoryStream();
                 xssfworkbook.Write(stream);
                 var buf = stream.ToArray();
-                return File(buf, "application/ms-excel", $"企业用水情况取数表格式-佛山水业集团高明供水有限公司.xls");
+                return File(buf, "application/ms-excel", $"月平均参保人数取数表格式-区社保基金局.xls");
             }
             catch (Exception ex)
             {
@@ -217,10 +240,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = waterBll.GetList();
+                var summarydata = IMBll.GetList();
                 var data = (List<ReturnWaterModel>)((dynamic)summarydata).Content;
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用水情况取数表格式-佛山水业集团高明供水有限公司.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业研发经费支出情况取数表格式-局高新合作交流科.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
@@ -234,8 +257,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                     sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
                     sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
                     sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].Water));
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Other));
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].InsuranceMonth));
                     sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
                 }
 
@@ -254,9 +276,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
             }
         }
         [HttpPut("{id}")]
-        public async Task<FuncResult> Update(int id, [FromBody] ApdFtcWaterModel model)
+        public async Task<FuncResult> Update(int id, [FromBody]InsuranceModelS model)
         {
-            FuncResult data = await waterBll.Update(id, model);
+            FuncResult data = await IMBll.Update(id, model);
             return data;
 
         }
