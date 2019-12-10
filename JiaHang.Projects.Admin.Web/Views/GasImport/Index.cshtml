@@ -35,8 +35,8 @@
             <el-form-item label="企业信用代码">
                 <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
             </el-form-item>
-            <el-form-item label="请选择导入年份">
-                <el-date-picker v-model="exportyear"
+            <el-form-item label="年份">
+                <el-date-picker v-model="orgyear"
                                 type="year"
                                 format="yyyy"
                                 placeholder="选择年">
@@ -52,7 +52,7 @@
         <el-form-item>
             <el-button type="success" @@click="exportdata">导出</el-button>
         </el-form-item>
-        <el-form-item>
+        @*<el-form-item>
             <el-button type="success" @@click="downtemplate">下载模板</el-button>
         </el-form-item>
         <el-form-item>
@@ -63,6 +63,9 @@
                        :show-file-list="false">
                 <el-button type="primary">点击上传</el-button>
             </el-upload>
+        </el-form-item>*@
+        <el-form-item>
+            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
         </el-form-item>
     </el-form>
 
@@ -105,7 +108,7 @@
                              label="其他方式燃气使用量（立方米）"
                              width="150">
             </el-table-column>
-            
+
             <el-table-column prop="remark"
                              label="备注"
                              width="120">
@@ -172,6 +175,39 @@
             <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
         </div>
     </el-dialog>
+
+
+
+    <el-dialog :title="buttontxt"
+               :visible.sync="showbutton"
+               width="20%"
+               :modal-append-to-body="false"
+               center>
+        <el-form>
+            <el-form-item>
+                <el-button type="primary" @@click="downtemplate">下载模板</el-button>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="exportyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-upload class="upload-demo"
+                           action="/api/GasImport/upload"
+                           :before-upload="beforeUpload"
+                           :on-success="uploadSuccess"
+                           :on-error="uploadError"
+                           :data="model"
+                           :show-file-list="false">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
 </div>
 
 
@@ -188,6 +224,8 @@
         el: '#app',
         data() {
             return {
+                buttontxt: '',
+                showbutton: false,
                 formInline: {
                     user: '',
                     region: ''
@@ -203,6 +241,7 @@
                 exportyear: '',
                 orgcode: '',
                 orgname: '',
+                orgyear: '',
                 labelPosition: 'left',
                 rules: {
                     RECORD_ID: [
@@ -224,8 +263,8 @@
             fetchlist() {
                 let vm = this;
                 let y = ''
-                if (vm.exportyear != '' && vm.exportyear != null) {
-                    y = vm.exportyear.getFullYear()
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
                 }
                 axios({ url: `/api/GasImport/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
@@ -253,6 +292,23 @@
                     vm.$message.error('请先选择年份!');
                     return false
                 }
+            },
+            uploadSuccess(response, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                if (response.isSuccess == true) {
+                    vm.$message.success(response.message);
+                } else {
+                    vm.$message.error(response.message);
+                }
+
+                console.log(response);
+            },
+            uploadError(err, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                vm.$message.error('操作失败！' + err);
+                console.log(err)
             },
             exportdata() {
                 window.location.href = '/api/GasImport/export'

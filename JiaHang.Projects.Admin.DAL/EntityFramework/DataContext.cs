@@ -186,10 +186,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
             });
             modelBuilder.Entity<ApdDimOrg>(entity =>
@@ -288,7 +285,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteBy)
                  .HasColumnName("DELETE_BY")
-                 .HasColumnType("NVARCHAR2(40)");
+                 .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
@@ -363,10 +361,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
             });
             modelBuilder.Entity<ApdFctInsuranceDal>(entity =>
@@ -430,10 +425,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
             });
             modelBuilder.Entity<ApdFctWaterDal>(entity =>
@@ -501,10 +493,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
 
             });
 
@@ -656,7 +645,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.CREATED_BY)
                     .HasColumnName("CREATED_BY")
-                    .HasColumnType("NUMBER")
+                    .HasColumnType("NVARCHAR2(40)")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.LAST_UPDATE_DATE)
@@ -704,8 +693,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 //    .HasColumnType("NVARCHAR2(30)");
                 entity.Property(e => e.DeleteBy)
                     .HasColumnName("DELETE_BY")
-                    .HasColumnType("NVARCHAR2(40)")
-                    .HasDefaultValueSql("1");
+                    .HasColumnType("NVARCHAR2(40)");
 
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")

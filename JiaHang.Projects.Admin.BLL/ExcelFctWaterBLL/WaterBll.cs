@@ -106,8 +106,16 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                 {
                     return false;
                 }
-                //list.ToList().ForEach(c => c.PeriodYear = _year);
-                context.ApdFctWater.AddRange(list);
+                foreach (var item in list)
+                {
+                    if (isAlreadyExport(item.OrgCode, year))
+                    {
+                        //continue;
+                    }
+                    context.ApdFctWater.Add(item);
+                }
+                ////list.ToList().ForEach(c => c.PeriodYear = _year);
+                //context.ApdFctWater.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
@@ -129,6 +137,32 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                 throw new Exception("error", ex);
             }
             return true;
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var pollu = context.ApdFctWater.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (pollu != null || pollu.Count() > 0)
+                {
+                    context.ApdFctWater.RemoveRange(pollu);
+                    context.SaveChanges();
+                }
+                return pollu != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
         }
         /// <summary>
         /// 修改

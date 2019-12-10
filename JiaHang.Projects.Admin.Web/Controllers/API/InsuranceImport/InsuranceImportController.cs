@@ -179,7 +179,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
                             LastUpdateDate = DateTime.Now
                         });
 
-                        result.IsSuccess = IMBll.WriteData(filterdata, year);
+                        result = IMBll.WriteData(filterdata, year);
 
                     }
                     else

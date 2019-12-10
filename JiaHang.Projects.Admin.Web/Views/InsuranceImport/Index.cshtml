@@ -275,6 +275,17 @@
                 }
                 console.log(response);
             },
+            uploadSuccess(response, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                if (response.isSuccess == true) {
+                    vm.$message.success(response.message);
+                } else {
+                    vm.$message.error(response.message);
+                }
+
+                console.log(response);
+            },
             uploadError(err, file, fileList) {
                 let vm = this
                 vm.showbutton = false
