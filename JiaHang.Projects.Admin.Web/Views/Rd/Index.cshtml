@@ -20,6 +20,11 @@
         padding: 15px;
         background-color: #fff;
     }
+
+    td{
+        padding:10px;
+        text-align:center;
+    }
 </style>
 <div id="app">
     <el-form :inline="true" class="demo-form-inline">
@@ -116,9 +121,10 @@
                center>
 
         <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
-            <el-row>
-                <e-col>
-                    <el-form-item label="是否属于高新技术企业">
+            <table>
+                <tr>
+                    <td>是否属于高新技术企业</td>
+                    <td>
                         <el-select v-model="form.isHighTech" placeholder="请选择">
                             <el-option v-for="item in options"
                                        :key="item"
@@ -126,19 +132,38 @@
                                        :value="item">
                             </el-option>
                         </el-select>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="研发经费支出">
-                        <el-input placeholder="请输入" v-model="form.rdExpenditure"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="备注">
-                        <el-input placeholder="请输入" v-model="form.remark"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>
+                    </td>
+                    <td>研发经费支出</td>
+                    <td><el-input placeholder="请输入" v-model="form.rdExpenditure"></el-input></td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td><el-input placeholder="请输入" v-model="form.remark"></el-input></td>
+                </tr>
+            </table>
+            @*<el-row>
+            <e-col>
+                <el-form-item label="是否属于高新技术企业">
+                    <el-select v-model="form.isHighTech" placeholder="请选择">
+                        <el-option v-for="item in options"
+                                   :key="item"
+                                   :label="item"
+                                   :value="item">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </e-col>
+            <e-col>
+                <el-form-item label="研发经费支出">
+                    <el-input placeholder="请输入" v-model="form.rdExpenditure"></el-input>
+                </el-form-item>
+            </e-col>
+            <e-col>
+                <el-form-item label="备注">
+                    <el-input placeholder="请输入" v-model="form.remark"></el-input>
+                </el-form-item>
+            </e-col>
+        </el-row>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>

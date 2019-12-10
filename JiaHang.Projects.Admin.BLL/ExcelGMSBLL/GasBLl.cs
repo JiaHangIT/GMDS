@@ -19,7 +19,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
 
         public async Task<FuncResult> GetListPagination(SearchExcelModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from c in context.ApdFctGas
@@ -55,7 +55,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
         /// <returns></returns>
         public FuncResult GetList()
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from c in context.ApdFctGas

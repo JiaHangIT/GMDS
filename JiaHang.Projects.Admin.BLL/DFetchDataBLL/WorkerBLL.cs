@@ -19,7 +19,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult GetList()
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from w in context.ApdFctWorker
@@ -48,7 +48,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult GetListPagination(SearchWorkerModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from w in context.ApdFctWorker
@@ -84,7 +84,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult Update(string recordid, PostWorkerModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 if (string.IsNullOrWhiteSpace(recordid))
@@ -111,7 +111,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
 

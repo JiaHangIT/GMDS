@@ -25,6 +25,11 @@
         padding: 15px;
         background-color: #fff;
     }
+
+    td {
+        padding:10px;
+        text-align:center;
+    }
 </style>
 <div id="app">
     <el-form :inline="true" class="demo-form-inline">
@@ -159,8 +164,50 @@
                center>
 
         <el-form :inline="true" :model="form" class="demo-form-inline" ref="form">
-            <el-row>
-                
+            <table>
+                <tr>
+                    <td>是否纳入环统范围</td>
+                    <td>
+                        <el-select v-model="form.isInSystem" placeholder="请选择">
+                            <el-option v-for="item in options"
+                                       :key="item"
+                                       :label="item"
+                                       :value="item">
+                            </el-option>
+                        </el-select>
+                    </td>
+                    <td>&nbsp;&nbsp;化学需氧量排放当量</td>
+                    <td><el-input placeholder="请输入" v-model="form.oxygen"></el-input></td>
+                </tr>
+                <tr>
+                    <td>氨氮排放当量</td>
+                    <td><el-input placeholder="请输入" v-model="form.ammoniaNitrogen"></el-input></td>
+                    <td>二氧化硫排放当量</td>
+                    <td><el-input placeholder="请输入" v-model="form.sulfurDioxide"></el-input></td>
+                </tr>
+
+                <tr>
+                    <td>氮氧化物排放当量</td>
+                    <td><el-input placeholder="请输入" v-model="form.nitrogenOxide"></el-input></td>
+                    <td>煤炭</td>
+                    <td><el-input placeholder="请输入" v-model="form.coal"></el-input></td>
+                </tr>
+
+                <tr>
+                    <td>燃料油</td>
+                    <td><el-input placeholder="请输入" v-model="form.fuelOil"></el-input></td>
+                    <td>氢气</td>
+                    <td><el-input placeholder="请输入" v-model="form.hydrogen"></el-input></td>
+                </tr>
+
+                <tr>
+                    <td>薪柴</td>
+                    <td><el-input placeholder="请输入" v-model="form.firewood"></el-input></td>
+                    <td>备注</td>
+                    <td><el-input placeholder="请输入" v-model="form.remark"></el-input></td>
+                </tr>
+            </table>
+            @*<el-row>
                 <e-col>
                     <el-form-item label="是否纳入环统范围">
                         <el-select v-model="form.isInSystem" placeholder="请选择">
@@ -177,11 +224,9 @@
                         <el-input placeholder="请输入" v-model="form.oxygen"></el-input>
                     </el-form-item>
                 </e-col>
-                
-
             </el-row>
+
             <el-row>
-                
                 <e-col>
                     <el-form-item label="氨氮排放当量">
                         <el-input placeholder="请输入" v-model="form.ammoniaNitrogen"></el-input>
@@ -192,12 +237,9 @@
                         <el-input placeholder="请输入" v-model="form.sulfurDioxide"></el-input>
                     </el-form-item>
                 </e-col>
-                
             </el-row>
 
             <el-row>
-
-                
                 <e-col>
                     <el-form-item label="氮氧化物排放当量">
                         <el-input placeholder="请输入" v-model="form.nitrogenOxide"></el-input>
@@ -208,8 +250,8 @@
                         <el-input placeholder="请输入" v-model="form.coal"></el-input>
                     </el-form-item>
                 </e-col>
-                
             </el-row>
+
             <el-row>
                 <e-col>
                     <el-form-item label="燃料油">
@@ -221,8 +263,8 @@
                         <el-input placeholder="请输入" v-model="form.hydrogen"></el-input>
                     </el-form-item>
                 </e-col>
-
             </el-row>
+
             <el-row>
                 <e-col>
                     <el-form-item label="薪柴">
@@ -234,7 +276,7 @@
                         <el-input placeholder="请输入" v-model="form.remark"></el-input>
                     </el-form-item>
                 </e-col>
-            </el-row>
+            </el-row>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
@@ -289,6 +331,7 @@
         el: '#app',
         data() {
             return {
+                labelPosition:'right',
                 buttontxt: '',
                 showbutton: false,
                 formInline: {

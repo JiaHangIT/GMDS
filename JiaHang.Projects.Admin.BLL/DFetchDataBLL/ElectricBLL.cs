@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult GetList()
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from e in context.ApdFctElectric
@@ -51,7 +51,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult GetListPagination(SearchElectricModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from e in context.ApdFctElectric
@@ -88,7 +88,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult Update(string recordid, PostElectricModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 if (string.IsNullOrWhiteSpace(recordid))
@@ -119,7 +119,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             /*
              * 同一年，一个企业只能导入一次
              * **/
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var _year = Convert.ToDecimal(year);
