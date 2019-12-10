@@ -14,6 +14,11 @@
         padding: 15px;
         background-color: #fff;
     }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
 </style>
 
 <div id="app">
@@ -40,10 +45,10 @@
             <el-button type="primary" @@click="querydata">查询</el-button>
         </el-form-item>
         <el-form-item>
-            <el-button type="success" @@click="exportdata">导出</el-button>
+            <el-button type="primary" @@click="exportdata">导出</el-button>
         </el-form-item>
         <el-form-item>
-            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
+            <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
         </el-form-item>
     </el-form>
 
@@ -110,7 +115,20 @@
                center>
 
         <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
-            <el-row>
+            <table>
+                <tr>
+                    <td>网供用电量</td>
+                    <td><el-input placeholder="请输入" v-model="form.netSupply"></el-input></td>
+                    <td>企业自发自用的用电量</td>
+                    <td><el-input placeholder="请输入" v-model="form.spontaneous"></el-input></td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td><el-input placeholder="请输入" v-model="form.remark"></el-input></td>
+
+                </tr>
+            </table>
+            @*<el-row>
                 <e-col>
                     <el-form-item label="网供用电量">
                         <el-input placeholder="请输入" v-model="form.netSupply"></el-input>
@@ -126,7 +144,7 @@
                         <el-input placeholder="请输入" v-model="form.remark"></el-input>
                     </el-form-item>
                 </e-col>
-            </el-row>
+            </el-row>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
@@ -255,6 +273,7 @@
                 } else {
                     vm.$message.error(response.message);
                 }
+                vm.fetchlist()
                 console.log(response);
             },
             uploadError(err, file, fileList) {

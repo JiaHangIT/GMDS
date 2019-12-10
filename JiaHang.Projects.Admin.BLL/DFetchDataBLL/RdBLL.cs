@@ -18,7 +18,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult GetList()
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from r in context.ApdFctRD
@@ -48,7 +48,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult GetListPagination(SearchRdModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from r in context.ApdFctRD
@@ -85,7 +85,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult Update(string recordid, PostRdModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 if (string.IsNullOrWhiteSpace(recordid))
@@ -119,7 +119,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctRD> list,string year)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var _year = Convert.ToDecimal(year);

@@ -17,9 +17,9 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public PollutantBLL(DataContext _context) { this.context = _context; }
 
-        public async Task<FuncResult> GetListPagination(SearchModel model)
+        public FuncResult GetListPagination(SearchModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from c in context.ApdFctContaminants
@@ -67,7 +67,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// <returns></returns>
         public FuncResult GetList()
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from c in context.ApdFctContaminants
@@ -102,6 +102,41 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
+        public FuncResult Update(string recordid, PostPolluantModel model)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
+            try
+            {
+                if (string.IsNullOrWhiteSpace(recordid))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "参数接收异常!";
+                    return fr;
+                }
+                ApdFctContaminants polluant = context.ApdFctContaminants.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+
+                polluant.IsInSystem = model.IsInSystem;
+                polluant.Oxygen = model.Oxygen;
+                polluant.AmmoniaNitrogen = model.AmmoniaNitrogen;
+                polluant.SulfurDioxide = model.SulfurDioxide;
+                polluant.NitrogenOxide = model.NitrogenOxide;
+                polluant.Coal = model.Coal;
+                polluant.FuelOil = model.FuelOil;
+                polluant.Hydrogen = model.Hydrogen;
+                polluant.Firewood = model.Firewood;
+                polluant.Remark = model.Remark;
+                context.ApdFctContaminants.Update(polluant);
+                context.SaveChanges();
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}";
+                throw new Exception("error", ex);
+            }
+        }
+
         /// <summary>
         /// 写入到数据表
         /// ?
@@ -109,7 +144,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctContaminants> list,string year)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var _year = Convert.ToDecimal(year);

@@ -41,27 +41,27 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// <returns></returns>
         [Route("GetListPagination")]
         [HttpPost]
-        public async Task<FuncResult> GetListPagination([FromBody] SearchModel model)
+        public FuncResult GetListPagination([FromBody] SearchModel model)
         {
             model.page--; if (model.page < 0)
             {
                 model.page = 0;
             }
-            return await pollutantBll.GetListPagination(model);
+            return pollutantBll.GetListPagination(model);
         }
 
         /// <summary>
         /// 更新详细数据
         /// </summary>
         /// <returns></returns>
-        [HttpPut("update/{key}")]
-        public async Task<FuncResult> UpdateDetailData(string key)
+        [HttpPut("update/{recordid}")]
+        public FuncResult Update(string recordid,[FromBody] PostPolluantModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
 
-                return fr;
+                return pollutantBll.Update(recordid,model);
             }
             catch (Exception ex)
             {
