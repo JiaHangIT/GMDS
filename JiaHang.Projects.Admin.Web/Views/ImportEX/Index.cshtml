@@ -31,8 +31,8 @@
             <el-form-item label="企业信用代码">
                 <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
             </el-form-item>
-            <el-form-item label="请选择导出年份">
-                <el-date-picker v-model="exportyear"
+            <el-form-item label="年份">
+                <el-date-picker v-model="orgyear"
                                 type="year"
                                 format="yyyy"
                                 placeholder="选择年">
@@ -49,17 +49,20 @@
             <el-button type="success" @@click="query">导出</el-button>
         </el-form-item>
         <el-form-item>
-            <el-button type="success" @@click="downtemplate">下载模板</el-button>
+            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
         </el-form-item>
-        <el-form-item>
-            <el-upload class="upload-demo"
-                       action="/api/ApdFctTAxImport/upload"
-                       :before-upload="beforeUpload"
-                       :data="model"
-                       :show-file-list="false">
-                <el-button  type="primary">点击上传</el-button>
-            </el-upload>
-        </el-form-item>
+        @*<el-form-item>
+                <el-button type="success" @@click="downtemplate">下载模板</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-upload class="upload-demo"
+                           action="/api/ApdFctTAxImport/upload"
+                           :before-upload="beforeUpload"
+                           :data="model"
+                           :show-file-list="false">
+                    <el-button  type="primary">点击上传</el-button>
+                </el-upload>
+            </el-form-item>*@
     </el-form>
 
     <div v-loading="loading">
@@ -144,9 +147,9 @@
                              width="120">
             </el-table-column>
             @*<el-table-column prop="remark"
-                             label="备注"
-                             width="120">
-            </el-table-column>*@
+                                 label="备注"
+                                 width="120">
+                </el-table-column>*@
             <el-table-column fixed="right"
                              label="操作">
                 <template slot-scope="scope">
@@ -154,8 +157,8 @@
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 
                     @*<el-button size="mini"
-                    type="danger"
-                    v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>*@
+                        type="danger"
+                        v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>*@
                 </template>
             </el-table-column>
         </el-table>
@@ -202,14 +205,52 @@
             </div>
         </el-dialog>
     </div>
+    <el-dialog :title="buttontxt"
+               :visible.sync="showbutton"
+               width="20%"
+               :modal-append-to-body="false"
+               center>
+        <el-form>
+            <el-form-item>
+                <el-button type="primary" @@click="downtemplate">下载模板</el-button>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="exportyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-upload class="upload-demo"
+                           action="/api/ApdFctTAxImport/upload"
+                           :before-upload="beforeUpload"
+                           :on-success="uploadSuccess"
+                           :on-error="uploadError"
+                           :data="model"
+                           :show-file-list="false">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
 
 </div>
-
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
 <script>
     new Vue({
         el: '#app',
         data() {
             return {
+                buttontxt: '',
+                showbutton: false,
                 tableheight: null,
                 loading: false,
                 array: [],
@@ -218,6 +259,7 @@
                 centerDialogVisible: false,
                 orgname: '',
                 orgcode: '',
+                orgyear: '',
                 model: { year: '' },
                 exportyear: '',
                 form: {
@@ -248,13 +290,14 @@
         methods: {
             fetchlist() {
                 let vm = this;
+                let y = ''
                 //自适应表高度
                 var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
                 vm.tableheight = height
-                if (vm.exportyear != '' && vm.exportyear != null) {
-                    y = vm.exportyear.getFullYear()
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
                 }
-                axios({ url: `/api/apdfcttaximport/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode } }).then(res => {
+                axios({ url: `/api/apdfcttaximport/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
                     console.log("数据:",res.data.content.data)
                     vm.array = res.data.content.array
@@ -379,6 +422,24 @@
             querydata() {
                 let vm = this
                 vm.fetchlist()
+            },
+            uploadSuccess(response, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                if (response.isSuccess == true) {
+                    vm.$message.success(response.message);
+                } else {
+                    vm.$message.error(response.message);
+                }
+                debugger
+                console.log(response);
+            },
+            uploadError(err, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                vm.$message.error('操作失败！' + err);
+                debugger
+                console.log(err)
             },
             query() {
                 //axios.get(`/api/qiyefile/export`).then(res => {

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
+namespace JiaHang.Projects.Admin.Model.ApdFctInsurance
 {
-    public class ApdFctGas
+    public class ApdFctInsuranceModel
     {
         public string OrgCode { get; set; }
-        public decimal? Gas { get; set; }
-        public decimal? Other { get; set; }
+        public decimal? InsuranceMonth { get; set; }
         public string Remark { get; set; }
         public DateTime? CreationDate { get; set; }
         public decimal? CreatedBy { get; set; }

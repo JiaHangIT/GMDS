@@ -4,11 +4,16 @@ using System.Text;
 
 namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
 {
-    public class ApdFctGas
+    public class ApdFctLandDistrict
     {
         public string OrgCode { get; set; }
-        public decimal? Gas { get; set; }
-        public decimal? Other { get; set; }
+        public string LandNo { get; set; }
+        public decimal? Area { get; set; }
+        public string ShareDesc { get; set; }
+        public string RightType { get; set; }
+        public string Purpose { get; set; }
+        public DateTime? BeginDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string Remark { get; set; }
         public DateTime? CreationDate { get; set; }
         public decimal? CreatedBy { get; set; }

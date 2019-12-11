@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "企业用气情况";
+    ViewData["Title"] = "企业用水情况";
 }
 
 <style>
@@ -52,21 +52,21 @@
         <el-form-item>
             <el-button type="success" @@click="exportdata">导出</el-button>
         </el-form-item>
+        <el-form-item>
+            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
+        </el-form-item>
         @*<el-form-item>
             <el-button type="success" @@click="downtemplate">下载模板</el-button>
         </el-form-item>
         <el-form-item>
             <el-upload class="upload-demo"
-                       action="/api/GasImport/upload"
+                       action="/api/WaterImport/upload"
                        :before-upload="beforeUpload"
                        :data="model"
                        :show-file-list="false">
                 <el-button type="primary">点击上传</el-button>
             </el-upload>
         </el-form-item>*@
-        <el-form-item>
-            <el-button type="success" @@click="()=>{ this.showbutton = true}">导入</el-button>
-        </el-form-item>
     </el-form>
 
     <template>
@@ -99,13 +99,13 @@
                              label="住所"
                              width="200">
             </el-table-column>
-            <el-table-column prop="gas"
-                             label="天然气用气量（立方米）"
+            <el-table-column prop="water"
+                             label="高明供水公司供应的用水量（吨）"
                              width="150">
             </el-table-column>
 
             <el-table-column prop="other"
-                             label="其他方式燃气使用量（立方米）"
+                             label="自取水及由其他公司供水量（吨）"
                              width="150">
             </el-table-column>
 
@@ -154,11 +154,11 @@
 
             </el-row>
             <el-row>
-                <el-form-item label="天然气用气量（立方米）">
-                    <el-input placeholder="请输入天然气用气量（立方米）" v-model="form.gas"></el-input>
+                <el-form-item label="高明供水公司供应的用水量（吨）">
+                    <el-input placeholder="请输入高明供水公司供应的用水量（吨）" v-model="form.water"></el-input>
                 </el-form-item>
-                <el-form-item label="其他方式燃气使用量（立方米）">
-                    <el-input placeholder="请输入其他方式燃气使用量（立方米）" v-model="form.other"></el-input>
+                <el-form-item label="自取水及由其他公司供水量（吨）">
+                    <el-input placeholder="请输入自取水及由其他公司供水量（吨）" v-model="form.other"></el-input>
                 </el-form-item>
             </el-row>
 
@@ -175,8 +175,6 @@
             <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
         </div>
     </el-dialog>
-
-
 
     <el-dialog :title="buttontxt"
                :visible.sync="showbutton"
@@ -196,7 +194,7 @@
             </el-form-item>
             <el-form-item>
                 <el-upload class="upload-demo"
-                           action="/api/GasImport/upload"
+                           action="/api/WaterImport/upload"
                            :before-upload="beforeUpload"
                            :on-success="uploadSuccess"
                            :on-error="uploadError"
@@ -253,7 +251,7 @@
                 form: {
                     RecordId: '',
                     OrgCode: '',
-                    Gas:'',
+                    Water:'',
                     Other: '',
                     Remark:'',
                 }
@@ -266,7 +264,7 @@
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
                 }
-                axios({ url: `/api/GasImport/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
+                axios({ url: `/api/WaterImport/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
 
                     vm.total = res.data.content.total
@@ -311,10 +309,10 @@
                 console.log(err)
             },
             exportdata() {
-                window.location.href = '/api/GasImport/export'
+                window.location.href = '/api/WaterImport/export'
             },
             downtemplate() {
-                window.location.href = `/api/GasImport/downtemplate`
+                window.location.href = `/api/WaterImport/downtemplate`
             },
             handleEdit(index, row) {
                 //编辑
@@ -335,19 +333,19 @@
 
                 vm.$refs[formName].validate((valid) => {
                     if (valid) {
-                        let url = "/api/GasImport";
+                        let url = "/api/WaterImport";
                         let method = "POST";
                         if (vm.IsCreate != true) {
-                            url = `/api/GasImport/${vm.form.recordId}`;
+                            url = `/api/WaterImport/${vm.form.recordId}`;
                             method = "PUT";
 
                         }
                         //console.log(vm.form.user_Is_Ldap);
                         //console.log(vm.form.user_Is_Lock);
-                        model = {                           
+                        model = {
                             RecordId: vm.form.recordId,
                             OrgCode: vm.form.orgCode,
-                            Gas: vm.form.gas,
+                            Water: vm.form.water,
                             Other: vm.form.other,
                             Remark: vm.form.remark,
                         };
@@ -381,7 +379,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let url = `/api/GasImport/delete/${row.recordId}`
+                    let url = `/api/WaterImport/delete/${row.recordId}`
                     let method = 'get'
                     axios({ url: url, method: method })
                         .then(res => {

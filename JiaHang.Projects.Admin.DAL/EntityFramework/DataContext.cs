@@ -18,6 +18,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         }
 
         public virtual DbSet<ApdFctGas> ApdFctGas { get; set; }
+        public virtual DbSet<ApdFctWaterDal> ApdFctWater { get; set; }
+        public virtual DbSet<ApdFctInsuranceDal> ApdFctInsurance { get; set; }
+        public virtual DbSet<ApdFctLandDistrict> ApdFctLandDistrict { get; set; }       
         public virtual DbSet<DcsCustomerInfo> DcsCustomerInfo { get; set; }
         public virtual DbSet<DcsCustomerLogInfo> DcsCustomerLogInfo { get; set; }
         public virtual DbSet<DcsCustomerServices> DcsCustomerServices { get; set; }
@@ -96,7 +99,96 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         {
             //modelBuilder.HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
             //    .HasAnnotation("Relational:DefaultSchema", "DCSP_USER");
+            modelBuilder.Entity<ApdFctLandDistrict>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_LAND_DISTRICT_PK");
 
+                entity.ToTable("APD_FCT_LAND_DISTRICT");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_LAND_DISTRICT_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.LandNo)
+                    .HasColumnName("LAND_NO")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.ShareDesc)
+                    .HasColumnName("SHARE_DESC")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.RightType)
+                    .HasColumnName("RIGHT_TYPE")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.Purpose)
+                    .HasColumnName("PURPOSE")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.BeginDate)
+                    .HasColumnName("BEGIN_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnName("END_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.Area)
+                    .HasColumnName("AREA")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG");
+
+            });
             modelBuilder.Entity<ApdDimOrg>(entity =>
             {
                 entity.HasKey(e => new { e.OrgCode, e.PeriodYear })
@@ -193,7 +285,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.DeleteBy)
                  .HasColumnName("DELETE_BY")
-                 .HasColumnType("NVARCHAR2(40)");
+                 .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.DeleteDate)
                     .HasColumnName("DELETE_DATE")
@@ -257,6 +350,151 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("LAST_UPDATED_BY")
                     .HasColumnType("NUMBER")
                     .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG");
+
+            });
+            modelBuilder.Entity<ApdFctInsuranceDal>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_INSURANCE_PK");
+
+                entity.ToTable("APD_FCT_INSURANCE");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_INSURANCE_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.InsuranceMonth)
+                    .HasColumnName("INSURANCE_MONTH")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+                
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG");
+
+            });
+            modelBuilder.Entity<ApdFctWaterDal>(entity =>
+            {
+                entity.HasKey(e => e.RecordId)
+                    .HasName("APD_FCT_WATER_PK");
+
+                entity.ToTable("APD_FCT_WATER");
+
+                entity.HasIndex(e => e.RecordId)
+                    .HasName("APD_FCT_WATER_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.RecordId)
+                    .HasColumnName("RECORD_ID")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.OrgCode)
+                    .HasColumnName("ORG_CODE")
+                    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.Water)
+                    .HasColumnName("WATER")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
+                entity.Property(e => e.Other)
+                    .HasColumnName("OTHER")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.PeriodYear)
+                    .HasColumnName("PERIOD_YEAR")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnName("CREATION_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasColumnType("DATE")
+                    .HasDefaultValueSql("SYSDATE");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasColumnName("LAST_UPDATED_BY")
+                    .HasColumnType("NUMBER")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(40)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG");
+
             });
 
             modelBuilder.Entity<ApdDimTown>(entity =>
@@ -407,7 +645,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.CREATED_BY)
                     .HasColumnName("CREATED_BY")
-                    .HasColumnType("NUMBER")
+                    .HasColumnType("NVARCHAR2(40)")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.LAST_UPDATE_DATE)
@@ -453,6 +691,19 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 //entity.Property(e => e.LogType)
                 //    .HasColumnName("LOG_TYPE")
                 //    .HasColumnType("NVARCHAR2(30)");
+                entity.Property(e => e.DeleteBy)
+                    .HasColumnName("DELETE_BY")
+                    .HasColumnType("NVARCHAR2(40)");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("DELETE_DATE")
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.DeleteFlag)
+                    .HasColumnName("DELETE_FLAG")
+
+                    .HasDefaultValueSql(@"0
+");
             });
             modelBuilder.Entity<ApdFctLandTown2>(entity =>
             {

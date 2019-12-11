@@ -103,5 +103,9 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         /// 允许扣除的研发费用
         /// </summary>
         public decimal? RAD_EXPENSES { get; set; }
+
+        public int DeleteFlag { get; set; }
+        public DateTime? DeleteDate { get; set; }
+        public string DeleteBy { get; set; }
     }
 }
