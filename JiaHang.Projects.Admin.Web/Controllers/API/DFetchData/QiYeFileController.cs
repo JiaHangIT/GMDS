@@ -89,6 +89,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
             var querygroup = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand, g.Key }).OrderBy(o => o.Key.Key);
             int count = querygroup.Count();
+            if (model.limit * model.page < model.limit)
+            {
+                model.page = 0;
+            }
             var l = querygroup.Skip(model.limit * model.page).Take(model.limit);
             
 

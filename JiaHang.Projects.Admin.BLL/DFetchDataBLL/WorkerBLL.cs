@@ -71,6 +71,10 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                                     (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
                                     ));
                 int count = query.Count();
+                if (model.limit * model.page < model.limit)
+                {
+                    model.page = 0;
+                }
                 var pagination = query.Skip(model.limit * model.page).Take(model.limit);
                 fr.Content = new { total = count, data = pagination };
                 return fr;

@@ -376,6 +376,7 @@
         methods: {
             fetchlist() {
                 let vm = this;
+                vm.loading = true
                 let y = ''
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
@@ -514,12 +515,14 @@
             handleSizeChange(val) {
                 let vm = this
                 vm.pageSize = val
+                vm.loading = true
                 vm.fetchlist()
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 let vm = this
                 vm.currentPage = val
+                vm.loading = true
                 vm.fetchlist()
                 console.log(`当前页: ${val}`);
             }
