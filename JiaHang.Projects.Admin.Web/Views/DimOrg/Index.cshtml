@@ -30,6 +30,13 @@
             <el-form-item label="企业信用代码">
                 <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
             </el-form-item>
+            <el-form-item label="年份">
+                <el-date-picker v-model="orgyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
         </div>
     </el-form>
 
@@ -39,6 +46,12 @@
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @@click="querydata">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="exportdata">导出</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
         </el-form-item>
     </el-form>
 
@@ -195,6 +208,38 @@
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
     </el-pagination>
+
+    <el-dialog :title="buttontxt"
+               :visible.sync="showbutton"
+               width="20%"
+               modal="true"
+               :modal-append-to-body="false"
+               center>
+        <el-form>
+            <el-form-item>
+                <el-button type="primary" @@click="downtemplate">下载模板</el-button>
+            </el-form-item>
+            <el-form-item label="请选择导入年份">
+                <el-date-picker v-model="exportyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-upload class="upload-demo"
+                           action="/api/dimorg/upload"
+                           :before-upload="beforeUpload"
+                           :on-success="uploadSuccess"
+                           :on-error="uploadError"
+                           :data="model"
+                           :show-file-list="false">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
 </div>
 
 <script>
@@ -210,6 +255,8 @@
         el: '#app',
         data() {
             return {
+                buttontxt: '',
+                showbutton: false,
                 centerDialogVisible: false,
                 loading: false,
                 dialogTitle: '',
@@ -218,8 +265,11 @@
                 pageSize: 10,
                 currentPage: 1,
                 value: '',
+                exportyear: '',
+                orgyear: '',
                 orgcode: '',
                 orgname: '',
+                model: { year: '' },
                 form: {
                     address: '',
                     industry: '',
@@ -252,8 +302,11 @@
             fetchlist() {
                 let vm = this;
                 vm.loading = true
-
-                axios({ url: `/api/dimorg/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, } }).then(res => {
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                axios({ url: `/api/dimorg/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
 
                     vm.total = res.data.content.total
@@ -265,6 +318,56 @@
             querydata() {
                 let vm = this
                 vm.fetchlist()
+            },
+            beforeUpload() {
+                let vm = this
+                try {
+
+                    vm.model.year = vm.exportyear.getFullYear()
+                    if (vm.model.year === '') {
+                        vm.$message.error('请先选择年份!');
+                        return false
+                    }
+                } catch (e) {
+                    vm.$message.error('请先选择年份!');
+                    return false
+                }
+            },
+            uploadSuccess(response, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                if (response.isSuccess == true) {
+                    vm.$message.success(response.message);
+                } else {
+                    vm.$message.error(response.message);
+                }
+                vm.fetchlist()
+                console.log(response);
+            },
+            uploadError(err, file, fileList) {
+                let vm = this
+                vm.showbutton = false
+                vm.$message.error('操作失败！' + err);
+                console.log(err)
+            },
+            exportdata() {
+                //window.location.href = '/api/dimorg/export'
+                let vm = this
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                let post = {
+                    pagesize: vm.pageSize,
+                    pagenum: vm.currentPage,
+                    orgname: vm.orgname,
+                    orgcode: vm.orgcode,
+                    year: y
+                };
+                window.location.href = `/api/dimorg/export?` + $.param(post)
+            },
+            downtemplate() {
+                window.location.href = `/api/dimorg/downtemplate`
             },
             handleAdd() {
                 let vm = this

@@ -589,7 +589,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.T2Id)
                     .HasColumnName("T2_ID")
-                    .HasColumnType("NUMBER");
+                     .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.DeleteBy)
                    .HasColumnName("DELETE_BY")
@@ -718,7 +718,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")

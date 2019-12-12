@@ -50,7 +50,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                                     (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
                                     ));
                 int count = query.Count();
-                if (model.limit * model.page > count)
+                if (model.limit * model.page >= count)
                 {
                     model.page = 0;
                 }
@@ -69,7 +69,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// 列表
         /// </summary>
         /// <returns></returns>
-        public FuncResult GetList()
+        public FuncResult GetList(SearchModel model = null)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -78,6 +78,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                             join o in context.ApdDimOrg on c.OrgCode equals o.OrgCode
                             select new ReturnPollutantModel()
                             {
+                                PeriodYear = c.PeriodYear,
                                 RecordId = c.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
@@ -95,6 +96,12 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                                 Firewood = c.Firewood,
                                 Remark = c.Remark
                             };
+
+                query = query.Where(f => (
+                                  (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
+                                  (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+                                  (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+                                  ));
 
                 fr.Content = query.ToList();
                 return fr;
@@ -231,6 +238,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
     public class ReturnPollutantModel
     {
+        public decimal? PeriodYear { get; set; }
         public decimal RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }

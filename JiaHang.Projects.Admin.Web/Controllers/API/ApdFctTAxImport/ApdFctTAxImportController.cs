@@ -392,14 +392,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         {
 
                             ORG_CODE = s.Key.W3,
-                            EMPLOYEE_REMUNERATION = s.Key.W11,
-                            DEPRECIATION = s.Key.W12,
-                            PROFIT = s.Key.W13,
-                            MAIN_BUSINESS_INCOME = s.Key.W14,
-                            TOTAL_PROFIT = s.Key.W18,
-                            OWNER_EQUITY = s.Key.W17,
-                            NUMBER_OF_EMPLOYEES = s.Key.W16,
-                            RAD_EXPENSES = s.Key.W15
+                            EMPLOYEE_REMUNERATION =Convert.ToDecimal(s.Key.W11) ,
+                            DEPRECIATION = Convert.ToDecimal(s.Key.W12),
+                            PROFIT = Convert.ToDecimal(s.Key.W13),
+                            MAIN_BUSINESS_INCOME = Convert.ToDecimal(s.Key.W14),
+                            TOTAL_PROFIT =Convert.ToDecimal(s.Key.W14),
+                            OWNER_EQUITY = Convert.ToDecimal(s.Key.W17),
+                            NUMBER_OF_EMPLOYEES = Convert.ToDecimal(s.Key.W16),
+                            RAD_EXPENSES = Convert.ToDecimal(s.Key.W15)
                         });
 
                         //存在orgcode不存在的情况就整个都不写入
@@ -413,6 +413,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 return result;
                             }
                             bool isalreadyexport = isAlreadyExport(item.ORG_CODE, year);
+                            //if (isalreadyexport)
+                            //{
+                            //    //删除(添加删除标记字段)
+                            //    //物理删除
+                            //    var formatyear = Convert.ToDecimal(year);
+                            //    var alreadytown2 = context.ApdFctTAx.Where(f => f.ORG_CODE.Equals(item.ORG_CODE) && f.PERIOD_YEAR.Equals(formatyear));                                
+                            //    context.ApdFctTAx.RemoveRange(alreadytown2);
+
+
+                            //}
                             ApdFctTAx Datatb = new ApdFctTAx()
                             {
                                 EMPLOYEE_REMUNERATION = item.EMPLOYEE_REMUNERATION,
@@ -589,19 +599,19 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
             public string W9 { get; set; }
 
-            public int? W10 { get; set; }
+            public double? W10 { get; set; }
 
-            public int? W11 { get; set; }
+            public double? W11 { get; set; }
 
-            public int? W12 { get; set; }
+            public double? W12 { get; set; }
 
-            public int? W13 { get; set; }
+            public double? W13 { get; set; }
 
-            public int? W14 { get; set; }
-            public int? W15 { get; set; }
-            public int? W16 { get; set; }
-            public int? W17 { get; set; }
-            public int? W18 { get; set; }
+            public double? W14 { get; set; }
+            public double? W15 { get; set; }
+            public double? W16 { get; set; }
+            public double? W17 { get; set; }
+            public double? W18 { get; set; }
             public string W19 { get; set; }
 
         }
