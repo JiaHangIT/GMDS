@@ -90,7 +90,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-        public FuncResult Update(string recordid, PostElectricModel model)
+        public FuncResult Update(string recordid, PostElectricModel model,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -105,6 +105,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 electric.NetSupply = model.NetSupply;
                 electric.Spontaneous = model.Spontaneous;
                 electric.Remark = model.Remark;
+                electric.LastUpdateDate = DateTime.Now;
+                electric.LastUpdatedBy = Convert.ToDecimal(userid);
 
                 context.ApdFctElectric.Update(electric);
                 context.SaveChanges();
@@ -118,7 +120,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-        public FuncResult WriteData(IEnumerable<ApdFctElectric> list,string year)
+        public FuncResult WriteData(IEnumerable<ApdFctElectric> list,string year,string userid)
         {
             /*
              * 同一年，一个企业只能导入一次
@@ -141,6 +143,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         //删掉
                         //continue;
                     }
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctElectric.Add(item);
                 }
                 //context.ApdFctElectric.AddRange(list);  

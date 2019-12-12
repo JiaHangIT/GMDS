@@ -215,6 +215,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 town2.RentLand = model.RentLand;
                 town2.LeaseLand = model.LeaseLand;
                 town2.Remark = model.Remark;
+                town2.LastUpdateDate = DateTime.Now;
+                town2.LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
                 context.ApdFctLandTown2.Update(town2);
 
                 foreach (var item in model.detaillist)

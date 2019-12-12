@@ -86,7 +86,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-        public FuncResult Update(string recordid, PostWorkerModel model)
+        public FuncResult Update(string recordid, PostWorkerModel model,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -100,6 +100,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 ApdFctWorker worker = context.ApdFctWorker.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
                 worker.WorkerMonth = model.WorkerMonth;
                 worker.Remark = model.Remark;
+                worker.LastUpdateDate = DateTime.Now;
+                worker.LastUpdatedBy = Convert.ToDecimal(userid);
 
                 context.ApdFctWorker.Update(worker);
                 context.SaveChanges();
@@ -113,7 +115,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-        public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year)
+        public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -133,6 +135,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     {
                         //continue;
                     }
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctWorker.Add(item);
                 }
                 //context.ApdFctWorker.AddRange(list);

@@ -87,7 +87,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-        public FuncResult Update(string recordid, PostRdModel model)
+        public FuncResult Update(string recordid, PostRdModel model,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -102,6 +102,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 rd.IsHighTech = model.IsHighTech;
                 rd.RDExpenditure = model.RDExpenditure;
                 rd.Remark = model.Remark;
+                rd.LastUpdateDate = DateTime.Now;
+                rd.LastUpdatedBy = Convert.ToDecimal(userid);
 
                 context.ApdFctRD.Update(rd);
                 context.SaveChanges();
@@ -121,7 +123,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// <param name="list"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public FuncResult WriteData(IEnumerable<ApdFctRD> list,string year)
+        public FuncResult WriteData(IEnumerable<ApdFctRD> list,string year,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -140,6 +142,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     {
                         //continue;
                     }
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctRD.Add(item);
                 }
                 //list.ToList().ForEach(c => c.PeriodYear = _year);

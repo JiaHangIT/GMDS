@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -27,11 +28,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         private readonly DataContext context;
         private readonly RdBLL rdBll;
         private readonly IHostingEnvironment hosting;
+        private readonly IMemoryCache cache;
 
-        public RdController(DataContext _context,IHostingEnvironment _hosting)
+        public RdController(DataContext _context,IHostingEnvironment _hosting, IMemoryCache _cache)
         {
             this.context = _context;
             this.hosting = _hosting;
+            this.cache = _cache;
             rdBll = new RdBLL(_context);
         }
 
@@ -78,7 +81,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             try
             {
 
-                return rdBll.Update(recordid,model);
+                return rdBll.Update(recordid,model,HttpContext.CurrentUser(cache).Id);
             }
             catch (Exception ex)
             {
@@ -189,7 +192,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             LastUpdateDate=DateTime.Now
                         });
 
-                        result = rdBll.WriteData(filterdata, year);
+                        result = rdBll.WriteData(filterdata, year,HttpContext.CurrentUser(cache).Id);
 
                     }
                     else

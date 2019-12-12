@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -27,11 +28,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         private readonly DataContext context;
         private readonly IHostingEnvironment hosting;
         private readonly WorkerBLL workerBll;
+        private readonly IMemoryCache cache;
 
-        public WorkerController(DataContext _context, IHostingEnvironment _hosting)
+        public WorkerController(DataContext _context, IHostingEnvironment _hosting, IMemoryCache _cache)
         {
             context = _context;
             hosting = _hosting;
+            cache = _cache;
             workerBll = new WorkerBLL(_context);
         }
 
@@ -87,7 +90,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         {
             try
             {
-                return workerBll.Update(recordid,model);
+                return workerBll.Update(recordid,model,HttpContext.CurrentUser(cache).Id);
             }
             catch (Exception)
             {
@@ -206,7 +209,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                             DeleteFlag = 0
                         });
 
-                        result = workerBll.WriteData(filterdata, year);
+                        result = workerBll.WriteData(filterdata, year, HttpContext.CurrentUser(cache).Id);
 
                     }
                     else
