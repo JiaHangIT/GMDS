@@ -963,12 +963,12 @@
         })
     })
 </script>
-<div style="margin-left:18px">
-    <div style="width: 100%;padding-top:15px">
+<div style="margin-left:18px" id="app">
+    <div style="width: 100%;padding-top:15px" >
         <div><div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div><h3>综合评分结构分布</h3></div>
-        <div style="padding-top:10px">
+        <div style="padding-top:10px" >
            
-                <div class="divSelected" id="divSelected">
+                <div class="divSelected" id="divSelected" v-loading="loading">
                     @*<div class="divSelectedTitle">
                             90分以上
                         </div>
@@ -979,7 +979,7 @@
                         </div>*@
                      
                 </div>              
-            <div class="divUnSelected1" id="divSelected1">
+            <div class="divUnSelected1" id="divSelected1" v-loading="loading">
                 @*<div class="divUnSelectedTitle1">
                     80分-90分(含)
                 </div>
@@ -989,7 +989,7 @@
                     <span id='value2'></span>户 <span id="value22"></span>
                 </div>*@
             </div>
-            <div class="divUnSelected2" id="divUnSelected2">
+            <div class="divUnSelected2" id="divUnSelected2" v-loading="loading">
                 @*<div class="divUnSelectedTitle2">
                     60分-80分(含)
                 </div>
@@ -999,7 +999,7 @@
                     <span id='value3'></span> 户<span id="value33"></span>
                 </div>*@
             </div>
-            <div class="divUnSelected3" id="divUnSelected3">
+            <div class="divUnSelected3" id="divUnSelected3" v-loading="loading">
                 @*<div class="divUnSelectedTitle3">
                     60分(含)以下
                 </div>
@@ -1056,7 +1056,7 @@
         </div>*@
         
     </div>
-    <div class="layui-inline" style="padding-top:30px">
+    <div class="layui-inline" style="padding-top:30px" >
         <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div> <h3>行业结构特征分布</h3>
         <div class="layui-form" style="padding-top:10px">
             <select name="" id="myselect" lay-filter="myselect">
@@ -1071,7 +1071,7 @@
             </select>
         </div>
     </div>
-    <div id="main1" style="width: 98%;height:300px;padding-top:-10px"></div>
+    <div v-loading="loading" id="main1" style="width: 98%;height:300px;padding-top:-10px"></div>
     <div class="layui-inline" style="padding-top:30px">
         <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div> <h3>空间结构特征分布</h3>
         <div class="layui-form" style="padding-top:10px">
@@ -1087,5 +1087,16 @@
             </select>
         </div>
     </div>
-    <div id="main2" style="width: 98%;height:300px;"></div>
+    <div id="main2" style="width: 98%;height:300px;" v-loading="loading"></div>
 </div>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                loading: true
+            }
+        }
+    }
+    )
+</script>

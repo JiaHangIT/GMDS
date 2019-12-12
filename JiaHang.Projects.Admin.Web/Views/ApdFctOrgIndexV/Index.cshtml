@@ -135,8 +135,11 @@
               tooltip-effect="dark"
               class="eltable"
               style="width: 100%"
-               v-loading="loading"
-              >
+              v-loading="loading">
+        <el-table-column label="年份"
+                         width="100"
+                         prop="perioD_YEAR">
+        </el-table-column>
         <el-table-column label="企业名称"
                          fixed
                          width="150"

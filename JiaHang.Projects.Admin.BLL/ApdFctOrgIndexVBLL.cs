@@ -191,6 +191,7 @@ namespace JiaHang.Projects.Admin.BLL
         public string Name { get; set; }
     }
     public class ReturnDate {
+        public decimal PERIOD_YEAR { get; set; }
         public string ORG_CODE { get; set; }
         public string ORG_NAME { get; set; }
         public string INDUSTRY { get; set; }
