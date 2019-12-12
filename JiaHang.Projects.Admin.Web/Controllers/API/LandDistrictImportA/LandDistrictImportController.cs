@@ -56,6 +56,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
                         join o in context.ApdDimOrg on t1.OrgCode equals o.OrgCode
                         select new DistricModel
                         {
+                            RecordId = t1.RecordId,
                             //Array = listnew,
                             OrgName = o.OrgName,
                             Town = o.Town,
@@ -72,7 +73,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
                             RightType = t1.RightType,
                             Purpose= t1.Purpose,
                             BeginDate = t1.BeginDate,
-                            End_Date=t1.EndDate
+                            End_Date=t1.EndDate,
+                            Remark = t1.Remark
                         };
             query = query.Where(f => (
             (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
@@ -85,7 +87,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
              * groupby 处理后，再根据groupby data自来query data
              * **/
 
-            var querygroup = query.GroupBy(g => new { g.OrgCode, g.RegistrationType,g.LeaseLand, g.Key }).OrderBy(o => o.Key.Key);
+            var querygroup = query.GroupBy(g => new { g.OrgCode, g.RegistrationType}).OrderBy(o => o.Key.OrgCode);
             int count = querygroup.Count();
             var l = querygroup.Skip(model.limit * model.page).Take(model.limit);
 
@@ -98,7 +100,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
             {
                 //query.Where(f => f.Key == item.Key.Key).ToList().ForEach(p => p.Count = item.Count());
 
-                var currentquery = query.Where(f => f.Key == item.Key.Key).ToList();
+                var currentquery = query.Where(f => f.OrgCode == item.Key.OrgCode).ToList();
                 foreach (var itemquery in currentquery)
                 {
                     itemquery.Count = item.Count();
@@ -594,69 +596,109 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
                 throw new Exception("error", ex);
             }
         }
-        ///// <summary>
-        ///// 更新详细数据
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPut("update/{key}")]
-        //public FuncResult UpdateDetailData(string key, [FromBody] ApdFctLandTowns model)
-        //{
-        //    FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-        //    try
-        //    {
-        //        if (model == null)
-        //        {
-        //            fr.IsSuccess = false;
-        //            fr.Message = "未正常接收参数!";
-        //            return fr;
-        //        }
-        //        var town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(model.Key));
-        //        if (town2 == null)
-        //        {
-        //            fr.IsSuccess = false;
-        //            fr.Message = "未正常接收参数!";
-        //            return fr;
-        //        }
-        //        town2.FactLand = model.FactLand;
-        //        town2.RentLand = model.RentLand;
-        //        town2.LeaseLand = model.LeaseLand;
-        //        town2.Remark = model.Remark;
-        //        context.ApdFctLandTown2.Update(town2);
-
-        //        foreach (var item in model.detaillist)
-        //        {
-        //            var cd = context.ApdFctLandTown.FirstOrDefault(f => f.RecordId.Equals(item.RecordId));
-        //            cd.OwnershipLand = item.OwnershipLand;
-        //            cd.ProtectionLand = item.ProtectionLand;
-        //            cd.ReduceLand = item.ReduceLand;
-        //            context.ApdFctLandTown.Update(cd);
-        //        }
+        /// <summary>
+        /// 更新详细数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("update/{key}")]
+        public FuncResult UpdateDetailData(string key, [FromBody] ApdFctDistrict model)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                if (model == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未正常接收参数!";
+                    return fr;
+                }
+                
+                foreach (var item in model.detaillist)
+                {
+                    var cd = context.ApdFctLandDistrict.FirstOrDefault(f => f.RecordId.Equals(item.RecordId));
+                    cd.LandNo = item.LandNo;
+                    cd.Area = item.Area;
+                    cd.ShareDesc = item.ShareDesc;
+                    cd.RightType = item.RightType;
+                    cd.Purpose = item.Purpose;
+                    cd.BeginDate = item.BeginDate;
+                    cd.EndDate = item.EndDate;
+                    cd.Remark = item.Remark;
+                    cd.LastUpdateDate = DateTime.Now;
+                    context.ApdFctLandDistrict.Update(cd);
+                }
 
 
-        //        using (IDbContextTransaction trans = context.Database.BeginTransaction())
-        //        {
-        //            try
-        //            {
-        //                context.SaveChangesAsync();
-        //                trans.Commit();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                trans.Rollback();
-        //                fr.IsSuccess = false;
-        //                fr.Message = $"{ex.InnerException},{ex.Message}";
-        //                return fr;
-        //                throw new Exception("error", ex);
-        //            }
-        //        }
-        //        return fr;
-        //    }
-        //    catch (Exception ex)
-        //    {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        return fr;
+                        throw new Exception("error", ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
 
-        //        throw new Exception("error", ex);
-        //    }
-        //}
+                throw new Exception("error", ex);
+            }
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("delete/{key}")]
+        public async Task<FuncResult> DeleteData(int key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                //if (string.IsNullOrWhiteSpace(key))
+                //{
+                //    fr.IsSuccess = false;
+                //    fr.Message = "未接收到参数信息!";
+                //}
+                var cd = context.ApdFctLandDistrict.FirstOrDefault(f => f.RecordId.Equals(key));
+                //List<ApdFctLandDistrict> listtown = context.ApdFctLandDistrict.Where(f => f.RecordId.Equals(key)).ToList();
+
+                //删除
+                context.ApdFctLandDistrict.RemoveRange(cd);
+
+
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        throw new Exception("error", ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
         /// <summary>
         /// 处理某机构某年是否已导入数据
         /// </summary>
@@ -680,6 +722,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
     }
     public class DistricModel
     {
+        public decimal RecordId { get; set; }
         public decimal PeriodYear { get; set; }
         public decimal Count { get; set; }
         public decimal Key { get; set; }
@@ -880,5 +923,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
         /// 页码
         /// </summary>
         public int page { get; set; }
+    }
+    /// <summary>
+    /// 数据更新接收实体
+    /// </summary>
+    public class ApdFctDistrict
+    {
+
+        public List<ApdFctLandDistrict> detaillist { get; set; }
     }
 }

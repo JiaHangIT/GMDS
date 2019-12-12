@@ -83,9 +83,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 NumberOfEmployees = t1.NUMBER_OF_EMPLOYEES,
                                 OwnerEquity = t1.OWNER_EQUITY,
                                 TotalProfit = t1.TOTAL_PROFIT,
-
+                                PeriodYear=t1.PERIOD_YEAR
                             };
-
+                query = query.Where(f => (
+            (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
+            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+            (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+            )).OrderBy(o => o.Create);
                 //var query = _context.ApdFctTAx.
                 //        Where(a =>
                 //        (
@@ -178,7 +182,52 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 throw new Exception("error", ex);
             }
         }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpGet("delete/{key}")]
+        public async Task<FuncResult> DeleteData(int key)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            try
+            {
+                //if (string.IsNullOrWhiteSpace(key))
+                //{
+                //    fr.IsSuccess = false;
+                //    fr.Message = "未接收到参数信息!";
+                //}
+                var cd = context.ApdFctTAx.FirstOrDefault(f => f.RECORD_ID.Equals(key));
+                //List<ApdFctLandDistrict> listtown = context.ApdFctLandDistrict.Where(f => f.RecordId.Equals(key)).ToList();
 
+                //删除
+                context.ApdFctTAx.RemoveRange(cd);
+
+
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}";
+                        throw new Exception("error", ex);
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
+            }
+        }
         /// <summary>
         /// 数据导出到excel
         /// </summary>
@@ -562,6 +611,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
             public string orgcode { get; set; }
 
+            public string year { get; set; }
             /// <summary>
             /// 页大小
             /// </summary>
@@ -575,6 +625,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
         public class ReturnModel
         {
+            public decimal PeriodYear { get; set; }
             public decimal Count { get; set; }
             public decimal Key { get; set; }
             public string OrgName { get; set; }

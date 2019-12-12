@@ -19,7 +19,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
 
         public GasBLl(DataContext _context) { this.context = _context; }
 
-        public async Task<FuncResult> GetListPagination(SearchExcelModel model)
+        public FuncResult GetListPagination(SearchExcelModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -39,7 +39,11 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
                                 Other = c.Other,
                                 Remark = c.Remark
                             };
-
+                query = query.Where(f => (
+                                   (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
+                                   (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+                                   (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+                                   ));
                 int count = query.Count();
                 var pagination = query.Skip(model.limit * model.page).Take(model.limit);
                 fr.Content = new { total = count, data = pagination };
