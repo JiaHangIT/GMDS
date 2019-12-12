@@ -47,7 +47,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         {
             try
             {
-                return eletricBll.GetList();
+                return eletricBll.GetList(new SearchElectricModel ());
             }
             catch (Exception ex)
             {
@@ -237,12 +237,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = eletricBll.GetList();
+                //var summarydata = eletricBll.GetList();
+                var summarydata = eletricBll.GetList(new SearchElectricModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnElectricModel>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用电情况取数表格式-高明供电局.xls";

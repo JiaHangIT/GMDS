@@ -238,12 +238,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = pollutantBll.GetList();
+                //var summarydata = pollutantBll.GetList();
+                var summarydata = pollutantBll.GetList(new SearchModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnPollutantModel>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业污染物排放取数表格式-佛山市生态环境局高明分局.xls";

@@ -236,12 +236,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = workerBll.GetList();
+                var summarydata = workerBll.GetList(new SearchWorkerModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnWorkerModel>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用工情况表取数格式-区人资社保局.xls";
