@@ -342,7 +342,7 @@
                 let vm = this
                 let c = row.count               
                 console.log(row.count)
-                if (columnIndex < 9 || columnIndex > 11) {
+                if (columnIndex < 10 || columnIndex > 12) {
                     //只有一行返回count个，其他的返回0
                     if (vm.array.find(item => { return item == rowIndex }) != null) {
 
@@ -364,7 +364,19 @@
             },
             exportdata() {
                 let vm = this
-                window.location.href = `/api/qiyefile/export/${vm.pageSize}/${vm.currentPage}`
+                //window.location.href = `/api/qiyefile/export/${vm.pageSize}/${vm.currentPage}`
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                let post = {
+                    pagesize: vm.pageSize,
+                    pagenum: vm.currentPage,
+                    orgname: vm.orgname,
+                    orgcode: vm.orgcode,
+                    year: y
+                };
+                window.location.href = `/api/qiyefile/export?` + $.param(post)
             },
             downtemplate() {
                 let vm = this

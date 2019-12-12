@@ -309,13 +309,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// 数据导出到excel
         /// </summary>
         /// <returns></returns>
-        [HttpGet("export/{pagesize}/{pagenum}")]
-        public FileResult Export(int pagesize,int pagenum)
+        //[HttpGet("export/{pagesize}/{pagenum}")]
+        [HttpGet("export")]
+        public FileResult Export(int pagesize,int pagenum,string orgname,string orgcode,string year)
         {
             try
             {
+               
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = GetList(new RequestLandTown() { orgname = "", orgcode = "",limit=pagesize,page=pagenum });
+                var summarydata = GetList(new RequestLandTown() { orgname = orgname, orgcode = orgcode,year= year, limit=pagesize,page=pagenum });
                 var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
                 var groupdata = (List<int>)((dynamic)summarydata.Content).array;
 
