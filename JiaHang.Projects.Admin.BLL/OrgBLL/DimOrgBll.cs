@@ -20,14 +20,18 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             this.context = _context;
         }
 
-        public FuncResult GetList()
+        public FuncResult GetList(SearchOrgModel model = null)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var query = from o in context.ApdDimOrg select o;
 
-                fr.Content = query;
+                query = query.Where(f => (string.IsNullOrEmpty(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+                                        (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
+                                        (string.IsNullOrEmpty(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year))));
+
+                fr.Content = query.ToList();
                 return fr;
             }
             catch (Exception)
@@ -49,7 +53,8 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                     model.page = 0;
                 }
                 query = query.Where(f => (string.IsNullOrEmpty(model.orgname) || f.OrgName.Equals(model.orgname)) &&
-                                         (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Equals(model.orgcode)));
+                                         (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
+                                         (string.IsNullOrEmpty(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year))));
                 var data = query.Skip(model.limit * model.page).Take(model.limit);
 
                 fr.Content = new { data = data, total = count };

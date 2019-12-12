@@ -219,12 +219,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = rdBll.GetList();
+                var summarydata = rdBll.GetList(new SearchRdModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnRDModel>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业研发经费支出情况取数表格式-局高新合作交流科.xls";

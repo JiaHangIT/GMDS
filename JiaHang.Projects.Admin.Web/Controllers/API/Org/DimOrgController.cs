@@ -173,9 +173,22 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                         var filterdata = prefilter.Select(g => new ApdDimOrg
                         {
                             RecordId = new Random().Next(1, 99999),
+                            OrgName = g.X1,
+                            Town = g.X2,
+                            OrgCode = g.X3,
+                            RegistrationType = g.X4,
+                            Address = g.X5,
+                            LegalRepresentative = g.X6,
+                            Phone = g.X7,
+                            LinkMan = g.X8,
+                            Phone2 = g.X9,
+                            Industry = g.X10,
+                            RegistrationStatus = g.X11,
+                            RegistrationMoney = g.X12,
+                            //RegistrationDate = Convert.ToDateTime(g.X13),
                             PeriodYear = Convert.ToDecimal(year),
-                            OrgCode = g.K3,
                             CreationDate = DateTime.Now,
+                            CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                             LastUpdateDate = DateTime.Now
                         });
 
@@ -206,12 +219,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = orgBll.GetList();
+                var summarydata = orgBll.GetList(new SearchOrgModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ApdDimOrg>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业信息.xls";
@@ -228,9 +241,14 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                     sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 6].OrgCode);
                     sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 6].RegistrationType);
                     sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 6].Address);
-                    //sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].IsHighTech);
-                    //sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 6].RDExpenditure));
-                    //sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].Remark);
+                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].LegalRepresentative);
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 6].Phone);
+                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].LinkMan);
+                    sheet1.GetRow(i).GetCell(9).SetCellValue(data[i - 6].Phone2);
+                    sheet1.GetRow(i).GetCell(10).SetCellValue(data[i - 6].Industry);
+                    sheet1.GetRow(i).GetCell(11).SetCellValue(data[i - 6].RegistrationStatus);
+                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].RegistrationMoney));
+                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToString(data[i - 6].CreationDate));
                 }
 
                 //转为字节数组

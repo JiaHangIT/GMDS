@@ -30,6 +30,13 @@
             <el-form-item label="企业信用代码">
                 <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
             </el-form-item>
+            <el-form-item label="年份">
+                <el-date-picker v-model="orgyear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
         </div>
     </el-form>
 
@@ -55,6 +62,10 @@
                   style="width: 100%">
             <el-table-column prop="orgCode"
                              label="统一社会信用代码"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="periodYear"
+                             label="年份"
                              width="180">
             </el-table-column>
             <el-table-column prop="orgName"
@@ -299,7 +310,7 @@
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
                 }
-                axios({ url: `/api/dimorg/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, } }).then(res => {
+                axios({ url: `/api/dimorg/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
 
                     vm.total = res.data.content.total
@@ -344,7 +355,20 @@
                 console.log(err)
             },
             exportdata() {
-                window.location.href = '/api/dimorg/export'
+                //window.location.href = '/api/dimorg/export'
+                let vm = this
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                let post = {
+                    pagesize: vm.pageSize,
+                    pagenum: vm.currentPage,
+                    orgname: vm.orgname,
+                    orgcode: vm.orgcode,
+                    year: y
+                };
+                window.location.href = `/api/dimorg/export?` + $.param(post)
             },
             downtemplate() {
                 window.location.href = `/api/dimorg/downtemplate`
