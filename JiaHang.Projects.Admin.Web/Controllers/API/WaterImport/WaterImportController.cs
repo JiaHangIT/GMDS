@@ -47,7 +47,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
             {
                 model.page = 0;
             }
-            return await waterBll.GetListPagination(model);
+            return waterBll.GetListPagination(model);
         }
         /// <summary>
         /// excel数据导入到数据库(apdfctcontaminants)

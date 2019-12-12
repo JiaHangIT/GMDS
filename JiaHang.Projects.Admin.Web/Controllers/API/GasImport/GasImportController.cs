@@ -42,13 +42,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
         /// <returns></returns>
         [Route("GetListPagination")]
         [HttpPost]
-        public async Task<FuncResult> GetListPagination([FromBody] SearchExcelModel model)
+        public FuncResult GetListPagination([FromBody] SearchExcelModel model)
         {
             model.page--; if (model.page < 0)
             {
                 model.page = 0;
             }
-            return await gasBll.GetListPagination(model);
+            return gasBll.GetListPagination(model);
         }
         ///// <summary>
         ///// 更新详细数据

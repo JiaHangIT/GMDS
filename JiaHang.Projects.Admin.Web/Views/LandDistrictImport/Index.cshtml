@@ -79,10 +79,7 @@
                              label="年份"
                              width="120">
             </el-table-column>
-            <el-table-column prop="town"
-                             label="所属镇街"
-                             width="150">
-            </el-table-column>
+
             <el-table-column prop="orgCode"
                              label="统一社会信用代码"
                              width="150">
@@ -115,7 +112,7 @@
                                  width="120">
                 </el-table-column>
             </el-table-column>
-            <el-table-column prop="landno"
+            <el-table-column prop="landNo"
                              label="不动产权证号"
                              width="120">
             </el-table-column>
@@ -123,11 +120,11 @@
                              label="面积（平方米）"
                              width="120">
             </el-table-column>
-            <el-table-column prop="sharedesc"
+            <el-table-column prop="shareDesc"
                              label="共有情况"
                              width="120">
             </el-table-column>
-            <el-table-column prop="righttype"
+            <el-table-column prop="rightType"
                              label="权利类型"
                              width="120">
             </el-table-column>
@@ -135,11 +132,11 @@
                              label="用途"
                              width="120">
             </el-table-column>
-            <el-table-column prop="begindate"
+            <el-table-column prop="beginDate"
                              label="使用期限开始日期"
                              width="120">
             </el-table-column>
-            <el-table-column prop="enddate"
+            <el-table-column prop="end_Date"
                              label="使用期限结束日期"
                              width="120">
             </el-table-column>
@@ -147,7 +144,13 @@
                              label="备注"
                              width="120">
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column prop="town"
+                             label="所属镇街"
+                             width="150">
+            </el-table-column>
+            
+            <el-table-column fixed="right"
+                             label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -174,7 +177,7 @@
                    :modal-append-to-body="false"
                    center>
 
-            <el-form :inline="true" class="demo-form-inline">
+            @*<el-form :inline="true" class="demo-form-inline">
                 <el-row>
                     <e-col>
                         <el-form-item label="事实用地">
@@ -201,7 +204,7 @@
                     </e-col>
                 </el-row>
 
-            </el-form>
+            </el-form>*@
             <template>
 
                 <el-table :data="detailData"
@@ -218,19 +221,56 @@
                             <el-input disabled="true" v-model="scope.row.orgName" placeholder="企业名称"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="ownershipLand" label="自有土地面积">
+                    <el-table-column prop="landNo" label="不动产权证号" width="245">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.ownershipLand" placeholder="自有土地面积"></el-input>
+                            <el-input v-model="scope.row.landNo" placeholder="不动产权证号"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="protectionLand" label="评价保护期土地面积">
+                    <el-table-column prop="area" label="面积">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.protectionLand" placeholder="评价保护期土地面积"></el-input>
+                            <el-input v-model="scope.row.area" placeholder="面积"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="reduceLand" label="新减土地面积">
+                    <el-table-column prop="shareDesc" label="共有情况">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.reduceLand" placeholder="新减土地面积"></el-input>
+                            <el-input v-model="scope.row.shareDesc" placeholder="共有情况"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="rightType" label="权利类型">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.rightType" placeholder="共有情况"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="purpose" label="用途" width="245">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.purpose" placeholder="用途"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="beginDate" label="使用期限开始日期" width="245">
+                        <template slot-scope="scope">
+                            <el-date-picker v-model="scope.row.beginDate"
+                                            type="year"
+                                            format="yyyy-MM-dd"
+                                            placeholder="选择年">
+                            </el-date-picker>
+                            @*<el-input v-model="scope.row.beginDate" placeholder="使用期限开始日期"></el-input>*@
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="endDate" label="使用期限结束日期" width="245">
+                        <template slot-scope="scope">
+                            <el-date-picker v-model="scope.row.endDate"
+                                            type="year"
+                                            format="yyyy-MM-dd"
+                                            placeholder="选择年">
+                            </el-date-picker>
+                            @*<el-input v-model="scope.row.endDate" placeholder="使用期限结束日期"></el-input>*@
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="remark" label="备注" width="245">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.remark" placeholder="备注"></el-input>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -292,10 +332,15 @@
                 keyshow: false,
                 detailData: [{
                     recordId: '',
-                    orgName: '',
-                    ownershipLand: '',
-                    protectionLand: '',
-                    reduceLand: ''
+                    orgName: '',                   
+                    landNo: '',
+                    area: '',
+                    shareDesc: '',
+                    rightType: '',
+                    purpose: '',
+                    beginDate: '',
+                    endDate: '',
+                    remark:''
                 }],
                 dialogTitle: '',
                 centerDialogVisible: false,
@@ -344,8 +389,10 @@
             objectSpanMethod({ row, column, rowIndex, columnIndex }) {
                 let vm = this
                 let c = row.count
-                console.log(row.count)
-                if (columnIndex < 9 || columnIndex > 18) {
+                //console.log("row:", row.count)
+                //console.log("index", rowIndex);
+                //console.log("colum", columnIndex);
+                if (columnIndex < 9 || columnIndex > 16) {
                     //只有一行返回count个，其他的返回0
                     if (vm.array.find(item => { return item == rowIndex }) != null) {
 
@@ -415,58 +462,66 @@
                     if (res.data.isSuccess === true) {
                         var data = res.data.content
                         vm.detailData = []
+                        console.log("结束时间",data[1]);
                         for (var i = 0; i < data.length; i++) {
 
                             var obj = {
                                 recordId: data[i].recordId,
                                 orgName: data[i].orgName,
-                                ownershipLand: data[i].ownershipLand,
-                                protectionLand: data[i].protectionLand,
-                                reduceLand: data[i].reduceLand
+                                landNo: data[i].landNo,
+                                area: data[i].area,
+                                shareDesc: data[i].shareDesc,
+                                rightType: data[i].rightType,
+                                purpose: data[i].purpose,
+                                beginDate: data[i].beginDate,
+                                endDate: data[i].endDate,
+                                remark: data[i].remark,
                             }
 
                             vm.detailData.push(obj)
                         }
-                        vm.mainform = {
-                            key: data[0].key,
-                            fact: data[0].factLand,
-                            rent: data[0].rentLand,
-                            lease: data[0].leaseLand,
-                            remark: data[0].remark,
-                        }
+                        console.log("在备注", vm.detailData);
+                        //vm.mainform = {
+                        //    key: data[0].key,
+                        //    fact: data[0].factLand,
+                        //    rent: data[0].rentLand,
+                        //    lease: data[0].leaseLand,
+                        //    remark: data[0].remark,
+                        //}
                     } else {
                         vm.$message.error(res.data.message)
                     }
-                    console.log(res)
-                }).catch(err => {
-                        vm.$message.error('数据请求异常!')
-                    })
+                    //console.log(res)
+                    //console.log("id", recordId)
+                })
                 vm.dialogTitle = "编辑信息"
                 vm.centerDialogVisible = true
 
             },
             dialogSave: function (form) {
                 let vm = this
-                debugger
+                console.log("修改数据", vm.detailData[1].remark);
                 //处理接收参数
                 var detaillist = []
                 for (var i = 0; i < vm.detailData.length; i++) {
 
                     let cd = {
+                        
                         RecordId: vm.detailData[i].recordId,
-                        OwnershipLand: vm.detailData[i].ownershipLand,
-                        ProtectionLand: vm.detailData[i].protectionLand,
-                        ReduceLand: vm.detailData[i].reduceLand
+                        OrgName: vm.detailData[i].orgName,
+                        LandNo: vm.detailData[i].landNo,
+                        Area: vm.detailData[i].area,
+                        ShareDesc: vm.detailData[i].shareDesc,
+                        RightType: vm.detailData[i].rightType,
+                        Purpose: vm.detailData[i].purpose,
+                        BeginDate: vm.detailData[i].beginDate,
+                        EndDate: vm.detailData[i].endDate,
+                        Remark: vm.detailData[i].remark,
                     }
 
                     detaillist.push(cd)
                 }
-                var postdata = new Object()
-                postdata.Key = vm.mainform.key
-                postdata.FactLand = vm.mainform.fact
-                postdata.RentLand = vm.mainform.rent
-                postdata.LeaseLand = vm.mainform.lease
-                postdata.Remark = vm.mainform.remark
+                var postdata = new Object()               
                 postdata.detaillist = detaillist
                 let url = `/api/LandDistrictImport/update/${postdata.Key}`
                 let method = "PUT"
@@ -488,13 +543,13 @@
             },
             handleDelete: function (index, row) {
                 let vm = this
-
+                console.log("删除ID:",row);
                 vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let url = `/api/LandDistrictImport/delete/${row.key}`
+                    let url = `/api/LandDistrictImport/delete/${row.recordId}`
                     let method = 'get'
                     axios({ url: url, method: method })
                         .then(res => {

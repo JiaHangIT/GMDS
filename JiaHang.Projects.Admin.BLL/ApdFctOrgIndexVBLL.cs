@@ -17,7 +17,7 @@ namespace JiaHang.Projects.Admin.BLL
         //查询所有
         public FuncResult Select(int pageSize, int currentPage, string OrgName) {
             try { 
-            StringBuilder sql = new StringBuilder("select * from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL");
+            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
              
                 List<string> wheres = new List<string>();
             if (OrgName != null)
@@ -42,7 +42,7 @@ namespace JiaHang.Projects.Admin.BLL
         public FuncResult SelectTownDdata(int pageSize, int currentPage, string Town)
         {
 
-            StringBuilder sql = new StringBuilder("select * from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL");
+            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
             List<string> wheres = new List<string>();
             if (Town == "全部")
             {
@@ -67,7 +67,7 @@ namespace JiaHang.Projects.Admin.BLL
         public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry)
         {
 
-            StringBuilder sql = new StringBuilder("select * from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL");
+            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
             List<string> wheres = new List<string>();
             if (Industry == "全部")
             {
@@ -90,31 +90,31 @@ namespace JiaHang.Projects.Admin.BLL
         }
         public FuncResult SelectORGInfo(int pageSize, int currentPage, string OrgCode)
         {
-            StringBuilder sql = new StringBuilder("select * from JH_APD.APD_DIM_SUB_ORG where PARENT_ORG_CODE=" + "'"+ OrgCode + "'");
+            StringBuilder sql = new StringBuilder("select * from APD_DIM_SUB_ORG where PARENT_ORG_CODE=" + "'"+ OrgCode + "'");
             List<SubOrgInfo> list = OracleDbHelper.Query<SubOrgInfo>(sql.ToString());
             int total = list.Count();
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         public FuncResult GetTown() {
-            string sql = "select * from JH_APD.APD_DIM_TOWN";
+            string sql = "select * from APD_DIM_TOWN";
             List<Town> list = OracleDbHelper.Query<Town>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         public FuncResult GetIndustry()
         {
-            string sql = "select * from JH_APD.APD_DIM_INDUSTRY";
+            string sql = "select * from APD_DIM_INDUSTRY";
             List<Town> list = OracleDbHelper.Query<Town>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         public FuncResult IndustryDetail(string code) {
-            string sql = "select * from JH_APD.APD_DIM_ORG_V where ORG_CODE=" + "'" + code + "'";
+            string sql = "select * from APD_DIM_ORG_V where ORG_CODE=" + "'" + code + "'";
             List<IndustryInfo> list = OracleDbHelper.Query<IndustryInfo>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         public FuncResult BenefiteValuationInfo(string code) {
-            StringBuilder sql = new StringBuilder("select * from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where ORG_CODE="+"'"+code+"'");
-            string sql2 = "select count(*) as count  from JH_APD.apd_dim_org";
+            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL where ORG_CODE="+"'"+code+"'");
+            string sql2 = "select count(*) as count  from apd_dim_org";
             List<Counts> result = OracleDbHelper.Query<Counts>(sql2.ToString());
             decimal industyCount = 0;
             foreach (var item in result) {

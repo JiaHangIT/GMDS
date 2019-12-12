@@ -17,7 +17,7 @@ namespace JiaHang.Projects.Admin.BLL
         }
         public FuncResult GetMuAdd()
         {
-            string sql = "select * from JH_APD.VIEW_ADDED_VALUE_PER_MU";
+            string sql = "select * from VIEW_ADDED_VALUE_PER_MU";
             List<JHAPDViewAddedValuePERMU> list = OracleDbHelper.Query<JHAPDViewAddedValuePERMU>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
@@ -26,11 +26,11 @@ namespace JiaHang.Projects.Admin.BLL
             string sql = "";
             if (name == "" || name == null)
             {
-                sql = "select INDUSTRY,count(*) as Count from  JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <="+ score2 + " and COMPOSITE_SCORE >" + score1 + "  group by INDUSTRY";
+                sql = "select INDUSTRY,count(*) as Count from  VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <="+ score2 + " and COMPOSITE_SCORE >" + score1 + "  group by INDUSTRY";
             }
             else
             {
-                sql = "select INDUSTRY,sum(" + name + ") as Count from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " group by INDUSTRY";
+                sql = "select INDUSTRY,sum(" + name + ") as Count from VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " group by INDUSTRY";
             }
             List<IndustryCount> list = OracleDbHelper.Query<IndustryCount>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
@@ -40,21 +40,21 @@ namespace JiaHang.Projects.Admin.BLL
             string sql = "";
             if (name == "" || name == null)
             {
-                sql = "select Town,count(*) as Count from  JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL  WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " group by Town";
+                sql = "select Town,count(*) as Count from  VIEW_COMPANY_INDEX_SCORE_TOTAL  WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " group by Town";
             }
             else
             {
-                sql = "select Town,sum(" + name + ") as Count from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL  WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " group by Town";
+                sql = "select Town,sum(" + name + ") as Count from VIEW_COMPANY_INDEX_SCORE_TOTAL  WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " group by Town";
             }
             List<TownCount> list = OracleDbHelper.Query<TownCount>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         public FuncResult GetScorePercentage() {
-            string sql= "select count(*) as count  from JH_APD.apd_dim_org";
-            string sql1 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 90";
-            string sql2 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 80 and COMPOSITE_SCORE <=90";
-            string sql3 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 60 and COMPOSITE_SCORE <=80";
-            string sql4 = "select count(*) as count  from JH_APD.VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE <=60";
+            string sql= "select count(*) as count  from apd_dim_org";
+            string sql1 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 90";
+            string sql2 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 80 and COMPOSITE_SCORE <=90";
+            string sql3 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 60 and COMPOSITE_SCORE <=80";
+            string sql4 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE <=60";
             List<ScoreCount> list = OracleDbHelper.Query<ScoreCount>(sql.ToString());
             List<ScoreCount> list1 = OracleDbHelper.Query<ScoreCount>(sql1.ToString());
             List<ScoreCount> list2 = OracleDbHelper.Query<ScoreCount>(sql2.ToString());

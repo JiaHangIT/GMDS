@@ -68,16 +68,21 @@
     <div v-loading="loading">
         <el-table :data="data"
                   style="width: 100%;"
-                  :height="822">
+                  :height="tableheight">
             <el-table-column fixed
                              prop="orgName"
                              label="企业名称"
+                             width="150">
+            </el-table-column>
+            <el-table-column prop="periodYear"
+                             label="年份"
                              width="150">
             </el-table-column>
             <el-table-column prop="town"
                              label="所属镇街"
                              width="150">
             </el-table-column>
+
             <el-table-column prop="orgCode"
                              label="统一社会信用代码"
                              width="150">
@@ -147,21 +152,29 @@
                              width="120">
             </el-table-column>
             @*<el-table-column prop="remark"
-                                 label="备注"
-                                 width="120">
-                </el-table-column>*@
+                         label="备注"
+                         width="120">
+        </el-table-column>*@
             <el-table-column fixed="right"
                              label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 
-                    @*<el-button size="mini"
-                        type="danger"
-                        v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>*@
+                    <el-button size="mini"
+                type="danger"
+                v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <el-pagination @@size-change="handleSizeChange"
+                       @@current-change="handleCurrentChange"
+                       :current-page="currentPage"
+                       :page-sizes="[10, 20, 30, 40]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
         <el-dialog :title="dialogTitle"
                    :visible.sync="centerDialogVisible"
                    width="35%"
@@ -259,6 +272,9 @@
                 centerDialogVisible: false,
                 orgname: '',
                 orgcode: '',
+                pageSize: 10,
+                currentPage: 1,
+                total: 0,
                 orgyear: '',
                 model: { year: '' },
                 exportyear: '',
@@ -291,6 +307,7 @@
             fetchlist() {
                 let vm = this;
                 let y = ''
+                var top = $("#app").offset().top;
                 //自适应表高度
                 var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
                 vm.tableheight = height
@@ -300,6 +317,9 @@
                 axios({ url: `/api/apdfcttaximport/getlist`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, year: y } }).then(res => {
                     vm.data = res.data.content.data
                     console.log("数据:",res.data.content.data)
+                    vm.data = res.data.content.data
+                    vm.array = res.data.content.array
+                    vm.total = res.data.content.total
                     vm.array = res.data.content.array
                     vm.loading = false
                 }).catch(err => { console.log(err); vm.loading = false })
@@ -323,7 +343,7 @@
             dialogSave: function (formName) {                
                 let vm = this;
                 let model = ''
-                console.log("shuju数据：", vm.form.recordId);
+                //console.log("shuju数据：", vm.form.recordId);
                 
                 vm.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -386,13 +406,46 @@
                 vm.form.OWNER_EQUITY = ''
                 vm.form.TOTAL_PROFIT = ''
             },
+            handleDelete: function (index, row) {
+                let vm = this
+                console.log("删除ID:", row);
+                vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = `/api/ApdFctTAxImport/delete/${row.recordId}`
+                    let method = 'get'
+                    axios({ url: url, method: method })
+                        .then(res => {
+                            if (res.data.isSuccess === true) {
+                                vm.$message.success('操作成功！');
+                                vm.fetchlist();
+                            }
+                            console.log(res)
+                        })
+                        .catch(error => {
+                            vm.$message.error('操作失败，意外的原因！');
+                            console.log(error)
+                        })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             handleSizeChange(val) {
-                this.pageSize = val;
-                this.fetchList();
+                let vm = this
+                vm.pageSize = val
+                vm.fetchlist()
+                console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
-                this.currentPage = val;
-                this.fetchList();
+                let vm = this
+                vm.currentPage = val
+                vm.fetchlist()
+                console.log(`当前页: ${val}`);
             },
 
             handleSelectionChange(val) {
