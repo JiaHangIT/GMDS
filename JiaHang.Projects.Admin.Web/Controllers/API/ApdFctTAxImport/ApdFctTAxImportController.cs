@@ -188,21 +188,27 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// <param name="key"></param>
         /// <returns></returns>
         [HttpGet("delete/{key}")]
-        public async Task<FuncResult> DeleteData(int key)
+        public async Task<FuncResult> DeleteData(string key)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
-                //if (string.IsNullOrWhiteSpace(key))
-                //{
-                //    fr.IsSuccess = false;
-                //    fr.Message = "未接收到参数信息!";
-                //}
-                var cd = context.ApdFctTAx.FirstOrDefault(f => f.RECORD_ID.Equals(key));
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "未接收到参数信息!";
+                }
+                var _key = Convert.ToDecimal(key);
+                ApdFctTAx entity = context.ApdFctTAx.FirstOrDefault(f => f.RECORD_ID.Equals(_key));
+                if (entity == null)
+                {
+                    fr.IsSuccess = false;
+                    fr.Message = "异常参数，未找到数据!";
+                }
                 //List<ApdFctLandDistrict> listtown = context.ApdFctLandDistrict.Where(f => f.RecordId.Equals(key)).ToList();
 
                 //删除
-                context.ApdFctTAx.RemoveRange(cd);
+                context.ApdFctTAx.RemoveRange(entity);
 
 
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
@@ -392,6 +398,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         {
 
                             ORG_CODE = s.Key.W3,
+                            ENT_PAID_TAX=Convert.ToDecimal(s.Key.W10),
                             EMPLOYEE_REMUNERATION =Convert.ToDecimal(s.Key.W11) ,
                             DEPRECIATION = Convert.ToDecimal(s.Key.W12),
                             PROFIT = Convert.ToDecimal(s.Key.W13),
@@ -431,6 +438,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 MAIN_BUSINESS_INCOME = item.MAIN_BUSINESS_INCOME,
                                 TOTAL_PROFIT = item.TOTAL_PROFIT,
                                 OWNER_EQUITY = item.OWNER_EQUITY,
+                                ENT_PAID_TAX=item.ENT_PAID_TAX,
                                 NUMBER_OF_EMPLOYEES = item.NUMBER_OF_EMPLOYEES,
                                 RAD_EXPENSES = item.RAD_EXPENSES,
                                 ORG_CODE = item.ORG_CODE,
