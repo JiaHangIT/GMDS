@@ -106,7 +106,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
-        public FuncResult Update(string recordid, PostPolluantModel model)
+        public FuncResult Update(string recordid, PostPolluantModel model,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -129,6 +129,9 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 polluant.Hydrogen = model.Hydrogen;
                 polluant.Firewood = model.Firewood;
                 polluant.Remark = model.Remark;
+                polluant.LastUpdateDate = DateTime.Now;
+                polluant.LastUpdatedBy = Convert.ToDecimal(userid);
+
                 context.ApdFctContaminants.Update(polluant);
                 context.SaveChanges();
                 return fr;
@@ -146,7 +149,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// ?
         /// </summary>
         /// <returns></returns>
-        public FuncResult WriteData(IEnumerable<ApdFctContaminants> list,string year)
+        public FuncResult WriteData(IEnumerable<ApdFctContaminants> list,string year,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -165,6 +168,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     {
                         //continue;
                     }
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctContaminants.Add(item);
                 }
                 //list.ToList().ForEach(c => c.PeriodYear = _year);
