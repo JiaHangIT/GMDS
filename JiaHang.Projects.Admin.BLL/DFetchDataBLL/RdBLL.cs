@@ -136,6 +136,8 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "未找到配置的企业信息";
                     return fr;
                 }
+                var groupbydata = list.GroupBy(g => new { g.OrgCode, g.PeriodYear });
+
                 foreach (var item in list)
                 {
                     if (isAlreadyExport(item.OrgCode,year))

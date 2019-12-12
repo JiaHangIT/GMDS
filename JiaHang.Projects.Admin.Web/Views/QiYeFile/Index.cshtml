@@ -363,10 +363,11 @@
                 vm.fetchlist()
             },
             exportdata() {
-
-                window.location.href = '/api/qiyefile/export'
+                let vm = this
+                window.location.href = `/api/qiyefile/export/${vm.pageSize}/${vm.currentPage}`
             },
             downtemplate() {
+                let vm = this
                 window.location.href = `/api/qiyefile/downtemplate`
             },
             beforeUpload() {

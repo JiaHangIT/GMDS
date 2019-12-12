@@ -3,6 +3,7 @@ using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.DAL.EntityFramework.Entity;
 using JiaHang.Projects.Admin.Model;
 using JiaHang.Projects.Admin.Model.Org;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,23 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
         public DimOrgBll(DataContext _context)
         {
             this.context = _context;
+        }
+
+        public FuncResult GetList()
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
+            try
+            {
+                var query = from o in context.ApdDimOrg select o;
+
+                fr.Content = query;
+                return fr;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public FuncResult GetListPagination(SearchOrgModel model)
@@ -138,6 +156,85 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             {
 
                 throw;
+            }
+        }
+
+        public FuncResult WriteData(IEnumerable<ApdDimOrg> list, string year, string userid)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
+            try
+            {
+
+                var _year = Convert.ToDecimal(year);
+                //var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
+                //if (dm != null && dm.Count() > 0)
+                //{
+                //    fr.IsSuccess = false;
+                //    fr.Message = "未找到配置的企业信息!";
+                //    return fr;
+                //}
+                foreach (var item in list)
+                {
+                    if (isAlreadyExport(item.OrgCode, year))
+                    {
+                        //continue;
+                    }
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
+                    context.ApdDimOrg.Add(item);
+                }
+                //context.ApdFctWorker.AddRange(list);
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        context.SaveChanges();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}!";
+                        return fr;
+                        throw new Exception("error", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}!";
+                return fr;
+                throw new Exception("error", ex);
+            }
+
+            return fr;
+        }
+
+        /// <summary>
+        /// 处理某机构某年是否已导入数据
+        /// </summary>
+        /// <param name="orgcode"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public bool isAlreadyExport(string orgcode, string year)
+        {
+            try
+            {
+                var formatyear = Convert.ToDecimal(year);
+                var org = context.ApdDimOrg.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                if (org != null || org.Count() > 0)
+                {
+                    context.ApdDimOrg.RemoveRange(org);
+                    context.SaveChanges();
+                }
+                return org != null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("error", ex);
             }
         }
     }

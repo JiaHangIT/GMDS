@@ -51,7 +51,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
             var query = from t1 in context.ApdFctLandTown.Where(f=>f.DeleteFlag == 0)
                         join t2 in context.ApdFctLandTown2.Where(f => f.DeleteFlag == 0) on t1.T2Id equals t2.RecordId
-                        join o in context.ApdDimOrg on t1.OrgCode equals o.OrgCode
+                        join o in context.ApdDimOrg on t2.OrgCode equals o.OrgCode
                         select new ReturnModel
                         {
                             //Array = listnew,
@@ -89,10 +89,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
             var querygroup = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand, g.Key }).OrderBy(o => o.Key.Key);
             int count = querygroup.Count();
-            model.page--; if (model.page < 0)
-            {
-                model.page = 0;
-            }
+
             if (model.limit * model.page > count)
             {
                 model.page = 0;
@@ -312,13 +309,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// 数据导出到excel
         /// </summary>
         /// <returns></returns>
-        [HttpGet("export")]
-        public FileResult Export()
+        [HttpGet("export/{pagesize}/{pagenum}")]
+        public FileResult Export(int pagesize,int pagenum)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = GetList(new RequestLandTown() { orgname = "", orgcode = "" });
+                var summarydata = GetList(new RequestLandTown() { orgname = "", orgcode = "",limit=pagesize,page=pagenum });
                 var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
                 var groupdata = (List<int>)((dynamic)summarydata.Content).array;
 
@@ -543,7 +540,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<Demo>>(JsonConvert.SerializeObject(dt));
-                        List<Demo> filterdata = datalist.Where(f => !(f.G1 == "" && f.G2 == "" && f.G3 == "" && f.G4 == "" && f.G5 == "" && f.G6 == "" && f.G7 == "" && f.G8 == "") && f.G1 != null).ToList();
+                        List<Demo> filterdata = datalist.Where(f => !(f.G1 == "") && f.G1 != null).ToList();
                         if (filterdata == null || filterdata.Count <= 0)
                         {
                             result.IsSuccess = false;
@@ -595,16 +592,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                             ORGCODE = s.Key.G3
                         }).Where(f => (f.FACTLAND != null && f.RENTLAND != null && f.LEASELAND != null) == true);
 
-                        decimal currenttown2key = 0;//本次apd_fct_town2表的主键
-                        var town2context = context.ApdFctLandTown2.OrderByDescending(o => o.RecordId).ToList();
-                        if (town2context == null || town2context.Count() <= 0)
-                        {
-                            currenttown2key = 1;
-                        }
-                        else
-                        {
-                            currenttown2key = town2context[0].RecordId + 1;
-                        }
+                        string currenttown2key = "";//本次apd_fct_town2表的主键
+                        //var town2context = context.ApdFctLandTown2.OrderByDescending(o => o.RecordId).ToList();
+                        //if (town2context == null || town2context.Count() <= 0)
+                        //{
+                        //    currenttown2key = 1;
+                        //}
+                        //else
+                        //{
+                        //    currenttown2key = town2context[0].RecordId + 1;
+                        //}
                         //存在orgcode不存在的情况就整个都不写入
                         //t2作为t1的主表
                         foreach (var item in groupdata_2)
@@ -626,26 +623,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 var alreadytown = context.ApdFctLandTown.Where(f => alreadytown2.Select(g => g.RecordId).Contains(f.T2Id));
                                 context.ApdFctLandTown2.RemoveRange(alreadytown2);
                                 context.ApdFctLandTown.RemoveRange(alreadytown);
-
-                                //foreach (var town2 in alreadytown2)
-                                //{
-                                //    town2.DeleteBy = HttpContext.CurrentUser(cache).Id;
-                                //    town2.DeleteDate = DateTime.Now;
-                                //    town2.DeleteFlag = 1;
-                                //    town2.LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
-                                //    town2.LastUpdateDate = DateTime.Now;
-                                //    context.ApdFctLandTown2.Update(town2);
-                                //}
-                                //foreach (var town in alreadytown)
-                                //{
-                                //    town.DeleteBy = HttpContext.CurrentUser(cache).Id;
-                                //    town.DeleteDate = DateTime.Now;
-                                //    town.DeleteFlag = 1;
-                                //    town.LastUpdatedBy= Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
-                                //    town.LastUpdateDate = DateTime.Now;
-                                //    context.ApdFctLandTown.Update(town);
-                                //}
-
                             }
                             ApdFctLandTown2 t2 = new ApdFctLandTown2()
                             {
@@ -655,34 +632,36 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 LeaseLand = item.LEASELAND,
                                 Remark = item.REMARK,
                                 PeriodYear = Convert.ToDecimal(year),
-                                RecordId = new Random().Next(1, 999),
+                                RecordId = Guid.NewGuid().ToString(),
                                 CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                                 CreationDate = DateTime.Now,
                                 LastUpdateDate = DateTime.Now,
                                 LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
-                                Count = groupdata_1.Count()
+                                Count = groupdata_1.Where(f=>f.ORGCODE.Equals(item.ORGCODE)).Count()
                             };
                             context.ApdFctLandTown2.Add(t2);
-                        }
-                        foreach (var item in groupdata_1)
-                        {
-                           
-                            ApdFctLandTown t1 = new ApdFctLandTown()
+
+                            foreach (var itemdetail in groupdata_1.Where(f => f.ORGCODE.Equals(item.ORGCODE)))
                             {
-                                OrgCode = item.ORGCODE,
-                                OwnershipLand = item.OWNERSHIPLAND,
-                                ProtectionLand = item.PROTECTIONLAN,
-                                ReduceLand = item.REDUCELAND,
-                                CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
-                                CreationDate = DateTime.Now,
-                                LastUpdateDate = DateTime.Now,
-                                LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
-                                PeriodYear = DateTime.Now.Year,
-                                RecordId = new Random().Next(1, 999),
-                                T2Id = currenttown2key
-                            };
-                            context.ApdFctLandTown.Add(t1);
+
+                                ApdFctLandTown t1 = new ApdFctLandTown()
+                                {
+                                    OrgCode = itemdetail.ORGCODE,
+                                    OwnershipLand = itemdetail.OWNERSHIPLAND,
+                                    ProtectionLand = itemdetail.PROTECTIONLAN,
+                                    ReduceLand = itemdetail.REDUCELAND,
+                                    CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
+                                    CreationDate = DateTime.Now,
+                                    LastUpdateDate = DateTime.Now,
+                                    LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
+                                    PeriodYear = DateTime.Now.Year,
+                                    RecordId = new Random().Next(1, 999),
+                                    T2Id = t2.RecordId
+                                };
+                                context.ApdFctLandTown.Add(t1);
+                            }
                         }
+                    
 
                        
 
@@ -734,7 +713,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             try
             {
                 var formatyear = Convert.ToDecimal(year);
-                var town2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(formatyear));
+                var town2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(orgcode) && f.PeriodYear.Equals(Convert.ToDecimal(formatyear))).FirstOrDefault();
                 return town2 != null;
             }
             catch (Exception ex)
@@ -765,17 +744,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
         public string G9 { get; set; }
 
-        public int? G10 { get; set; }
+        public decimal? G10 { get; set; }
 
-        public int? G11 { get; set; }
+        public decimal? G11 { get; set; }
 
-        public int? G12 { get; set; }
+        public decimal? G12 { get; set; }
 
-        public int? G13 { get; set; }
+        public decimal? G13 { get; set; }
 
-        public int? G14 { get; set; }
+        public decimal? G14 { get; set; }
 
-        public int? G15 { get; set; }
+        public decimal? G15 { get; set; }
 
         public string G16 { get; set; }
     }
@@ -784,7 +763,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
     {
         public decimal PeriodYear { get; set; }
         public decimal Count { get; set; }
-        public decimal Key { get; set; }
+        public string Key { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }
@@ -812,17 +791,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// <summary>
         /// G10
         /// </summary>
-        public int? OWNERSHIPLAND { get; set; }
+        public decimal? OWNERSHIPLAND { get; set; }
 
         /// <summary>
         /// G11
         /// </summary>
-        public int? PROTECTIONLAN { get; set; }
+        public decimal? PROTECTIONLAN { get; set; }
 
         /// <summary>
         /// G12
         /// </summary>
-        public int? REDUCELAND { get; set; }
+        public decimal? REDUCELAND { get; set; }
 
         /// <summary>
         /// G1
@@ -843,17 +822,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// <summary>
         /// G13
         /// </summary>
-        public int? FACTLAND { get; set; }
+        public decimal? FACTLAND { get; set; }
 
         /// <summary>
         /// G14
         /// </summary>
-        public int? RENTLAND { get; set; }
+        public decimal? RENTLAND { get; set; }
 
         /// <summary>
         /// G15
         /// </summary>
-        public int? LEASELAND { get; set; }
+        public decimal? LEASELAND { get; set; }
 
         /// <summary>
         /// G16

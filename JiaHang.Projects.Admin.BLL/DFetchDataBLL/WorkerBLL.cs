@@ -129,6 +129,12 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "未找到配置的企业信息!";
                     return fr;
                 }
+                /*
+                 * 先把以前的批次删掉
+                 * **/
+
+              
+
                 foreach (var item in list)
                 {
                     if (isAlreadyExport(item.OrgCode,year))
