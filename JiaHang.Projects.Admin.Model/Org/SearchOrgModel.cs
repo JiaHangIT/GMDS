@@ -9,5 +9,7 @@ namespace JiaHang.Projects.Admin.Model.Org
         public string orgname { get; set; }
 
         public string orgcode { get; set; }
+
+        public string year { get; set; }
     }
 }
