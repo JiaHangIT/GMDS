@@ -69,5 +69,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         public FuncResult BenefiteValuationInfo(string code) {
             return apdFctOrgIndexVInfo.BenefiteValuationInfo(code);
         }
+        [HttpGet]
+        [Route("ExportAll")]
+        public async Task<IActionResult> ExportAll()
+        {
+            var result = await apdFctOrgIndexVInfo.ExportAll();
+            return File(result, "application/ms-excel", $"企业评分数据.xlsx");
+
+        }
     }
 }
