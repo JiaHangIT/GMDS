@@ -5,6 +5,8 @@ using System.Linq;
 using JiaHang.Projects.Admin.Model;
 using JiaHang.Projects.Admin.DAL;
 using System.IO;
+using System.Threading.Tasks;
+using OfficeOpenXml;
 namespace JiaHang.Projects.Admin.BLL
 {
     public class ApdFctOrgIndexVBLL
@@ -33,7 +35,11 @@ namespace JiaHang.Projects.Admin.BLL
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
                
             int total = list.Count();
-            var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
+                if (pageSize * currentPage > total)
+                {
+                    currentPage = 0;
+                }
+                var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
             }
             catch (Exception ex) { throw new Exception(ex.Message); };
@@ -60,6 +66,10 @@ namespace JiaHang.Projects.Admin.BLL
             }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
             int total = list.Count();
+            if (pageSize * currentPage > total)
+            {
+                currentPage = 0;
+            }
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
@@ -85,8 +95,51 @@ namespace JiaHang.Projects.Admin.BLL
             }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
             int total = list.Count();
+            if (pageSize * currentPage > total)
+            {
+                currentPage = 0;
+            }
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        }
+        public async Task<byte[]> ExportAll()
+
+        {
+            var comlumHeadrs = new[] { "企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分","单位能耗增加值得分","单位排污增加值得分","全员劳动生产率得分","净资产收益率得分","研发经费投入比得分" };
+            byte[] result;
+            string sql = "select * from VIEW_COMPANY_INDEX_SCORE_TOTAL";
+            var data = _context.SysUserInfo.ToList();
+            List<ReturnDate> datas = OracleDbHelper.Query<ReturnDate>(sql.ToString());
+            var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("Sheet1"); //Worksheet name
+                                                                       //First add the headers
+            for (var i = 0; i < comlumHeadrs.Count(); i++)
+            {
+                worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
+            }
+            //Add values
+            var j = 2;
+            // var chars = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+            await Task.Run(() =>
+            {
+                foreach (var obj in datas)
+                {
+                    worksheet.Cells["A" + j].Value = obj.ORG_NAME;
+                    worksheet.Cells["B" + j].Value = obj.INDUSTRY;
+                    worksheet.Cells["C" + j].Value = obj.TOWN;
+                    worksheet.Cells["D" + j].Value = obj.COMPOSITE_SCORE;
+                    worksheet.Cells["E" + j].Value = obj.TAX_PER_MU;
+                    worksheet.Cells["F" + j].Value = obj.ADD_VALUE_PER_MU;
+                    worksheet.Cells["G" + j].Value = obj.ENERGY_CONSUMPTION;
+                    worksheet.Cells["H" + j].Value = obj.POLLUTANT_DISCHARGE;
+                    worksheet.Cells["I" + j].Value = obj.PRODUCTIVITY;
+                    worksheet.Cells["J" + j].Value = obj.NET_ASSETS_PROFIT;
+                    worksheet.Cells["K" + j].Value = obj.R_D_EXPENDITURE_RATIO;
+                    j++;
+                }
+            });
+            result = package.GetAsByteArray();
+            return result;
         }
         public FuncResult SelectORGInfo(int pageSize, int currentPage, string OrgCode)
         {

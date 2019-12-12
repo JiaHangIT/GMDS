@@ -124,7 +124,9 @@
                 </el-option>
             </el-select>
         </el-form-item>
-
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="importall">导出所有</el-button>
+        </el-form-item>
     </el-form>
     <el-table :header-cell-style="{background:'#eef1f6',color:'#606266'}"
               ref="multipleTable"
@@ -133,6 +135,7 @@
               tooltip-effect="dark"
               class="eltable"
               style="width: 100%"
+               v-loading="loading"
               >
         <el-table-column label="企业名称"
                          fixed
@@ -163,22 +166,22 @@
         </el-table-column>
         <el-table-column label="亩均增加值得分"
                          sortable
-                         width="150"
+                         width="180"
                          prop="adD_VALUE_PER_MU">
         </el-table-column>
         <el-table-column label="单位能耗增加值得分"
                          sortable
-                         width="180"
+                         width="200"
                          prop="energY_CONSUMPTION">
         </el-table-column>
         <el-table-column label="单位排污增加值得分"
                          sortable
-                         width="180"
+                         width="200"
                          prop="pollutanT_DISCHARGE">
         </el-table-column>
         <el-table-column label="全员劳动生产率得分"
                          sortable
-                         width="180"
+                         width="200"
                          prop="productivity">
         </el-table-column>
         <el-table-column label="净资产收益率得分"
@@ -188,7 +191,7 @@
         </el-table-column>
         <el-table-column label="研发经费投入比得分"
                          sortable
-                         width="180"
+                         width="200"
                          prop="r_D_EXPENDITURE_RATIO">
         </el-table-column>
     </el-table>
@@ -523,6 +526,7 @@
                 currentPage: 1,
                 pageSize: 10,
                 activeName: 'first',
+                loading: true,
                 total: 0,
                 total1:0,
                 searchjds: '',
@@ -543,31 +547,39 @@
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
+                        vm.loading = false
                     })
                     .catch(function (error) {
                         console.log(error)
+                        vm.loading = false
                     });
             },
             IndustrySel: function (val) {
                 let vm = this;
+                vm.loading = true
                 axios.get(`/api/ApdFctOrgIndexV/SelectIndustryData/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Industry=${val}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
+                        vm.loading = false
                     })
                     .catch(function (error) {
                         console.log(error)
+                        vm.loading = false
                     });
             },
             TownSel: function (val) {
                 let vm = this;
+                vm.loading = true
                 axios.get(`/api/ApdFctOrgIndexV/SelectTownDdata/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Town=${val}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
+                        vm.loading = false
                     })
                     .catch(function (error) {
                         console.log(error)
+                        vm.loading = false
                     });
             },
             getTownInfo: function () {
@@ -678,6 +690,10 @@
             //headerStyle({ row,rowIdex }) {
             //    return 'table-th'
             //}
+            //导出
+            importall() {
+                location.href = "/api/ApdFctOrgIndexV/exportall";
+            },
         },
         mounted: function () {
             let vm = this
