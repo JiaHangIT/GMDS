@@ -1,0 +1,410 @@
+﻿
+@{
+    ViewData["Title"] = "企业信息";
+}
+
+<style>
+
+    .v-modal {
+        display: block;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <div class="layui-row">
+            <el-form-item label="企业名称">
+                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+            </el-form-item>
+            <el-form-item label="企业信用代码">
+                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+            </el-form-item>
+        </div>
+    </el-form>
+
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="primary" @@click="handleAdd">新增</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @@click="querydata">查询</el-button>
+        </el-form-item>
+    </el-form>
+
+    <template>
+        <el-table :data="data"
+                  v-loading="loading"
+                  stripe
+                  style="width: 100%">
+            <el-table-column prop="orgCode"
+                             label="统一社会信用代码"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="orgName"
+                             label="企业名称"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="town"
+                             label="镇街">
+            </el-table-column>
+            <el-table-column prop="registrationType"
+                             label="登记注册类型"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="住所"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="legalRepresentative"
+                             label="法定代表人">
+            </el-table-column>
+            <el-table-column prop="phone"
+                             label="法定代表人电话"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="linkMan"
+                             label="日常联系人"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="phone2"
+                             label="日常联系人电话">
+            </el-table-column>
+            <el-table-column prop="industry"
+                             label="行业"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="registrationStatus"
+                             label="登记状态"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="registrationMoney"
+                             label="注册资本">
+            </el-table-column>
+            <el-table-column label="注册日期"
+                             width="180">
+                <template slot-scope="scope">
+                    <span>
+                        {{format(scope.row.registrationDate)}}
+                    </span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="periodYear"
+                             label="年份"
+                             width="180">
+            </el-table-column>
+            <el-table-column fixed="right"
+                             label="操作"
+                             width="180">
+                <template slot-scope="scope">
+                    <el-button size="mini"
+                               v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+                    <el-button size="mini"
+                               type="danger"
+                               v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+
+
+    <el-dialog :title="dialogTitle"
+               :visible.sync="centerDialogVisible"
+               width="40%"
+               :modal-append-to-body="false"
+               center>
+        <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
+            <table>
+                <tr>
+                    <td>统一社会信用代码</td>
+                    <td><el-input placeholder="请输入" v-model="form.orgCode"></el-input></td>
+                    <td>企业名称</td>
+                    <td><el-input placeholder="请输入" v-model="form.orgName"></el-input></td>
+                </tr>
+                <tr>
+                    <td>镇街</td>
+                    <td><el-input placeholder="请输入" v-model="form.town"></el-input></td>
+                    <td>登记注册类型</td>
+                    <td><el-input placeholder="请输入" v-model="form.registrationType"></el-input></td>
+                </tr>
+                <tr>
+                    <td>住所</td>
+                    <td><el-input placeholder="请输入" v-model="form.address"></el-input></td>
+                    <td>法定代表人</td>
+                    <td><el-input placeholder="请输入" v-model="form.legalRepresentative"></el-input></td>
+                </tr>
+                <tr>
+                    <td>法定代表人电话</td>
+                    <td><el-input placeholder="请输入" v-model="form.phone"></el-input></td>
+                    <td>日常联系人</td>
+                    <td><el-input placeholder="请输入" v-model="form.linkMan"></el-input></td>
+                </tr>
+                <tr>
+                    <td>日常联系人电话</td>
+                    <td><el-input placeholder="请输入" v-model="form.phone2"></el-input></td>
+                    <td>行业</td>
+                    <td><el-input placeholder="请输入" v-model="form.industry"></el-input></td>
+                </tr>
+                <tr>
+                    <td>登记状态</td>
+                    <td><el-input placeholder="请输入" v-model="form.registrationStatus"></el-input></td>
+                    <td>注册资本</td>
+                    <td><el-input placeholder="请输入" v-model="form.registrationMoney"></el-input></td>
+                </tr>
+                <tr>
+                    <td>注册日期</td>
+                    <td>
+                        <el-date-picker v-model="form.registrationDate"
+                                        type="date"
+                                        placeholder="选择日期">
+                        </el-date-picker>
+                    </td>
+                    <td>年份</td>
+                    <td>
+                        <el-date-picker v-model="form.periodYear"
+                                        type="year"
+                                        format="yyyy"
+                                        placeholder="选择年">
+                        </el-date-picker>
+                    </td>
+                </tr>
+            </table>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+</div>
+
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                centerDialogVisible: false,
+                loading: false,
+                dialogTitle: '',
+                data: [],
+                total: 0,
+                pageSize: 10,
+                currentPage: 1,
+                value: '',
+                orgcode: '',
+                orgname: '',
+                form: {
+                    address: '',
+                    industry: '',
+                    legalRepresentative: '',
+                    linkMan: '',
+                    orgCode: '',
+                    orgName: '',
+                    periodYear: '',
+                    phone: '',
+                    phone2: '',
+                    registrationDate: '',
+                    registrationMoney: '',
+                    registrationStatus: '',
+                    registrationType: '',
+                    town: ''
+                },
+                isCreate: true
+            }
+        },
+        methods: {
+            format(val) {
+                if (val) {
+                    let date = new Date(val)
+                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+                    console.log(date)
+
+                }
+
+            },
+            fetchlist() {
+                let vm = this;
+                vm.loading = true
+
+                axios({ url: `/api/dimorg/getlistpagination`, method: 'post', data: { orgname: vm.orgname, orgcode: vm.orgcode, limit: vm.pageSize, page: vm.currentPage, } }).then(res => {
+                    vm.data = res.data.content.data
+
+                    vm.total = res.data.content.total
+                    console.log(res.data.content.data)
+                    vm.loading = false
+                }).catch(err => { console.log(err); vm.loading = false })
+                console.log(111)
+            },
+            querydata() {
+                let vm = this
+                vm.fetchlist()
+            },
+            handleAdd() {
+                let vm = this
+                vm.resetform()
+                vm.dialogTitle = '新增信息'
+                vm.centerDialogVisible = true
+
+                vm.isCreate = true
+            },
+            handleEdit(index, row) {
+                let vm = this
+
+                let formdata = JSON.stringify(row)
+                vm.form = JSON.parse(formdata)
+                vm.form.periodYear = new Date(vm.form.periodYear,1,1)
+                vm.isCreate = false
+                vm.dialogTitle = '编辑信息'
+                vm.centerDialogVisible = true
+            },
+            dialogSave(formName) {
+                let vm = this
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let url = `/api/dimorg/add`
+                        let method = `post`
+                        if (!vm.isCreate) {
+                            url = `/api/dimorg/update/${vm.form.recordId}`
+                            method = `put`
+                        }
+                        let formdata = vm.form
+                        if (formdata.periodYear) {
+                            formdata.periodYear = formdata.periodYear.getFullYear()
+                        }
+                        axios({
+                            url: url, method: method, data: {
+                                address: formdata.address,
+                                industry: formdata.industry,
+                                legalRepresentative: formdata.legalRepresentative,
+                                linkMan: formdata.linkMan,
+                                orgCode: formdata.orgCode,
+                                orgName: formdata.orgName,
+                                periodYear: formdata.periodYear,
+                                phone: formdata.phone,
+                                phone2: formdata.phone2,
+                                registrationDate: formdata.registrationDate,
+                                registrationMoney: formdata.registrationMoney,
+                                registrationStatus: formdata.registrationStatus,
+                                registrationType: formdata.registrationType,
+                                town: formdata.town
+                            }
+                        })
+                            .then(res => {
+                                if (res.data.isSuccess == true) {
+                                    vm.$message.success(res.data.message)
+                                    console.log(111)
+                                } else {
+                                    vm.$message.error(res.data.message)
+                                }
+                                vm.fetchlist()
+                                vm.centerDialogVisible = false
+                                console.log(res)
+                            })
+                            .catch(err => {
+                                vm.$message.error('意料之外的错误!')
+                                console.log(err)
+                            })
+                    } else {
+                        vm.$message.error('error')
+                        console.log('error');
+                    }
+                })
+            },
+            handleDelete(index, row) {
+                let vm = this
+
+                vm.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = `/api/dimorg/delete/${row.recordId}`
+                    let method = 'get'
+                    axios({ url: url, method: method })
+                        .then(res => {
+                            if (res.data.isSuccess === true) {
+                                vm.$message.success('操作成功！');
+                                vm.fetchlist();
+                            }
+                            console.log(res)
+                        })
+                        .catch(error => {
+                            vm.$message.error('操作失败，意外的原因！');
+                            console.log(error)
+                        })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleSizeChange(val) {
+                let vm = this
+                vm.pageSize = val
+                vm.loading = true
+                vm.fetchlist()
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                let vm = this
+                vm.currentPage = val
+                vm.loading = true
+                vm.fetchlist()
+                console.log(`当前页: ${val}`);
+            },
+            resetform() {
+                let vm = this
+                vm.form = {
+                    address: '',
+                    industry: '',
+                    legalRepresentative: '',
+                    linkMan: '',
+                    orgCode: '',
+                    orgName: '',
+                    periodYear: '',
+                    phone: '',
+                    phone2: '',
+                    registrationDate: '',
+                    registrationMoney: '',
+                    registrationStatus: '',
+                    registrationType: '',
+                    town: ''
+                }
+            }
+        },
+        mounted() {
+            let vm = this
+
+            vm.fetchlist()
+        }
+    })
+</script>
+
