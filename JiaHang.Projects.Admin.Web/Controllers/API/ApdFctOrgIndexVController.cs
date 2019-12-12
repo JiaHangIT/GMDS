@@ -21,24 +21,24 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             apdFctOrgIndexVInfo = new ApdFctOrgIndexVBLL(context);
         }
         [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize, int currentPage,string OrgName)
+        public FuncResult Select(int pageSize, int currentPage,string OrgName,string year)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.Select(pageSize, currentPage,OrgName);
+            return apdFctOrgIndexVInfo.Select(pageSize, currentPage,OrgName,year);
         }
         [Route("SelectTownDdata")]
         [HttpGet]
-        public FuncResult SelectTownDdata(int pageSize, int currentPage,  string Town)
+        public FuncResult SelectTownDdata(int pageSize, int currentPage,  string Town, string OrgName, string year, string Industy)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.SelectTownDdata(pageSize, currentPage, Town);
+            return apdFctOrgIndexVInfo.SelectTownDdata(pageSize, currentPage, Town,  OrgName,  year,  Industy);
         }
         [Route("SelectIndustryData")]
         [HttpGet]
-        public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry)
+        public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry,   string OrgName, string year, string Town)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.SelectIndustryData(pageSize, currentPage, Industry);
+            return apdFctOrgIndexVInfo.SelectIndustryData(pageSize, currentPage, Industry  ,  OrgName,  year,  Town);
         }
 
         [Route("GetTown")]
@@ -71,9 +71,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
         [HttpGet]
         [Route("ExportAll")]
-        public async Task<IActionResult> ExportAll()
+        public async Task<IActionResult> ExportAll(string orgname, string year, string industy, string town)
         {
-            var result = await apdFctOrgIndexVInfo.ExportAll();
+            var result = await apdFctOrgIndexVInfo.ExportAll( orgname,  year,  industy,  town);
             return File(result, "application/ms-excel", $"企业评分数据.xlsx");
 
         }

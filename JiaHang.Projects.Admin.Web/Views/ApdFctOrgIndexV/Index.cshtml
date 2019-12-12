@@ -101,6 +101,13 @@
         <el-form-item label="企业名称：">
             <el-input placeholder="企业名称" v-model="OrgName"></el-input>
         </el-form-item>
+        <el-form-item label="年份">
+            <el-date-picker v-model="orgyear"
+                            type="year"
+                            format="yyyy"
+                            placeholder="选择年">
+            </el-date-picker>
+        </el-form-item>
         <el-form-item>
             <el-button size="small" type="primary" @@click="fetchList">查询</el-button>
         </el-form-item>
@@ -162,37 +169,37 @@
                          align="center"
                          prop="compositE_SCORE">
         </el-table-column>
-        <el-table-column label="亩均税收得分"
+        <el-table-column label="亩均税收"
                          sortable
                          width="150"
                          prop="taX_PER_MU">
         </el-table-column>
-        <el-table-column label="亩均增加值得分"
+        <el-table-column label="亩均增加值"
                          sortable
                          width="180"
                          prop="adD_VALUE_PER_MU">
         </el-table-column>
-        <el-table-column label="单位能耗增加值得分"
+        <el-table-column label="单位能耗增加值"
                          sortable
                          width="200"
                          prop="energY_CONSUMPTION">
         </el-table-column>
-        <el-table-column label="单位排污增加值得分"
+        <el-table-column label="单位排污增加值"
                          sortable
                          width="200"
                          prop="pollutanT_DISCHARGE">
         </el-table-column>
-        <el-table-column label="全员劳动生产率得分"
+        <el-table-column label="全员劳动生产率"
                          sortable
                          width="200"
                          prop="productivity">
         </el-table-column>
-        <el-table-column label="净资产收益率得分"
+        <el-table-column label="净资产收益率"
                          sortable
                          width="180"
                          prop="neT_ASSETS_PROFIT">
         </el-table-column>
-        <el-table-column label="研发经费投入比得分"
+        <el-table-column label="研发经费投入比"
                          sortable
                          width="200"
                          prop="r_D_EXPENDITURE_RATIO">
@@ -531,7 +538,8 @@
                 activeName: 'first',
                 loading: true,
                 total: 0,
-                total1:0,
+                total1: 0,
+                orgyear: '',
                 searchjds: '',
                 searchshhys: '',
                 searchjd: [],
@@ -546,7 +554,11 @@
         methods: {
             fetchList: function () {
                 let vm = this
-                axios.get(`/api/ApdFctOrgIndexV/${vm.pageSize}/${vm.currentPage}?OrgName=${vm.OrgName}`)
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                axios.get(`/api/ApdFctOrgIndexV/${vm.pageSize}/${vm.currentPage}?OrgName=${vm.OrgName}&year=${y}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
@@ -560,7 +572,11 @@
             IndustrySel: function (val) {
                 let vm = this;
                 vm.loading = true
-                axios.get(`/api/ApdFctOrgIndexV/SelectIndustryData/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Industry=${val}`)
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                axios.get(`/api/ApdFctOrgIndexV/SelectIndustryData/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Industry=${val}&OrgName=${vm.OrgName}&year=${y}&Town=${vm.searchjds}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
@@ -574,7 +590,11 @@
             TownSel: function (val) {
                 let vm = this;
                 vm.loading = true
-                axios.get(`/api/ApdFctOrgIndexV/SelectTownDdata/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Town=${val}`)
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                axios.get(`/api/ApdFctOrgIndexV/SelectTownDdata/?pageSize=${vm.pageSize}&currentPage=${vm.currentPage}&Town=${val}&OrgName=${vm.OrgName}&year=${y}&Industy=${vm.searchshhys}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
@@ -695,7 +715,15 @@
             //}
             //导出
             importall() {
-                location.href = "/api/ApdFctOrgIndexV/exportall";
+                let vm=this
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                console.log("年份", y)
+                console.log("行业", vm.searchshhys)
+                console.log("城镇", vm.searchjds)
+                location.href = `/api/ApdFctOrgIndexV/exportall?orgname=${vm.OrgName}&year=${y}&industy=${vm.searchshhys}&town=${vm.searchjds}`;
             },
         },
         mounted: function () {
