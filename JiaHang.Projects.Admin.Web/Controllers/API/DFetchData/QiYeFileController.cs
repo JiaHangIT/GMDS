@@ -90,7 +90,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             var querygroup = query.GroupBy(g => new { g.OrgCode, g.RegistrationType, g.FactLand, g.RentLand, g.LeaseLand, g.Key }).OrderBy(o => o.Key.Key);
             int count = querygroup.Count();
 
-            if (model.limit * model.page > count)
+            if (model.limit * model.page >= count)
             {
                 model.page = 0;
             }
@@ -145,7 +145,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// <returns></returns>
         [Route("edit/{recordid}")]
         [HttpGet]
-        public async Task<FuncResult>  GetEditData(int recordid)
+        public async Task<FuncResult>  GetEditData(string recordid)
         {
             try
             {
