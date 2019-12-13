@@ -267,8 +267,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                     fr.IsSuccess = false;
                     fr.Message = "未接收到参数信息!";
                 }
-                var _key = Convert.ToDecimal(key);
-                ApdFctLandTown2 town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(_key));
+                //var _key = Convert.ToDecimal(key);
+                ApdFctLandTown2 town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(key));
                 if (town2 == null)
                 {
                     fr.IsSuccess = false;
