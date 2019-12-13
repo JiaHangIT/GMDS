@@ -398,15 +398,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         {
 
                             ORG_CODE = s.Key.W3,
-                            ENT_PAID_TAX=Convert.ToDecimal(s.Key.W10),
-                            EMPLOYEE_REMUNERATION =Convert.ToDecimal(s.Key.W11) ,
-                            DEPRECIATION = Convert.ToDecimal(s.Key.W12),
-                            PROFIT = Convert.ToDecimal(s.Key.W13),
-                            MAIN_BUSINESS_INCOME = Convert.ToDecimal(s.Key.W14),
-                            TOTAL_PROFIT =Convert.ToDecimal(s.Key.W14),
-                            OWNER_EQUITY = Convert.ToDecimal(s.Key.W17),
-                            NUMBER_OF_EMPLOYEES = Convert.ToDecimal(s.Key.W16),
-                            RAD_EXPENSES = Convert.ToDecimal(s.Key.W15)
+                            ENT_PAID_TAX = s.Key.W10 == null ? 0 : Convert.ToDecimal(s.Key.W10),
+                            EMPLOYEE_REMUNERATION = s.Key.W11 == null ? 0 : Convert.ToDecimal(s.Key.W11) ,
+                            DEPRECIATION = s.Key.W12 == null ? 0 : Convert.ToDecimal(s.Key.W12),
+                            PROFIT = s.Key.W13 == null ? 0 : Convert.ToDecimal(s.Key.W13),
+                            MAIN_BUSINESS_INCOME = s.Key.W14 == null ? 0 : Convert.ToDecimal(s.Key.W14),
+                            TOTAL_PROFIT = s.Key.W14 == null ? 0 : Convert.ToDecimal(s.Key.W14),
+                            OWNER_EQUITY = s.Key.W17 == null ? 0 : Convert.ToDecimal(s.Key.W17),
+                            NUMBER_OF_EMPLOYEES = s.Key.W16 == null ? 0 : Convert.ToDecimal(s.Key.W16),
+                            RAD_EXPENSES = s.Key.W15 == null ? 0 : Convert.ToDecimal(s.Key.W15)
                         });
 
                         //存在orgcode不存在的情况就整个都不写入

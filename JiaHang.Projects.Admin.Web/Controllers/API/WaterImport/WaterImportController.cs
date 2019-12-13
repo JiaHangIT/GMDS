@@ -88,8 +88,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                             RecordId = new Random().Next(1, 99999),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.S3,
-                            Water = g.S6 == "" ? null : Convert.ToDecimal(g.S6),
-                            Other = g.S7 == "" ? null : Convert.ToDecimal(g.S7),
+                            Water = g.S6 == "" || null ? 0 : Convert.ToDecimal(g.S6),
+                            Other = g.S7 == "" || null ? 0 : Convert.ToDecimal(g.S7),
                             Remark = g.S8,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now

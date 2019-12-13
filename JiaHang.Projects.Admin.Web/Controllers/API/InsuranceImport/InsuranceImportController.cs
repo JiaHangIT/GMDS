@@ -173,7 +173,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
                             RecordId = new Random().Next(1, 99999),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.B3,
-                            InsuranceMonth = g.B6 == "" ? null : Convert.ToDecimal(g.B6),
+                            InsuranceMonth = g.B6 == ""||null ? 0 : Convert.ToDecimal(g.B6),
                             Remark = g.B7,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now
