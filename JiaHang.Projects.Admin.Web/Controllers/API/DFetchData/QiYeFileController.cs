@@ -577,18 +577,18 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
                         var groupdata_1 = filterdata.GroupBy(g => new { g.G1, g.G3, g.G10, g.G11, g.G12 }).Select(s => new ReflctModel1
                         {
-                            OWNERSHIPLAND = s.Key.G10,
-                            PROTECTIONLAN = s.Key.G11,
-                            REDUCELAND = s.Key.G12,
+                            OWNERSHIPLAND = Convert.ToDecimal(s.Key.G10),
+                            PROTECTIONLAN = Convert.ToDecimal(s.Key.G11),
+                            REDUCELAND = Convert.ToDecimal(s.Key.G12),
                             ORGANIZATION = s.Key.G1,
                             ORGCODE = s.Key.G3
                         });
 
                         var groupdata_2 = filterdata.GroupBy(g => new { g.G1, g.G3, g.G13, g.G14, g.G15, g.G16 }).Select(s => new ReflctModel2
                         {
-                            FACTLAND = s.Key.G13,
-                            RENTLAND = s.Key.G14,
-                            LEASELAND = s.Key.G15,
+                            FACTLAND = Convert.ToDecimal(s.Key.G13),
+                            RENTLAND = Convert.ToDecimal(s.Key.G14),
+                            LEASELAND = Convert.ToDecimal(s.Key.G15),
                             REMARK = s.Key.G16,
                             ORGANIZATION = s.Key.G1,
                             ORGCODE = s.Key.G3
@@ -669,7 +669,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                     LastUpdateDate = DateTime.Now,
                                     LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                                     PeriodYear = DateTime.Now.Year,
-                                    RecordId = new Random().Next(1, 999),
+                                    RecordId = Guid.NewGuid().ToString(),
                                     T2Id = t2.RecordId
                                 };
                                 context.ApdFctLandTown.Add(t1);

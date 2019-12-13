@@ -184,7 +184,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                             Phone2 = g.X9,
                             Industry = g.X10,
                             RegistrationStatus = g.X11,
-                            RegistrationMoney = g.X12,
+                            RegistrationMoney = Convert.ToDecimal(g.X12),
                             //RegistrationDate = Convert.ToDateTime(g.X13),
                             PeriodYear = Convert.ToDecimal(year),
                             CreationDate = DateTime.Now,

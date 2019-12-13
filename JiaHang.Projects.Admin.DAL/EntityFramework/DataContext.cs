@@ -205,7 +205,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.OrgCode)
                     .HasColumnName("ORG_CODE")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.PeriodYear)
                     .HasColumnName("PERIOD_YEAR")
@@ -213,7 +213,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.Address)
                     .HasColumnName("ADDRESS")
-                    .HasColumnType("NVARCHAR2(100)");
+                    .HasColumnType("NVARCHAR2(1000)");
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -227,7 +227,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.Industry)
                     .HasColumnName("INDUSTRY")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnName("LAST_UPDATE_DATE")
@@ -241,23 +241,23 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.LegalRepresentative)
                     .HasColumnName("LEGAL_REPRESENTATIVE")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.LinkMan)
                     .HasColumnName("LINK_MAN")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.OrgName)
                     .HasColumnName("ORG_NAME")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("PHONE")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.Phone2)
                     .HasColumnName("PHONE2")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
@@ -273,19 +273,19 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RegistrationStatus)
                     .HasColumnName("REGISTRATION_STATUS")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.RegistrationType)
                     .HasColumnName("REGISTRATION_TYPE")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.Town)
                     .HasColumnName("TOWN")
-                    .HasColumnType("NVARCHAR2(30)");
+                    .HasColumnType("NVARCHAR2(300)");
 
                 entity.Property(e => e.DeleteBy)
                  .HasColumnName("DELETE_BY")
-                 .HasColumnType("NVARCHAR2(40)")
+                 .HasColumnType("NVARCHAR2(400)")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.DeleteDate)
@@ -544,7 +544,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
