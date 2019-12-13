@@ -95,7 +95,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                             LastUpdateDate = DateTime.Now
                         });
 
-                        result.IsSuccess = waterBll.WriteData(filterdata, year);
+                        result = waterBll.WriteData(filterdata, year);
 
                     }
                     else

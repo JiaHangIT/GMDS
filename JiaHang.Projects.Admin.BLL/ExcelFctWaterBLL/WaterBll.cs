@@ -99,8 +99,9 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
         /// ?
         /// </summary>
         /// <returns></returns>
-        public bool WriteData(IEnumerable<ApdFctWaterDal> list, string year)
+        public FuncResult WriteData(IEnumerable<ApdFctWaterDal> list, string year)
         {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var _year = Convert.ToDecimal(year);
@@ -108,7 +109,9 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
 
                 if (dm != null && dm.Count() > 0)
                 {
-                    return false;
+                    fr.IsSuccess = false;
+                    fr.Message = "未找到配置的企业信息!";
+                    return fr;
                 }
                 foreach (var item in list)
                 {
@@ -130,17 +133,22 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                     catch (Exception ex)
                     {
                         trans.Rollback();
-                        return false;
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException},{ex.Message}!";
+                        return fr;
+                        throw new Exception("error", ex);
                         throw new Exception("error", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                return false;
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException},{ex.Message}!";
+                return fr;
                 throw new Exception("error", ex);
             }
-            return true;
+            return fr;
         }
 
         /// <summary>
