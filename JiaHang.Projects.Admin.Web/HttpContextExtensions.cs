@@ -19,7 +19,7 @@ namespace JiaHang.Projects.Admin.Web
             {
                 account = new AccountModel()
                 {
-                    Id = "6e3ad26e6056472c9e0e415d37cde247",
+                    Id = "1",
                     UserName = "admin",
                     UserAccount = "admin",
                     MobileNo = "admin",

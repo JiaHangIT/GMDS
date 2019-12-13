@@ -309,7 +309,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                     .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.OrgCode)
                     .HasColumnName("ORG_CODE")
@@ -377,7 +377,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.OrgCode)
                     .HasColumnName("ORG_CODE")
@@ -616,7 +616,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RECORD_ID)
                     .HasColumnName("RECORD_ID")
-                    .ValueGeneratedNever();
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.EMPLOYEE_REMUNERATION)
                     .HasColumnName("EMPLOYEE_REMUNERATION")
@@ -700,10 +700,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-
-                    .HasDefaultValueSql(@"0
-");
+                    .HasColumnName("DELETE_FLAG");
             });
             modelBuilder.Entity<ApdFctLandTown2>(entity =>
             {

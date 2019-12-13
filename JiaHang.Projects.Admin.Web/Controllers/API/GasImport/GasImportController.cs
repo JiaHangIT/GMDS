@@ -113,11 +113,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                         }
                         var filterdata = prefilter.Select(g => new ApdFctGas
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.Q3,
-                            Gas = g.Q6 == "" || null ? 0 : Convert.ToDecimal(g.Q6),
-                            Other = g.Q7 == "" || null ? 0 : Convert.ToDecimal(g.Q7),                           
+                            Gas = g.Q6 == ""  ? null : Convert.ToDecimal(g.Q6),
+                            Other = g.Q7 == "" ? null : Convert.ToDecimal(g.Q7),                           
                             Remark = g.Q8,
                             CreationDate= DateTime.Now
                         });

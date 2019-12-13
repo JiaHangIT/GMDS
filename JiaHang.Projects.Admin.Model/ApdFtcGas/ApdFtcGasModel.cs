@@ -15,6 +15,6 @@ namespace JiaHang.Projects.Admin.Model.ApdFtcGas
         public DateTime? LastUpdateDate { get; set; }
         public decimal? LastUpdatedBy { get; set; }
         public decimal PeriodYear { get; set; }
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
     }
 }
