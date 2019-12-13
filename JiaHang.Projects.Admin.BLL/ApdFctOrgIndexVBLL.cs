@@ -141,7 +141,7 @@ namespace JiaHang.Projects.Admin.BLL
         public async Task<byte[]> ExportAll(string orgname,string year,string industy,string town)
 
         {
-            var comlumHeadrs = new[] { "年份","企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分","单位能耗增加值得分","单位排污增加值得分","全员劳动生产率得分","净资产收益率得分","研发经费投入比得分" };
+            var comlumHeadrs = new[] { "年份","企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
             byte[] result;
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
             List<string> wheres = new List<string>();
@@ -196,16 +196,36 @@ namespace JiaHang.Projects.Admin.BLL
                     worksheet.Cells["C" + j].Value = obj.INDUSTRY;
                     worksheet.Cells["D" + j].Value = obj.TOWN;
                     worksheet.Cells["E" + j].Value = obj.COMPOSITE_SCORE;
-                    worksheet.Cells["F" + j].Value = obj.TAX_PER_MU;
-                    worksheet.Cells["G" + j].Value = obj.ADD_VALUE_PER_MU;
-                    worksheet.Cells["H" + j].Value = obj.ENERGY_CONSUMPTION;
-                    worksheet.Cells["I" + j].Value = obj.POLLUTANT_DISCHARGE;
-                    worksheet.Cells["J" + j].Value = obj.PRODUCTIVITY;
-                    worksheet.Cells["K" + j].Value = obj.NET_ASSETS_PROFIT;
-                    worksheet.Cells["L" + j].Value = obj.R_D_EXPENDITURE_RATIO;
+                    worksheet.Cells["F" + j].Value = obj.TAX_PER_MU_SCORE;
+                    worksheet.Cells["G" + j].Value = obj.ADD_VALUE_PER_MU_SCORE;
+                    worksheet.Cells["H" + j].Value = obj.PRODUCTIVITY_SCORE;
+                    worksheet.Cells["I" + j].Value = obj.POLLUTANT_DISCHARGE_SCORE;
+                    worksheet.Cells["J" + j].Value = obj.ENERGY_CONSUMPTION_SCORE;
+                    worksheet.Cells["K" + j].Value = obj.NET_ASSETS_PROFIT_SCORE;
+                    worksheet.Cells["L" + j].Value = obj.R_D_EXPENDITURE_RATIO_SCORE;
+                    worksheet.Cells["M" + j].Value = obj.OWNER_EQUITY;
+                    worksheet.Cells["N" + j].Value = obj.WORKER_MONTH;
+                    worksheet.Cells["0" + j].Value = obj.Industrial_added_value;
+                    worksheet.Cells["P" + j].Value = obj.pollutant_discharge2;
+                    worksheet.Cells["Q" + j].Value = obj.fact_tax;
+                    worksheet.Cells["R" + j].Value = obj.LAND_AREA;
+                    worksheet.Cells["S" + j].Value = obj.PROFIT;
+                    worksheet.Cells["T" + j].Value = obj.ASSETS;
+                    worksheet.Cells["U" + j].Value = obj.MAIN_BUSINESS_INCOME;
+                    worksheet.Cells["V" + j].Value = obj.R_D_EXPENDITURE;
+                    worksheet.Cells["W" + j].Value = obj.Energy_consumption2;
+                    worksheet.Cells["X" + j].Value = obj.TAX_PER_MU;
+                    worksheet.Cells["Y" + j].Value = obj.ADD_VALUE_PER_MU;
+                    worksheet.Cells["Z" + j].Value = obj.ENERGY_CONSUMPTION;
+                    worksheet.Cells["AA" + j].Value = obj.POLLUTANT_DISCHARGE;
+                    worksheet.Cells["AB" + j].Value = obj.PRODUCTIVITY;
+                    worksheet.Cells["AC" + j].Value = obj.NET_ASSETS_PROFIT;
+                    worksheet.Cells["AD" + j].Value = obj.R_D_EXPENDITURE_RATIO;
                     j++;
                 }
             });
+         
+            
             result = package.GetAsByteArray();
             return result;
         }
@@ -259,6 +279,22 @@ namespace JiaHang.Projects.Admin.BLL
         public string Name { get; set; }
     }
     public class ReturnDate {
+        //亩均税收得分
+        public decimal TAX_PER_MU_SCORE { get; set; }
+        //亩均增加值得分
+        public decimal ADD_VALUE_PER_MU_SCORE { get; set; }
+        //全员劳动生产率得分
+        public decimal PRODUCTIVITY_SCORE { get; set; }
+        //单位排污权增加值得分
+        public decimal POLLUTANT_DISCHARGE_SCORE { get; set; }
+        //单位能耗增加值得分
+        public decimal ENERGY_CONSUMPTION_SCORE { get; set; }
+        // 净资产收益率得分
+        public decimal NET_ASSETS_PROFIT_SCORE { get; set; }
+        //研发经费投入比得分
+        public decimal R_D_EXPENDITURE_RATIO_SCORE { get; set; }
+        //所有者权益（万元）
+        public decimal OWNER_EQUITY { get; set; }
         public decimal PERIOD_YEAR { get; set; }
         public string ORG_CODE { get; set; }
         public string ORG_NAME { get; set; }
