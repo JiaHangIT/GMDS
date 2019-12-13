@@ -595,6 +595,18 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         }).Where(f => (f.FACTLAND != null && f.RENTLAND != null && f.LEASELAND != null) == true);
 
                         string currenttown2key = "";//本次apd_fct_town2表的主键
+
+                        //var orgcodegroupby = groupdata_2.GroupBy(g => new { g.ORGCODE,  }).Select(s => new { OrgCode = s.Key.ORGCODE, Count = s.Count() });
+                        //foreach (var item in orgcodegroupby)
+                        //{
+                        //    if (item.Count > 1)
+                        //    {
+                        //        result.IsSuccess = false;
+                        //        result.Message = $"统一信用代码为：{item.OrgCode}的企业在{Convert.ToDecimal(year)}年上传了{item.Count}条数据!";
+                        //        return result;
+                        //    }
+                        //}
+
                         //var town2context = context.ApdFctLandTown2.OrderByDescending(o => o.RecordId).ToList();
                         //if (town2context == null || town2context.Count() <= 0)
                         //{
