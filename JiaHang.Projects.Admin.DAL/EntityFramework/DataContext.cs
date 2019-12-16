@@ -653,6 +653,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasColumnType("DATE");
 
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasColumnType("NVARCHAR2(100)");
+
                 entity.Property(e => e.LAST_UPDATED_BY)
                     .HasColumnName("LAST_UPDATED_BY")
                     .HasColumnType("NUMBER")
@@ -676,6 +680,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.MAIN_BUSINESS_INCOME)
                     .HasColumnName("MAIN_BUSINESS_INCOME")
+                    .HasColumnType("NUMBER");
+
+                entity.Property(e => e.RAD_EXPENSES)
+                    .HasColumnName("RAD_EXPENSES")
                     .HasColumnType("NUMBER");
 
                 entity.Property(e => e.ENT_PAID_TAX)

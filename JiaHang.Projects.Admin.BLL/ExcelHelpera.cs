@@ -9,7 +9,7 @@ using System.Text;
 
 namespace JiaHang.Projects.Admin.BLL
 {
-    public class ExcelHelper
+    public class ExcelHelpera
     {
         /// <summary>
         /// 将Excel单表转为Datatable
