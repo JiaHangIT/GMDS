@@ -225,7 +225,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                             LastUpdateDate = DateTime.Now
                         });
 
-                        //result = orgBll.WriteData(filterdata, year, HttpContext.CurrentUser(cache).Id);
+                        result = orgBll.WriteData(filterdata, year, HttpContext.CurrentUser(cache).Id);
 
                     }
                     else

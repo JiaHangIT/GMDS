@@ -542,6 +542,93 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<Demo>>(JsonConvert.SerializeObject(dt));
+
+                        #region 部分数据格式判断
+                        //需要导入到数据库的数据
+                        var dynamiclist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
+                        var prefilter = dynamiclist.Where(f => f.G10 != null && f.G11 != null && f.G12 != null).ToList();
+                        if (prefilter == null || prefilter.Count() <= 0)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
+                            return result;
+                        }
+
+                        /*
+                   *1、筛选数据前，检查数据格式，只需要检测数值类型的列 
+                   * **/
+
+                        int count = 1;//错误列号(对应实际列7)
+                        string colname = "";
+                        for (int i = 0; i < prefilter.Count(); i++)
+                        {
+                            try
+                            {
+                                var current = prefilter[i];
+
+                                var g_10 = current.G10;
+                                if (g_10 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "G10";
+                                Convert.ToDecimal(g_10);
+
+                                var g_11 = current.G11;
+                                if (g_11 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "G11";
+                                Convert.ToDecimal(g_11);
+
+                                var g_12 = current.G12;
+                                if (g_12 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "G12";
+                                Convert.ToDecimal(g_12);
+
+                                var g_13 = current.G13;
+                                if (g_13 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "G13";
+                                Convert.ToDecimal(g_13);
+
+                                var g_14 = current.G14;
+                                if (g_14 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "G14";
+                                Convert.ToDecimal(g_14);
+
+                                var g_15 = current.G15;
+                                if (g_15 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "G15";
+                                Convert.ToDecimal(g_15);
+
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                LogService.WriteError(ex);
+                                result.IsSuccess = false;
+                                result.Message = $"第{count + 6}行，{colname}列数据异常！";
+                                return result;
+
+                            }
+                        }
+
+
+                        #endregion
+
                         List<Demo> filterdata = datalist.Where(f =>  f.G10 != null && f.G11 != null && f.G12 != null).ToList();
                         if (filterdata == null || filterdata.Count <= 0)
                         {

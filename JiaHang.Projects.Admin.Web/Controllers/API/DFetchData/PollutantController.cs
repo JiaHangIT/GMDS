@@ -156,13 +156,101 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.H1 == "") && f.H1 != null);
+                        var prefilter = datalist.Where(f => !(f.H1 == "") && f.H1 != null).ToList();
                         if (prefilter == null || prefilter.Count() <= 0)
                         {
                             result.IsSuccess = false;
                             result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
                             return result;
                         }
+
+                        /*
+                      *1、筛选数据前，检查数据格式，只需要检测数值类型的列 
+                      * **/
+
+                        int count = 1;//错误列号(对应实际列6)
+                        string colname = "";
+                        for (int i = 0; i < prefilter.Count(); i++)
+                        {
+                            try
+                            {
+                                var current = prefilter[i];
+                                var h_7 = current.H7;
+                                if (h_7 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H7";
+                                Convert.ToDecimal(h_7);
+
+                                var h_8 = current.H8;
+                                if (h_8 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H8";
+                                Convert.ToDecimal(h_8);
+
+                                var h_9 = current.H9;
+                                if (h_9 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H9";
+                                Convert.ToDecimal(h_9);
+
+                                var h_10 = current.H10;
+                                if (h_10 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H10";
+                                Convert.ToDecimal(h_10);
+
+                                var h_11 = current.H11;
+                                if (h_11 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H11";
+                                Convert.ToDecimal(h_11);
+
+                                var h_12 = current.H12;
+                                if (h_12 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H12";
+                                Convert.ToDecimal(h_12);
+
+                                var h_13 = current.H13;
+                                if (h_13 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H13";
+                                Convert.ToDecimal(h_13);
+
+                                var h_14 = current.H14;
+                                if (h_14 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H14";
+                                Convert.ToDecimal(h_14);
+
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                LogService.WriteError(ex);
+                                result.IsSuccess = false;
+                                result.Message = $"第{count + 5}行，{colname}列数据异常！";
+                                return result;
+
+                            }
+                        }
+
                         var filterdata = prefilter.Select(g => new ApdFctContaminants
                         {
                             RecordId = new Random().Next(1,99999),

@@ -190,13 +190,54 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.D1 == "") && f.D1 != null);
+                        var prefilter = datalist.Where(f => !(f.D1 == "") && f.D1 != null).ToList();
                         if (prefilter == null || prefilter.Count() <= 0)
                         {
                             result.IsSuccess = false;
                             result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
                             return result;
                         }
+
+                        /*
+                        *1、筛选数据前，检查数据格式，只需要检测数值类型的列 
+                        * **/
+
+                        int count = 1;//错误列号(对应实际列7)
+                        string colname = "";
+                        for (int i = 0; i < prefilter.Count(); i++)
+                        {
+                            try
+                            {
+                                var current = prefilter[i];
+                                var d_6 = current.D6;
+                                if (d_6 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "D6";
+                                Convert.ToDecimal(d_6);
+
+                                var d_7 = current.D7;
+                                if (d_7 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "D7";
+                                Convert.ToDecimal(d_7);
+                                //colname = "X13";
+                                //Convert.ToDecimal(x_13);
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                LogService.WriteError(ex);
+                                result.IsSuccess = false;
+                                result.Message = $"第{count + 5}行，{colname}列数据异常！";
+                                return result;
+
+                            }
+                        }
+
                         var filterdata = prefilter.Select(g => new ApdFctElectric
                         {
                             RecordId = new Random().Next(1, 99999),
