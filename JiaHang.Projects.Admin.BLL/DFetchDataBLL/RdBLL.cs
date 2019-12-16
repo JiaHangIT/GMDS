@@ -175,20 +175,20 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     }
                     catch (Exception ex)
                     {
+                        LogService.WriteError(ex);
                         trans.Rollback();
                         fr.IsSuccess = false;
                         fr.Message = $"{ex.InnerException},{ex.Message}!";
                         return fr;
-                        throw new Exception("error", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
+                LogService.WriteError(ex);
                 fr.IsSuccess = false;
                 fr.Message = $"{ex.InnerException},{ex.Message}!";
                 return fr;
-                throw new Exception("error",ex);
             }
             return fr;
         }

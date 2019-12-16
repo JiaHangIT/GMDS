@@ -1,5 +1,6 @@
 ﻿using System;
 using JiaHang.Projects.Admin.DAL.EntityFramework;
+using JiaHang.Projects.Admin.Web.Filter;
 using JiaHang.Projects.Admin.Web.WebApiIdentityAuth;
 //using JiaHang.Projects.Admin.Web.WebApiIdentityAuth;
 using Microsoft.AspNetCore.Builder;
@@ -52,8 +53,8 @@ namespace JiaHang.Projects.Admin.Web
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //注入异常过滤器
+            services.AddMvc(options=>options.Filters.Add<GlobalExceptionFilter>()).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
