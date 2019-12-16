@@ -239,6 +239,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             }
             catch (Exception ex)
             {
+                LogService.WriteError(ex);
                 result.IsSuccess = false;
                 result.Message = $"{ex.Message},{ex.InnerException}";
                 return result;
