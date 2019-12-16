@@ -140,9 +140,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
         [HttpGet("{year}")]
         public FuncResult Import(string year)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
+                //System.Threading.Thread.Sleep(6000);
                 var excelfile = Request.Form.Files[0];
                 List<dynamic> datalist = new List<dynamic>();
                 if (excelfile.Length > 0)

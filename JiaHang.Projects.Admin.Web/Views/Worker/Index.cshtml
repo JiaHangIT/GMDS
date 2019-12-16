@@ -224,11 +224,29 @@
                 let vm = this
                 vm.fetchlist()
             },
+            openUploadLoading(val) {
+                const loading = this.$loading({
+                    lock: true,
+                    text: '请稍候，正在导入...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                switch (val) {
+                    case 'before':
+                        break;
+                    case 'after':
+                        loading.close();
+                        break;
+                    default:
+                }
+            },
             beforeUpload() {
                 let vm = this
                 try {
 
                     vm.model.year = vm.exportyear.getFullYear()
+
+                    vm.openUploadLoading('before')
                     if (vm.model.year === '') {
                         vm.$message.error('请先选择年份!');
                         return false
@@ -241,6 +259,7 @@
             uploadSuccess(response, file, fileList) {
                 let vm = this
                 vm.showbutton = false
+                vm.openUploadLoading('after')
                 if (response.isSuccess == true) {
                     vm.$message.success(response.message);
                 } else {

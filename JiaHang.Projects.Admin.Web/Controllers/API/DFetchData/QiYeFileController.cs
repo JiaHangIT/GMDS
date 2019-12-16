@@ -41,7 +41,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         [HttpPost("GetList")]
         public FuncResult GetList([FromBody] RequestLandTown model = null)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
 
             //条件查询情况下，需要重新考虑Count值的问题
             model.page--; if (model.page < 0)
@@ -519,7 +519,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         [HttpGet("{year}")]
         public FuncResult Import(string year)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var excelfile = Request.Form.Files[0];
