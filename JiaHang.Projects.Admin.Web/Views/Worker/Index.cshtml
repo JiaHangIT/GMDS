@@ -17,40 +17,43 @@
 </style>
 
 <div id="app">
-    <el-form :inline="true" class="demo-form-inline">
-        <div class="layui-row">
-            <el-form-item label="企业名称">
-                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
-            </el-form-item>
-            <el-form-item label="企业信用代码">
-                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
-            </el-form-item>
-            <el-form-item label="年份">
-                <el-date-picker v-model="orgyear"
-                                type="year"
-                                format="yyyy"
-                                placeholder="选择年">
-                </el-date-picker>
-            </el-form-item>
-        </div>
-    </el-form>
+    <div id="func">
+        <el-form :inline="true" class="demo-form-inline">
+            <div class="layui-row">
+                <el-form-item label="企业名称">
+                    <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+                </el-form-item>
+                <el-form-item label="企业信用代码">
+                    <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+                </el-form-item>
+                <el-form-item label="年份">
+                    <el-date-picker v-model="orgyear"
+                                    type="year"
+                                    format="yyyy"
+                                    placeholder="选择年">
+                    </el-date-picker>
+                </el-form-item>
+            </div>
+        </el-form>
 
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item>
-            <el-button type="primary" @@click="querydata">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="exportdata">导出</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
-        </el-form-item>
-    </el-form>
+        <el-form :inline="true" class="demo-form-inline">
+            <el-form-item>
+                <el-button type="primary" @@click="querydata">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="exportdata">导出</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
 
     <template>
         <el-table :data="data"
                   border
                   style="width: 100%"
+                  :height="tableheight"
                   v-loading="loading">
             <el-table-column fixed
                              prop="orgName"
@@ -127,14 +130,16 @@
         </div>
     </el-dialog>
 
-    <el-pagination @@size-change="handleSizeChange"
-                   @@current-change="handleCurrentChange"
-                   :current-page="currentPage"
-                   :page-sizes="[10, 20, 30, 40]"
-                   :page-size="pageSize"
-                   layout="total, sizes, prev, pager, next, jumper"
-                   :total="total">
-    </el-pagination>
+    <div id="pagination">
+        <el-pagination @@size-change="handleSizeChange"
+                       @@current-change="handleCurrentChange"
+                       :current-page="currentPage"
+                       :page-sizes="[10, 20, 30, 40]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
 
     <el-dialog :title="buttontxt"
                :visible.sync="showbutton"
@@ -182,6 +187,7 @@
         el: '#app',
         data() {
             return {
+                tableheight: null,
                 buttontxt: '',
                 showbutton: false,
                 centerDialogVisible: false,
@@ -207,6 +213,14 @@
             fetchlist() {
                 let vm = this;
                 vm.loading = true
+
+                var top = $("#app").offset().top;
+                var func = $("#func").get(0).offsetHeight
+                var pagination = $("#pagination").get(0).offsetHeight
+                //自适应表高度
+                var height = Math.max(0, document.documentElement.clientHeight) - top - 1 - func - pagination;
+                vm.tableheight = height
+
                 let y = ''
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()

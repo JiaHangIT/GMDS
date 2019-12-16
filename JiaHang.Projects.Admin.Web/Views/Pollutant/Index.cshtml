@@ -32,40 +32,44 @@
     }
 </style>
 <div id="app">
-    <el-form :inline="true" class="demo-form-inline">
-        <div class="layui-row">
-            <el-form-item label="企业名称">
-                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
-            </el-form-item>
-            <el-form-item label="企业信用代码">
-                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
-            </el-form-item>
-            <el-form-item label="年份">
-                <el-date-picker v-model="orgyear"
-                                type="year"
-                                format="yyyy"
-                                placeholder="选择年">
-                </el-date-picker>
-            </el-form-item>
-        </div>
+    <div id="func">
+        <el-form :inline="true" class="demo-form-inline">
+            <div class="layui-row">
+                <el-form-item label="企业名称">
+                    <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+                </el-form-item>
+                <el-form-item label="企业信用代码">
+                    <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+                </el-form-item>
+                <el-form-item label="年份">
+                    <el-date-picker v-model="orgyear"
+                                    type="year"
+                                    format="yyyy"
+                                    placeholder="选择年">
+                    </el-date-picker>
+                </el-form-item>
+            </div>
 
-    </el-form>
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item>
-            <el-button  type="primary"  @@click="querydata">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="exportdata">导出</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
-        </el-form-item>
-    </el-form>
+        </el-form>
+        <el-form :inline="true" class="demo-form-inline">
+            <el-form-item>
+                <el-button type="primary" @@click="querydata">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="exportdata">导出</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    
 
     <template>
         <el-table :data="data"
                   border
                   style="width: 100%"
+                  :height="tableheight"
                   v-loading="loading">
             <el-table-column fixed
                              prop="orgName"
@@ -148,14 +152,16 @@
         </el-table>
     </template>
 
-    <el-pagination @@size-change="handleSizeChange"
-                   @@current-change="handleCurrentChange"
-                   :current-page="currentPage"
-                   :page-sizes="[10, 20, 30, 40]"
-                   :page-size="pageSize"
-                   layout="total, sizes, prev, pager, next, jumper"
-                   :total="total">
-    </el-pagination>
+    <div id="pagination">
+        <el-pagination @@size-change="handleSizeChange"
+                       @@current-change="handleCurrentChange"
+                       :current-page="currentPage"
+                       :page-sizes="[10, 20, 30, 40]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
 
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
@@ -207,76 +213,7 @@
                     <td><el-input placeholder="请输入" v-model="form.remark"></el-input></td>
                 </tr>
             </table>
-            @*<el-row>
-                <e-col>
-                    <el-form-item label="是否纳入环统范围">
-                        <el-select v-model="form.isInSystem" placeholder="请选择">
-                            <el-option v-for="item in options"
-                                       :key="item"
-                                       :label="item"
-                                       :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="化学需氧量排放当量">
-                        <el-input placeholder="请输入" v-model="form.oxygen"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>
 
-            <el-row>
-                <e-col>
-                    <el-form-item label="氨氮排放当量">
-                        <el-input placeholder="请输入" v-model="form.ammoniaNitrogen"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="二氧化硫排放当量">
-                        <el-input placeholder="请输入" v-model="form.sulfurDioxide"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>
-
-            <el-row>
-                <e-col>
-                    <el-form-item label="氮氧化物排放当量">
-                        <el-input placeholder="请输入" v-model="form.nitrogenOxide"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="煤炭">
-                        <el-input placeholder="请输入" v-model="form.coal"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>
-
-            <el-row>
-                <e-col>
-                    <el-form-item label="燃料油">
-                        <el-input placeholder="请输入" v-model="form.fuelOil"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="氢气">
-                        <el-input placeholder="请输入" v-model="form.hydrogen"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>
-
-            <el-row>
-                <e-col>
-                    <el-form-item label="薪柴">
-                        <el-input placeholder="请输入" v-model="form.firewood"></el-input>
-                    </el-form-item>
-                </e-col>
-                <e-col>
-                    <el-form-item label="备注">
-                        <el-input placeholder="请输入" v-model="form.remark"></el-input>
-                    </el-form-item>
-                </e-col>
-            </el-row>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
@@ -331,6 +268,7 @@
         el: '#app',
         data() {
             return {
+                tableheight: null,
                 labelPosition:'right',
                 buttontxt: '',
                 showbutton: false,
@@ -377,6 +315,13 @@
             fetchlist() {
                 let vm = this;
                 vm.loading = true
+
+                var top = $("#app").offset().top;
+                var func = $("#func").get(0).offsetHeight
+                var pagination = $("#pagination").get(0).offsetHeight
+                //自适应表高度
+                var height = Math.max(0, document.documentElement.clientHeight) - top - 1 - func - pagination;
+                vm.tableheight = height
                 let y = ''
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
