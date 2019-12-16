@@ -193,6 +193,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
+                //if (key.GetType() == typeof(string))
+                //{
+
+                //}
                 if (string.IsNullOrWhiteSpace(key))
                 {
                     fr.IsSuccess = false;
