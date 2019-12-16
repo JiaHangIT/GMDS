@@ -212,7 +212,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
     }
     public class ReturnWaterModel
     {
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }

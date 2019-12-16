@@ -261,7 +261,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.L3,
                             LandNo = g.L10,
-                            Area = g.L11 == "" ? null : Convert.ToDecimal(g.L11),
+                            Area = g.L11 == ""||null ? 0 : Convert.ToDecimal(g.L11),
                             ShareDesc=g.L12,
                             RightType = g.L13,
                             Purpose = g.L14,

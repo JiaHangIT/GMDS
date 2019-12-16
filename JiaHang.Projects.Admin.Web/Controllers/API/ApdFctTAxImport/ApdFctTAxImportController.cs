@@ -378,7 +378,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         var lista = JsonConvert.SerializeObject(dt);
                         //反序列化
                         datalist = JsonConvert.DeserializeObject<List<Demo>>(JsonConvert.SerializeObject(dt));
-                        List<Demo> filterdata = datalist.Where(f => !(f.W1 == "" && f.W2 == "" && f.W3 == "" && f.W4 == "" && f.W5 == "" && f.W6 == "" && f.W7 == "" && f.W8 == "" && f.W9 == "")).ToList();
+                        List<Demo> filterdata = datalist.Where(f => !(f.W1 == "" ) && f.W1 != null).ToList();
+                       
+                        LogService.WriteInfo($"{DateTime.Now},有{datalist.Count}条数据");
+                        LogService.WriteInfo($"{DateTime.Now},有{filterdata.Count}条数据");
+                        LogService.WriteInfo(JsonConvert.SerializeObject(filterdata));
 
                         //处理筛选过后的数据
                         string g1 = string.Empty;
@@ -398,42 +402,36 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
                         }
 
-                        var data_one = filterdata.GroupBy(g => new {g.W1, g.W3, g.W11, g.W12, g.W13, g.W14, g.W15, g.W16, g.W17, g.W18, g.W10 }).Select(s => new ApdFctTAxModel
+                        //var data = filterdata.Select(s)
+
+                            //.GroupBy(g => new {g.W1, g.W3, g.W11, g.W12, g.W13, g.W14, g.W15, g.W16, g.W17, g.W18, g.W10 })
+                        var data_one = filterdata.Select(s => new ApdFctTAxModel
                         {
 
-                            ORG_CODE = s.Key.W3,
-                            ENT_PAID_TAX=Convert.ToDecimal(s.Key.W10),
-                            EMPLOYEE_REMUNERATION =Convert.ToDecimal(s.Key.W11) ,
-                            DEPRECIATION = Convert.ToDecimal(s.Key.W12),
-                            PROFIT = Convert.ToDecimal(s.Key.W13),
-                            MAIN_BUSINESS_INCOME = Convert.ToDecimal(s.Key.W14),
-                            TOTAL_PROFIT =Convert.ToDecimal(s.Key.W14),
-                            OWNER_EQUITY = Convert.ToDecimal(s.Key.W17),
-                            NUMBER_OF_EMPLOYEES = Convert.ToDecimal(s.Key.W16),
-                            RAD_EXPENSES = Convert.ToDecimal(s.Key.W15)
+                            ORG_CODE = s.W3,
+                            ENT_PAID_TAX = s.W10 == null ? 0 : Convert.ToDecimal(s.W10),
+                            EMPLOYEE_REMUNERATION = s.W11 == null ? 0 : Convert.ToDecimal(s.W11) ,
+                            DEPRECIATION = s.W12 == null ? 0 : Convert.ToDecimal(s.W12),
+                            PROFIT = s.W13 == null ? 0 : Convert.ToDecimal(s.W13),
+                            MAIN_BUSINESS_INCOME = s.W14 == null ? 0 : Convert.ToDecimal(s.W14),
+                            TOTAL_PROFIT = s.W14 == null ? 0 : Convert.ToDecimal(s.W14),
+                            OWNER_EQUITY = s.W17 == null ? 0 : Convert.ToDecimal(s.W17),
+                            NUMBER_OF_EMPLOYEES = s.W16 == null ? 0 : Convert.ToDecimal(s.W16),
+                            RAD_EXPENSES = s.W15 == null ? 0 : Convert.ToDecimal(s.W15)
                         });
 
                         //存在orgcode不存在的情况就整个都不写入
+                        LogService.WriteInfo($"{DateTime.Now},有{data_one.Count()}条数据");
                         foreach (var item in data_one)
                         {
                             var currentorganization = listorgan.FirstOrDefault(f => f.OrgCode.Equals(item.ORG_CODE));
                             if (currentorganization == null)
                             {
+                                LogService.WriteInfo($"{DateTime.Now},有{11111111111111}条数据");
                                 result.IsSuccess = false;
                                 result.Message = $"此机构号:{item.ORG_CODE}找不到对应机构，导入失败！";
                                 return result;
                             }
-                            bool isalreadyexport = isAlreadyExport(item.ORG_CODE, year);
-                            //if (isalreadyexport)
-                            //{
-                            //    //删除(添加删除标记字段)
-                            //    //物理删除
-                            //    var formatyear = Convert.ToDecimal(year);
-                            //    var alreadytown2 = context.ApdFctTAx.Where(f => f.ORG_CODE.Equals(item.ORG_CODE) && f.PERIOD_YEAR.Equals(formatyear));                                
-                            //    context.ApdFctTAx.RemoveRange(alreadytown2);
-
-
-                            //}
                             ApdFctTAx Datatb = new ApdFctTAx()
                             {
                                 EMPLOYEE_REMUNERATION = item.EMPLOYEE_REMUNERATION,
@@ -448,8 +446,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 ORG_CODE = item.ORG_CODE,
                                 CREATION_DATE = DateTime.Now,
                                 LAST_UPDATE_DATE = DateTime.Now,
-                                PERIOD_YEAR = DateTime.Now.Year,
-                                RECORD_ID = new Random().Next(1, 999)
+                                PERIOD_YEAR = Convert.ToDecimal(year),
+                                RECORD_ID = Guid.NewGuid().ToString()
                             };
                              context.ApdFctTAx.Add(Datatb);
                         }
@@ -461,12 +459,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         {
                             try
                             {
-                                context.SaveChangesAsync();
+                                context.SaveChanges();
                                 trans.Commit();
                             }
                             catch (Exception ex)
                             {
-
+                                LogService.WriteInfo(ex);
                                 throw new Exception("error", ex);
                             }
                         }
@@ -662,7 +660,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             public decimal? PROFIT { get; set; }
             public decimal? Depreciation { get; set; }
             public decimal? Pforit { get; set; }
-            public decimal? recordId { get; set; }
+            public string recordId { get; set; }
             public decimal? EntPaidTax { get; set; }
             public decimal? MainBusinessIncome { get; set; }
             public decimal? RadEexpenses { get; set; }

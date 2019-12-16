@@ -6,7 +6,7 @@ namespace JiaHang.Projects.Admin.Model.InsuranceModel
 {
     public class InsuranceModelS
     {
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }

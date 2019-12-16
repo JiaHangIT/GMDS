@@ -23,47 +23,38 @@
 </style>
 
 <div id="app">
-    <el-form :inline="true" class="demo-form-inline">
-        <div class="layui-row">
-            <el-form-item label="企业名称">
-                <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
-            </el-form-item>
-            <el-form-item label="企业信用代码">
-                <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
-            </el-form-item>
-            <el-form-item label="年份">
-                <el-date-picker v-model="orgyear"
-                                type="year"
-                                format="yyyy"
-                                placeholder="选择年">
-                </el-date-picker>
-            </el-form-item>
-        </div>
+    <div id="func">
+        <el-form :inline="true" class="demo-form-inline">
+            <div class="layui-row">
+                <el-form-item label="企业名称">
+                    <el-input placeholder="请输入企业名称" v-model="orgname"></el-input>
+                </el-form-item>
+                <el-form-item label="企业信用代码">
+                    <el-input placeholder="请输入企业信用代码" v-model="orgcode"></el-input>
+                </el-form-item>
+                <el-form-item label="年份">
+                    <el-date-picker v-model="orgyear"
+                                    type="year"
+                                    format="yyyy"
+                                    placeholder="选择年">
+                    </el-date-picker>
+                </el-form-item>
+            </div>
 
-    </el-form>
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item>
-            <el-button type="primary" @@click="querydata">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="exportdata">导出</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
-        </el-form-item>
-        @*<el-form-item>
-            <el-button type="success" @@click="downtemplate">下载模板</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-upload class="upload-demo"
-                       action="/api/qiyefile/upload"
-                       :before-upload="beforeUpload"
-                       :data="model"
-                       :show-file-list="false">
-                <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-        </el-form-item>*@
-    </el-form>
+        </el-form>
+        <el-form :inline="true" class="demo-form-inline">
+            <el-form-item>
+                <el-button type="primary" @@click="querydata">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="exportdata">导出</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
+            </el-form-item>
+
+        </el-form>
+    </div>
 
     <el-row v-loading="loading">
         <el-table :data="data"
@@ -143,7 +134,8 @@
                              label="备注"
                              width="120">
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作"
+                             width="150">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -155,14 +147,17 @@
             </el-table-column>
         </el-table>
 
-        <el-pagination @@size-change="handleSizeChange"
-                       @@current-change="handleCurrentChange"
-                       :current-page="currentPage"
-                       :page-sizes="[10, 20, 30, 40]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
+        <div id="pagination">
+            <el-pagination @@size-change="handleSizeChange"
+                           @@current-change="handleCurrentChange"
+                           :current-page="currentPage"
+                           :page-sizes="[10, 20, 30, 40]"
+                           :page-size="pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="total">
+            </el-pagination>
+        </div>
+       
 
         <el-dialog :title="dialogTitle"
                    :visible.sync="centerDialogVisible"
@@ -322,9 +317,12 @@
                 let vm = this;
                 vm.loading = true
                 let y = ''
+
                 var top = $("#app").offset().top;
+                var func = $("#func").get(0).offsetHeight
+                var pagination = $("#pagination").get(0).offsetHeight
                 //自适应表高度
-                var height = Math.max(0, document.documentElement.clientHeight) - top - 1;
+                var height = Math.max(0, document.documentElement.clientHeight) - top - 1 - func - pagination;
                 vm.tableheight = height
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
@@ -362,6 +360,22 @@
                 let vm = this
                 vm.fetchlist()
             },
+            openUploadLoading(val) {
+                const loading = this.$loading({
+                    lock: true,
+                    text: '请稍候，正在导入...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                switch (val) {
+                    case 'before':
+                        break;
+                    case 'after':
+                        loading.close();
+                        break;
+                    default:
+                }
+            },
             exportdata() {
                 let vm = this
                 //window.location.href = `/api/qiyefile/export/${vm.pageSize}/${vm.currentPage}`
@@ -387,6 +401,7 @@
                 try {
 
                     vm.model.year = vm.exportyear.getFullYear()
+                    vm.openUploadLoading('before')
                     if (vm.model.year === '') {
                         vm.$message.error('请先选择年份!');
                         return false
@@ -399,6 +414,7 @@
             uploadSuccess(response, file, fileList) {
                 let vm = this
                 vm.showbutton = false
+                vm.openUploadLoading('after')
                 if (response.isSuccess == true) {
                     vm.$message.success(response.message);
                 } else {

@@ -150,7 +150,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         [HttpGet("{year}")]
         public FuncResult Import(string year)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var excelfile = Request.Form.Files[0];

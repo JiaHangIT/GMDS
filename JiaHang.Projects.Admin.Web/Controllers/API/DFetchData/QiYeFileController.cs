@@ -41,7 +41,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         [HttpPost("GetList")]
         public FuncResult GetList([FromBody] RequestLandTown model = null)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
 
             //条件查询情况下，需要重新考虑Count值的问题
             model.page--; if (model.page < 0)
@@ -267,8 +267,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                     fr.IsSuccess = false;
                     fr.Message = "未接收到参数信息!";
                 }
-                var _key = Convert.ToDecimal(key);
-                ApdFctLandTown2 town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(_key));
+                //var _key = Convert.ToDecimal(key);
+                ApdFctLandTown2 town2 = context.ApdFctLandTown2.FirstOrDefault(f => f.RecordId.Equals(key));
                 if (town2 == null)
                 {
                     fr.IsSuccess = false;
@@ -519,7 +519,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         [HttpGet("{year}")]
         public FuncResult Import(string year)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var excelfile = Request.Form.Files[0];
@@ -577,24 +577,36 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
                         var groupdata_1 = filterdata.GroupBy(g => new { g.G1, g.G3, g.G10, g.G11, g.G12 }).Select(s => new ReflctModel1
                         {
-                            OWNERSHIPLAND = s.Key.G10,
-                            PROTECTIONLAN = s.Key.G11,
-                            REDUCELAND = s.Key.G12,
+                            OWNERSHIPLAND = Convert.ToDecimal(s.Key.G10),
+                            PROTECTIONLAN = Convert.ToDecimal(s.Key.G11),
+                            REDUCELAND = Convert.ToDecimal(s.Key.G12),
                             ORGANIZATION = s.Key.G1,
                             ORGCODE = s.Key.G3
                         });
 
                         var groupdata_2 = filterdata.GroupBy(g => new { g.G1, g.G3, g.G13, g.G14, g.G15, g.G16 }).Select(s => new ReflctModel2
                         {
-                            FACTLAND = s.Key.G13,
-                            RENTLAND = s.Key.G14,
-                            LEASELAND = s.Key.G15,
+                            FACTLAND = Convert.ToDecimal(s.Key.G13),
+                            RENTLAND = Convert.ToDecimal(s.Key.G14),
+                            LEASELAND = Convert.ToDecimal(s.Key.G15),
                             REMARK = s.Key.G16,
                             ORGANIZATION = s.Key.G1,
                             ORGCODE = s.Key.G3
                         }).Where(f => (f.FACTLAND != null && f.RENTLAND != null && f.LEASELAND != null) == true);
 
                         string currenttown2key = "";//本次apd_fct_town2表的主键
+
+                        //var orgcodegroupby = groupdata_2.GroupBy(g => new { g.ORGCODE,  }).Select(s => new { OrgCode = s.Key.ORGCODE, Count = s.Count() });
+                        //foreach (var item in orgcodegroupby)
+                        //{
+                        //    if (item.Count > 1)
+                        //    {
+                        //        result.IsSuccess = false;
+                        //        result.Message = $"统一信用代码为：{item.OrgCode}的企业在{Convert.ToDecimal(year)}年上传了{item.Count}条数据!";
+                        //        return result;
+                        //    }
+                        //}
+
                         //var town2context = context.ApdFctLandTown2.OrderByDescending(o => o.RecordId).ToList();
                         //if (town2context == null || town2context.Count() <= 0)
                         //{
@@ -657,7 +669,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                     LastUpdateDate = DateTime.Now,
                                     LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
                                     PeriodYear = DateTime.Now.Year,
-                                    RecordId = new Random().Next(1, 999),
+                                    RecordId = Guid.NewGuid().ToString(),
                                     T2Id = t2.RecordId
                                 };
                                 context.ApdFctLandTown.Add(t1);

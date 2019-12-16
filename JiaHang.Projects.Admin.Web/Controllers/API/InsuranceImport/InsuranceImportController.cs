@@ -170,10 +170,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
                         var prefilter = datalist.Where(f => !(f.B1 == ""));
                         var filterdata = prefilter.Select(g => new ApdFctInsuranceDal
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.B3,
-                            InsuranceMonth = g.B6 == "" ? null : Convert.ToDecimal(g.B6),
+                            InsuranceMonth = g.B6 == ""? null : Convert.ToDecimal(g.B6),
                             Remark = g.B7,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now

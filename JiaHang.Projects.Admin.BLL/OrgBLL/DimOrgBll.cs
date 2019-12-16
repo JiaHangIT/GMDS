@@ -147,12 +147,12 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                     return fr;
                 }
 
-                existorg.LastUpdateDate = DateTime.Now;
-                //existorg.LastUpdatedBy = Convert.ToDecimal(userid);
-                existorg.DeleteFlag = 1;
-                existorg.DeleteDate = DateTime.Now;
-                existorg.DeleteBy = userid;
-                context.ApdDimOrg.Update(existorg);
+                //existorg.LastUpdateDate = DateTime.Now;
+                ////existorg.LastUpdatedBy = Convert.ToDecimal(userid);
+                //existorg.DeleteFlag = 1;
+                //existorg.DeleteDate = DateTime.Now;
+                //existorg.DeleteBy = userid;
+                context.ApdDimOrg.Remove(existorg);
                 context.SaveChanges();
 
                 return fr;

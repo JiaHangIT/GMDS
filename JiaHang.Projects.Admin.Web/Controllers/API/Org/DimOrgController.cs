@@ -140,9 +140,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
         [HttpGet("{year}")]
         public FuncResult Import(string year)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
+                //System.Threading.Thread.Sleep(6000);
                 var excelfile = Request.Form.Files[0];
                 List<dynamic> datalist = new List<dynamic>();
                 if (excelfile.Length > 0)
@@ -172,7 +173,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                         }
                         var filterdata = prefilter.Select(g => new ApdDimOrg
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            //RecordId = new Random().Next(1, 99999),
                             OrgName = g.X1,
                             Town = g.X2,
                             OrgCode = g.X3,
@@ -184,7 +185,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                             Phone2 = g.X9,
                             Industry = g.X10,
                             RegistrationStatus = g.X11,
-                            RegistrationMoney = g.X12,
+                            RegistrationMoney = Convert.ToDecimal(g.X12),
                             //RegistrationDate = Convert.ToDateTime(g.X13),
                             PeriodYear = Convert.ToDecimal(year),
                             CreationDate = DateTime.Now,

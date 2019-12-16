@@ -14,7 +14,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public DateTime? LastUpdateDate { get; set; }
         public decimal? LastUpdatedBy { get; set; }
         public decimal PeriodYear { get; set; }
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string T2Id { get; set; }
         public int DeleteFlag { get; set; }
         public DateTime? DeleteDate { get; set; }

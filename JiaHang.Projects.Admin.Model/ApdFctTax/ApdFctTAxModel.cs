@@ -49,7 +49,7 @@ namespace JiaHang.Projects.Admin.Model.ApdFctTax
         /// <summary>
         /// ID
         /// </summary>       
-        public decimal RECORD_ID { get; set; }
+        public string RECORD_ID { get; set; }
 
         /// <summary>
         /// 职工薪酬
