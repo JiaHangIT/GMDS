@@ -173,7 +173,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                         }
                         var filterdata = prefilter.Select(g => new ApdDimOrg
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            //RecordId = new Random().Next(1, 99999),
                             OrgName = g.X1,
                             Town = g.X2,
                             OrgCode = g.X3,

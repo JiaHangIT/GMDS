@@ -191,6 +191,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
             });
             modelBuilder.Entity<ApdDimOrg>(entity =>
             {
+                //entity.Property(t => t.RecordId).ValueGeneratedOnAdd();
                 entity.HasKey(e => new { e.OrgCode, e.PeriodYear })
                     .HasName("APD_DIM_ORG_PK");
 
