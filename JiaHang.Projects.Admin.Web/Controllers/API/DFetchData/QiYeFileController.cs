@@ -77,8 +77,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                             Create = t2.CreationDate
                         };
             query = query.Where(f=> (
-            (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode))&&
-            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+            (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode))&&
+            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
             (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
             )).OrderBy(o => o.Create);
 

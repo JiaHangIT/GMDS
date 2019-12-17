@@ -47,14 +47,15 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             try
             {
                 var query = from o in context.ApdDimOrg select o;
+
+                query = query.Where(f => (string.IsNullOrEmpty(model.orgname) || f.OrgName.Contains(model.orgname)) &&
+                                         (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+                                         (string.IsNullOrEmpty(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year))));
                 int count = query.Count();
-                if (model.limit * model.page > count)
+                if (model.limit * model.page >= count)
                 {
                     model.page = 0;
                 }
-                query = query.Where(f => (string.IsNullOrEmpty(model.orgname) || f.OrgName.Equals(model.orgname)) &&
-                                         (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
-                                         (string.IsNullOrEmpty(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year))));
                 var data = query.Skip(model.limit * model.page).Take(model.limit);
 
                 fr.Content = new { data = data, total = count };
