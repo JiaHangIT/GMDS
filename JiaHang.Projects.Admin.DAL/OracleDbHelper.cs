@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JiaHang.Projects.Admin.Common;
+using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ namespace JiaHang.Projects.Admin.DAL
 {
     public class OracleDbHelper
     {
-        const string connectionString = @"DATA SOURCE=120.79.207.87:1521/orcl;PASSWORD=123456;PERSIST SECURITY INFO=True;USER ID=gao_ming";
+        //const string connectionString = @"DATA SOURCE=120.79.207.87:1521/orcl;PASSWORD=123456;PERSIST SECURITY INFO=True;USER ID=gao_ming";
+        static string connectionString = AppConfig.getconnecting("OracleConnection");
 
         public static List<T> Query<T>(string cmdstr, List<SqlParameter> parameters = null)
         {
