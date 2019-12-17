@@ -149,6 +149,7 @@
     <el-dialog :title="dialogTitle"
                :visible.sync="centerDialogVisible"
                width="40%"
+               :modal-append-to-body="false"
                center>
 
         <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">

@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelTaxBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctTAx> list, string year, string userid)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var _year = Convert.ToDecimal(year);

@@ -639,7 +639,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.CREATED_BY)
                     .HasColumnName("CREATED_BY")
-                    .HasColumnType("NVARCHAR2(40)")
+                    .HasColumnType("NUMBER")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.LAST_UPDATE_DATE)
@@ -663,6 +663,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("PROFIT")
                     .HasColumnType("NUMBER");
 
+                entity.Property(e => e.LIABILITIES)
+                 .HasColumnName("LIABILITIES")
+                 .HasColumnType("NUMBER");
+
                 entity.Property(e => e.MAIN_BUSINESS_INCOME)
                     .HasColumnName("MAIN_BUSINESS_INCOME")
                     .HasColumnType("NUMBER");
@@ -682,9 +686,11 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.OWNER_EQUITY)
                     .HasColumnName("OWNER_EQUITY")
                     .HasColumnType("NUMBER");
-                //entity.Property(e => e.LogType)
-                //    .HasColumnName("LOG_TYPE")
-                //    .HasColumnType("NVARCHAR2(30)");
+
+                entity.Property(e => e.NUMBER_OF_EMPLOYEES)
+                   .HasColumnName("NUMBER_OF_EMPLOYEES")
+                   .HasColumnType("NUMBER");
+                
                 entity.Property(e => e.DeleteBy)
                     .HasColumnName("DELETE_BY")
                     .HasColumnType("NVARCHAR2(40)");
@@ -694,8 +700,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG")
-                .HasColumnType("NUMBER");
+                    .HasColumnName("DELETE_FLAG");
             });
             modelBuilder.Entity<ApdFctLandTown2>(entity =>
             {
