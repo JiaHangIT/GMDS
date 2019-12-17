@@ -317,6 +317,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             {
                
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                pagenum--; if (pagenum < 0)
+                {
+                    pagenum = 0;
+                }
                 var summarydata = GetList(new RequestLandTown() { orgname = orgname, orgcode = orgcode,year= year, limit=pagesize,page=pagenum });
                 var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
                 var groupdata = (List<int>)((dynamic)summarydata.Content).array;

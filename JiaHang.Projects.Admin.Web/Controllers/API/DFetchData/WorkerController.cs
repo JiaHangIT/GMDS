@@ -274,6 +274,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                pagenum--; if (pagenum < 0)
+                {
+                    pagenum = 0;
+                }
                 var summarydata = workerBll.GetList(new SearchWorkerModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnWorkerModel>)((dynamic)summarydata).Content;
 

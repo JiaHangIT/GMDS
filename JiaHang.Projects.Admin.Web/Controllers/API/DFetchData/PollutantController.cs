@@ -333,6 +333,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
                 //var summarydata = pollutantBll.GetList();
+                pagenum--; if (pagenum < 0)
+                {
+                    pagenum = 0;
+                }
                 var summarydata = pollutantBll.GetList(new SearchModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnPollutantModel>)((dynamic)summarydata).Content;
 

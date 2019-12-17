@@ -30,8 +30,12 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                 query = query.Where(f => (string.IsNullOrEmpty(model.orgname) || f.OrgName.Equals(model.orgname)) &&
                                         (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
                                         (string.IsNullOrEmpty(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year))));
-
-                fr.Content = query.ToList();
+                int count = query.Count();
+                if (model.limit * model.page >= count)
+                {
+                    model.page = 0;
+                }
+                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
                 return fr;
             }
             catch (Exception)

@@ -45,8 +45,12 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                                   (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
                                   (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
                                   ));
-
-                fr.Content = query.ToList();
+                int count = query.Count();
+                if (model.limit * model.page >= count)
+                {
+                    model.page = 0;
+                }
+                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
                 return fr;
             }
             catch (Exception ex)

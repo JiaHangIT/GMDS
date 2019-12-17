@@ -257,6 +257,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                pagenum--; if (pagenum < 0)
+                {
+                    pagenum = 0;
+                }
                 var summarydata = orgBll.GetList(new SearchOrgModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ApdDimOrg>)((dynamic)summarydata).Content;
 
