@@ -631,14 +631,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.ORG_CODE)
                     .HasColumnName("ORG_CODE")
                     .HasColumnType("NVARCHAR2(30)");
-
-                entity.Property(e => e.SOCIAL_INSURANCE)
-                    .HasColumnName("SOCIAL_INSURANCE")
-                    .HasColumnType("NUMBER");
-
-                entity.Property(e => e.POLICY_DEDUCTION)
-                    .HasColumnName("POLICY_DEDUCTION")
-                    .HasColumnType("NUMBER");
+                
 
                 entity.Property(e => e.CREATION_DATE)
                     .HasColumnName("CREATION_DATE")
@@ -668,14 +661,6 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.PROFIT)
                     .HasColumnName("PROFIT")
-                    .HasColumnType("NUMBER");
-
-                entity.Property(e => e.ASSETS)
-                    .HasColumnName("ASSETS")
-                    .HasColumnType("NUMBER");
-
-                entity.Property(e => e.LIABILITIES)
-                    .HasColumnName("LIABILITIES")
                     .HasColumnType("NUMBER");
 
                 entity.Property(e => e.MAIN_BUSINESS_INCOME)
@@ -709,7 +694,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnType("DATE");
 
                 entity.Property(e => e.DeleteFlag)
-                    .HasColumnName("DELETE_FLAG");
+                    .HasColumnName("DELETE_FLAG")
+                .HasColumnType("NUMBER");
             });
             modelBuilder.Entity<ApdFctLandTown2>(entity =>
             {

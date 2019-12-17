@@ -9,18 +9,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         /// <summary>
         /// 企业代码
         /// </summary>       
-        public string ORG_CODE { get; set; }
-
-        /// <summary>
-        /// 社会保险费
-        /// </summary>       
-        public decimal? SOCIAL_INSURANCE { get; set; }
-
-        /// <summary>
-        /// 政策性减免税额
-        /// </summary>       
-        public decimal? POLICY_DEDUCTION { get; set; }
-
+        public string ORG_CODE { get; set; }        
+        
         /// <summary>
         /// 建立日期
         /// </summary>       
@@ -65,16 +55,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         /// 营业利润
         /// </summary>       
         public decimal? PROFIT { get; set; }
-
-        /// <summary>
-        /// 资产总额
-        /// </summary>       
-        public decimal? ASSETS { get; set; }
-
-        /// <summary>
-        /// 负债总额
-        /// </summary>       
-        public decimal? LIABILITIES { get; set; }
+            
 
         /// <summary>
         /// 主营业务收入（万元）

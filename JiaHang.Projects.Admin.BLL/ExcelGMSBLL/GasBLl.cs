@@ -107,6 +107,16 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
                     fr.Message = "未找到配置的企业信息";
                     return fr;
                 }
+                var orgcodegroupby = list.GroupBy(g => new { g.OrgCode, g.PeriodYear }).Select(s => new { OrgCode = s.Key.OrgCode, PeriodYear = s.Key.PeriodYear, Count = s.Count() });
+                foreach (var item in orgcodegroupby)
+                {
+                    if (item.Count > 1)
+                    {
+                        fr.IsSuccess = false;
+                        fr.Message = $"统一信用代码为：{item.OrgCode}的企业在{item.PeriodYear}年上传了{item.Count}条数据!";
+                        return fr;
+                    }
+                }
                 foreach (var item in list)
                 {
                     if (isAlreadyExport(item.OrgCode, year))

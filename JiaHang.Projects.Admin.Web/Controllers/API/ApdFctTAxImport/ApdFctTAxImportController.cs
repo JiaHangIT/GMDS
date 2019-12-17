@@ -530,12 +530,115 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.W1 == "") && f.W1 != null);
+                        var prefilter = datalist.Where(f => !(f.W1 == "") && f.W1 != null).ToList();
                         if (prefilter == null || prefilter.Count() <= 0)
                         {
                             result.IsSuccess = false;
                             result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
                             return result;
+                        }
+
+                        /*
+                     *1、筛选数据前，检查数据格式，只需要检测数值类型的列 
+                     * **/
+
+                        int count = 1;//错误列号(对应实际列6)
+                        string colname = "";
+                        for (int i = 0; i < prefilter.Count(); i++)
+                        {
+                            try
+                            {
+                                var current = prefilter[i];
+                                var w_10 = current.W10;
+                                if (w_10 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W10";
+                                Convert.ToDecimal(w_10);
+
+                                var w_11 = current.W11;
+                                if (w_11 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W11";
+                                Convert.ToDecimal(w_11);
+
+                                var w_12 = current.W12;
+                                if (w_12 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W12";
+                                Convert.ToDecimal(w_12);
+
+                                var w_13 = current.W13;
+                                if (w_13 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W13";
+                                Convert.ToDecimal(w_13);
+
+                                var w_14 = current.W14;
+                                if (w_14 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W14";
+                                Convert.ToDecimal(w_14);
+
+                                var w_15 = current.W15;
+                                if (w_15 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W15";
+                                Convert.ToDecimal(w_15);
+
+                                var w_16 = current.W16;
+                                if (w_16 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "W16";
+                                Convert.ToDecimal(w_16);
+
+                                var w_17 = current.H17;
+                                if (w_17 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H17";
+                                Convert.ToDecimal(w_17);
+
+                                var w_18 = current.H18;
+                                if (w_18 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H18";
+                                Convert.ToDecimal(w_18);
+
+                                var w_19 = current.H19;
+                                if (w_18 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "H19";
+                                Convert.ToDecimal(w_19);
+
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                LogService.WriteError(ex);
+                                result.IsSuccess = false;
+                                result.Message = $"第{count + 5}行，{colname}列数据异常！";
+                                return result;
+
+                            }
                         }
 
                         var filterdata = prefilter.Select(s => new ApdFctTAx

@@ -77,12 +77,69 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                         result.Message = strMsg;
                         return result;
                     }
+
                     if (dt.Rows.Count > 0)
                     {
+
+
+
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.S1 == ""));
+                        var prefilter = datalist.Where(f => !(f.S1 == "") && f.S1 != null).ToList();
+                        if (prefilter == null || prefilter.Count() <= 0)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
+                            return result;
+                        }
+                        /*
+                    *1、筛选数据前，检查数据格式，只需要检测数值类型的列 
+                    * **/
+
+                        int count = 1;//错误列号(对应实际列6)
+                        string colname = "";
+                        for (int i = 0; i < prefilter.Count(); i++)
+                        {
+                            try
+                            {
+                                var current = prefilter[i];
+                                var s_6 = current.S6;
+                                if (s_6 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "S6";
+                                Convert.ToDecimal(s_6);
+
+                                var S_7 = current.S7;
+                                if (S_7 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "S7";
+                                Convert.ToDecimal(S_7);
+
+                                var s_8 = current.S8;
+                                if (s_8 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "S8";
+                                Convert.ToDecimal(s_8);
+
+
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                LogService.WriteError(ex);
+                                result.IsSuccess = false;
+                                result.Message = $"第{count + 5}行，{colname}列数据异常！";
+                                return result;
+
+                            }
+                        }
                         var filterdata = prefilter.Select(g => new ApdFctWaterDal
                         {
                             RecordId = new Random().Next(1, 99999),

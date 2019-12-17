@@ -167,7 +167,52 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
                         var listorgan = context.ApdDimOrg.ToList();
                         //需要导入到数据库的数据
                         datalist = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(dt));
-                        var prefilter = datalist.Where(f => !(f.B1 == ""));
+                        var prefilter = datalist.Where(f => !(f.B1 == "") && f.B1 != null).ToList();
+                        if (prefilter == null || prefilter.Count() <= 0)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "未选择正确的Excel文件或选择的Excel文件无可导入数据！";
+                            return result;
+                        }
+                        /*
+                   *1、筛选数据前，检查数据格式，只需要检测数值类型的列 
+                   * **/
+
+                        int count = 1;//错误列号(对应实际列6)
+                        string colname = "";
+                        for (int i = 0; i < prefilter.Count(); i++)
+                        {
+                            try
+                            {
+                                var current = prefilter[i];
+                                var b_6 = current.B6;
+                                if (b_6 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "B6";
+                                Convert.ToDecimal(b_6);
+
+                                var b_7 = current.B7;
+                                if (b_7 == "")
+                                {
+                                    continue;
+                                }
+                                colname = "B7";
+                                Convert.ToDecimal(b_7);
+                                
+
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                LogService.WriteError(ex);
+                                result.IsSuccess = false;
+                                result.Message = $"第{count + 5}行，{colname}列数据异常！";
+                                return result;
+
+                            }
+                        }
                         var filterdata = prefilter.Select(g => new ApdFctInsuranceDal
                         {
                             RecordId = Guid.NewGuid().ToString(),
