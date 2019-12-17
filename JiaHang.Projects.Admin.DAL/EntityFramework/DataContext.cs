@@ -639,7 +639,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.CREATED_BY)
                     .HasColumnName("CREATED_BY")
-                    .HasColumnType("NVARCHAR2(40)")
+                    .HasColumnType("NUMBER")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.LAST_UPDATE_DATE)
