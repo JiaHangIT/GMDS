@@ -29,7 +29,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelLandDistrictBLL
                 if (dm != null && dm.Count() > 0)
                 {
                     fr.IsSuccess = false;
-                    fr.Message = "未找到配置的企业信息";
+                    fr.Message = $"未找到配置的企业信息，统一信息代码为{string.Join(',', dm.Select(g => g.OrgCode))}！";
                     return fr;
                 }
                 foreach (var item in list)

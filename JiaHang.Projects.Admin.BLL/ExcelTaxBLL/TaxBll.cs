@@ -21,7 +21,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelTaxBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctTAx> list, string year, string userid)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
                 var _year = Convert.ToDecimal(year);
@@ -29,7 +29,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelTaxBLL
                 if (dm != null && dm.Count() > 0)
                 {
                     fr.IsSuccess = false;
-                    fr.Message = "未找到配置的企业信息";
+                    fr.Message = $"未找到配置的企业信息，统一信息代码为{string.Join(',', dm.Select(g => g.ORG_CODE))}！";
                     return fr;
                 }
                 var orgcodegroupby = list.GroupBy(g => new { g.ORG_CODE, g.PERIOD_YEAR }).Select(s => new { OrgCode = s.Key.ORG_CODE, PeriodYear = s.Key.PERIOD_YEAR, Count = s.Count() });

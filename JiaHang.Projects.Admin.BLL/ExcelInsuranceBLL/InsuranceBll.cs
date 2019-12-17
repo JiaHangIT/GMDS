@@ -67,8 +67,8 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
                                 Remark = r.Remark
                             };
                 query = query.Where(f => (
-                                    (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
-                                    (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Equals(model.orgname)) &&
+                                    (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+                                    (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
                                     (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
                                     ));
                 int count = query.Count();
@@ -98,7 +98,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
                 if (dm != null && dm.Count() > 0)
                 {
                     fr.IsSuccess = false;
-                    fr.Message = "未找到配置的企业信息";
+                    fr.Message = $"未找到配置的企业信息，统一信息代码为{string.Join(',', dm.Select(g => g.OrgCode))}！";
                     return fr;
                 }
                 var orgcodegroupby = list.GroupBy(g => new { g.OrgCode, g.PeriodYear }).Select(s => new { OrgCode = s.Key.OrgCode, PeriodYear = s.Key.PeriodYear, Count = s.Count() });

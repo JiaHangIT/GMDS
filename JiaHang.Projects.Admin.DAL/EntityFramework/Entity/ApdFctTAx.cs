@@ -55,7 +55,11 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         /// 营业利润
         /// </summary>       
         public decimal? PROFIT { get; set; }
-            
+
+        /// <summary>
+        /// 负债总额
+        /// </summary>
+        public decimal? LIABILITIES { get; set; }
 
         /// <summary>
         /// 主营业务收入（万元）

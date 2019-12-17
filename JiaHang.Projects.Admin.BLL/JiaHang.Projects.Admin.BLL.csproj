@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="OrgBLL\DimOrgBll.cs~RF2eed4e.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
   </ItemGroup>
 
