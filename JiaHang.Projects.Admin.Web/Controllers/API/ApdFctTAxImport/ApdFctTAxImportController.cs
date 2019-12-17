@@ -605,28 +605,28 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 colname = "W16";
                                 Convert.ToDecimal(w_16);
 
-                                var w_17 = current.H17;
+                                var w_17 = current.W17;
                                 if (w_17 == "")
                                 {
                                     continue;
                                 }
-                                colname = "H17";
+                                colname = "W17";
                                 Convert.ToDecimal(w_17);
 
-                                var w_18 = current.H18;
+                                var w_18 = current.W18;
                                 if (w_18 == "")
                                 {
                                     continue;
                                 }
-                                colname = "H18";
+                                colname = "W18";
                                 Convert.ToDecimal(w_18);
 
-                                var w_19 = current.H19;
+                                var w_19 = current.W19;
                                 if (w_18 == "")
                                 {
                                     continue;
                                 }
-                                colname = "H19";
+                                colname = "W19";
                                 Convert.ToDecimal(w_19);
 
                                 count++;
