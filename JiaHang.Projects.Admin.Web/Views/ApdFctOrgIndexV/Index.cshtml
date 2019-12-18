@@ -66,33 +66,67 @@
         margin: auto;
     }
 
-    .divGreen {
+    .mjzjzdiv {
         width: 120px;
         height: 60px;
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        background-color: green;
+        /*background-color: green;*/
         margin: auto;
     }
-
-    .divRed {
+    .mjssdiv {
         width: 120px;
         height: 60px;
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        background-color: Red;
+        /*background-color: green;*/
         margin: auto;
     }
-
-    .divYellow {
+    .jzcsyldiv {
         width: 120px;
         height: 60px;
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        background-color: Yellow;
+        /*background-color: green;*/
+        margin: auto;
+    }
+    .dwpwqzjzdiv {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        /*background-color: Red;*/
+        margin: auto;
+    }
+    .dwnhdiv {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        /*background-color: Red;*/
+        margin: auto;
+    }
+    .qyldscldiv {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        /*background-color: Yellow;*/
+        margin: auto;
+    }
+    .yfjftrbdiv {
+        width: 120px;
+        height: 60px;
+        padding-top: 20px;
+        vertical-align: middle;
+        border-radius: 10px;
+        /*background-color: Yellow;*/
         margin: auto;
     }
 </style>
@@ -442,7 +476,7 @@
                                     <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
                                 </td>
                                 <td>
-                                    <div class="divRed">
+                                    <div class="dwnhdiv">
                                         单位能耗<br />
                                         <span id="dwnh"></span>万元/吨标煤
                                     </div>
@@ -488,7 +522,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="divGreen">
+                                    <div class="mjzjzdiv">
                                         亩均增加值<br />
                                         <span id="mjzjz"></span>万元/亩
                                     </div>
@@ -524,7 +558,7 @@
                                     <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
                                 </td>
                                 <td>
-                                    <div class="divYellow">
+                                    <div class="qyldscldiv">
                                         全员劳动生产率<br />
                                         <span id="qyldscl"></span>万元/人.年
                                     </div>
@@ -569,7 +603,7 @@
                                 <td></td>
                                 <td></td>
                                 <td>
-                                    <div class="divGreen">
+                                    <div class="mjssdiv">
                                         亩均税收<br />
                                         <span id="mjss"></span>万元/亩
                                     </div>
@@ -585,20 +619,20 @@
                                     <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
                                 </td>
                                 <td>
-                                    <div class="divRed">
+                                    <div class="dwpwqzjzdiv">
                                         单位排污权增加值<br />
                                         <span id="dwpwqzjz"></span>万元/吨
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="divGreen">
+                                    <div class="jzcsyldiv">
                                         净资产收益率<br />
                                         <span id="jzcsyl"></span>%
                                     </div>
                                 </td>
                                 <td></td>
                                 <td>
-                                    <div class="divYellow">
+                                    <div class="yfjftrbdiv">
                                         研发经费投入比<br />
                                         <span id="yfjftrb"></span>
                                     </div>
@@ -754,6 +788,7 @@
                 let rowstr = JSON.stringify(row)
                 let formdata = JSON.parse(rowstr)
                 console.log(formdata.orG_CODE)
+                console.log(formdata.perioD_YEAR)
                 axios.get(`/api/ApdFctOrgIndexV/IndustryDetail?code=${formdata.orG_CODE}`)
                     .then(function (response) {
                         console.log(  response.data.content.list[0]);
@@ -781,27 +816,110 @@
                     });
                 axios.get(`/api/ApdFctOrgIndexV/BenefiteValuationInfo?code=${formdata.orG_CODE}`)
                     .then(function (response) {
-
+                        axios.get(`/api/ApdFctOrgIndexV/GetAvarageScore?year=${formdata.perioD_YEAR}`)
+                            .then(function (response2) {
+                                console.log("数据1", response.data.content.list[0].taX_PER_MU);
+                                if (response.data.content.list[0].taX_PER_MU > response2.data.content.list[0].taX_PER_MU) {
+                                    //绿色
+                                    $('.mjssdiv').css("background-color","#99FF00")
+                                } else if (response.data.content.list[0].taX_PER_MU == response2.data.content.list[0].taX_PER_MU) {
+                                    //黄色
+                                    $('.mjssdiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].taX_PER_MU < response2.data.content.list[0].taX_PER_MU) {
+                                    $('.mjssdiv').css("background-color","#EC5858")
+                                }
+                                if (response.data.content.list[0].adD_VALUE_PER_MU > response2.data.content.list[0].adD_VALUE_PER_MU) {
+                                    //绿色
+                                    $('.mjzjzdiv').css("background-color", "#99FF00")
+                                } else if (response.data.content.list[0].adD_VALUE_PER_MU == response2.data.content.list[0].taX_PER_MU) {
+                                    //黄色
+                                    $('.mjzjzdiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].adD_VALUE_PER_MU < response2.data.content.list[0].adD_VALUE_PER_MU) {
+                                    //红色
+                                    $('.mjzjzdiv').css("background-color", "#EC5858")
+                                }
+                                if (response.data.content.list[0].productivity > response2.data.content.list[0].productivity) {
+                                    //绿色
+                                    $('.qyldscldiv').css("background-color", "#99FF00")
+                                } else if (response.data.content.list[0].productivity == response2.data.content.list[0].productivity) {
+                                    //黄色
+                                    $('.qyldscldiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].productivity < response2.data.content.list[0].productivity) {
+                                    //红色
+                                    $('.qyldscldiv').css("background-color", "#EC5858")
+                                }
+                                if (response.data.content.list[0].pollutanT_DISCHARGE > response2.data.content.list[0].pollutanT_DISCHARGE) {
+                                    //绿色
+                                    $('.dwpwqzjzdiv').css("background-color", "#99FF00")
+                                } else if (response.data.content.list[0].pollutanT_DISCHARGE == response2.data.content.list[0].pollutanT_DISCHARGE) {
+                                    //黄色
+                                    $('.dwpwqzjzdiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].pollutanT_DISCHARGE < response2.data.content.list[0].pollutanT_DISCHARGE) {
+                                    //红色
+                                    $('.dwpwqzjzdiv').css("background-color", "#EC5858")
+                                }
+                                if (response.data.content.list[0].energY_CONSUMPTION > response2.data.content.list[0].energY_CONSUMPTION) {
+                                    //绿色
+                                    $('.dwnhdiv').css("background-color", "#99FF00")
+                                } else if (response.data.content.list[0].energY_CONSUMPTION == response2.data.content.list[0].energY_CONSUMPTION) {
+                                    //黄色
+                                    $('.dwnhdiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].energY_CONSUMPTION < response2.data.content.list[0].energY_CONSUMPTION) {
+                                    //红色
+                                    $('.dwnhdiv').css("background-color", "#EC5858")
+                                }
+                                if (response.data.content.list[0].neT_ASSETS_PROFIT > response2.data.content.list[0].neT_ASSETS_PROFIT) {
+                                    //绿色
+                                    $('.jzcsyldiv').css("background-color", "#99FF00")
+                                } else if (response.data.content.list[0].neT_ASSETS_PROFIT == response2.data.content.list[0].neT_ASSETS_PROFIT) {
+                                    //黄色
+                                    $('.jzcsyldiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].neT_ASSETS_PROFIT < response2.data.content.list[0].neT_ASSETS_PROFIT) {
+                                    //红色
+                                    $('.jzcsyldiv').css("background-color", "#EC5858")
+                                }
+                                if (response.data.content.list[0].r_D_EXPENDITURE_RATIO > response2.data.content.list[0].r_D_EXPENDITURE_RATIO) {
+                                    //绿色
+                                    $('.yfjftrbdiv').css("background-color", "#99FF00")
+                                } else if (response.data.content.list[0].r_D_EXPENDITURE_RATIO == response2.data.content.list[0].r_D_EXPENDITURE_RATIO) {
+                                    //黄色
+                                    $('.yfjftrbdiv').css("background-color", "yellow")
+                                } else if (response.data.content.list[0].r_D_EXPENDITURE_RATIO < response2.data.content.list[0].r_D_EXPENDITURE_RATIO) {
+                                    //红色
+                                    $('.yfjftrbdiv').css("background-color", "#EC5858")
+                                }
+                        })
+                            .catch(function (error) { console.log(error) })
+                        //item2.ADD_VALUE_PER_MU = Math.Round(Convert.ToDecimal(item2.ADD_VALUE_PER_MU / 10000), 2);
+                        //item2.TAX_PER_MU = Math.Round(Convert.ToDecimal(item2.TAX_PER_MU / 10000), 2);
+                        //item2.MAIN_BUSINESS_INCOME = Math.Round(Convert.ToDecimal(item2.MAIN_BUSINESS_INCOME / 10000), 2);
+                        //item2.POLLUTANT_DISCHARGE = Math.Round(Convert.ToDecimal(item2.POLLUTANT_DISCHARGE / 10000), 2);
+                        //item2.fact_tax = Math.Round(Convert.ToDecimal(item2.fact_tax / 10000), 2);
+                        //item2.ENERGY_CONSUMPTION = Math.Round(Convert.ToDecimal(item2.ENERGY_CONSUMPTION / 10000), 2);
+                        //item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
+                        //item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
+                        //item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
                         console.log(response.data.content.list[0]);
-                        $('#mjss').html(response.data.content.list[0].taX_PER_MU)
-                        $('#mjzjz').html(response.data.content.list[0].adD_VALUE_PER_MU)
-                        $('#qyldscl').html(response.data.content.list[0].productivity)
-                        $('#dwpwqzjz').html(response.data.content.list[0].pollutanT_DISCHARGE)
-                        $('#dwnh').html(response.data.content.list[0].energY_CONSUMPTION)
+                        console.log("精确值",(response.data.content.list[0].adD_VALUE_PER_MU/10000).toFixed(2))
+                        $('#mjss').html((response.data.content.list[0].taX_PER_MU / 10000).toFixed(2))
+                        $('#mjzjz').html((response.data.content.list[0].adD_VALUE_PER_MU/10000).toFixed(2))
+                        $('#qyldscl').html((response.data.content.list[0].productivity / 10000).toFixed(2))
+                        $('#dwpwqzjz').html((response.data.content.list[0].pollutanT_DISCHARGE / 10000).toFixed(2))
+                        $('#dwnh').html((response.data.content.list[0].energY_CONSUMPTION / 10000).toFixed(2))
                         $('#jzcsyl').html(response.data.content.list[0].neT_ASSETS_PROFIT)
                         $('#yfjftrb').html(response.data.content.list[0].r_D_EXPENDITURE_RATIO)
 
                         $('#pollutant_discharge').html(response.data.content.list[0].pollutant_discharge2)
-                        $('#MAIN_BUSINESS_INCOME').html(response.data.content.list[0].maiN_BUSINESS_INCOME)
+                        $('#MAIN_BUSINESS_INCOME').html((response.data.content.list[0].maiN_BUSINESS_INCOME / 10000).toFixed(2))
                         $('#ASSETS').html(response.data.content.list[0].assets)
                         $('#WORKER_MONTH').html(response.data.content.list[0].workeR_MONTH)
-                        $('#Industrial_added_value').html(response.data.content.list[0].industrial_added_value)
+                        $('#Industrial_added_value').html((response.data.content.list[0].industrial_added_value / 10000).toFixed(2))
                         $('#LAND_AREA').html(response.data.content.list[0].lanD_AREA)
                         $('#R_D_EXPENDITURE').html(response.data.content.list[0].r_D_EXPENDITURE)
-                        $('#PROFIT').html(response.data.content.list[0].profit)
+                        $('#PROFIT').html((response.data.content.list[0].profit / 10000).toFixed(2))
                         //综合能耗
                         $('#Energy_consumption2').html(response.data.content.list[0].energy_consumption2)
-                        $('#fact_tax').html(response.data.content.list[0].fact_tax)
+                        $('#fact_tax').html((response.data.content.list[0].fact_tax / 10000).toFixed(2))
                         $('#COMPOSITE_SCORE').html(response.data.content.list[0].compositE_SCORE)
                         $('#sixflpf').html(response.data.content.industyCount)
                         $('#xpf').html(response.data.content.industyCount)

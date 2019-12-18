@@ -305,20 +305,13 @@ namespace JiaHang.Projects.Admin.BLL
         public FuncResult BenefiteValuationInfo(string code) {
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL where ORG_CODE="+"'"+code+"'");
             string sql2 = "select count(*) as count  from apd_dim_org";
+            
             List<Counts> result = OracleDbHelper.Query<Counts>(sql2.ToString());
             decimal industyCount = 0;
             foreach (var item in result) {
                 industyCount = item.Count;
             }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
-            foreach (var item2 in list) {
-                item2.fact_tax= Math.Round(Convert.ToDecimal(item2.fact_tax / 10000), 2);
-                item2.ENERGY_CONSUMPTION = Math.Round(Convert.ToDecimal(item2.ENERGY_CONSUMPTION / 10000), 2);
-                item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
-                item2.R_D_EXPENDITURE = Math.Round(Convert.ToDecimal(item2.R_D_EXPENDITURE / 10000), 2);
-                item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
-                item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
-            }
             
             return new FuncResult() { IsSuccess = true, Content = new { list , industyCount } };
         } 
@@ -425,7 +418,7 @@ namespace JiaHang.Projects.Admin.BLL
         public string LAST_UPDATED_BY { get; set; }
      }
     public class AvarageScore {
-        public string PERIOD_YEAR { get; set; }
+        public decimal PERIOD_YEAR { get; set; }
         public decimal TAX_PER_MU { get; set; }
         public decimal ADD_VALUE_PER_MU { get; set; }
         public decimal PRODUCTIVITY { get; set; }

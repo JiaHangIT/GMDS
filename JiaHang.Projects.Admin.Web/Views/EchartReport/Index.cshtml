@@ -435,7 +435,8 @@
             //})
         }
         form.on('select(myselect)', function (data) {
-            axios.get(`/api/EchartReportParms/GetIndustryData?name=${data.value}&score1=${fs1}&score2=${fs2}`)
+            var year = $('#year').val()
+            axios.get(`/api/EchartReportParms/GetIndustryData?name=${data.value}&score1=${fs1}&score2=${fs2}&year=${year}`)
                 .then(function (res) {
                     var datas = [];
                     var countdata = [];
@@ -491,7 +492,8 @@
         })
         form.on('select(myselect2)', function (data) {
             console.log(data.value)
-            axios.get(`/api/EchartReportParms/GetTownData?name=${data.value}&score1=${fs1}&score2=${fs2}`)
+            var year = $('#year').val()
+            axios.get(`/api/EchartReportParms/GetTownData?name=${data.value}&score1=${fs1}&score2=${fs2}&year=${year}`)
                 .then(function (res) {
                     var datas2 = [];
                     var countdata2 = [];
@@ -1077,7 +1079,21 @@
             yearchange: function (val) {
                 let vm = this;
                 vm.onload(val.getFullYear());
-                console.log("值", val.getFullYear())
+                if ($('#divUnSelected3').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), -1, 60, val.getFullYear())
+                }
+                if ($('#divUnSelected2').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), 60, 80, val.getFullYear())
+                }
+                if ($('#divUnSelected1').css('background-color') == 'rgb(36, 151, 243)') {
+                     vm.table1($('#myselect').val(), 80, 90, val.getFullYear())
+                }
+                if ($('#divUnSelected').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), 90, 150, val.getFullYear())
+                }
+                console.log($('#divUnSelected3').css('background-color'))
+                //
+                //table2($('#myselect2').val(), 90, 150, val.getFullYear())
             },
             inittable1: function (name, score1, score2, year) {
                 var datas = [];
@@ -1193,6 +1209,118 @@
                         console.log(error)
                     });
             },
+            table1:function(name, score1, score2, year) {
+                var datas = [];
+                var countdata = [];
+                axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+                    .then(function (res) {
+                        datas.splice(0, datas.length);
+                        countdata.splice(0, countdata.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            datas.push(item.industry)
+                            countdata.push(item.count)
+                        })
+                        var myChart1 = echarts.init(document.getElementById('main1'));
+                        var option = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata
+                                }
+                            ]
+                        };
+                        myChart1.setOption(option);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            table2(name, score1, score2,year) {
+            var datas2 = [];
+            var countdata2 = [];
+            axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+                .then(function (res) {
+                    datas2.splice(0, datas2.length);
+                    countdata2.splice(0, countdata2.length);
+                    $.each(res.data.content.list, function (index, item) {
+                        console.log(item)
+                        datas2.push(item.town)
+                        countdata2.push(item.count)
+                    })
+
+                    var myChart2 = echarts.init(document.getElementById('main2'));
+                    var option2 = {
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: datas2,
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '数据',
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: countdata2
+                            }
+                        ]
+                    };
+                    myChart2.setOption(option2);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        },
             onload: function (year) {
                 let vm = this;
                 axios.get(`/api/EchartReportParms/GetScorePercentage?year=${year}`).then(function (res) {
