@@ -45,10 +45,10 @@ namespace JiaHang.Projects.Admin.BLL.ExcelTaxBLL
                 }
                 foreach (var item in list)
                 {
-                    //if (isAlreadyExport(item.ORG_CODE, year))
-                    //{
-                    //    //continue;
-                    //}
+                    if (isAlreadyExport(item.ORG_CODE, year))
+                    {
+                        //continue;
+                    }
                     item.CREATION_DATE = DateTime.Now;
                     item.CREATED_BY = Convert.ToDecimal(userid);
                     context.ApdFctTAx.Add(item);
