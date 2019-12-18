@@ -62,11 +62,13 @@
    
 
     <template>
-        <el-table :data="data"
-                  v-loading="loading"
-                  stripe
-                  :height="tableheight"
+        <el-table ref="multipleTable"
+                  :data="data"
+                  :border="true"
+                  tooltip-effect="dark"
                   style="width: 100%"
+                  v-loading="loading"
+                  :height="tableheight"
                   @@selection-change="handleSelectionChange">
             <el-table-column type="selection"
                              width="55">
@@ -106,7 +108,8 @@
                              width="180">
             </el-table-column>
             <el-table-column prop="phone2"
-                             label="日常联系人电话">
+                             label="日常联系人电话"
+                             width="120">
             </el-table-column>
             <el-table-column prop="industry"
                              label="行业"

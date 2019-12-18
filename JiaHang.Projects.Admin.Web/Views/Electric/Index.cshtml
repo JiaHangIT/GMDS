@@ -59,8 +59,10 @@
    
 
     <template>
-        <el-table :data="data"
-                  border
+        <el-table ref="multipleTable"
+                  :data="data"
+                  :border="true"
+                  tooltip-effect="dark"
                   style="width: 100%"
                   :height="tableheight"
                   v-loading="loading"
