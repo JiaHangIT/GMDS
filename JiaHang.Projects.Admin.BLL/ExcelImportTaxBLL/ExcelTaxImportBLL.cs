@@ -82,6 +82,36 @@ namespace JiaHang.Projects.Admin.BLL.ExcelImportTax
             }
         }
 
-        
-     }
+        public async Task<FuncResult> Delete(string[] ids, string currentUserId)
+        {
+            IQueryable<ApdFctTAx> entitys = _context.ApdFctTAx.Where(e => ids.Contains(e.RECORD_ID));
+            if (entitys.Count() != ids.Length)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
+            }
+            foreach (ApdFctTAx obj in entitys)
+            {
+                //删除
+                _context.ApdFctTAx.Remove(obj);
+            }
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    LogService.WriteError(ex);
+                    return new FuncResult() { IsSuccess = false, Message = "删除时发生了意料之外的错误" };
+                }
+            }
+            return new FuncResult() { IsSuccess = true, Message = $"已成功删除{ids.Length}条记录" };
+
+        }
+
+
+    }
 }

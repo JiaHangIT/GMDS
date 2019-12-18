@@ -189,6 +189,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             }
         }
         /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        [Route("BatchDelete")]
+        [HttpDelete]
+        public async Task<FuncResult> Delete(string[] Ids)
+        {
+            return await taxBlla.Delete(Ids, HttpContext.CurrentUser(cache).Id);
+        }
+        /// <summary>
         /// 删除数据
         /// </summary>
         /// <param name="key"></param>
@@ -622,7 +633,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 Convert.ToDecimal(w_18);
 
                                 var w_19 = current.W19;
-                                if (w_18 == "")
+                                if (w_19 == "")
                                 {
                                     continue;
                                 }
@@ -635,7 +646,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                             {
                                 LogService.WriteError(ex);
                                 result.IsSuccess = false;
-                                result.Message = $"第{count + 5}行，{colname}列数据异常！";
+                                result.Message = $"第{count + 9}行，{colname}列数据异常！";
                                 return result;
 
                             }

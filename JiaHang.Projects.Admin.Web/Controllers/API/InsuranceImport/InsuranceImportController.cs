@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -28,11 +29,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         private readonly DataContext context;
         private readonly InsuranceBll IMBll;
         private readonly IHostingEnvironment hosting;
+        private readonly IMemoryCache cache;
 
-        public InsuranceImportController(DataContext _context, IHostingEnvironment _hosting)
+        public InsuranceImportController(DataContext _context, IHostingEnvironment _hosting, IMemoryCache _cache)
         {
             this.context = _context;
             this.hosting = _hosting;
+            this.cache = _cache;
             IMBll = new InsuranceBll(_context);
         }
 
@@ -84,6 +87,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
 
                 throw new Exception("error", ex);
             }
+        }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        [Route("BatchDelete")]
+        [HttpDelete]
+        public async Task<FuncResult> Delete(string[] Ids)
+        {
+            return await IMBll.Delete(Ids, HttpContext.CurrentUser(cache).Id);
         }
         /// <summary>
         /// 删除数据
