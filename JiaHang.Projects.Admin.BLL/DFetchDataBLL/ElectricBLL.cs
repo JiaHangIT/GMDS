@@ -131,6 +131,39 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
+        public FuncResult Deletes(string[] ids)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
+            try
+            {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    IQueryable<ApdFctElectric> list = context.ApdFctElectric.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    context.ApdFctElectric.RemoveRange(list);
+                  
+                    try
+                    {
+                        context.SaveChanges();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException}{ex.Message}";
+                        return fr;
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException}{ex.Message}";
+                return fr;
+            }
+        }
+
         public FuncResult WriteData(IEnumerable<ApdFctElectric> list,string year,string userid)
         {
             /*

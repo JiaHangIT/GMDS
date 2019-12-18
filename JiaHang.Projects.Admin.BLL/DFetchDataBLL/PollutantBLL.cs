@@ -156,6 +156,39 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             }
         }
 
+        public FuncResult Deletes(string[] ids)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
+            try
+            {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    IQueryable<ApdFctContaminants> list = context.ApdFctContaminants.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    context.ApdFctContaminants.RemoveRange(list);
+
+                    try
+                    {
+                        context.SaveChanges();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException}{ex.Message}";
+                        return fr;
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException}{ex.Message}";
+                return fr;
+            }
+        }
+
         /// <summary>
         /// 写入到数据表
         /// ?

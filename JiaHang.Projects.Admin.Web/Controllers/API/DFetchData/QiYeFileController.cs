@@ -306,6 +306,57 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpDelete("batchdelete")]
+        public FuncResult Deletes(string[] ids)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
+            try
+            {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        //删除town2和town表数据
+                        IQueryable<ApdFctLandTown2> listmain = context.ApdFctLandTown2.Where(f => ids.Select(g => g).Contains(f.RecordId));
+                        if (listmain != null && listmain.Count() > 0)
+                        {
+                            IQueryable<ApdFctLandTown> list = context.ApdFctLandTown.Where(d => listmain.Select(g => g.RecordId).Contains(d.T2Id));
+                            context.ApdFctLandTown2.RemoveRange(listmain);
+                            context.ApdFctLandTown.RemoveRange(list);
+                            context.SaveChanges();
+
+                            trans.Commit();
+                        }
+                        else
+                        {
+                            fr.IsSuccess = false;
+                            fr.Message = $"异常，数据库中未找到选中数据!";
+                            return fr;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException}{ex.Message}";
+                        return fr;
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException}{ex.Message}";
+                return fr;
+            }
+        }
+
+        /// <summary>
         /// 数据导出到excel
         /// </summary>
         /// <returns></returns>

@@ -132,6 +132,39 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             }
         }
 
+        public FuncResult Deletes(string[] ids)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
+            try
+            {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    IQueryable<ApdDimOrg> list = context.ApdDimOrg.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    context.ApdDimOrg.RemoveRange(list);
+
+                    try
+                    {
+                        context.SaveChanges();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException}{ex.Message}";
+                        return fr;
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException}{ex.Message}";
+                return fr;
+            }
+        }
+
         public FuncResult Delete(string recordid,string userid)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };

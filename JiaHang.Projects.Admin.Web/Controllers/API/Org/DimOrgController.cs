@@ -131,6 +131,25 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpDelete("batchdelete")]
+        public FuncResult Deletes(string[] ids)
+        {
+            try
+            {
+                return orgBll.Deletes(ids);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
         /// excel数据导入到数据库(apdfctrd)
         /// 一个机构一年只有一批数据
         /// </summary>
