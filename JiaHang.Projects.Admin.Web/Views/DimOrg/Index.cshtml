@@ -155,25 +155,120 @@
                width="40%"
                :modal-append-to-body="false"
                center>
-        <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
-            <el-form :inline="true" class="demo-form-inline">
-                <el-form-item label="统一社会信用代码">
-                    <el-input placeholder="请输入" v-model="form.orgCode"></el-input>
-                </el-form-item>
-                <el-form-item label="企业名称">
-                    <el-input placeholder="请输入" v-model="form.orgName"></el-input>
-                </el-form-item>
-            </el-form>
-            <el-form :inline="true" class="demo-form-inline">
-                <el-form-item label="统一用代码">
-                    <el-input placeholder="请输入" v-model="form.orgCode"></el-input>
-                </el-form-item>
-                <el-form-item label="称">
-                    <el-input placeholder="请输入" v-model="form.orgName"></el-input>
-                </el-form-item>
-            </el-form>
 
-            <table>
+        <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">统一社会信用代码</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.orgCode"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">企业名称</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.orgName"></el-input>
+                    </div>
+
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">镇街</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.town"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">登记注册类型</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.registrationType">
+                    </div>
+
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">住所</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.address"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">法定代表人</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.legalRepresentative"></el-input>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">法定代表人电话</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.phone"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">日常联系人</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.linkMan"></el-input>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">日常联系人电话</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.phone2"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">行业</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.industry"></el-input>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">登记状态</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.registrationStatus"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">注册资本</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.registrationMoney"></el-input>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">注册日期</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.registrationDate"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">年份</label>
+                    <div class="layui-input-block">
+                        <el-date-picker v-model="form.periodYear"
+                                        type="year"
+                                        format="yyyy"
+                                        placeholder="选择年">
+                        </el-date-picker>
+                    </div>
+                </div>
+            </div>
+            @*<table>
                 <tr>
                     <td>统一社会信用代码</td>
                     <td><el-input placeholder="请输入" v-model="form.orgCode"></el-input></td>
@@ -227,7 +322,7 @@
                         </el-date-picker>
                     </td>
                 </tr>
-            </table>
+            </table>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>

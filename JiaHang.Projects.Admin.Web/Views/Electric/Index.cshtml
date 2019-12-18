@@ -72,44 +72,34 @@
             </el-table-column>
             <el-table-column fixed
                              prop="orgName"
-                             label="企业名称"
-                             >
+                             label="企业名称">
             </el-table-column>
             <el-table-column prop="periodYear"
-                             label="年份"
-                             >
+                             label="年份">
             </el-table-column>
             <el-table-column prop="town"
-                             label="所属镇街"
-                             >
+                             label="所属镇街">
             </el-table-column>
             <el-table-column prop="orgCode"
-                             label="统一社会信用代码"
-                             >
+                             label="统一社会信用代码">
             </el-table-column>
             <el-table-column prop="registrationType"
-                             label="登记注册类型"
-                             >
+                             label="登记注册类型">
             </el-table-column>
             <el-table-column prop="address"
-                             label="住所"
-                             >
+                             label="住所">
             </el-table-column>
             <el-table-column prop="netSupply"
-                             label="网供用电量"
-                             >
+                             label="网供用电量">
             </el-table-column>
             <el-table-column prop="spontaneous"
-                             label="企业自发自用的用电量"
-                             >
+                             label="企业自发自用的用电量">
             </el-table-column>
             <el-table-column prop="remark"
-                             label="备注"
-                             >
+                             label="备注">
             </el-table-column>
             <el-table-column fixed="right"
-                             label="操作"
-                             width="150">
+                             label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini"
                                v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -129,7 +119,32 @@
                center>
 
         <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
-            <table>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">网供用电量</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.netSupply"></el-input>
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">企业自发自用的用电量</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.spontaneous"></el-input>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <el-input placeholder="请输入" v-model="form.remark"></el-input>
+                    </div>
+
+                </div>
+            </div>
+
+            @*<table>
                 <tr>
                     <td>网供用电量</td>
                     <td><el-input placeholder="请输入" v-model="form.netSupply"></el-input></td>
@@ -141,7 +156,7 @@
                     <td><el-input placeholder="请输入" v-model="form.remark"></el-input></td>
 
                 </tr>
-            </table>
+            </table>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>

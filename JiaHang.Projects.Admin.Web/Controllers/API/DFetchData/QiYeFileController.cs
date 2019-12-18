@@ -218,7 +218,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
                 foreach (var item in model.detaillist)
                 {
-                    var cd = context.ApdFctLandTown.FirstOrDefault(f => f.RecordId.Equals(item.RecordId));
+                    var cd = context.ApdFctLandTown.FirstOrDefault(f => f.RecordId.Equals(Convert.ToString(item.RecordId)));
                     cd.OwnershipLand = item.OwnershipLand;
                     cd.ProtectionLand = item.ProtectionLand;
                     cd.ReduceLand = item.ReduceLand;
