@@ -43,9 +43,6 @@
 
         <el-form :inline="true" class="demo-form-inline">
             <el-form-item>
-                <el-button type="danger" @@click="batchDelete">选中行删除</el-button>
-            </el-form-item>
-            <el-form-item>
                 <el-button type="primary" @@click="handleAdd">新增</el-button>
             </el-form-item>
             <el-form-item>
@@ -56,6 +53,9 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @@click="()=>{ this.showbutton = true}">导入</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="danger" @@click="batchDelete">选中行删除</el-button>
             </el-form-item>
         </el-form>
     </div>
