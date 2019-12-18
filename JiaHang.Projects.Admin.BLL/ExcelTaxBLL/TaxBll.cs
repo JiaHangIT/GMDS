@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace JiaHang.Projects.Admin.BLL.ExcelTaxBLL
 {
@@ -105,6 +106,36 @@ namespace JiaHang.Projects.Admin.BLL.ExcelTaxBLL
 
                 throw new Exception("error", ex);
             }
+        }
+
+        public async Task<FuncResult> Delete(string[] ids, string currentUserId)
+        {
+            IQueryable<ApdFctTAx> entitys = context.ApdFctTAx.Where(e => ids.Contains(e.RECORD_ID));
+            if (entitys.Count() != ids.Length)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
+            }
+            foreach (ApdFctTAx obj in entitys)
+            {
+                //删除
+                context.ApdFctTAx.Remove(obj);
+            }
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await context.SaveChangesAsync();
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    LogService.WriteError(ex);
+                    return new FuncResult() { IsSuccess = false, Message = "删除时发生了意料之外的错误" };
+                }
+            }
+            return new FuncResult() { IsSuccess = true, Message = $"已成功删除{ids.Length}条记录" };
+
         }
     }
 }

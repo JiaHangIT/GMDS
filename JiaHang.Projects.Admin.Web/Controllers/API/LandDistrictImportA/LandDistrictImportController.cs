@@ -654,6 +654,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
             }
         }
         /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        [Route("BatchDelete")]
+        [HttpDelete]
+        public async Task<FuncResult> Delete(decimal[] Ids)
+        {
+            return await LanBll.Delete(Ids, HttpContext.CurrentUser(cache).Id);
+        }
+        /// <summary>
         /// 删除数据
         /// </summary>
         /// <param name="key"></param>

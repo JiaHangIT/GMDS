@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace JiaHang.Projects.Admin.BLL.ExcelLandDistrictBLL
 {
@@ -132,6 +133,41 @@ namespace JiaHang.Projects.Admin.BLL.ExcelLandDistrictBLL
 
                 throw new Exception("error", ex);
             }
+        }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="currentUserId"></param>
+        /// <returns></returns>
+        public async Task<FuncResult> Delete(decimal[] ids, string currentUserId)
+        {
+            IQueryable<ApdFctLandDistrict> entitys = context.ApdFctLandDistrict.Where(e => ids.Contains(e.RecordId));
+            if (entitys.Count() != ids.Length)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "参数错误" };
+            }
+            foreach (ApdFctLandDistrict obj in entitys)
+            {
+                //删除
+                context.ApdFctLandDistrict.Remove(obj);
+            }
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await context.SaveChangesAsync();
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    LogService.WriteError(ex);
+                    return new FuncResult() { IsSuccess = false, Message = "删除时发生了意料之外的错误" };
+                }
+            }
+            return new FuncResult() { IsSuccess = true, Message = $"已成功删除{ids.Length}条记录" };
+
         }
     }
     public class DistricModelT

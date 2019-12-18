@@ -26,14 +26,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
     //[ApiController]
     public class GasImportController : ControllerBase
     {
-        private readonly DataContext context;
+        private readonly DataContext context;       
         private readonly IHostingEnvironment hosting;
         private readonly GasBLl gasBll;
-
-        public GasImportController(DataContext _context, IHostingEnvironment _hosting)
+        private readonly IMemoryCache cache;
+        public GasImportController(DataContext _context, IHostingEnvironment _hosting, IMemoryCache _cache)
         {
             this.context = _context;
             this.hosting = _hosting;
+            this.cache = _cache;
             this.gasBll = new GasBLl(_context);
         }
         /// <summary>
@@ -192,6 +193,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                 return result;
             }
 
+        }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        [Route("BatchDelete")]
+        [HttpDelete]
+        public async Task<FuncResult> Delete(string[] Ids)
+        {
+            return await gasBll.Delete(Ids, HttpContext.CurrentUser(cache).Id);
         }
         /// <summary>
         /// 删除数据
