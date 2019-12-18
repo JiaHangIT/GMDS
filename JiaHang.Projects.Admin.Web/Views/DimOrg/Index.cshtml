@@ -43,6 +43,9 @@
 
         <el-form :inline="true" class="demo-form-inline">
             <el-form-item>
+                <el-button type="danger" @@click="batchDelete">选中行删除</el-button>
+            </el-form-item>
+            <el-form-item>
                 <el-button type="primary" @@click="handleAdd">新增</el-button>
             </el-form-item>
             <el-form-item>
@@ -63,7 +66,11 @@
                   v-loading="loading"
                   stripe
                   :height="tableheight"
-                  style="width: 100%">
+                  style="width: 100%"
+                  @@selection-change="handleSelectionChange">
+            <el-table-column type="selection"
+                             width="55">
+            </el-table-column>
             <el-table-column prop="orgCode"
                              label="统一社会信用代码"
                              width="180">
@@ -266,6 +273,7 @@
         el: '#app',
         data() {
             return {
+                multipleSelection:[],//存放多选内容
                 tableheight: null,
                 buttontxt: '',
                 showbutton: false,
@@ -507,6 +515,46 @@
                     });
                 });
             },
+            batchDelete() {
+                let vm = this;
+                let batchdatas = this.multipleSelection;
+                if (batchdatas.length == 0) {
+                    vm.$message("请先选中数据再进行操作！");
+                    return;
+                }
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&ids=${batchdatas[i].recordId}`;
+                };
+                ids = ids.substring(1, ids.length)
+                console.log(ids);
+                vm.$confirm(`此操作将删除${batchdatas.length}条企业信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/dimorg/batchdelete?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchlist();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             handleSizeChange(val) {
                 let vm = this
                 vm.pageSize = val
@@ -520,6 +568,10 @@
                 vm.loading = true
                 vm.fetchlist()
                 console.log(`当前页: ${val}`);
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
             },
             resetform() {
                 let vm = this

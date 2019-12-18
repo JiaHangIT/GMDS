@@ -124,6 +124,25 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpDelete("batchdelete")]
+        public FuncResult Deletes(string[] ids)
+        {
+            try
+            {
+                return pollutantBll.Deletes(ids);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
         /// excel数据导入到数据库(apdfctcontaminants)
         /// 一个机构一年只有一批数据
         /// </summary>
@@ -333,6 +352,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
                 //var summarydata = pollutantBll.GetList();
+                pagenum--; if (pagenum < 0)
+                {
+                    pagenum = 0;
+                }
                 var summarydata = pollutantBll.GetList(new SearchModel() { orgname = orgname, orgcode = orgcode, year = year, limit = pagesize, page = pagenum });
                 var data = (List<ReturnPollutantModel>)((dynamic)summarydata).Content;
 

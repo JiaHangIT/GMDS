@@ -30,8 +30,12 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                 query = query.Where(f => (string.IsNullOrEmpty(model.orgname) || f.OrgName.Equals(model.orgname)) &&
                                         (string.IsNullOrEmpty(model.orgcode) || f.OrgCode.Equals(model.orgcode)) &&
                                         (string.IsNullOrEmpty(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year))));
-
-                fr.Content = query.ToList();
+                int count = query.Count();
+                if (model.limit * model.page >= count)
+                {
+                    model.page = 0;
+                }
+                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
                 return fr;
             }
             catch (Exception)
@@ -125,6 +129,39 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             {
 
                 throw;
+            }
+        }
+
+        public FuncResult Deletes(string[] ids)
+        {
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
+            try
+            {
+                using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                {
+                    IQueryable<ApdDimOrg> list = context.ApdDimOrg.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    context.ApdDimOrg.RemoveRange(list);
+
+                    try
+                    {
+                        context.SaveChanges();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        fr.IsSuccess = false;
+                        fr.Message = $"{ex.InnerException}{ex.Message}";
+                        return fr;
+                    }
+                }
+                return fr;
+            }
+            catch (Exception ex)
+            {
+                fr.IsSuccess = false;
+                fr.Message = $"{ex.InnerException}{ex.Message}";
+                return fr;
             }
         }
 
