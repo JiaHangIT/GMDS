@@ -150,12 +150,126 @@
         var element = layui.element
         var fs1 = -1;
         var fs2 = 60;
-        function inittable1(name, score1, score2) {
+        var years = $('#year').val();
+        //function inittable1(name, score1, score2,year) {
+        //    var datas = [];
+        //    var countdata = [];
+            
+        //    axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+        //        .then(function (res) {
+        //            console.log("进入")
+        //            datas.splice(0, datas.length);
+        //            countdata.splice(0, countdata.length);
+        //            $.each(res.data.content.list, function (index, item) {
+        //                datas.push(item.industry)
+        //                countdata.push(item.count)
+        //            })
+        //            var myChart1 = echarts.init(document.getElementById('main1'));
+        //            var option = {
+        //                color: ['#3398DB'],
+        //                tooltip: {
+        //                    trigger: 'axis',
+        //                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+        //                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        //                    }
+        //                },
+        //                grid: {
+        //                    left: '3%',
+        //                    right: '4%',
+        //                    bottom: '3%',
+        //                    containLabel: true
+        //                },
+        //                xAxis: [
+        //                    {
+        //                        type: 'category',
+        //                        data: datas,
+        //                        axisTick: {
+        //                            alignWithLabel: true
+        //                        }
+        //                    }
+        //                ],
+        //                yAxis: [
+        //                    {
+        //                        type: 'value'
+        //                    }
+        //                ],
+        //                series: [
+        //                    {
+        //                        name: '数据',
+        //                        type: 'bar',
+        //                        barWidth: '60%',
+        //                        data: countdata
+        //                    }
+        //                ]
+        //            };
+        //            myChart1.setOption(option);
+        //        })
+        //        .catch(function (error) {
+        //            console.log(error)
+        //        });
+        //}
+        //function inittable2(name, score1, score2,year) {
+        //    var datas2 = [];
+        //    var countdata2 = [];
+        //    axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+        //        .then(function (res) {
+        //            datas2.splice(0, datas2.length);
+        //            countdata2.splice(0, countdata2.length);
+        //            $.each(res.data.content.list, function (index, item) {
+        //                console.log(item)
+        //                datas2.push(item.town)
+        //                countdata2.push(item.count)
+        //            })
+
+        //            var myChart2 = echarts.init(document.getElementById('main2'));
+        //            var option2 = {
+        //                color: ['#3398DB'],
+        //                tooltip: {
+        //                    trigger: 'axis',
+        //                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+        //                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        //                    }
+        //                },
+        //                grid: {
+        //                    left: '3%',
+        //                    right: '4%',
+        //                    bottom: '3%',
+        //                    containLabel: true
+        //                },
+        //                xAxis: [
+        //                    {
+        //                        type: 'category',
+        //                        data: datas2,
+        //                        axisTick: {
+        //                            alignWithLabel: true
+        //                        }
+        //                    }
+        //                ],
+        //                yAxis: [
+        //                    {
+        //                        type: 'value'
+        //                    }
+        //                ],
+        //                series: [
+        //                    {
+        //                        name: '数据',
+        //                        type: 'bar',
+        //                        barWidth: '60%',
+        //                        data: countdata2
+        //                    }
+        //                ]
+        //            };
+        //            myChart2.setOption(option2);
+        //        })
+        //        .catch(function (error) {
+        //            console.log(error)
+        //        });
+        //}
+        function table1(name, score1, score2,year) {
             var datas = [];
             var countdata = [];
-            axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}`)
+            axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
                 .then(function (res) {
-                    console.log("进入")
                     datas.splice(0, datas.length);
                     countdata.splice(0, countdata.length);
                     $.each(res.data.content.list, function (index, item) {
@@ -206,123 +320,11 @@
                     console.log(error)
                 });
         }
-        function inittable2(name, score1, score2) {
+
+        function table2(name, score1, score2,year) {
             var datas2 = [];
             var countdata2 = [];
-            axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}`)
-                .then(function (res) {
-                    datas2.splice(0, datas2.length);
-                    countdata2.splice(0, countdata2.length);
-                    $.each(res.data.content.list, function (index, item) {
-                        console.log(item)
-                        datas2.push(item.town)
-                        countdata2.push(item.count)
-                    })
-
-                    var myChart2 = echarts.init(document.getElementById('main2'));
-                    var option2 = {
-                        color: ['#3398DB'],
-                        tooltip: {
-                            trigger: 'axis',
-                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis: [
-                            {
-                                type: 'category',
-                                data: datas2,
-                                axisTick: {
-                                    alignWithLabel: true
-                                }
-                            }
-                        ],
-                        yAxis: [
-                            {
-                                type: 'value'
-                            }
-                        ],
-                        series: [
-                            {
-                                name: '数据',
-                                type: 'bar',
-                                barWidth: '60%',
-                                data: countdata2
-                            }
-                        ]
-                    };
-                    myChart2.setOption(option2);
-                })
-                .catch(function (error) {
-                    console.log(error)
-                });
-        }
-        function table1(name, score1, score2) {
-            var datas = [];
-            var countdata = [];
-            axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}`)
-                .then(function (res) {
-                    datas.splice(0, datas.length);
-                    countdata.splice(0, countdata.length);
-                    $.each(res.data.content.list, function (index, item) {
-                        datas.push(item.industry)
-                        countdata.push(item.count)
-                    })
-                    var myChart1 = echarts.init(document.getElementById('main1'));
-                    var option = {
-                        color: ['#3398DB'],
-                        tooltip: {
-                            trigger: 'axis',
-                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis: [
-                            {
-                                type: 'category',
-                                data: datas,
-                                axisTick: {
-                                    alignWithLabel: true
-                                }
-                            }
-                        ],
-                        yAxis: [
-                            {
-                                type: 'value'
-                            }
-                        ],
-                        series: [
-                            {
-                                name: '数据',
-                                type: 'bar',
-                                barWidth: '60%',
-                                data: countdata
-                            }
-                        ]
-                    };
-                    myChart1.setOption(option);
-                })
-                .catch(function (error) {
-                    console.log(error)
-                });
-        }
-
-        function table2(name, score1, score2) {
-            var datas2 = [];
-            var countdata2 = [];
-            axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}`)
+            axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
                 .then(function (res) {
                     datas2.splice(0, datas2.length);
                     countdata2.splice(0, countdata2.length);
@@ -387,12 +389,12 @@
             //                countdata2.push(item.count)
             //            })
 
-            //            var myChart2 = echarts.init(document.getElementById('main2'));
+            //            var mychart2 = echarts.init(document.getelementbyid('main2'));
             //            var option2 = {
-            //                color: ['#3398DB'],
+            //                color: ['#3398db'],
             //                tooltip: {
             //                    trigger: 'axis',
-            //                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            //                    axispointer: {            // 坐标轴指示器，坐标轴触发有效
             //                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
             //                    }
             //                },
@@ -400,18 +402,18 @@
             //                    left: '3%',
             //                    right: '4%',
             //                    bottom: '3%',
-            //                    containLabel: true
+            //                    containlabel: true
             //                },
-            //                xAxis: [
+            //                xaxis: [
             //                    {
             //                        type: 'category',
             //                        data: datas2,
-            //                        axisTick: {
-            //                            alignWithLabel: true
+            //                        axistick: {
+            //                            alignwithlabel: true
             //                        }
             //                    }
             //                ],
-            //                yAxis: [
+            //                yaxis: [
             //                    {
             //                        type: 'value'
             //                    }
@@ -420,12 +422,12 @@
             //                    {
             //                        name: '数据',
             //                        type: 'bar',
-            //                        barWidth: '60%',
+            //                        barwidth: '60%',
             //                        data: countdata2
             //                    }
             //                ]
             //            };
-            //            myChart2.setOption(option2);
+            //            mychart2.setoption(option2);
             //        })
             //        .catch(function (error) {
             //            console.log(error)
@@ -560,8 +562,10 @@
         });
         //鼠标点击切换Div的颜色
         $('.divSelected').click(function () {
-            table1($('#myselect').val(), 90, 150)
-            table2($('#myselect2').val(), 90, 150)
+            var years = $('#year').val();
+            console.log("年份s", years);
+            table1($('#myselect').val(), 90, 150, years)
+            table2($('#myselect2').val(), 90, 150, years)
             fs1 = 90;
             fs2 = 150;
             $('.divSelectedTitle').css("color", 'white')
@@ -578,8 +582,9 @@
             $(".divUnSelected3").css("background-color", 'white')
         })
         $('.divUnSelected1').click(function () {
-            table1($('#myselect').val(), 80, 90)
-            table2($('#myselect2').val(), 80, 90)
+            var years = $('#year').val();
+            table1($('#myselect').val(), 80, 90, years)
+            table2($('#myselect2').val(), 80, 90, years)
             fs1 = 80;
             fs2 = 90;
             $('.divSelectedTitle').css("color", '#2497f3')
@@ -597,8 +602,9 @@
 
         })
         $('.divUnSelected2').click(function () {
-            table1($('#myselect').val(), 60, 80)
-            table2($('#myselect2').val(), 60, 80)
+            var years = $('#year').val();
+            table1($('#myselect').val(), 60, 80, years)
+            table2($('#myselect2').val(), 60, 80, years)
             fs1 = 60;
             fs2 = 80;
             $('.divSelectedTitle').css("color", '#2497f3')
@@ -615,8 +621,9 @@
             $(".divUnSelected3").css("background-color", 'white')
         })
         $('.divUnSelected3').click(function () {
-            table1($('#myselect').val(), -1, 60)
-            table2($('#myselect2').val(), -1, 60)
+            var years = $('#year').val();
+            table1($('#myselect').val(), -1, 60, years)
+            table2($('#myselect2').val(), -1, 60, years)
             fs1 = -1;
             fs2 = 60;
             $('.divSelectedTitle').css("color", '#2497f3')
@@ -632,340 +639,353 @@
             $(".divUnSelected2").css("background-color", 'white')
             $(".divUnSelected3").css("background-color", '#2497f3')
         })
-        axios.get(`/api/EchartReportParms/GetScorePercentage?`).then(function (res) {
-            //console.log("饼图值：", res.data.content.value1)
-            console.log("饼图值：", res.data.content)
-            console.log("饼图百分比：", res.data.content.list1percentage)
-            sumvalue = (res.data.content.value1 + res.data.content.value2 + res.data.content.value3 + res.data.content.value4)
-            console.log("总数：", sumvalue)
-            //90分以上饼图展示
-            var Pie_chart = echarts.init(document.getElementById('divSelected'));
-            Pie_option = {
-                title: {
-                    text: '90分以上',
-                    subtext: res.data.content.value1+'户',
-                    x: 'center',
-                    y: 'bottom',
-                    padding: 25,
-                    textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
-                        fontSize: 15,                      
-                    },
-                    subtextStyle: {//副标题文本样式{"color": "#aaa"}
-                        color:"#2baf2b"
-                    },
-                },
-                tooltip: {      
-                    show: false,
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
+        //axios.get(`/api/EchartReportParms/GetScorePercentage?year=${years}`).then(function (res) {
+        //    //console.log("饼图值：", res.data.content.value1)
+        //    console.log("饼图值：", res.data.content)
+        //    console.log("饼图百分比：", res.data.content.list1percentage)
+        //    sumvalue = (res.data.content.value1 + res.data.content.value2 + res.data.content.value3 + res.data.content.value4)
+        //    console.log("总数：", sumvalue)
+        //    //90分以上饼图展示
+        //    var Pie_chart = echarts.init(document.getElementById('divSelected'));
+        //    Pie_option = {
+        //        title: {
+        //            text: '90分以上',
+        //            subtext: res.data.content.value1+'户',
+        //            x: 'center',
+        //            y: 'bottom',
+        //            padding: 25,
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //                fontSize: 15,                      
+        //            },
+        //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+        //                color:"#2baf2b"
+        //            },
+        //        },
+        //        tooltip: {      
+        //            show: false,
+        //            trigger: 'item',
+        //            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        //        },
 
-                //legend: {
-                //    orient: 'vertical',
-                //    left: 'left',
-                //    data: ['直接访问', '邮件营销']
-                //},
-                series: [
-                    {
-                        name: '综合评分结构分布',
-                        type: 'pie',
-                        radius: '57%',
-                        center: ['50%', '50%'],
-                        hoverAnimation: false,
-                        label: {
-                            normal: {
-                                show: false,
-                                position: false
-                            },
-                            emphasis: {
-                                show: false,
-                                textStyle: {
-                                    fontSize: '10',
-                                    fontWeight: 'bold'
-                                }
-                            }
-                        },
+        //        //legend: {
+        //        //    orient: 'vertical',
+        //        //    left: 'left',
+        //        //    data: ['直接访问', '邮件营销']
+        //        //},
+        //        series: [
+        //            {
+        //                name: '综合评分结构分布',
+        //                type: 'pie',
+        //                radius: '57%',
+        //                center: ['50%', '50%'],
+        //                hoverAnimation: false,
+        //                label: {
+        //                    normal: {
+        //                        show: false,
+        //                        position: false
+        //                    },
+        //                    emphasis: {
+        //                        show: false,
+        //                        textStyle: {
+        //                            fontSize: '10',
+        //                            fontWeight: 'bold'
+        //                        }
+        //                    }
+        //                },
 
-                        data: [
-                            { value: res.data.content.value1, name: '90分以上' },
-                            { value: (sumvalue - res.data.content.value1), name: '其他' },
-                        ],
-                        itemStyle: {                          
-                            emphasis: {                                
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)',
-                                show: true,
-                                borderColor: '#2baf2b',
-                                borderWidth: 1,
-                            },
-                            normal: {
-                                color: function (params) {
-                                    //自定义颜色
-                                    var colorList = [
-                                        '#42bd41', '#f9fbe7'
-                                    ];
-                                    return colorList[params.dataIndex]
-                                }
-                            }
-                        }
-                    }
-                    ]
-            };
-            //90以上展示饼图
-            Pie_chart.setOption(Pie_option);
+        //                data: [
+        //                    { value: res.data.content.value1, name: '90分以上' },
+        //                    { value: (sumvalue - res.data.content.value1), name: '其他' },
+        //                ],
+        //                itemStyle: {                          
+        //                    emphasis: {                                
+        //                        shadowBlur: 10,
+        //                        shadowOffsetX: 0,
+        //                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+        //                        show: true,
+        //                        borderColor: '#2baf2b',
+        //                        borderWidth: 1,
+        //                    },
+        //                    normal: {
+        //                        color: function (params) {
+        //                            //自定义颜色
+        //                            var colorList = [
+        //                                '#42bd41', '#f9fbe7'
+        //                            ];
+        //                            return colorList[params.dataIndex]
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            ]
+        //    };
+        //    //90以上展示饼图
+        //    Pie_chart.setOption(Pie_option);
 
-            //80-90
-            var Pie_chartTw = echarts.init(document.getElementById('divSelected1'));
-            Pie_optionTw = {
-                title: {
-                    text: '80-90分(含)',
-                    subtext: res.data.content.value2 + '户',
-                    x: 'center',
-                    y: 'bottom',
-                    padding: 25,
-                    textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
-                        fontSize: 15,
-                    },
-                    subtextStyle: {//副标题文本样式{"color": "#aaa"}
-                        color: "#03a9f4"
-                    },
-                },
-                tooltip: {
-                    show: false,
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                //legend: {
-                //    orient: 'vertical',
-                //    left: 'left',
-                //    data: ['直接访问', '邮件营销']
-                //},
-                series: [
-                    {
-                        name: '综合评分结构分布',
-                        type: 'pie',
-                        radius: '57%',
-                        center: ['50%', '50%'],
-                        hoverAnimation: false,
-                        label: {
-                            normal: {
-                                show: false,
-                                position: false
-                            },
-                            emphasis: {
-                                show: false,
-                                textStyle: {
-                                    fontSize: '10',
-                                    fontWeight: 'bold'
-                                }
-                            }
-                        },
+        //    //80-90
+        //    var Pie_chartTw = echarts.init(document.getElementById('divSelected1'));
+        //    Pie_optionTw = {
+        //        title: {
+        //            text: '80-90分(含)',
+        //            subtext: res.data.content.value2 + '户',
+        //            x: 'center',
+        //            y: 'bottom',
+        //            padding: 25,
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //                fontSize: 15,
+        //            },
+        //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+        //                color: "#03a9f4"
+        //            },
+        //        },
+        //        tooltip: {
+        //            show: false,
+        //            trigger: 'item',
+        //            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        //        },
+        //        //legend: {
+        //        //    orient: 'vertical',
+        //        //    left: 'left',
+        //        //    data: ['直接访问', '邮件营销']
+        //        //},
+        //        series: [
+        //            {
+        //                name: '综合评分结构分布',
+        //                type: 'pie',
+        //                radius: '57%',
+        //                center: ['50%', '50%'],
+        //                hoverAnimation: false,
+        //                label: {
+        //                    normal: {
+        //                        show: false,
+        //                        position: false
+        //                    },
+        //                    emphasis: {
+        //                        show: false,
+        //                        textStyle: {
+        //                            fontSize: '10',
+        //                            fontWeight: 'bold'
+        //                        }
+        //                    }
+        //                },
 
-                        data: [
-                            { value: res.data.content.value2, name: '80-90分(含)' },
-                            { value: (sumvalue - res.data.content.value2), name: '其他' },
-                        ],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)',
-                                show: true,
-                                borderColor: '#03a9f4',
-                                borderWidth: 1,
-                            },
-                            normal: {
-                                color: function (params) {
-                                    //自定义颜色
-                                    var colorList = [
-                                        '#03a9f4', '#f9fbe7'
-                                    ];
-                                    return colorList[params.dataIndex]
-                                }
-                            }
-                        }
-                    }
-                ]
-            };
-            //80-90展示饼图
-            Pie_chartTw.setOption(Pie_optionTw);
+        //                data: [
+        //                    { value: res.data.content.value2, name: '80-90分(含)' },
+        //                    { value: (sumvalue - res.data.content.value2), name: '其他' },
+        //                ],
+        //                itemStyle: {
+        //                    emphasis: {
+        //                        shadowBlur: 10,
+        //                        shadowOffsetX: 0,
+        //                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+        //                        show: true,
+        //                        borderColor: '#03a9f4',
+        //                        borderWidth: 1,
+        //                    },
+        //                    normal: {
+        //                        color: function (params) {
+        //                            //自定义颜色
+        //                            var colorList = [
+        //                                '#03a9f4', '#f9fbe7'
+        //                            ];
+        //                            return colorList[params.dataIndex]
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        ]
+        //    };
+        //    //80-90展示饼图
+        //    Pie_chartTw.setOption(Pie_optionTw);
 
-            //60-80
-            var Pie_chartSt = echarts.init(document.getElementById('divUnSelected2'));
-            Pie_optionSt = {
-                title: {
-                    text: '60-80分(含)',
-                    subtext: res.data.content.value3 + '户',
-                    x: 'center',
-                    y: 'bottom',
-                    padding: 25,
-                    textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
-                        fontSize: 15,
-                    },
-                    subtextStyle: {//副标题文本样式{"color": "#aaa"}
-                        color: "#ffc107"
-                    },
-                },
-                tooltip: {
-                    show: false,
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                //legend: {
-                //    orient: 'vertical',
-                //    left: 'left',
-                //    data: ['直接访问', '邮件营销']
-                //},
-                series: [
-                    {
-                        name: '综合评分结构分布',
-                        type: 'pie',
-                        radius: '57%',
-                        center: ['50%', '50%'],
-                        hoverAnimation: false,
-                        label: {
-                            normal: {
-                                show: false,
-                                position: false
-                            },
-                            emphasis: {
-                                show: false,
-                                textStyle: {
-                                    fontSize: '10',
-                                    fontWeight: 'bold'
-                                }
-                            }
-                        },
+        //    //60-80
+        //    var Pie_chartSt = echarts.init(document.getElementById('divUnSelected2'));
+        //    Pie_optionSt = {
+        //        title: {
+        //            text: '60-80分(含)',
+        //            subtext: res.data.content.value3 + '户',
+        //            x: 'center',
+        //            y: 'bottom',
+        //            padding: 25,
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //                fontSize: 15,
+        //            },
+        //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+        //                color: "#ffc107"
+        //            },
+        //        },
+        //        tooltip: {
+        //            show: false,
+        //            trigger: 'item',
+        //            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        //        },
+        //        //legend: {
+        //        //    orient: 'vertical',
+        //        //    left: 'left',
+        //        //    data: ['直接访问', '邮件营销']
+        //        //},
+        //        series: [
+        //            {
+        //                name: '综合评分结构分布',
+        //                type: 'pie',
+        //                radius: '57%',
+        //                center: ['50%', '50%'],
+        //                hoverAnimation: false,
+        //                label: {
+        //                    normal: {
+        //                        show: false,
+        //                        position: false
+        //                    },
+        //                    emphasis: {
+        //                        show: false,
+        //                        textStyle: {
+        //                            fontSize: '10',
+        //                            fontWeight: 'bold'
+        //                        }
+        //                    }
+        //                },
 
-                        data: [
-                            { value: res.data.content.value3, name: '60-80分(含)' },
-                            { value: (sumvalue - res.data.content.value3), name: '其他' },
-                        ],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)',
-                                show: true,
-                                borderColor: '#ffc107',
-                                borderWidth: 1,
-                            },
-                            normal: {
+        //                data: [
+        //                    { value: res.data.content.value3, name: '60-80分(含)' },
+        //                    { value: (sumvalue - res.data.content.value3), name: '其他' },
+        //                ],
+        //                itemStyle: {
+        //                    emphasis: {
+        //                        shadowBlur: 10,
+        //                        shadowOffsetX: 0,
+        //                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+        //                        show: true,
+        //                        borderColor: '#ffc107',
+        //                        borderWidth: 1,
+        //                    },
+        //                    normal: {
 
-                                color: function (params) {
-                                    //自定义颜色
-                                    var colorList = [
-                                        '#ffc107', '#f9fbe7'
-                                    ];
-                                    return colorList[params.dataIndex]
-                                }
-                            }
-                        }
-                    }
-                ]
-            };
-            //60-80展示饼图
-            Pie_chartSt.setOption(Pie_optionSt);
+        //                        color: function (params) {
+        //                            //自定义颜色
+        //                            var colorList = [
+        //                                '#ffc107', '#f9fbe7'
+        //                            ];
+        //                            return colorList[params.dataIndex]
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        ]
+        //    };
+        //    //60-80展示饼图
+        //    Pie_chartSt.setOption(Pie_optionSt);
 
-            //60
-            var Pie_chartFr = echarts.init(document.getElementById('divUnSelected3'));
-            Pie_optionFr = {
-                title: {
-                    text: '60分(含)以下',
-                    subtext: res.data.content.value4 + '户',
-                    x: 'center',
-                    y: 'bottom',
-                    padding: 25,
-                    textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
-                        fontSize: 15,
-                    },
-                    subtextStyle: {//副标题文本样式{"color": "#aaa"}
-                        //fontSize: 13,
-                        color: "#c41411"
-                    },
-                },
-                tooltip: {
-                    show: false,
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                //legend: {
-                //    orient: 'vertical',
-                //    left: 'left',
-                //    data: ['直接访问', '邮件营销']
-                //},
-                series: [
-                    {
-                        name: '综合评分结构分布',
-                        type: 'pie',
-                        radius: '57%',
-                        center: ['50%', '50%'],
-                        hoverAnimation: false,
-                        label: {
-                            normal: {
-                                show: false,
-                                position: false
-                            },
-                            emphasis: {
-                                show: false,
-                                textStyle: {
-                                    fontSize: '10',
-                                    fontWeight: 'bold'
-                                }
-                            }
-                        },
+        //    //60
+        //    var Pie_chartFr = echarts.init(document.getElementById('divUnSelected3'));
+        //    Pie_optionFr = {
+        //        title: {
+        //            text: '60分(含)以下',
+        //            subtext: res.data.content.value4 + '户',
+        //            x: 'center',
+        //            y: 'bottom',
+        //            padding: 25,
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //                fontSize: 15,
+        //            },
+        //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+        //                //fontSize: 13,
+        //                color: "#c41411"
+        //            },
+        //        },
+        //        tooltip: {
+        //            show: false,
+        //            trigger: 'item',
+        //            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        //        },
+        //        //legend: {
+        //        //    orient: 'vertical',
+        //        //    left: 'left',
+        //        //    data: ['直接访问', '邮件营销']
+        //        //},
+        //        series: [
+        //            {
+        //                name: '综合评分结构分布',
+        //                type: 'pie',
+        //                radius: '57%',
+        //                center: ['50%', '50%'],
+        //                hoverAnimation: false,
+        //                label: {
+        //                    normal: {
+        //                        show: false,
+        //                        position: false
+        //                    },
+        //                    emphasis: {
+        //                        show: false,
+        //                        textStyle: {
+        //                            fontSize: '10',
+        //                            fontWeight: 'bold'
+        //                        }
+        //                    }
+        //                },
 
-                        data: [
-                            { value: res.data.content.value4, name: '60分(含)以下' },
-                            { value: (sumvalue - res.data.content.value4), name: '其他' },
-                        ],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)',
-                                show: true,
-                                borderColor: '#c41411',
-                                borderWidth: 1,
-                            },
-                            normal: {
-                                color: function (params) {
-                                    //自定义颜色
-                                    var colorList = [
-                                        '#c41411', '#f9fbe7'
-                                    ];
-                                    return colorList[params.dataIndex]
-                                }
-                            }
-                        }
-                    }
-                ]
-            };
-            //60展示饼图
-            Pie_chartFr.setOption(Pie_optionFr);
+        //                data: [
+        //                    { value: res.data.content.value4, name: '60分(含)以下' },
+        //                    { value: (sumvalue - res.data.content.value4), name: '其他' },
+        //                ],
+        //                itemStyle: {
+        //                    emphasis: {
+        //                        shadowBlur: 10,
+        //                        shadowOffsetX: 0,
+        //                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+        //                        show: true,
+        //                        borderColor: '#c41411',
+        //                        borderWidth: 1,
+        //                    },
+        //                    normal: {
+        //                        color: function (params) {
+        //                            //自定义颜色
+        //                            var colorList = [
+        //                                '#c41411', '#f9fbe7'
+        //                            ];
+        //                            return colorList[params.dataIndex]
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        ]
+        //    };
+        //    //60展示饼图
+        //    Pie_chartFr.setOption(Pie_optionFr);
 
-            //赋值
-            $('#value1').html(res.data.content.value1)
-            $('#value11').html(res.data.content.list1percentage)
-            $('#value2').html(res.data.content.value2)
-            $('#value22').html(res.data.content.list2percentage)
-            $('#value3').html(res.data.content.value3)
-            $('#value33').html(res.data.content.list3percentage)
-            $('#value4').html(res.data.content.value4)
-            $('#value44').html(res.data.content.list4percentage)
-        }).catch(function (error) {
-            console.log(error)
-        });
+        //    //赋值
+        //    $('#value1').html(res.data.content.value1)
+        //    $('#value11').html(res.data.content.list1percentage)
+        //    $('#value2').html(res.data.content.value2)
+        //    $('#value22').html(res.data.content.list2percentage)
+        //    $('#value3').html(res.data.content.value3)
+        //    $('#value33').html(res.data.content.list3percentage)
+        //    $('#value4').html(res.data.content.value4)
+        //    $('#value44').html(res.data.content.list4percentage)
+        //}).catch(function (error) {
+        //    console.log(error)
+        //});
         $(function () {
-            inittable1("", -1, 60);
-            inittable2("", -1, 60);
+            let year = $('#year').val();
+            //inittable1("", -1, 60,year);
+            //inittable2("", -1, 60,year);
         })
     })
 </script>
 <div style="margin-left:18px" id="app">
     <div style="width: 100%;padding-top:15px" >
-        <div><div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div><h3>综合评分结构分布</h3></div>
+        <div>
+            <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div><h3>综合评分结构分布</h3> <el-form :inline="true" style="padding-top:20px">
+                <el-form-item>
+                    <el-date-picker id="year" v-model="orgyear"
+                                    type="year"
+                                    format="yyyy"
+                                    placeholder="选择年"
+                                    @@change="yearchange"
+                                    >
+                    </el-date-picker>
+                </el-form-item>
+            </el-form>
+        </div>
         <div style="padding-top:10px" >
            
                 <div class="divSelected" id="divSelected" v-loading="loading">
@@ -1010,51 +1030,6 @@
                 </div>*@
             </div>
         </div>
-        @*<div style="padding-top:10px">
-           
-                <div class="divSelected" id="divSelected">
-                    <div class="divSelectedTitle">
-                            90分以上
-                        </div>
-                        <div class="divSelectedSplit">
-                        </div>
-                        <div class="divSelectedDesc">
-                            <span id='value1'></span> 户<span id="value11"></span>
-                        </div>
-                     
-                </div>              
-            <div class="divUnSelected1">
-                <div class="divUnSelectedTitle1">
-                    80分-90分(含)
-                </div>
-                <div class="divUnSelectedSplit1">
-                </div>
-                <div class="divUnSelectedDesc1">
-                    <span id='value2'></span>户 <span id="value22"></span>
-                </div>
-            </div>
-            <div class="divUnSelected2">
-                <div class="divUnSelectedTitle2">
-                    60分-80分(含)
-                </div>
-                <div class="divUnSelectedSplit2">
-                </div>
-                <div class="divUnSelectedDesc2">
-                    <span id='value3'></span> 户<span id="value33"></span>
-                </div>
-            </div>
-            <div class="divUnSelected3">
-                <div class="divUnSelectedTitle3">
-                    60分(含)以下
-                </div>
-                <div class="divUnSelectedSplit3">
-                </div>
-                <div class="divUnSelectedDesc3">
-                    <span id='value4'></span>户 <span id="value44"></span>
-                </div>
-            </div>
-        </div>*@
-        
     </div>
     <div class="layui-inline" style="padding-top:30px" >
         <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div> <h3>行业结构特征分布</h3>
@@ -1092,10 +1067,466 @@
 <script>
     new Vue({
         el: '#app',
-        data() {
+        data :function() {
             return {
-                loading: true
+                loading: true,
+                  orgyear: '2018',
             }
+        },
+        methods: {
+            yearchange: function (val) {
+                let vm = this;
+                vm.onload(val.getFullYear());
+                console.log("值", val.getFullYear())
+            },
+            inittable1: function (name, score1, score2, year) {
+                var datas = [];
+                var countdata = [];
+
+                axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+                    .then(function (res) {
+                        console.log("进入")
+                        datas.splice(0, datas.length);
+                        countdata.splice(0, countdata.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            datas.push(item.industry)
+                            countdata.push(item.count)
+                        })
+                        var myChart1 = echarts.init(document.getElementById('main1'));
+                        var option = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata
+                                }
+                            ]
+                        };
+                        myChart1.setOption(option);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            inittable2: function (name, score1, score2, year) {
+                var datas2 = [];
+                var countdata2 = [];
+                axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+                    .then(function (res) {
+                        datas2.splice(0, datas2.length);
+                        countdata2.splice(0, countdata2.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            console.log(item)
+                            datas2.push(item.town)
+                            countdata2.push(item.count)
+                        })
+
+                        var myChart2 = echarts.init(document.getElementById('main2'));
+                        var option2 = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas2,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata2
+                                }
+                            ]
+                        };
+                        myChart2.setOption(option2);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            onload: function (year) {
+                let vm = this;
+                axios.get(`/api/EchartReportParms/GetScorePercentage?year=${year}`).then(function (res) {
+                    //console.log("饼图值：", res.data.content.value1)
+                    console.log("饼图值：", res.data.content)
+                    console.log("饼图百分比：", res.data.content.list1percentage)
+                    sumvalue = (res.data.content.value1 + res.data.content.value2 + res.data.content.value3 + res.data.content.value4)
+                    console.log("总数：", sumvalue)
+                    //90分以上饼图展示
+                    var Pie_chart = echarts.init(document.getElementById('divSelected'));
+                    Pie_option = {
+                        title: {
+                            text: '90分以上',
+                            subtext: res.data.content.value1 + '户',
+                            x: 'center',
+                            y: 'bottom',
+                            padding: 25,
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                                fontSize: 15,
+                            },
+                            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+                                color: "#2baf2b"
+                            },
+                        },
+                        tooltip: {
+                            show: false,
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+
+                        //legend: {
+                        //    orient: 'vertical',
+                        //    left: 'left',
+                        //    data: ['直接访问', '邮件营销']
+                        //},
+                        series: [
+                            {
+                                name: '综合评分结构分布',
+                                type: 'pie',
+                                radius: '57%',
+                                center: ['50%', '50%'],
+                                hoverAnimation: false,
+                                label: {
+                                    normal: {
+                                        show: false,
+                                        position: false
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                        textStyle: {
+                                            fontSize: '10',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                },
+
+                                data: [
+                                    { value: res.data.content.value1, name: '90分以上' },
+                                    { value: (sumvalue - res.data.content.value1), name: '其他' },
+                                ],
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                        show: true,
+                                        borderColor: '#2baf2b',
+                                        borderWidth: 1,
+                                    },
+                                    normal: {
+                                        color: function (params) {
+                                            //自定义颜色
+                                            var colorList = [
+                                                '#42bd41', '#f9fbe7'
+                                            ];
+                                            return colorList[params.dataIndex]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    //90以上展示饼图
+                    Pie_chart.setOption(Pie_option);
+
+                    //80-90
+                    var Pie_chartTw = echarts.init(document.getElementById('divSelected1'));
+                    Pie_optionTw = {
+                        title: {
+                            text: '80-90分(含)',
+                            subtext: res.data.content.value2 + '户',
+                            x: 'center',
+                            y: 'bottom',
+                            padding: 25,
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                                fontSize: 15,
+                            },
+                            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+                                color: "#03a9f4"
+                            },
+                        },
+                        tooltip: {
+                            show: false,
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        //legend: {
+                        //    orient: 'vertical',
+                        //    left: 'left',
+                        //    data: ['直接访问', '邮件营销']
+                        //},
+                        series: [
+                            {
+                                name: '综合评分结构分布',
+                                type: 'pie',
+                                radius: '57%',
+                                center: ['50%', '50%'],
+                                hoverAnimation: false,
+                                label: {
+                                    normal: {
+                                        show: false,
+                                        position: false
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                        textStyle: {
+                                            fontSize: '10',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                },
+
+                                data: [
+                                    { value: res.data.content.value2, name: '80-90分(含)' },
+                                    { value: (sumvalue - res.data.content.value2), name: '其他' },
+                                ],
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                        show: true,
+                                        borderColor: '#03a9f4',
+                                        borderWidth: 1,
+                                    },
+                                    normal: {
+                                        color: function (params) {
+                                            //自定义颜色
+                                            var colorList = [
+                                                '#03a9f4', '#f9fbe7'
+                                            ];
+                                            return colorList[params.dataIndex]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    //80-90展示饼图
+                    Pie_chartTw.setOption(Pie_optionTw);
+
+                    //60-80
+                    var Pie_chartSt = echarts.init(document.getElementById('divUnSelected2'));
+                    Pie_optionSt = {
+                        title: {
+                            text: '60-80分(含)',
+                            subtext: res.data.content.value3 + '户',
+                            x: 'center',
+                            y: 'bottom',
+                            padding: 25,
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                                fontSize: 15,
+                            },
+                            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+                                color: "#ffc107"
+                            },
+                        },
+                        tooltip: {
+                            show: false,
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        //legend: {
+                        //    orient: 'vertical',
+                        //    left: 'left',
+                        //    data: ['直接访问', '邮件营销']
+                        //},
+                        series: [
+                            {
+                                name: '综合评分结构分布',
+                                type: 'pie',
+                                radius: '57%',
+                                center: ['50%', '50%'],
+                                hoverAnimation: false,
+                                label: {
+                                    normal: {
+                                        show: false,
+                                        position: false
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                        textStyle: {
+                                            fontSize: '10',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                },
+
+                                data: [
+                                    { value: res.data.content.value3, name: '60-80分(含)' },
+                                    { value: (sumvalue - res.data.content.value3), name: '其他' },
+                                ],
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                        show: true,
+                                        borderColor: '#ffc107',
+                                        borderWidth: 1,
+                                    },
+                                    normal: {
+
+                                        color: function (params) {
+                                            //自定义颜色
+                                            var colorList = [
+                                                '#ffc107', '#f9fbe7'
+                                            ];
+                                            return colorList[params.dataIndex]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    //60-80展示饼图
+                    Pie_chartSt.setOption(Pie_optionSt);
+
+                    //60
+                    var Pie_chartFr = echarts.init(document.getElementById('divUnSelected3'));
+                    Pie_optionFr = {
+                        title: {
+                            text: '60分(含)以下',
+                            subtext: res.data.content.value4 + '户',
+                            x: 'center',
+                            y: 'bottom',
+                            padding: 25,
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                                fontSize: 15,
+                            },
+                            subtextStyle: {//副标题文本样式{"color": "#aaa"}
+                                //fontSize: 13,
+                                color: "#c41411"
+                            },
+                        },
+                        tooltip: {
+                            show: false,
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        //legend: {
+                        //    orient: 'vertical',
+                        //    left: 'left',
+                        //    data: ['直接访问', '邮件营销']
+                        //},
+                        series: [
+                            {
+                                name: '综合评分结构分布',
+                                type: 'pie',
+                                radius: '57%',
+                                center: ['50%', '50%'],
+                                hoverAnimation: false,
+                                label: {
+                                    normal: {
+                                        show: false,
+                                        position: false
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                        textStyle: {
+                                            fontSize: '10',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                },
+
+                                data: [
+                                    { value: res.data.content.value4, name: '60分(含)以下' },
+                                    { value: (sumvalue - res.data.content.value4), name: '其他' },
+                                ],
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                        show: true,
+                                        borderColor: '#c41411',
+                                        borderWidth: 1,
+                                    },
+                                    normal: {
+                                        color: function (params) {
+                                            //自定义颜色
+                                            var colorList = [
+                                                '#c41411', '#f9fbe7'
+                                            ];
+                                            return colorList[params.dataIndex]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    //60展示饼图
+                    Pie_chartFr.setOption(Pie_optionFr);
+
+                    //赋值
+                    $('#value1').html(res.data.content.value1)
+                    $('#value11').html(res.data.content.list1percentage)
+                    $('#value2').html(res.data.content.value2)
+                    $('#value22').html(res.data.content.list2percentage)
+                    $('#value3').html(res.data.content.value3)
+                    $('#value33').html(res.data.content.list3percentage)
+                    $('#value4').html(res.data.content.value4)
+                    $('#value44').html(res.data.content.list4percentage)
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
+        },
+        mounted: function () {
+            let vm = this
+            vm.onload(vm.orgyear);
+            vm.inittable1("", -1, 60, vm.orgyear);
+            vm.inittable2("", -1, 60, vm.orgyear);
         }
     }
     )

@@ -111,6 +111,9 @@
         <el-form-item>
             <el-button size="small" type="primary" @@click="fetchList">查询</el-button>
         </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="importall">导出</el-button>
+        </el-form-item>
         <el-form-item label="所属行业：">
             <el-select v-model="searchshhys" placeholder="请选择" @@change="IndustrySel">
                 <el-option v-for="item in searchshhy"
@@ -131,9 +134,7 @@
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item>
-            <el-button size="small" type="primary" @@click="importall">导出所有</el-button>
-        </el-form-item>
+
     </el-form>
     <el-table :header-cell-style="{background:'#eef1f6',color:'#606266'}"
               ref="multipleTable"
@@ -141,6 +142,7 @@
               :border="true"
               tooltip-effect="dark"
               class="eltable"
+                @@sort-change="compositE_SCOREsort"
               style="width: 100%"
               v-loading="loading">
         <el-table-column label="年份"
@@ -164,9 +166,10 @@
                          prop="town">
         </el-table-column>
         <el-table-column label="综合评分"
-                         sortable
+                         sortable="custom"
                          width="150"
                          align="center"
+                       
                          prop="compositE_SCORE">
         </el-table-column>
         <el-table-column label="亩均税收得分"
@@ -239,11 +242,11 @@
                          width="150"
                          prop="profit">
         </el-table-column>
-        <el-table-column label="净资产"
+        @*<el-table-column label="净资产"
                          sortable
                          width="150"
                          prop="assets">
-        </el-table-column>
+        </el-table-column>*@
         <el-table-column label="主营业务收入"
                          sortable
                          width="150"
@@ -621,6 +624,8 @@
         el: "#app",
         data: function () {
             return {
+                field: '',
+                desc:'',
                 data: [],
                 data1:[],
                 currentPage: 1,
@@ -648,7 +653,7 @@
                 if (vm.orgyear != '' && vm.orgyear != null) {
                     y = vm.orgyear.getFullYear()
                 }
-                axios.get(`/api/ApdFctOrgIndexV/${vm.pageSize}/${vm.currentPage}?OrgName=${vm.OrgName}&year=${y}`)
+                axios.get(`/api/ApdFctOrgIndexV/${vm.pageSize}/${vm.currentPage}?OrgName=${vm.OrgName}&year=${y}&field=${vm.field}&desc=${vm.desc}`)
                     .then(function (response) {
                         vm.data = response.data.content.data;
                         vm.total = response.data.content.total;
@@ -658,6 +663,33 @@
                         console.log(error)
                         vm.loading = false
                     });
+            },
+            compositE_SCOREsort: function (column, prop, order) {
+                console.log(column)
+                let vm = this;
+                let y = ''
+                let field=""
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                vm.field = column.prop;
+                if (column.order == "ascending") {
+                    vm.desc = ""
+                } else {
+                    vm.desc="desc"
+                }
+                axios.get(`/api/ApdFctOrgIndexV/${vm.pageSize}/${vm.currentPage}?OrgName=${vm.OrgName}&year=${y}&field=${vm.field}&desc=${vm.desc}`)
+                    .then(function (response) {
+                        console.log("字段",vm.field);
+                        vm.data = response.data.content.data;
+                        vm.total = response.data.content.total;
+                        vm.loading = false
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                        vm.loading = false
+                    });
+                console.log(column)
             },
             IndustrySel: function (val) {
                 let vm = this;
@@ -749,6 +781,7 @@
                     });
                 axios.get(`/api/ApdFctOrgIndexV/BenefiteValuationInfo?code=${formdata.orG_CODE}`)
                     .then(function (response) {
+
                         console.log(response.data.content.list[0]);
                         $('#mjss').html(response.data.content.list[0].taX_PER_MU)
                         $('#mjzjz').html(response.data.content.list[0].adD_VALUE_PER_MU)

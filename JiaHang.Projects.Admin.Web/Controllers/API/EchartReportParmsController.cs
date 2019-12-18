@@ -26,20 +26,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
         [Route("GetIndustryData")]
         [HttpGet]
-        public FuncResult GetIndustryData(string name, int score1, int score2)
+        public FuncResult GetIndustryData(string name, int score1, int score2,string year)
         {
-            return echartReportParmsInfo.GetIndustryData(name,score1,score2);
+            return echartReportParmsInfo.GetIndustryData(name,score1,score2,year);
         }
         [Route("GetTownData")]
         [HttpGet]
-        public FuncResult GetTownData(string name, int score1, int score2)
+        public FuncResult GetTownData(string name, int score1, int score2,string year)
         {
-            return echartReportParmsInfo.GetTownData(name,score1,score2);
+            return echartReportParmsInfo.GetTownData(name,score1,score2,year);
         }
         [Route("GetScorePercentage")]
         [HttpGet]
-        public FuncResult GetScorePercentage() {
-            return echartReportParmsInfo.GetScorePercentage();
+        public FuncResult GetScorePercentage(string year) {
+            return echartReportParmsInfo.GetScorePercentage(year);
         }
     }
 }
