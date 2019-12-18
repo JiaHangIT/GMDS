@@ -17,36 +17,85 @@ namespace JiaHang.Projects.Admin.BLL
             _context = context;
         }
         //查询所有
-        public FuncResult Select(int pageSize, int currentPage, string OrgName,string year) {
-            try { 
-            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
+        //public FuncResult Select(int pageSize, int currentPage, string OrgName,string year) {
+        //    try { 
+        //    StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
              
-                List<string> wheres = new List<string>();
-            if (OrgName != null)
-            {
-                wheres.Add(" ORG_NAME like '%" + OrgName + "%'");
-            }
-               if (year != null)
-            {
-                wheres.Add(" PERIOD_YEAR =" +"'"+ year+"'" );
-            }
-            if (wheres.Count > 0)
-            {
-                string wh = string.Join(" and ", wheres.ToArray());
+        //        List<string> wheres = new List<string>();
+        //    if (OrgName != null)
+        //    {
+        //        wheres.Add(" ORG_NAME like '%" + OrgName + "%'");
+        //    }
+        //       if (year != null)
+        //    {
+        //        wheres.Add(" PERIOD_YEAR =" +"'"+ year+"'" );
+        //    }
+        //    if (wheres.Count > 0)
+        //    {
+        //        string wh = string.Join(" and ", wheres.ToArray());
 
-                sql.Append(" where " + wh);
-            }
-            List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
-               
-            int total = list.Count();
+        //        sql.Append(" where " + wh);
+        //    }
+        //    List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
+        //        foreach (var item in list) {
+        //      item.OWNER_EQUITY= Math.Round(Convert.ToDecimal( item.OWNER_EQUITY/10000), 2);
+        //        }
+        //    int total = list.Count();
+        //        if (pageSize * currentPage > total)
+        //        {
+        //            currentPage = 0;
+        //        }
+        //        var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
+        //    return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+        //    }
+        //    catch (Exception ex) { throw new Exception(ex.Message); };
+        //}
+        public FuncResult Select(int pageSize, int currentPage, string OrgName, string year,string field,string desc)
+        {
+            try
+            {
+                StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
+
+                List<string> wheres = new List<string>();
+                if (OrgName != null)
+                {
+                    wheres.Add(" ORG_NAME like '%" + OrgName + "%'");
+                }
+                if (year != null)
+                {
+                    wheres.Add(" PERIOD_YEAR =" + "'" + year + "'");
+                }
+                if (wheres.Count > 0)
+                {
+                    string wh = string.Join(" and ", wheres.ToArray());
+
+                    sql.Append(" where " + wh);
+                }
+                if (field!=null) {
+                    sql.Append(" order by " + field + " " + desc);
+                }
+                List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
+                foreach (var item in list)
+                {
+                    item.OWNER_EQUITY = Math.Round(Convert.ToDecimal(item.OWNER_EQUITY / 10000), 2);
+                }
+                int total = list.Count();
                 if (pageSize * currentPage > total)
                 {
                     currentPage = 0;
                 }
                 var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
-            return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+                return new FuncResult() { IsSuccess = true, Content = new { data, total } };
             }
             catch (Exception ex) { throw new Exception(ex.Message); };
+        }
+        public FuncResult GetAvarageScore(string year) {
+            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_AVERAGE");
+            if (year!=null) {
+                sql.Append(" where  PERIOD_YEAR=" + year);
+            }
+            List<AvarageScore> list = OracleDbHelper.Query<AvarageScore>(sql.ToString());
+            return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         //根据城镇下拉框改变获取数据
         public FuncResult SelectTownDdata(int pageSize, int currentPage, string Town, string OrgName, string year,string Industry)
@@ -262,8 +311,17 @@ namespace JiaHang.Projects.Admin.BLL
                 industyCount = item.Count;
             }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
+            foreach (var item2 in list) {
+                item2.fact_tax= Math.Round(Convert.ToDecimal(item2.fact_tax / 10000), 2);
+                item2.ENERGY_CONSUMPTION = Math.Round(Convert.ToDecimal(item2.ENERGY_CONSUMPTION / 10000), 2);
+                item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
+                item2.R_D_EXPENDITURE = Math.Round(Convert.ToDecimal(item2.R_D_EXPENDITURE / 10000), 2);
+                item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
+                item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
+            }
+            
             return new FuncResult() { IsSuccess = true, Content = new { list , industyCount } };
-        }
+        } 
     }
     public class Counts
     {
@@ -366,4 +424,14 @@ namespace JiaHang.Projects.Admin.BLL
         public string LAST_UPDATE_DATE { get;set;}
         public string LAST_UPDATED_BY { get; set; }
      }
+    public class AvarageScore {
+        public string PERIOD_YEAR { get; set; }
+        public decimal TAX_PER_MU { get; set; }
+        public decimal ADD_VALUE_PER_MU { get; set; }
+        public decimal PRODUCTIVITY { get; set; }
+       public decimal POLLUTANT_DISCHARGE { get; set; }
+        public decimal ENERGY_CONSUMPTION { get; set; }
+     public decimal NET_ASSETS_PROFIT { get; set; }
+    public decimal R_D_EXPENDITURE_RATIO { get; set; }
+}
 }

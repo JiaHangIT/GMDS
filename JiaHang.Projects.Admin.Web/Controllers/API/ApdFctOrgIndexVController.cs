@@ -21,11 +21,16 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             apdFctOrgIndexVInfo = new ApdFctOrgIndexVBLL(context);
         }
         [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize, int currentPage,string OrgName,string year)
+        public FuncResult Select(int pageSize, int currentPage,string OrgName,string year, string field, string desc)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.Select(pageSize, currentPage,OrgName,year);
+            return apdFctOrgIndexVInfo.Select(pageSize, currentPage,OrgName,year, field, desc);
         }
+        //[HttpGet("SelectByFieldOrderby")]
+        //public FuncResult SelectByFieldOrderby(int pageSize, int currentPage, string OrgName, string year, string field, string desc) {
+        //    currentPage--;
+        //    return apdFctOrgIndexVInfo.SelectByFieldOrderby(pageSize, currentPage, OrgName, year, field,desc);
+        //}
         [Route("SelectTownDdata")]
         [HttpGet]
         public FuncResult SelectTownDdata(int pageSize, int currentPage,  string Town, string OrgName, string year, string Industy)
@@ -40,7 +45,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             currentPage--;
             return apdFctOrgIndexVInfo.SelectIndustryData(pageSize, currentPage, Industry  ,  OrgName,  year,  Town);
         }
-
+        [Route("GetAvarageScore")]
+        [HttpGet]
+        public FuncResult GetAvarageScore(string year) {
+            return apdFctOrgIndexVInfo.GetAvarageScore(year);
+        }
         [Route("GetTown")]
         [HttpGet]
         public FuncResult GetTown()
