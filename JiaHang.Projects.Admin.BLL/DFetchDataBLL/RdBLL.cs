@@ -48,7 +48,6 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     model.page = 0;
                 }
                 fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
-                fr.Content = query.ToList();
                 return fr;
             }
             catch (Exception ex)
