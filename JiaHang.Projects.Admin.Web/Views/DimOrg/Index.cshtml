@@ -153,6 +153,23 @@
                :modal-append-to-body="false"
                center>
         <el-form :inline="true" class="demo-form-inline" :model="form" ref="form">
+            <el-form :inline="true" class="demo-form-inline">
+                <el-form-item label="统一社会信用代码">
+                    <el-input placeholder="请输入" v-model="form.orgCode"></el-input>
+                </el-form-item>
+                <el-form-item label="企业名称">
+                    <el-input placeholder="请输入" v-model="form.orgName"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form :inline="true" class="demo-form-inline">
+                <el-form-item label="统一用代码">
+                    <el-input placeholder="请输入" v-model="form.orgCode"></el-input>
+                </el-form-item>
+                <el-form-item label="称">
+                    <el-input placeholder="请输入" v-model="form.orgName"></el-input>
+                </el-form-item>
+            </el-form>
+
             <table>
                 <tr>
                     <td>统一社会信用代码</td>
