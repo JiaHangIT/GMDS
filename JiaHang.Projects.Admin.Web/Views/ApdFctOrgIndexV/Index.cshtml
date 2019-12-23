@@ -964,7 +964,7 @@
                 console.log("年份", y)
                 console.log("行业", vm.searchshhys)
                 console.log("城镇", vm.searchjds)
-                location.href = `/api/ApdFctOrgIndexV/exportall?orgname=${vm.OrgName}&year=${y}&industy=${vm.searchshhys}&town=${vm.searchjds}`;
+                location.href = `/api/ApdFctOrgIndexV/exportall?orgname=${vm.OrgName}&year=${y}&industy=${vm.searchshhys}&town=${vm.searchjds}&field=${vm.field}&desc=${vm.desc}`;
             },
         },
         mounted: function () {

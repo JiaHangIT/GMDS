@@ -187,7 +187,7 @@ namespace JiaHang.Projects.Admin.BLL
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
-        public async Task<byte[]> ExportAll(string orgname,string year,string industy,string town)
+        public async Task<byte[]> ExportAll(string orgname,string year,string industy,string town,string field,string desc)
 
         {
             var comlumHeadrs = new[] { "年份","企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
@@ -224,6 +224,10 @@ namespace JiaHang.Projects.Admin.BLL
 
                 sql.Append(" where " + wh);
             }
+            if (field != null)
+            {
+                sql.Append(" order by " + field + " " + desc);
+            }
             var data = _context.SysUserInfo.ToList();
             List<ReturnDate> datas = OracleDbHelper.Query<ReturnDate>(sql.ToString());
             var package = new ExcelPackage();
@@ -254,7 +258,7 @@ namespace JiaHang.Projects.Admin.BLL
                     worksheet.Cells["L" + j].Value = obj.R_D_EXPENDITURE_RATIO_SCORE;
                     worksheet.Cells["M" + j].Value = obj.OWNER_EQUITY;
                     worksheet.Cells["N" + j].Value = obj.WORKER_MONTH;
-                    worksheet.Cells["0" + j].Value = obj.Industrial_added_value;
+                    worksheet.Cells["o" + j].Value = obj.Industrial_added_value;
                     worksheet.Cells["P" + j].Value = obj.pollutant_discharge2;
                     worksheet.Cells["Q" + j].Value = obj.fact_tax;
                     worksheet.Cells["R" + j].Value = obj.LAND_AREA;

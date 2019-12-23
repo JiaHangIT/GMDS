@@ -80,9 +80,9 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
         [HttpGet]
         [Route("ExportAll")]
-        public async Task<IActionResult> ExportAll(string orgname, string year, string industy, string town)
+        public async Task<IActionResult> ExportAll(string orgname, string year, string industy, string town, string field, string desc)
         {
-            var result = await apdFctOrgIndexVInfo.ExportAll( orgname,  year,  industy,  town);
+            var result = await apdFctOrgIndexVInfo.ExportAll( orgname,  year,  industy,  town,field,desc);
             return File(result, "application/ms-excel", $"企业评分数据.xlsx");
 
         }
