@@ -261,7 +261,7 @@ namespace JiaHang.Projects.Admin.BLL
                     worksheet.Cells["L" + j].Value = obj.R_D_EXPENDITURE_RATIO_SCORE;
                     worksheet.Cells["M" + j].Value = obj.OWNER_EQUITY;
                     worksheet.Cells["N" + j].Value = obj.WORKER_MONTH;
-                    worksheet.Cells["0" + j].Value = obj.Industrial_added_value;
+                    worksheet.Cells["O" + j].Value = obj.Industrial_added_value;
                     worksheet.Cells["P" + j].Value = obj.pollutant_discharge2;
                     worksheet.Cells["Q" + j].Value = obj.fact_tax;
                     worksheet.Cells["R" + j].Value = obj.LAND_AREA;
