@@ -154,7 +154,7 @@
         //function inittable1(name, score1, score2,year) {
         //    var datas = [];
         //    var countdata = [];
-            
+
         //    axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
         //        .then(function (res) {
         //            console.log("进入")
@@ -265,7 +265,7 @@
         //            console.log(error)
         //        });
         //}
-        function table1(name, score1, score2,year) {
+        function table1(name, score1, score2, year) {
             var datas = [];
             var countdata = [];
             axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
@@ -321,7 +321,7 @@
                 });
         }
 
-        function table2(name, score1, score2,year) {
+        function table2(name, score1, score2, year) {
             var datas2 = [];
             var countdata2 = [];
             axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
@@ -435,7 +435,8 @@
             //})
         }
         form.on('select(myselect)', function (data) {
-            axios.get(`/api/EchartReportParms/GetIndustryData?name=${data.value}&score1=${fs1}&score2=${fs2}`)
+            var year = $('#year').val()
+            axios.get(`/api/EchartReportParms/GetIndustryData?name=${data.value}&score1=${fs1}&score2=${fs2}&year=${year}`)
                 .then(function (res) {
                     var datas = [];
                     var countdata = [];
@@ -491,7 +492,8 @@
         })
         form.on('select(myselect2)', function (data) {
             console.log(data.value)
-            axios.get(`/api/EchartReportParms/GetTownData?name=${data.value}&score1=${fs1}&score2=${fs2}`)
+            var year = $('#year').val()
+            axios.get(`/api/EchartReportParms/GetTownData?name=${data.value}&score1=${fs1}&score2=${fs2}&year=${year}`)
                 .then(function (res) {
                     var datas2 = [];
                     var countdata2 = [];
@@ -654,14 +656,14 @@
         //            x: 'center',
         //            y: 'bottom',
         //            padding: 25,
-        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
-        //                fontSize: 15,                      
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+        //                fontSize: 15,
         //            },
         //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
         //                color:"#2baf2b"
         //            },
         //        },
-        //        tooltip: {      
+        //        tooltip: {
         //            show: false,
         //            trigger: 'item',
         //            formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -697,8 +699,8 @@
         //                    { value: res.data.content.value1, name: '90分以上' },
         //                    { value: (sumvalue - res.data.content.value1), name: '其他' },
         //                ],
-        //                itemStyle: {                          
-        //                    emphasis: {                                
+        //                itemStyle: {
+        //                    emphasis: {
         //                        shadowBlur: 10,
         //                        shadowOffsetX: 0,
         //                        shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -731,7 +733,7 @@
         //            x: 'center',
         //            y: 'bottom',
         //            padding: 25,
-        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
         //                fontSize: 15,
         //            },
         //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
@@ -807,7 +809,7 @@
         //            x: 'center',
         //            y: 'bottom',
         //            padding: 25,
-        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
         //                fontSize: 15,
         //            },
         //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
@@ -884,7 +886,7 @@
         //            x: 'center',
         //            y: 'bottom',
         //            padding: 25,
-        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+        //            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
         //                fontSize: 15,
         //            },
         //            subtextStyle: {//副标题文本样式{"color": "#aaa"}
@@ -972,7 +974,7 @@
     })
 </script>
 <div style="margin-left:18px" id="app">
-    <div style="width: 100%;padding-top:15px" >
+    <div style="width: 100%;padding-top:15px">
         <div>
             <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div><h3>综合评分结构分布</h3> <el-form :inline="true" style="padding-top:20px">
                 <el-form-item>
@@ -980,58 +982,57 @@
                                     type="year"
                                     format="yyyy"
                                     placeholder="选择年"
-                                    @@change="yearchange"
-                                    >
+                                    @@change="yearchange">
                     </el-date-picker>
                 </el-form-item>
             </el-form>
         </div>
-        <div style="padding-top:10px" >
-           
-                <div class="divSelected" id="divSelected" v-loading="loading">
-                    @*<div class="divSelectedTitle">
-                            90分以上
-                        </div>
-                        <div class="divSelectedSplit">
-                        </div>
-                        <div class="divSelectedDesc">
-                            <span id='value1'></span> 户<span id="value11"></span>
-                        </div>*@
-                     
-                </div>              
+        <div style="padding-top:10px">
+
+            <div class="divSelected" id="divSelected" v-loading="loading">
+                @*<div class="divSelectedTitle">
+                        90分以上
+                    </div>
+                    <div class="divSelectedSplit">
+                    </div>
+                    <div class="divSelectedDesc">
+                        <span id='value1'></span> 户<span id="value11"></span>
+                    </div>*@
+
+            </div>
             <div class="divUnSelected1" id="divSelected1" v-loading="loading">
                 @*<div class="divUnSelectedTitle1">
-                    80分-90分(含)
-                </div>
-                <div class="divUnSelectedSplit1">
-                </div>
-                <div class="divUnSelectedDesc1">
-                    <span id='value2'></span>户 <span id="value22"></span>
-                </div>*@
+                        80分-90分(含)
+                    </div>
+                    <div class="divUnSelectedSplit1">
+                    </div>
+                    <div class="divUnSelectedDesc1">
+                        <span id='value2'></span>户 <span id="value22"></span>
+                    </div>*@
             </div>
             <div class="divUnSelected2" id="divUnSelected2" v-loading="loading">
                 @*<div class="divUnSelectedTitle2">
-                    60分-80分(含)
-                </div>
-                <div class="divUnSelectedSplit2">
-                </div>
-                <div class="divUnSelectedDesc2">
-                    <span id='value3'></span> 户<span id="value33"></span>
-                </div>*@
+                        60分-80分(含)
+                    </div>
+                    <div class="divUnSelectedSplit2">
+                    </div>
+                    <div class="divUnSelectedDesc2">
+                        <span id='value3'></span> 户<span id="value33"></span>
+                    </div>*@
             </div>
             <div class="divUnSelected3" id="divUnSelected3" v-loading="loading">
                 @*<div class="divUnSelectedTitle3">
-                    60分(含)以下
-                </div>
-                <div class="divUnSelectedSplit3">
-                </div>
-                <div class="divUnSelectedDesc3">
-                    <span id='value4'></span>户 <span id="value44"></span>
-                </div>*@
+                        60分(含)以下
+                    </div>
+                    <div class="divUnSelectedSplit3">
+                    </div>
+                    <div class="divUnSelectedDesc3">
+                        <span id='value4'></span>户 <span id="value44"></span>
+                    </div>*@
             </div>
         </div>
     </div>
-    <div class="layui-inline" style="padding-top:30px" >
+    <div class="layui-inline" style="padding-top:30px">
         <div style="float:left;background-color:#2497f3;width:10px; height:20px; margin-right:5px;"></div> <h3>行业结构特征分布</h3>
         <div class="layui-form" style="padding-top:10px">
             <select name="" id="myselect" lay-filter="myselect">
@@ -1067,17 +1068,31 @@
 <script>
     new Vue({
         el: '#app',
-        data :function() {
+        data: function () {
             return {
                 loading: true,
-                  orgyear: '2018',
+                orgyear: '2018',
             }
         },
         methods: {
             yearchange: function (val) {
                 let vm = this;
                 vm.onload(val.getFullYear());
-                console.log("值", val.getFullYear())
+                if ($('#divUnSelected3').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), -1, 60, val.getFullYear())
+                }
+                if ($('#divUnSelected2').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), 60, 80, val.getFullYear())
+                }
+                if ($('#divUnSelected1').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), 80, 90, val.getFullYear())
+                }
+                if ($('#divUnSelected').css('background-color') == 'rgb(36, 151, 243)') {
+                    vm.table1($('#myselect').val(), 90, 150, val.getFullYear())
+                }
+                console.log($('#divUnSelected3').css('background-color'))
+                //
+                //table2($('#myselect2').val(), 90, 150, val.getFullYear())
             },
             inittable1: function (name, score1, score2, year) {
                 var datas = [];
@@ -1193,6 +1208,118 @@
                         console.log(error)
                     });
             },
+            table1: function (name, score1, score2, year) {
+                var datas = [];
+                var countdata = [];
+                axios.get(`/api/EchartReportParms/GetIndustryData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+                    .then(function (res) {
+                        datas.splice(0, datas.length);
+                        countdata.splice(0, countdata.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            datas.push(item.industry)
+                            countdata.push(item.count)
+                        })
+                        var myChart1 = echarts.init(document.getElementById('main1'));
+                        var option = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata
+                                }
+                            ]
+                        };
+                        myChart1.setOption(option);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            table2(name, score1, score2, year) {
+                var datas2 = [];
+                var countdata2 = [];
+                axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
+                    .then(function (res) {
+                        datas2.splice(0, datas2.length);
+                        countdata2.splice(0, countdata2.length);
+                        $.each(res.data.content.list, function (index, item) {
+                            console.log(item)
+                            datas2.push(item.town)
+                            countdata2.push(item.count)
+                        })
+
+                        var myChart2 = echarts.init(document.getElementById('main2'));
+                        var option2 = {
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: datas2,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数据',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: countdata2
+                                }
+                            ]
+                        };
+                        myChart2.setOption(option2);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
             onload: function (year) {
                 let vm = this;
                 axios.get(`/api/EchartReportParms/GetScorePercentage?year=${year}`).then(function (res) {
@@ -1210,7 +1337,7 @@
                             x: 'center',
                             y: 'bottom',
                             padding: 25,
-                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
                                 fontSize: 15,
                             },
                             subtextStyle: {//副标题文本样式{"color": "#aaa"}
@@ -1287,7 +1414,7 @@
                             x: 'center',
                             y: 'bottom',
                             padding: 25,
-                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
                                 fontSize: 15,
                             },
                             subtextStyle: {//副标题文本样式{"color": "#aaa"}
@@ -1363,7 +1490,7 @@
                             x: 'center',
                             y: 'bottom',
                             padding: 25,
-                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
                                 fontSize: 15,
                             },
                             subtextStyle: {//副标题文本样式{"color": "#aaa"}
@@ -1440,7 +1567,7 @@
                             x: 'center',
                             y: 'bottom',
                             padding: 25,
-                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}                       
+                            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
                                 fontSize: 15,
                             },
                             subtextStyle: {//副标题文本样式{"color": "#aaa"}

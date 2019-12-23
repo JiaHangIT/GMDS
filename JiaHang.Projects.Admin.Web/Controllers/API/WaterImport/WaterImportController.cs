@@ -115,21 +115,21 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                                 colname = "S6";
                                 Convert.ToDecimal(s_6);
 
-                                var S_7 = current.S7;
-                                if (S_7 == "")
-                                {
-                                    continue;
-                                }
-                                colname = "S7";
-                                Convert.ToDecimal(S_7);
+                                //var S_7 = current.S7;
+                                //if (S_7 == "")
+                                //{
+                                //    continue;
+                                //}
+                                //colname = "S7";
+                                //Convert.ToDecimal(S_7);
 
-                                var s_8 = current.S8;
-                                if (s_8 == "")
-                                {
-                                    continue;
-                                }
-                                colname = "S8";
-                                Convert.ToDecimal(s_8);
+                                //var s_8 = current.S8;
+                                //if (s_8 == "")
+                                //{
+                                //    continue;
+                                //}
+                                //colname = "S8";
+                                //Convert.ToDecimal(s_8);
 
 
                                 count++;
@@ -145,11 +145,11 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                         }
                         var filterdata = prefilter.Select(g => new ApdFctWaterDal
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.S3,
                             Water = g.S6 == "" ? 0 : Convert.ToDecimal(g.S6),
-                            Other = g.S7 == "" ? 0 : Convert.ToDecimal(g.S7),
+                            Other = g.S7,
                             Remark = g.S8,
                             CreationDate = DateTime.Now,
                             LastUpdateDate = DateTime.Now
@@ -183,7 +183,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
         /// <returns></returns>
         [Route("BatchDelete")]
         [HttpDelete]
-        public async Task<FuncResult> Delete(decimal[] Ids)
+        public async Task<FuncResult> Delete(string[] Ids)
         {
             return await waterBll.Delete(Ids, HttpContext.CurrentUser(cache).Id);
         }
@@ -306,7 +306,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
                     sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
                     sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
                     sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].Water));
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Other));
+                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 5].Other);
                     sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
                 }
 

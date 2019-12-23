@@ -111,8 +111,8 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .IsUnique();
 
                 entity.Property(e => e.RecordId)
-                    .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                     .HasColumnName("RECORD_ID")
+                      .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.OrgCode)
                     .HasColumnName("ORG_CODE")
@@ -262,7 +262,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.RegistrationDate)
                     .HasColumnName("REGISTRATION_DATE")
@@ -442,7 +442,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.OrgCode)
                     .HasColumnName("ORG_CODE")
@@ -458,7 +458,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.Other)
                     .HasColumnName("OTHER")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(100)");
 
                 entity.Property(e => e.PeriodYear)
                     .HasColumnName("PERIOD_YEAR")
@@ -792,7 +792,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -861,7 +861,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                     .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.AmmoniaNitrogen)
                     .HasColumnName("AMMONIA_NITROGEN")
@@ -958,7 +958,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -1026,7 +1026,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.RecordId)
                     .HasColumnName("RECORD_ID")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(50)");
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")

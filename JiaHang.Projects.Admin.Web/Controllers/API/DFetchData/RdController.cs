@@ -233,7 +233,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 
                         var filterdata = prefilter.Select(g => new ApdFctRD
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.K3,
                             IsHighTech = g.K6,

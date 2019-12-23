@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace JiaHang.Projects.Admin.Web.Controllers.API
 {
     [Route("api/[controller]")]
-    public class ApdFctOrgIndexVController:ControllerBase
+    public class ApdFctOrgIndexVController : ControllerBase
     {
         private readonly ApdFctOrgIndexVBLL apdFctOrgIndexVInfo;
 
@@ -21,10 +21,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             apdFctOrgIndexVInfo = new ApdFctOrgIndexVBLL(context);
         }
         [HttpGet("{pageSize}/{currentPage}")]
-        public FuncResult Select(int pageSize, int currentPage,string OrgName,string year, string field, string desc)
+        public FuncResult Select(int pageSize, int currentPage, string OrgName, string year, string field, string desc)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.Select(pageSize, currentPage,OrgName,year, field, desc);
+            return apdFctOrgIndexVInfo.Select(pageSize, currentPage, OrgName, year, field, desc);
         }
         //[HttpGet("SelectByFieldOrderby")]
         //public FuncResult SelectByFieldOrderby(int pageSize, int currentPage, string OrgName, string year, string field, string desc) {
@@ -33,21 +33,22 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         //}
         [Route("SelectTownDdata")]
         [HttpGet]
-        public FuncResult SelectTownDdata(int pageSize, int currentPage,  string Town, string OrgName, string year, string Industy)
+        public FuncResult SelectTownDdata(int pageSize, int currentPage, string Town, string OrgName, string year, string Industy)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.SelectTownDdata(pageSize, currentPage, Town,  OrgName,  year,  Industy);
+            return apdFctOrgIndexVInfo.SelectTownDdata(pageSize, currentPage, Town, OrgName, year, Industy);
         }
         [Route("SelectIndustryData")]
         [HttpGet]
-        public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry,   string OrgName, string year, string Town)
+        public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry, string OrgName, string year, string Town)
         {
             currentPage--;
-            return apdFctOrgIndexVInfo.SelectIndustryData(pageSize, currentPage, Industry  ,  OrgName,  year,  Town);
+            return apdFctOrgIndexVInfo.SelectIndustryData(pageSize, currentPage, Industry, OrgName, year, Town);
         }
         [Route("GetAvarageScore")]
         [HttpGet]
-        public FuncResult GetAvarageScore(string year) {
+        public FuncResult GetAvarageScore(string year)
+        {
             return apdFctOrgIndexVInfo.GetAvarageScore(year);
         }
         [Route("GetTown")]
@@ -64,25 +65,28 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
         [Route("IndustryDetail")]
         [HttpGet]
-        public FuncResult IndustryDetail(string code) {
+        public FuncResult IndustryDetail(string code)
+        {
             return apdFctOrgIndexVInfo.IndustryDetail(code);
         }
         [Route("SelectORGInfo")]
         [HttpGet]
-        public FuncResult SelectORGInfo(int pageSize, int currentPage, string OrgCode) {
+        public FuncResult SelectORGInfo(int pageSize, int currentPage, string OrgCode)
+        {
             currentPage--;
-            return apdFctOrgIndexVInfo.SelectORGInfo(pageSize,currentPage, OrgCode);
+            return apdFctOrgIndexVInfo.SelectORGInfo(pageSize, currentPage, OrgCode);
         }
         [Route("BenefiteValuationInfo")]
         [HttpGet]
-        public FuncResult BenefiteValuationInfo(string code) {
+        public FuncResult BenefiteValuationInfo(string code)
+        {
             return apdFctOrgIndexVInfo.BenefiteValuationInfo(code);
         }
         [HttpGet]
         [Route("ExportAll")]
-        public async Task<IActionResult> ExportAll(string orgname, string year, string industy, string town)
+        public async Task<IActionResult> ExportAll(string orgname, string year, string industy, string town, string field, string desc)
         {
-            var result = await apdFctOrgIndexVInfo.ExportAll( orgname,  year,  industy,  town);
+            var result = await apdFctOrgIndexVInfo.ExportAll(orgname, year, industy, town, field, desc);
             return File(result, "application/ms-excel", $"企业评分数据.xlsx");
 
         }

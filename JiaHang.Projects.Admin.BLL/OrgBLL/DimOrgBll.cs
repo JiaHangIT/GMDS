@@ -35,7 +35,7 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                 {
                     model.page = 0;
                 }
-                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
+                fr.Content = query.ToList();
                 return fr;
             }
             catch (Exception)
@@ -79,7 +79,7 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             {
                 ApdDimOrg org = new ApdDimOrg()
                 {
-                    RecordId = new Random().Next(1, 9999),
+                    RecordId = Guid.NewGuid().ToString(),
                     CreationDate = DateTime.Now,
                     //CreatedBy = Convert.ToDecimal(userid),
                     LastUpdateDate = DateTime.Now,
@@ -110,7 +110,7 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                     return fr;
                 }
 
-                ApdDimOrg existorg = context.ApdDimOrg.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                ApdDimOrg existorg = context.ApdDimOrg.FirstOrDefault(f => f.RecordId.Equals(recordid));
                 if (existorg == null)
                 {
                     fr.IsSuccess = false;
@@ -139,7 +139,7 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             {
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
-                    IQueryable<ApdDimOrg> list = context.ApdDimOrg.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    IQueryable<ApdDimOrg> list = context.ApdDimOrg.Where(f => ids.Select(g => g).Contains(f.RecordId));
                     context.ApdDimOrg.RemoveRange(list);
 
                     try

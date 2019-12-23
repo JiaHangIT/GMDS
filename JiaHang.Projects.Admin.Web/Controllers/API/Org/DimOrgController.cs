@@ -225,6 +225,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
 
                         var filterdata = prefilter.Select(g => new ApdDimOrg
                         {
+                            RecordId=Guid.NewGuid().ToString(),
                             OrgName = g.X1,
                             Town = g.X2,
                             OrgCode = g.X3,
@@ -304,7 +305,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                     sheet1.GetRow(i).GetCell(10).SetCellValue(data[i - 6].Industry);
                     sheet1.GetRow(i).GetCell(11).SetCellValue(data[i - 6].RegistrationStatus);
                     sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].RegistrationMoney));
-                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToString(data[i - 6].CreationDate));
+                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToString(data[i - 6].RegistrationDate));
                 }
 
                 //转为字节数组

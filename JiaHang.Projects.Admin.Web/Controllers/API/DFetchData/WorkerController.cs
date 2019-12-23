@@ -250,7 +250,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 
                         var filterdata = prefilter.Select(g => new ApdFctWorker
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.Y3,
                             WorkerMonth = g.Y6 == "" ? null : Convert.ToDecimal(g.Y6),

@@ -47,7 +47,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 {
                     model.page = 0;
                 }
-                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
+                fr.Content = query.ToList();
                 return fr;
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "参数接收异常!";
                     return fr;
                 }
-                ApdFctRD rd = context.ApdFctRD.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                ApdFctRD rd = context.ApdFctRD.FirstOrDefault(f => f.RecordId.Equals(recordid));
                 rd.IsHighTech = model.IsHighTech;
                 rd.RDExpenditure = model.RDExpenditure;
                 rd.Remark = model.Remark;
@@ -135,7 +135,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             {
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
-                    IQueryable<ApdFctRD> list = context.ApdFctRD.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    IQueryable<ApdFctRD> list = context.ApdFctRD.Where(f => ids.Select(g => g).Contains(f.RecordId));
                     context.ApdFctRD.RemoveRange(list);
 
                     try
@@ -191,23 +191,26 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         return fr;
                     }
                 }
-                foreach (var item in list)
-                {
-                    if (isAlreadyExport(item.OrgCode,year))
-                    {
-                        //continue;
-                    }
-                    item.CreationDate = DateTime.Now;
-                    item.CreatedBy = Convert.ToDecimal(userid);
-                    context.ApdFctRD.Add(item);
-                }
+                
                 //list.ToList().ForEach(c => c.PeriodYear = _year);
                 //context.ApdFctRD.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
                     {
-                        context.SaveChanges();
+                        foreach (var item in list)
+                        {
+                            if (isAlreadyExport(item.OrgCode, year))
+                            {
+                                //continue;
+                            }
+                            item.RecordId = Guid.NewGuid().ToString();
+                            item.CreationDate = DateTime.Now;
+                            item.CreatedBy = Convert.ToDecimal(userid);
+                            context.ApdFctRD.Add(item);
+                            context.SaveChanges();
+                        }
+                       
                         trans.Commit();
                     }
                     catch (Exception ex)
@@ -273,7 +276,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
     public class ReturnRDModel
     {
         public decimal? PeriodYear { get; set; }
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }

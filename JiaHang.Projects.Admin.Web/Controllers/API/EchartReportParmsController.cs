@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace JiaHang.Projects.Admin.Web.Controllers.API
 {
     [Route("api/[controller]")]
-    public class EchartReportParmsController:ControllerBase
+    public class EchartReportParmsController : ControllerBase
     {
         private readonly EchartReportParmsBLL echartReportParmsInfo;
 
@@ -26,19 +26,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         }
         [Route("GetIndustryData")]
         [HttpGet]
-        public FuncResult GetIndustryData(string name, int score1, int score2,string year)
+        public FuncResult GetIndustryData(string name, int score1, int score2, string year)
         {
-            return echartReportParmsInfo.GetIndustryData(name,score1,score2,year);
+            return echartReportParmsInfo.GetIndustryData(name, score1, score2, year);
         }
         [Route("GetTownData")]
         [HttpGet]
-        public FuncResult GetTownData(string name, int score1, int score2,string year)
+        public FuncResult GetTownData(string name, int score1, int score2, string year)
         {
-            return echartReportParmsInfo.GetTownData(name,score1,score2,year);
+            return echartReportParmsInfo.GetTownData(name, score1, score2, year);
         }
         [Route("GetScorePercentage")]
         [HttpGet]
-        public FuncResult GetScorePercentage(string year) {
+        public FuncResult GetScorePercentage(string year)
+        {
             return echartReportParmsInfo.GetScorePercentage(year);
         }
     }

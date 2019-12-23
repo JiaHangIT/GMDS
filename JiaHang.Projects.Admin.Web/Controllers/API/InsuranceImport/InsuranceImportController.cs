@@ -207,15 +207,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
                                 colname = "B6";
                                 Convert.ToDecimal(b_6);
 
-                                var b_7 = current.B7;
-                                if (b_7 == "")
-                                {
-                                    continue;
-                                }
-                                colname = "B7";
-                                Convert.ToDecimal(b_7);
-                                
-
                                 count++;
                             }
                             catch (Exception ex)

@@ -50,7 +50,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 {
                     model.page = 0;
                 }
-                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
+                fr.Content = query.ToList();
                 return fr;
             }
             catch (Exception ex)
@@ -112,7 +112,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "参数接收异常!";
                     return fr;
                 }
-                ApdFctElectric electric = context.ApdFctElectric.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                ApdFctElectric electric = context.ApdFctElectric.FirstOrDefault(f => f.RecordId.Equals(recordid));
                 electric.NetSupply = model.NetSupply;
                 electric.Spontaneous = model.Spontaneous;
                 electric.Remark = model.Remark;
@@ -138,7 +138,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             {
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
-                    IQueryable<ApdFctElectric> list = context.ApdFctElectric.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    IQueryable<ApdFctElectric> list = context.ApdFctElectric.Where(f => ids.Select(g => g).Contains(f.RecordId));
                     context.ApdFctElectric.RemoveRange(list);
                   
                     try
@@ -190,9 +190,10 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         return fr;
                     }
                 }
+                //var existdata = list.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode,year))
+                    if (isAlreadyExport(item.OrgCode, year))
                     {
                         //删掉
                         //continue;
@@ -255,12 +256,14 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 throw new Exception("error", ex);
             }
         }
+
+
     }
 
     public class ReturnElectricModel
     {
         public decimal? PeriodYear { get; set; }
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }

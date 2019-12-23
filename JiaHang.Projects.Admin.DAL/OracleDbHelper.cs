@@ -12,7 +12,7 @@ namespace JiaHang.Projects.Admin.DAL
     public class OracleDbHelper
     {
         //const string connectionString = @"DATA SOURCE=120.79.207.87:1521/orcl;PASSWORD=123456;PERSIST SECURITY INFO=True;USER ID=gao_ming";
-        static string connectionString = AppConfig.getconnecting("OracleConnection");
+        static string connectionString = AppConfig.connectionstring("OracleConnection");
 
         public static List<T> Query<T>(string cmdstr, List<SqlParameter> parameters = null)
         {

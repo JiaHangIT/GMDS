@@ -272,7 +272,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 
                         var filterdata = prefilter.Select(g => new ApdFctContaminants
                         {
-                            RecordId = new Random().Next(1,99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.H3,
                             IsInSystem = g.H6,

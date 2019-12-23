@@ -107,7 +107,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                 {
                     model.page = 0;
                 }
-                fr.Content = query.Skip(model.limit * model.page).Take(model.limit).ToList();
+                fr.Content = query.ToList();
                 return fr;
             }
             catch (Exception ex)
@@ -128,7 +128,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = "参数接收异常!";
                     return fr;
                 }
-                ApdFctContaminants polluant = context.ApdFctContaminants.FirstOrDefault(f => f.RecordId.Equals(Convert.ToDecimal(recordid)));
+                ApdFctContaminants polluant = context.ApdFctContaminants.FirstOrDefault(f => f.RecordId.Equals(recordid));
 
                 polluant.IsInSystem = model.IsInSystem;
                 polluant.Oxygen = model.Oxygen;
@@ -162,7 +162,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
             {
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
-                    IQueryable<ApdFctContaminants> list = context.ApdFctContaminants.Where(f => ids.Select(g => Convert.ToDecimal(g)).Contains(f.RecordId));
+                    IQueryable<ApdFctContaminants> list = context.ApdFctContaminants.Where(f => ids.Select(g => g).Contains(f.RecordId));
                     context.ApdFctContaminants.RemoveRange(list);
 
                     try
@@ -285,7 +285,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
     public class ReturnPollutantModel
     {
         public decimal? PeriodYear { get; set; }
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }

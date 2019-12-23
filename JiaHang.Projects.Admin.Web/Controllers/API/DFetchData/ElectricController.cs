@@ -259,7 +259,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
 
                         var filterdata = prefilter.Select(g => new ApdFctElectric
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.D3,
                             NetSupply = g.D6 == "" ? null : Convert.ToDecimal(g.D6),

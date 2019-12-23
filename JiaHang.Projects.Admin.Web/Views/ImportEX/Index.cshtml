@@ -461,23 +461,23 @@
             
             objectSpanMethod({ row, column, rowIndex, columnIndex }) {
                 let vm = this
-                let c = row.count
-                console.log(row.count)
-                if (columnIndex < 9 || columnIndex > 11) {
-                    //只有一行返回count个，其他的返回0
-                    if (vm.array.find(item => { return item == rowIndex }) != null) {
+                //let c = row.count
+                //console.log(row.count)
+                //if (columnIndex < 9 || columnIndex > 11) {
+                //    //只有一行返回count个，其他的返回0
+                //    if (vm.array.find(item => { return item == rowIndex }) != null) {
 
-                        return {
-                            rowspan: c,
-                            colspan: 1
-                        };
-                    } else {
-                        return {
-                            rowspan: 0,
-                            colspan: 0
-                        };
-                    }
-                }
+                //        return {
+                //            rowspan: c,
+                //            colspan: 1
+                //        };
+                //    } else {
+                //        return {
+                //            rowspan: 0,
+                //            colspan: 0
+                //        };
+                //    }
+                //}
             },
             querydata() {
                 let vm = this

@@ -20,7 +20,7 @@ namespace JiaHang.Projects.Admin.BLL
         //public FuncResult Select(int pageSize, int currentPage, string OrgName,string year) {
         //    try { 
         //    StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
-             
+
         //        List<string> wheres = new List<string>();
         //    if (OrgName != null)
         //    {
@@ -50,7 +50,7 @@ namespace JiaHang.Projects.Admin.BLL
         //    }
         //    catch (Exception ex) { throw new Exception(ex.Message); };
         //}
-        public FuncResult Select(int pageSize, int currentPage, string OrgName, string year,string field,string desc)
+        public FuncResult Select(int pageSize, int currentPage, string OrgName, string year, string field, string desc)
         {
             try
             {
@@ -71,7 +71,8 @@ namespace JiaHang.Projects.Admin.BLL
 
                     sql.Append(" where " + wh);
                 }
-                if (field!=null) {
+                if (field != null)
+                {
                     sql.Append(" order by " + field + " " + desc);
                 }
                 List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
@@ -89,16 +90,18 @@ namespace JiaHang.Projects.Admin.BLL
             }
             catch (Exception ex) { throw new Exception(ex.Message); };
         }
-        public FuncResult GetAvarageScore(string year) {
+        public FuncResult GetAvarageScore(string year)
+        {
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_AVERAGE");
-            if (year!=null) {
+            if (year != null)
+            {
                 sql.Append(" where  PERIOD_YEAR=" + year);
             }
             List<AvarageScore> list = OracleDbHelper.Query<AvarageScore>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
         //根据城镇下拉框改变获取数据
-        public FuncResult SelectTownDdata(int pageSize, int currentPage, string Town, string OrgName, string year,string Industry)
+        public FuncResult SelectTownDdata(int pageSize, int currentPage, string Town, string OrgName, string year, string Industry)
         {
 
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
@@ -143,7 +146,7 @@ namespace JiaHang.Projects.Admin.BLL
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
         //根据行业下拉框改变获取数据
-        public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry, string OrgName, string year,string Town)
+        public FuncResult SelectIndustryData(int pageSize, int currentPage, string Industry, string OrgName, string year, string Town)
         {
 
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
@@ -187,10 +190,10 @@ namespace JiaHang.Projects.Admin.BLL
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
-        public async Task<byte[]> ExportAll(string orgname,string year,string industy,string town)
+        public async Task<byte[]> ExportAll(string orgname, string year, string industy, string town, string field, string desc)
 
         {
-            var comlumHeadrs = new[] { "年份","企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
+            var comlumHeadrs = new[] { "年份", "企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
             byte[] result;
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
             List<string> wheres = new List<string>();
@@ -200,7 +203,7 @@ namespace JiaHang.Projects.Admin.BLL
             }
             if (year != null)
             {
-                wheres.Add(" PERIOD_YEAR =" +"'"+ year+"'" );
+                wheres.Add(" PERIOD_YEAR =" + "'" + year + "'");
             }
             if (industy == "全部")
             {
@@ -223,6 +226,10 @@ namespace JiaHang.Projects.Admin.BLL
                 string wh = string.Join(" and ", wheres.ToArray());
 
                 sql.Append(" where " + wh);
+            }
+            if (field != null)
+            {
+                sql.Append(" order by " + field + " " + desc);
             }
             var data = _context.SysUserInfo.ToList();
             List<ReturnDate> datas = OracleDbHelper.Query<ReturnDate>(sql.ToString());
@@ -273,20 +280,21 @@ namespace JiaHang.Projects.Admin.BLL
                     j++;
                 }
             });
-         
-            
+
+
             result = package.GetAsByteArray();
             return result;
         }
         public FuncResult SelectORGInfo(int pageSize, int currentPage, string OrgCode)
         {
-            StringBuilder sql = new StringBuilder("select * from APD_DIM_SUB_ORG where PARENT_ORG_CODE=" + "'"+ OrgCode + "'");
+            StringBuilder sql = new StringBuilder("select * from APD_DIM_SUB_ORG where PARENT_ORG_CODE=" + "'" + OrgCode + "'");
             List<SubOrgInfo> list = OracleDbHelper.Query<SubOrgInfo>(sql.ToString());
             int total = list.Count();
             var data = list.ToList().Skip(pageSize * currentPage).Take(pageSize).ToList();
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
         }
-        public FuncResult GetTown() {
+        public FuncResult GetTown()
+        {
             string sql = "select * from APD_DIM_TOWN";
             List<Town> list = OracleDbHelper.Query<Town>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
@@ -297,37 +305,34 @@ namespace JiaHang.Projects.Admin.BLL
             List<Town> list = OracleDbHelper.Query<Town>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
-        public FuncResult IndustryDetail(string code) {
+        public FuncResult IndustryDetail(string code)
+        {
             string sql = "select * from APD_DIM_ORG_V where ORG_CODE=" + "'" + code + "'";
             List<IndustryInfo> list = OracleDbHelper.Query<IndustryInfo>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
-        public FuncResult BenefiteValuationInfo(string code) {
-            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL where ORG_CODE="+"'"+code+"'");
+        public FuncResult BenefiteValuationInfo(string code)
+        {
+            StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL where ORG_CODE=" + "'" + code + "'");
             string sql2 = "select count(*) as count  from apd_dim_org";
+
             List<Counts> result = OracleDbHelper.Query<Counts>(sql2.ToString());
             decimal industyCount = 0;
-            foreach (var item in result) {
+            foreach (var item in result)
+            {
                 industyCount = item.Count;
             }
             List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
-            foreach (var item2 in list) {
-                item2.fact_tax= Math.Round(Convert.ToDecimal(item2.fact_tax / 10000), 2);
-                item2.ENERGY_CONSUMPTION = Math.Round(Convert.ToDecimal(item2.ENERGY_CONSUMPTION / 10000), 2);
-                item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
-                item2.R_D_EXPENDITURE = Math.Round(Convert.ToDecimal(item2.R_D_EXPENDITURE / 10000), 2);
-                item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
-                item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
-            }
-            
-            return new FuncResult() { IsSuccess = true, Content = new { list , industyCount } };
-        } 
+
+            return new FuncResult() { IsSuccess = true, Content = new { list, industyCount } };
+        }
     }
     public class Counts
     {
         public decimal Count { get; set; }
     }
-    public class Town {
+    public class Town
+    {
         public string Code { get; set; }
         public string Name { get; set; }
     }
@@ -336,7 +341,8 @@ namespace JiaHang.Projects.Admin.BLL
         public string Code { get; set; }
         public string Name { get; set; }
     }
-    public class ReturnDate {
+    public class ReturnDate
+    {
         //亩均税收得分
         public decimal TAX_PER_MU_SCORE { get; set; }
         //亩均增加值得分
@@ -390,7 +396,8 @@ namespace JiaHang.Projects.Admin.BLL
         public decimal SIX_RANK { get; set; }
         public decimal COMPOSITE_RANK { get; set; }
     }
-    public class IndustryInfo {
+    public class IndustryInfo
+    {
         public string ORG_CODE { get; set; }
         public string ORG_NAME { get; set; }
         public string TOWN_Code { get; set; }
@@ -412,26 +419,28 @@ namespace JiaHang.Projects.Admin.BLL
         public string REGISTRATION_MONEY { get; set; }
         public string REGISTRATION_DATE { get; set; }
     }
-    public class SubOrgInfo {
+    public class SubOrgInfo
+    {
         public string PARENT_ORG_CODE { get; set; }
-        public string SUB_ORG_CODE { get;set;}
-        public string SUB_ORG_NAME { get;set;}
-        public string PROVINCE { get;set;}
-        public string REGISTRATION_STATUS { get;set;}
-        public string REGISTRATION_DATE { get;set;}
-        public string CREATION_DATE { get;set;}
-        public string CREATED_BY { get;set;}
-        public string LAST_UPDATE_DATE { get;set;}
+        public string SUB_ORG_CODE { get; set; }
+        public string SUB_ORG_NAME { get; set; }
+        public string PROVINCE { get; set; }
+        public string REGISTRATION_STATUS { get; set; }
+        public string REGISTRATION_DATE { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string LAST_UPDATE_DATE { get; set; }
         public string LAST_UPDATED_BY { get; set; }
-     }
-    public class AvarageScore {
-        public string PERIOD_YEAR { get; set; }
+    }
+    public class AvarageScore
+    {
+        public decimal PERIOD_YEAR { get; set; }
         public decimal TAX_PER_MU { get; set; }
         public decimal ADD_VALUE_PER_MU { get; set; }
         public decimal PRODUCTIVITY { get; set; }
-       public decimal POLLUTANT_DISCHARGE { get; set; }
+        public decimal POLLUTANT_DISCHARGE { get; set; }
         public decimal ENERGY_CONSUMPTION { get; set; }
-     public decimal NET_ASSETS_PROFIT { get; set; }
-    public decimal R_D_EXPENDITURE_RATIO { get; set; }
-}
+        public decimal NET_ASSETS_PROFIT { get; set; }
+        public decimal R_D_EXPENDITURE_RATIO { get; set; }
+    }
 }

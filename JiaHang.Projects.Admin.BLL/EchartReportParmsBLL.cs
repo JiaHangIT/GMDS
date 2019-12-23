@@ -21,21 +21,21 @@ namespace JiaHang.Projects.Admin.BLL
             List<JHAPDViewAddedValuePERMU> list = OracleDbHelper.Query<JHAPDViewAddedValuePERMU>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
-        public FuncResult GetIndustryData(string name,int score1,int score2,string year)
+        public FuncResult GetIndustryData(string name, int score1, int score2, string year)
         {
             string sql = "";
             if (name == "" || name == null)
             {
-                sql = "select INDUSTRY,count(*) as Count from  VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <="+ score2 + " and COMPOSITE_SCORE >" + score1 + " and PERIOD_YEAR=" + year+"  group by INDUSTRY";
+                sql = "select INDUSTRY,count(*) as Count from  VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " and PERIOD_YEAR=" + year + "  group by INDUSTRY";
             }
             else
             {
-                sql = "select INDUSTRY,sum(" + name + ") as Count from VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " and PERIOD_YEAR = " + year+" group by INDUSTRY";
+                sql = "select INDUSTRY,sum(" + name + ") as Count from VIEW_COMPANY_INDEX_SCORE_TOTAL WHERE COMPOSITE_SCORE <=" + score2 + " and COMPOSITE_SCORE >" + score1 + " and PERIOD_YEAR = " + year + " group by INDUSTRY";
             }
             List<IndustryCount> list = OracleDbHelper.Query<IndustryCount>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
-        public FuncResult GetTownData(string name,int score1,int score2,string year)
+        public FuncResult GetTownData(string name, int score1, int score2, string year)
         {
             string sql = "";
             if (name == "" || name == null)
@@ -49,8 +49,9 @@ namespace JiaHang.Projects.Admin.BLL
             List<TownCount> list = OracleDbHelper.Query<TownCount>(sql.ToString());
             return new FuncResult() { IsSuccess = true, Content = new { list } };
         }
-        public FuncResult GetScorePercentage(string year) {
-            string sql= "select count(*) as count  from apd_dim_org";
+        public FuncResult GetScorePercentage(string year)
+        {
+            string sql = "select count(*) as count  from apd_dim_org";
             string sql1 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 90 and PERIOD_YEAR=" + year + "";
             string sql2 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 80 and COMPOSITE_SCORE <=90 and PERIOD_YEAR=" + year + "";
             string sql3 = "select count(*) as count  from VIEW_COMPANY_INDEX_SCORE_TOTAL where COMPOSITE_SCORE > 60 and COMPOSITE_SCORE <=80 and PERIOD_YEAR=" + year + "";
@@ -65,7 +66,8 @@ namespace JiaHang.Projects.Admin.BLL
             decimal value2 = 0;
             decimal value3 = 0;
             decimal value4 = 0;
-            foreach (var item in list) {
+            foreach (var item in list)
+            {
                 value = (decimal)item.Count;
             };
             foreach (var item in list1)
@@ -88,13 +90,15 @@ namespace JiaHang.Projects.Admin.BLL
             string list2percentage = (Convert.ToDouble(value2) / Convert.ToDouble(value)).ToString("0.00%");
             string list3percentage = (Convert.ToDouble(value3) / Convert.ToDouble(value)).ToString("0.00%");
             string list4percentage = (Convert.ToDouble(value4) / Convert.ToDouble(value)).ToString("0.00%");
-            return new FuncResult() { IsSuccess = true, Content = new { value1, value2, value3, value4, list1percentage ,list2percentage ,list3percentage ,list4percentage } };
+            return new FuncResult() { IsSuccess = true, Content = new { value1, value2, value3, value4, list1percentage, list2percentage, list3percentage, list4percentage } };
         }
     }
-    public class ScoreCount {
+    public class ScoreCount
+    {
         public decimal Count { get; set; }
     }
-    public class TownCount {
+    public class TownCount
+    {
         public string Town { get; set; }
         public decimal Count { get; set; }
     }

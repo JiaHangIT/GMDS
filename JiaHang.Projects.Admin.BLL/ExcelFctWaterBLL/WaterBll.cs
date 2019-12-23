@@ -239,7 +239,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
             await context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "删除成功" };
         }
-        public async Task<FuncResult> Delete(decimal[] ids, string currentUserId)
+        public async Task<FuncResult> Delete(string[] ids, string currentUserId)
         {
             IQueryable<ApdFctWaterDal> entitys = context.ApdFctWater.Where(e => ids.Contains(e.RecordId));
             if (entitys.Count() != ids.Length)
@@ -271,7 +271,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
     }
     public class ReturnWaterModel
     {
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public string OrgName { get; set; }
         public string Town { get; set; }
         public string OrgCode { get; set; }
@@ -279,7 +279,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
         public string RegistrationType { get; set; }
         public string Address { get; set; }
         public decimal? Water { get; set; }
-        public decimal? Other { get; set; }
+        public string Other { get; set; }
         public string Remark { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
         public decimal? RegistrationMoney { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public decimal PeriodYear { get; set; }
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public int DeleteFlag { get; set; }
         public DateTime? DeleteDate { get; set; }
         public string DeleteBy { get; set; }

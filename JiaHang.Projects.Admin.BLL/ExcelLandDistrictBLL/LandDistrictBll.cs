@@ -140,7 +140,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelLandDistrictBLL
         /// <param name="ids"></param>
         /// <param name="currentUserId"></param>
         /// <returns></returns>
-        public async Task<FuncResult> Delete(decimal[] ids, string currentUserId)
+        public async Task<FuncResult> Delete(string[] ids, string currentUserId)
         {
             IQueryable<ApdFctLandDistrict> entitys = context.ApdFctLandDistrict.Where(e => ids.Contains(e.RecordId));
             if (entitys.Count() != ids.Length)

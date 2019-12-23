@@ -257,7 +257,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
                         //}
                         var filterdataT = prefilter.Select(g => new ApdFctLandDistrict
                         {
-                            RecordId = new Random().Next(1, 99999),
+                            RecordId = Guid.NewGuid().ToString(),
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.L3,
                             LandNo = g.L10,
@@ -271,109 +271,20 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
                             CreationDate = DateTime.Now
                         });
                         result = LanBll.WriteData(filterdataT, year);
-                        //var groupdata = datalist.GroupBy(g => new { g.L1, g.L3, g.L10, g.L11, g.L12, g.L13, g.L14, g.L15, g.L16, g.L17 }).Select(s => new DistrictModel1
+                       
+
+
+                        //decimal currenttown2key = 0;//本次apd_fct_town2表的主键
+                        //var town2context = context.ApdFctLandDistrict.OrderByDescending(o => o.RecordId).ToList();
+                        //if (town2context == null || town2context.Count() <= 0)
                         //{
-                        //    LANDNO = s.Key.L10,
-                        //    AREA = s.Key.L11,
-                        //    SHAREDESC = s.Key.L12,
-                        //    RIGHTTYPE = s.Key.L13,
-                        //    PURPOSE = s.Key.L14,
-                        //    BEGINDATE = Convert.ToDateTime(s.Key.L15),
-                        //    ENDDATE = Convert.ToDateTime(s.Key.L16),
-                        //    REMARK = s.Key.L17,
-                        //    ORGANIZATION = s.Key.L1,
-                        //    ORGCODE = s.Key.L3
-                        //});
-
-
-                        decimal currenttown2key = 0;//本次apd_fct_town2表的主键
-                        var town2context = context.ApdFctLandDistrict.OrderByDescending(o => o.RecordId).ToList();
-                        if (town2context == null || town2context.Count() <= 0)
-                        {
-                            currenttown2key = 1;
-                        }
-                        else
-                        {
-                            currenttown2key = town2context[0].RecordId + 1;
-                        }
-                        //存在orgcode不存在的情况就整个都不写入
-                        //t2作为t1的主表
-                        //foreach (var item in groupdata)
-                        //{
-                        //    var currentorganization = listorgan.FirstOrDefault(f => f.OrgCode.Equals(item.ORGCODE));
-                        //    if (currentorganization == null)
-                        //    {
-                        //        result.IsSuccess = false;
-                        //        result.Message = $"此机构号:{item.ORGCODE}找不到对应机构，导入失败！";
-                        //        return result;
-                        //    }
-                        //    bool isalreadyexport = isAlreadyExport(item.ORGCODE, year);
-                        //    if (isalreadyexport)
-                        //    {
-                        //        //删除(添加删除标记字段)
-                        //        //物理删除
-                        //        var formatyear = Convert.ToDecimal(year);
-                        //        var alreadytown = context.ApdFctLandDistrict.Where(f => f.OrgCode.Equals(item.ORGCODE) && f.PeriodYear.Equals(formatyear));                               
-                        //        context.ApdFctLandDistrict.RemoveRange(alreadytown);
-
-                        //        //foreach (var town2 in alreadytown2)
-                        //        //{
-                        //        //    town2.DeleteBy = HttpContext.CurrentUser(cache).Id;
-                        //        //    town2.DeleteDate = DateTime.Now;
-                        //        //    town2.DeleteFlag = 1;
-                        //        //    town2.LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
-                        //        //    town2.LastUpdateDate = DateTime.Now;
-                        //        //    context.ApdFctLandTown2.Update(town2);
-                        //        //}
-                        //        //foreach (var town in alreadytown)
-                        //        //{
-                        //        //    town.DeleteBy = HttpContext.CurrentUser(cache).Id;
-                        //        //    town.DeleteDate = DateTime.Now;
-                        //        //    town.DeleteFlag = 1;
-                        //        //    town.LastUpdatedBy= Convert.ToDecimal(HttpContext.CurrentUser(cache).Id);
-                        //        //    town.LastUpdateDate = DateTime.Now;
-                        //        //    context.ApdFctLandTown.Update(town);
-                        //        //}
-
-                        //    }
-                        //    ApdFctLandDistrict t2 = new ApdFctLandDistrict()
-                        //    {
-                        //        OrgCode = item.ORGCODE,
-                        //        LandNo = item.LANDNO,
-                        //        Area = item.AREA,
-                        //        ShareDesc = item.SHAREDESC,
-                        //        RightType = item.RIGHTTYPE,
-                        //        Purpose = item.PURPOSE,
-                        //        BeginDate=item.BEGINDATE,
-                        //        EndDate=item.ENDDATE,
-                        //        Remark = item.REMARK,
-                        //        PeriodYear = Convert.ToDecimal(year),
-                        //        RecordId = new Random().Next(1, 999),
-                        //        CreatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id),
-                        //        CreationDate = DateTime.Now,
-                        //        LastUpdateDate = DateTime.Now,
-                        //        LastUpdatedBy = Convert.ToDecimal(HttpContext.CurrentUser(cache).Id)
-                        //    };
-                        //    context.ApdFctLandDistrict.Add(t2);
+                        //    currenttown2key = 1;
                         //}
-
-
-
-                        //using (IDbContextTransaction trans = context.Database.BeginTransaction())
+                        //else
                         //{
-                        //    try
-                        //    {
-                        //        context.SaveChangesAsync();
-                        //        trans.Commit();
-                        //    }
-                        //    catch (Exception ex)
-                        //    {
-                        //        trans.Rollback();
-                        //        throw new Exception("error", ex);
-                        //    }
+                        //    currenttown2key = town2context[0].RecordId + 1;
                         //}
-
-                        //将groupdata_1、groupdata_2写入到两张表
+                        
 
                     }
                     else
@@ -660,7 +571,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
         /// <returns></returns>
         [Route("BatchDelete")]
         [HttpDelete]
-        public async Task<FuncResult> Delete(decimal[] Ids)
+        public async Task<FuncResult> Delete(string[] Ids)
         {
             return await LanBll.Delete(Ids, HttpContext.CurrentUser(cache).Id);
         }
@@ -733,7 +644,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.LandDistrictImportA
     }
     public class DistricModel
     {
-        public decimal RecordId { get; set; }
+        public string RecordId { get; set; }
         public decimal PeriodYear { get; set; }
         public decimal Count { get; set; }
         public decimal Key { get; set; }

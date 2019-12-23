@@ -106,48 +106,52 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 //        ).ToList().OrderByDescending(e => e.LAST_UPDATE_DATE);
                 var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType}).OrderBy(o => o.Key.OrgCode);
                 int count = query.Count();
-                
+                if (model.limit * model.page >= count)
+                {
+                    model.page = 0;
+                }
+                query = query.Skip(model.limit * model.page).Take(model.limit);
                 //var l= itemList.Skip(model.limit * model.page).Take(model.limit);
                 var list = new List<int>();
                 //重新定义query里count的值
 
-                var queryr = new List<ReturnModel>();
-                foreach (var item in l)
-                {
-                    //query.Where(f => f.Key == item.Key.Key).ToList().ForEach(p => p.Count = item.Count());
+                //var queryr = new List<ReturnModel>();
+                //foreach (var item in l)
+                //{
+                //    //query.Where(f => f.Key == item.Key.Key).ToList().ForEach(p => p.Count = item.Count());
 
-                    var currentquery = query.Where(f => f.OrgCode == item.Key.OrgCode).ToList();
-                    foreach (var itemquery in currentquery)
-                    {
-                        itemquery.Count = item.Count();
-                        queryr.Add(itemquery);
-                    }
-                    //listResut.Where(w => w.CategoryID > 30 && w.CategoryID < 40).ToList().ForEach(p => p.CategoryName = p.CategoryName + "bb");
-                    int c = item.Count();
-                    list.Add(c);
-                }
+                //    var currentquery = query.Where(f => f.OrgCode == item.Key.OrgCode).ToList();
+                //    foreach (var itemquery in currentquery)
+                //    {
+                //        itemquery.Count = item.Count();
+                //        queryr.Add(itemquery);
+                //    }
+                //    //listResut.Where(w => w.CategoryID > 30 && w.CategoryID < 40).ToList().ForEach(p => p.CategoryName = p.CategoryName + "bb");
+                //    int c = item.Count();
+                //    list.Add(c);
+                //}
 
                 var listnew = new List<int>();
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (i == 0)
-                    {
-                        listnew.Add(0);
-                    }
-                    else if (i == 1)
-                    {
-                        listnew.Add(list[0]);
-                    }
-                    else
-                    {
-                        //listnew.Add(list[i - 1] + list[i - 2]);
-                        listnew.Add(list.Take(i).Sum());
-                    }
-                }
+                //for (int i = 0; i < list.Count; i++)
+                //{
+                //    if (i == 0)
+                //    {
+                //        listnew.Add(0);
+                //    }
+                //    else if (i == 1)
+                //    {
+                //        listnew.Add(list[0]);
+                //    }
+                //    else
+                //    {
+                //        //listnew.Add(list[i - 1] + list[i - 2]);
+                //        listnew.Add(list.Take(i).Sum());
+                //    }
+                //}
 
                 //int total = listnew;
                 //var data = query.ToList();
-                result.Content = new { data = queryr, array = listnew , total =count};
+                result.Content = new { data = query, array = listnew , total =count};
                 //return new FuncResult() { IsSuccess = true, Content = new { data, total } };
             }
             catch (Exception ex)
@@ -155,6 +159,109 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 return new FuncResult() { IsSuccess = false, Content = null, Message = ex.Message };
             }
            
+            return result;
+
+        }
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("GetListNoPagination")]
+        public FuncResult GetListNoPagination([FromBody] adpFctax model = null)
+        {
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            try
+            {
+
+
+                var query = from t1 in context.ApdFctTAx
+                            join o in
+                            context.ApdDimOrg on t1.ORG_CODE equals o.OrgCode
+                            select new ReturnModel
+                            {
+                                //Array = listnew,                          
+                                OrgName = o.OrgName,
+                                Town = o.Town,
+                                OrgCode = o.OrgCode,
+                                RegistrationType = o.RegistrationType,
+                                Address = o.Address,
+                                LegalRepresentative = o.LegalRepresentative,
+                                Phone = o.Phone,
+                                LinkMan = o.LinkMan,
+                                Phone2 = o.Phone2,
+                                recordId = t1.RECORD_ID,
+                                Depreciation = t1.DEPRECIATION,
+                                EmployeeRemunerationON = t1.EMPLOYEE_REMUNERATION,
+                                PROFIT = t1.PROFIT,
+                                EntPaidTax = t1.ENT_PAID_TAX,
+                                MainBusinessIncome = t1.MAIN_BUSINESS_INCOME,
+                                RadEexpenses = t1.RAD_EXPENSES,
+                                NumberOfEmployees = t1.NUMBER_OF_EMPLOYEES,
+                                OwnerEquity = t1.OWNER_EQUITY,
+                                TotalProfit = t1.TOTAL_PROFIT,
+                                PeriodYear = t1.PERIOD_YEAR
+                            };
+                query = query.Where(f => (
+            (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+            (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
+            (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+            )).OrderBy(o => o.Create);
+                var l = query.GroupBy(g => new { g.OrgCode, g.RegistrationType }).OrderBy(o => o.Key.OrgCode);
+                int count = query.Count();
+                var querylist = query.ToList();
+                if (model.limit * model.page >= count)
+                {
+                    model.page = 0;
+                }
+                //var l= itemList.Skip(model.limit * model.page).Take(model.limit);
+                var list = new List<int>();
+                //重新定义query里count的值
+
+                //var queryr = new List<ReturnModel>();
+                //foreach (var item in l)
+                //{
+                //    //query.Where(f => f.Key == item.Key.Key).ToList().ForEach(p => p.Count = item.Count());
+
+                //    var currentquery = query.Where(f => f.OrgCode == item.Key.OrgCode).ToList();
+                //    foreach (var itemquery in currentquery)
+                //    {
+                //        itemquery.Count = item.Count();
+                //        queryr.Add(itemquery);
+                //    }
+                //    //listResut.Where(w => w.CategoryID > 30 && w.CategoryID < 40).ToList().ForEach(p => p.CategoryName = p.CategoryName + "bb");
+                //    int c = item.Count();
+                //    list.Add(c);
+                //}
+
+                var listnew = new List<int>();
+                //for (int i = 0; i < list.Count; i++)
+                //{
+                //    if (i == 0)
+                //    {
+                //        listnew.Add(0);
+                //    }
+                //    else if (i == 1)
+                //    {
+                //        listnew.Add(list[0]);
+                //    }
+                //    else
+                //    {
+                //        //listnew.Add(list[i - 1] + list[i - 2]);
+                //        listnew.Add(list.Take(i).Sum());
+                //    }
+                //}
+
+                //int total = listnew;
+                //var data = query.ToList();
+                result.Content = new { data = querylist, array = listnew, total = count };
+                //return new FuncResult() { IsSuccess = true, Content = new { data, total } };
+            }
+            catch (Exception ex)
+            {
+                return new FuncResult() { IsSuccess = false, Content = null, Message = ex.Message };
+            }
+
             return result;
 
         }
@@ -265,7 +372,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = GetList(new adpFctax() { orgname = "", orgcode = "" });
+                var summarydata = GetListNoPagination(new adpFctax() { orgname = "", orgcode = "" });
                 var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
                 var groupdata = (List<int>)((dynamic)summarydata.Content).array;
 
@@ -280,26 +387,41 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 //sheet1.GetRow(7).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
                 //sheet1.GetRow(8).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
                 //sheet1.GetRow(9).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
+                var obj = new Object();
                 for (int i = 6; i < data.Count + 6; i++)
                 {
-                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 6].OrgName);
-                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 6].Town);
-                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 6].OrgCode);
-                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 6].RegistrationType);
-                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 6].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].LegalRepresentative);
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 6].Phone);
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].LinkMan);
-                    sheet1.GetRow(i).GetCell(9).SetCellValue(data[i - 6].Phone2);
-                    sheet1.GetRow(i).GetCell(10).SetCellValue(Convert.ToDouble(data[i - 6].EntPaidTax));
-                    sheet1.GetRow(i).GetCell(11).SetCellValue(Convert.ToDouble(data[i - 6].EmployeeRemunerationON));
-                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].Depreciation));
-                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToDouble(data[i - 6].PROFIT));
-                    sheet1.GetRow(i).GetCell(14).SetCellValue(Convert.ToDouble(data[i - 6].MainBusinessIncome));
-                    sheet1.GetRow(i).GetCell(15).SetCellValue(Convert.ToDouble(data[i - 6].RadEexpenses));
-                    sheet1.GetRow(i).GetCell(16).SetCellValue(Convert.ToDouble(data[i - 6].NumberOfEmployees));
-                    sheet1.GetRow(i).GetCell(17).SetCellValue(Convert.ToDouble(data[i - 6].OwnerEquity));
-                    sheet1.GetRow(i).GetCell(18).SetCellValue(Convert.ToDouble(data[i - 6].TotalProfit));
+                    try
+                    {
+                        var cur = data[i-6];
+                        if (i == 392 || i == 397)
+                        {
+                            string p = string.Empty;
+                        }
+                        sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 6].OrgName);
+                        sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 6].Town);
+                        sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 6].OrgCode);
+                        sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 6].RegistrationType);
+                        sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 6].Address);
+                        sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].LegalRepresentative);
+                        sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 6].Phone);
+                        sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].LinkMan);
+                        sheet1.GetRow(i).GetCell(9).SetCellValue(data[i - 6].Phone2);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw;
+                    }
+
+                    sheet1.GetRow(i).GetCell(10).SetCellValue(Convert.ToDouble(data[i - 6].EntPaidTax ?? 0));
+                    sheet1.GetRow(i).GetCell(11).SetCellValue(Convert.ToDouble(data[i - 6].EmployeeRemunerationON ?? 0));
+                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].Depreciation ?? 0));
+                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToDouble(data[i - 6].PROFIT ?? 0));
+                    sheet1.GetRow(i).GetCell(14).SetCellValue(Convert.ToDouble(data[i - 6].MainBusinessIncome ?? 0));
+                    sheet1.GetRow(i).GetCell(15).SetCellValue(Convert.ToDouble(data[i - 6].RadEexpenses ?? 0));
+                    sheet1.GetRow(i).GetCell(16).SetCellValue(Convert.ToDouble(data[i - 6].NumberOfEmployees ?? 0));
+                    sheet1.GetRow(i).GetCell(17).SetCellValue(Convert.ToDouble(data[i - 6].OwnerEquity ?? 0));
+                    sheet1.GetRow(i).GetCell(18).SetCellValue(Convert.ToDouble(data[i - 6].TotalProfit ?? 0));
                     sheet1.GetRow(i).GetCell(19).SetCellValue(data[i - 6].Remark);
                 }
 
