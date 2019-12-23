@@ -537,13 +537,20 @@
                 console.log(err)
             },
             query() {
-                //axios.get(`/api/qiyefile/export`).then(res => {
-                //    console.log(res)
-                //}).catch(err => {
-                //    console.log(err)
-                //})
+                let vm = this
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                let post = {
+                    pagesize: vm.pageSize,
+                    pagenum: vm.currentPage,
+                    orgname: vm.orgname,
+                    orgcode: vm.orgcode,
+                    year: y
+                };
 
-                window.location.href = '/api/ApdFctTAxImport/export'
+                window.location.href = '/api/ApdFctTAxImport/export?' + $.param(post)
             },
             downtemplate() {
                 window.location.href = `/api/ApdFctTAxImport/apxfcttaximportlate`

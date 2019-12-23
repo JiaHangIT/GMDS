@@ -48,7 +48,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         {
             try
             {
-                return IMBll.GetList();
+                return IMBll.GetList(new SearchInsModel ());
             }
             catch (Exception)
             {
@@ -285,15 +285,15 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = IMBll.GetList();
+                var summarydata = IMBll.GetList(new SearchInsModel() { orgname = orgname, orgcode = orgcode, year = year });
                 var data = (List<ReturnWaterModel>)((dynamic)summarydata).Content;
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业研发经费支出情况取数表格式-局高新合作交流科.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\月平均参保人数取数表格式-区社保基金局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);

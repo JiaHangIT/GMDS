@@ -19,7 +19,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
 
         public InsuranceBll(DataContext _context) { this.context = _context; }
 
-        public FuncResult GetList()
+        public FuncResult GetList(SearchInsModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
@@ -37,7 +37,11 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
                                 InsuranceMonth=r.InsuranceMonth,
                                 Remark = r.Remark
                             };
-
+                query = query.Where(f => (
+                                   (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+                                   (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
+                                   (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+                                   ));
                 fr.Content = query.ToList();
                 return fr;
             }

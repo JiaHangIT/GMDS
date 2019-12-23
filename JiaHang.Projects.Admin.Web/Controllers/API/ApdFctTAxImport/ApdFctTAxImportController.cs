@@ -368,12 +368,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = GetListNoPagination(new adpFctax() { orgname = "", orgcode = "" });
+                var summarydata = GetListNoPagination(new adpFctax() { orgname = orgname, orgcode = orgcode, year = year });
                 var data = (List<ReturnModel>)((dynamic)summarydata.Content).data;
                 var groupdata = (List<int>)((dynamic)summarydata.Content).array;
 

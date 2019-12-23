@@ -65,7 +65,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
         /// 列表
         /// </summary>
         /// <returns></returns>
-        public FuncResult GetList()
+        public FuncResult GetList(SearchExcelModel model)
         {
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
@@ -85,7 +85,11 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                                 Other = c.Other,
                                 Remark = c.Remark
                             };
-
+                query = query.Where(f => (
+                                 (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+                                 (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
+                                 (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+                                 ));
                 fr.Content = query.ToList();
                 return fr;
             }

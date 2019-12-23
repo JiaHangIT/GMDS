@@ -292,7 +292,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         {
             try
             {
-                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
                 pagenum--; if (pagenum < 0)
                 {
                     pagenum = 0;

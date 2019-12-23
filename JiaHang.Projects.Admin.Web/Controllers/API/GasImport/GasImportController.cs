@@ -262,12 +262,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = gasBll.GetList();
+                var summarydata = gasBll.GetList(new SearchExcelModel() { orgname = orgname, orgcode = orgcode, year = year });
                 var data = (List<ReturnPollutantModel>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用气情况取数表格式-佛山市高明燃气有限公司.xls";

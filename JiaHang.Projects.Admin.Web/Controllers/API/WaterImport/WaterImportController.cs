@@ -178,18 +178,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
         [HttpGet("delete/{key}")]
         public async Task<FuncResult> DeleteData(string key)
         {
-            //try
-            //{
-
-            //    await gasBll.Delete(key);
-
-            //    return fr;
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    throw new Exception("error", ex);
-            //}
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
             try
             {
@@ -266,12 +254,12 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.WaterImport
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = waterBll.GetList();
+                var summarydata = waterBll.GetList(new SearchExcelModel() { orgname = orgname, orgcode = orgcode, year = year });
                 var data = (List<ReturnWaterModel>)((dynamic)summarydata).Content;
 
                 string TempletFileName = $"{hosting.WebRootPath}\\template\\企业用水情况取数表格式-佛山水业集团高明供水有限公司.xls";

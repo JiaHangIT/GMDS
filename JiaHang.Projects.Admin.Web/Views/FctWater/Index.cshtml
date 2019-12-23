@@ -359,7 +359,19 @@
                 console.log(err)
             },
             exportdata() {
-                window.location.href = '/api/WaterImport/export'
+                let vm = this
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                let post = {
+                    pagesize: vm.pageSize,
+                    pagenum: vm.currentPage,
+                    orgname: vm.orgname,
+                    orgcode: vm.orgcode,
+                    year: y
+                };
+                window.location.href = '/api/WaterImport/export?' + $.param(post)
             },
             downtemplate() {
                 window.location.href = `/api/WaterImport/downtemplate`
