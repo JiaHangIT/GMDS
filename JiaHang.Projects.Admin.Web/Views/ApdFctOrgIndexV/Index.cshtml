@@ -81,7 +81,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: green;*/
+        background-color: #99FF00;
         margin: auto;
     }
 
@@ -91,7 +91,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: green;*/
+        background-color: #99FF00;
         margin: auto;
     }
 
@@ -101,7 +101,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: green;*/
+        background-color: #99FF00;
         margin: auto;
     }
 
@@ -111,7 +111,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: Red;*/
+        background-color: Red;
         margin: auto;
     }
 
@@ -121,7 +121,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: Red;*/
+        background-color: Red;
         margin: auto;
     }
 
@@ -131,7 +131,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: Yellow;*/
+        background-color: Yellow;
         margin: auto;
     }
 
@@ -141,7 +141,7 @@
         padding-top: 20px;
         vertical-align: middle;
         border-radius: 10px;
-        /*background-color: Yellow;*/
+        background-color: Yellow;
         margin: auto;
     }
 </style>
@@ -213,6 +213,16 @@
         <el-table-column label="所在街道（园区）"
                          width="150"
                          prop="town">
+        </el-table-column>
+        <el-table-column label="数据状态"
+                         width="100"
+                         prop="datA_STATUS">
+            
+        </el-table-column>
+        <el-table-column label="数据提示"
+                         width="300"
+                         prop="datA_TIP">
+         
         </el-table-column>
         <el-table-column label="综合评分"
                          sortable="custom"
@@ -291,10 +301,10 @@
                          prop="profit">
         </el-table-column>
         @*<el-table-column label="净资产"
-                             sortable
-                             width="150"
-                             prop="assets">
-            </el-table-column>*@
+                         sortable
+                         width="150"
+                         prop="assets">
+        </el-table-column>*@
         <el-table-column label="主营业务收入"
                          sortable
                          width="150"
@@ -913,13 +923,11 @@
                         //item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
                         //item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
                         //item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
-                        console.log(response.data.content.list[0]);
-                        console.log("精确值", (response.data.content.list[0].adD_VALUE_PER_MU / 10000).toFixed(2))
-                        $('#mjss').html((response.data.content.list[0].taX_PER_MU / 10000).toFixed(2))
-                        $('#mjzjz').html((response.data.content.list[0].adD_VALUE_PER_MU / 10000).toFixed(2))
-                        $('#qyldscl').html((response.data.content.list[0].productivity / 10000).toFixed(2))
-                        $('#dwpwqzjz').html((response.data.content.list[0].pollutanT_DISCHARGE / 10000).toFixed(2))
-                        $('#dwnh').html((response.data.content.list[0].energY_CONSUMPTION / 10000).toFixed(2))
+                        $('#mjss').html(response.data.content.list[0].taX_PER_MU )
+                        $('#mjzjz').html(response.data.content.list[0].adD_VALUE_PER_MU)
+                        $('#qyldscl').html(response.data.content.list[0].productivity)
+                        $('#dwpwqzjz').html(response.data.content.list[0].pollutanT_DISCHARGE)
+                        $('#dwnh').html(response.data.content.list[0].energY_CONSUMPTION)
                         $('#jzcsyl').html(response.data.content.list[0].neT_ASSETS_PROFIT)
                         $('#yfjftrb').html(response.data.content.list[0].r_D_EXPENDITURE_RATIO)
 
