@@ -362,7 +362,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         [HttpGet("delete/{key}")]
         public async Task<FuncResult> DeleteData(string key)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 if (string.IsNullOrWhiteSpace(key))
@@ -470,7 +470,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
             try
             {
                
-                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
                 pagenum--; if (pagenum < 0)
                 {
                     pagenum = 0;
@@ -488,24 +488,73 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 //sheet1.GetRow(7).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
                 //sheet1.GetRow(8).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
                 //sheet1.GetRow(9).GetCell(2).SetCellValue("佛山市高明盈夏纺织有限公司");
+
+                ICellStyle Style = xssfworkbook.CreateCellStyle();
+
+                Style.Alignment = HorizontalAlignment.Center;
+                Style.VerticalAlignment = VerticalAlignment.Center;
+                Style.BorderTop = BorderStyle.Thin;
+                Style.BorderRight = BorderStyle.Thin;
+                Style.BorderLeft = BorderStyle.Thin;
+                Style.BorderBottom = BorderStyle.Thin;
+                Style.DataFormat = 0;
+
                 for (int i = 6; i < data.Count + 6; i++)
                 {
-                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i-6].OrgName);
-                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 6].Town);
-                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 6].OrgCode);
-                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 6].RegistrationType);
-                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 6].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].LegalRepresentative);
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 6].Phone);
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].LinkMan);
-                    sheet1.GetRow(i).GetCell(9).SetCellValue(data[i - 6].Phone2);
-                    sheet1.GetRow(i).GetCell(10).SetCellValue(Convert.ToDouble(data[i - 6].OwnershipLand??0));
-                    sheet1.GetRow(i).GetCell(11).SetCellValue(Convert.ToDouble(data[i - 6].ProtectionLand ?? 0));
-                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].ReduceLand ?? 0));
-                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToDouble(data[i - 6].FactLand ?? 0));
-                    sheet1.GetRow(i).GetCell(14).SetCellValue(Convert.ToDouble(data[i - 6].RentLand ?? 0));
-                    sheet1.GetRow(i).GetCell(15).SetCellValue(Convert.ToDouble(data[i - 6].LeaseLand ?? 0));
-                    sheet1.GetRow(i).GetCell(16).SetCellValue(data[i - 6].Remark);
+                    var row = sheet1.CreateRow(i);
+                    row.Height = 35 * 20;
+                  
+                    //row.CreateCell(1).SetCellValue(data[i - 5].OrgName);
+                    //row.Cells[1].CellStyle = Style;
+                    //row.CreateCell(2).SetCellValue(data[i - 5].Town);
+                    //row.Cells[2].CellStyle = Style;
+                    //row.CreateCell(3).SetCellValue(data[i - 5].OrgCode);
+                    //row.Cells[3].CellStyle = Style;
+                    //row.CreateCell(4).SetCellValue(data[i - 5].RegistrationType);
+                    //row.Cells[4].CellStyle = Style;
+                    //row.CreateCell(5).SetCellValue(data[i - 5].Address);
+                    //row.Cells[5].CellStyle = Style;
+                    //row.CreateCell(6).SetCellValue(Convert.ToDouble(data[i - 5].NetSupply));
+                    //row.Cells[6].CellStyle = Style;
+                    //row.CreateCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Spontaneous));
+                    //row.Cells[7].CellStyle = Style;
+                    //row.CreateCell(8).SetCellValue(data[i - 5].Remark);
+                    //row.Cells[8].CellStyle = Style;
+
+                    row.CreateCell(0).SetCellValue(i - 5);
+                    row.Cells[0].CellStyle = Style;
+                    row.CreateCell(1).SetCellValue(data[i-6].OrgName);
+                    row.Cells[1].CellStyle = Style;
+                    row.CreateCell(2).SetCellValue(data[i - 6].Town);
+                    row.Cells[2].CellStyle = Style;
+                    row.CreateCell(3).SetCellValue(data[i - 6].OrgCode);
+                    row.Cells[3].CellStyle = Style;
+                    row.CreateCell(4).SetCellValue(data[i - 6].RegistrationType);
+                    row.Cells[4].CellStyle = Style;
+                    row.CreateCell(5).SetCellValue(data[i - 6].Address);
+                    row.Cells[5].CellStyle = Style;
+                    row.CreateCell(6).SetCellValue(data[i - 6].LegalRepresentative);
+                    row.Cells[6].CellStyle = Style;
+                    row.CreateCell(7).SetCellValue(data[i - 6].Phone);
+                    row.Cells[7].CellStyle = Style;
+                    row.CreateCell(8).SetCellValue(data[i - 6].LinkMan);
+                    row.Cells[8].CellStyle = Style;
+                    row.CreateCell(9).SetCellValue(data[i - 6].Phone2);
+                    row.Cells[9].CellStyle = Style;
+                    row.CreateCell(10).SetCellValue(Convert.ToDouble(data[i - 6].OwnershipLand??0));
+                    row.Cells[10].CellStyle = Style;
+                    row.CreateCell(11).SetCellValue(Convert.ToDouble(data[i - 6].ProtectionLand ?? 0));
+                    row.Cells[11].CellStyle = Style;
+                    row.CreateCell(12).SetCellValue(Convert.ToDouble(data[i - 6].ReduceLand ?? 0));
+                    row.Cells[12].CellStyle = Style;
+                    row.CreateCell(13).SetCellValue(Convert.ToDouble(data[i - 6].FactLand ?? 0));
+                    row.Cells[13].CellStyle = Style;
+                    row.CreateCell(14).SetCellValue(Convert.ToDouble(data[i - 6].RentLand ?? 0));
+                    row.Cells[14].CellStyle = Style;
+                    row.CreateCell(15).SetCellValue(Convert.ToDouble(data[i - 6].LeaseLand ?? 0));
+                    row.Cells[15].CellStyle = Style;
+                    row.CreateCell(16).SetCellValue(data[i - 6].Remark);
+                    row.Cells[16].CellStyle = Style;
                 }
 
                 /*
@@ -841,6 +890,13 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
 
                         string currenttown2key = "";//本次apd_fct_town2表的主键
 
+                        //删除当前年份已有数据
+                        //物理删除
+                        var formatyear = Convert.ToDecimal(year);
+                        var alreadytown2 = context.ApdFctLandTown2.Where(f =>  f.PeriodYear.Equals(formatyear));
+                        var alreadytown = context.ApdFctLandTown.Where(f => alreadytown2.Select(g => g.RecordId).Contains(f.T2Id));
+                        context.ApdFctLandTown2.RemoveRange(alreadytown2);
+                        context.ApdFctLandTown.RemoveRange(alreadytown);
 
                         //t2作为t1的主表
                         foreach (var item in groupdata_2)
@@ -852,17 +908,17 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                                 result.Message = $"此机构号:{item.ORGCODE}找不到对应机构，导入失败！";
                                 return result;
                             }
-                            bool isalreadyexport = isAlreadyExport(item.ORGCODE, year);
-                            if (isalreadyexport)
-                            {
-                                //删除(添加删除标记字段)
-                                //物理删除
-                                var formatyear = Convert.ToDecimal(year);
-                                var alreadytown2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(item.ORGCODE) && f.PeriodYear.Equals(formatyear));
-                                var alreadytown = context.ApdFctLandTown.Where(f => alreadytown2.Select(g => g.RecordId).Contains(f.T2Id));
-                                context.ApdFctLandTown2.RemoveRange(alreadytown2);
-                                context.ApdFctLandTown.RemoveRange(alreadytown);
-                            }
+                            //bool isalreadyexport = isAlreadyExport(item.ORGCODE, year);
+                            //if (isalreadyexport)
+                            //{
+                            //    //删除(添加删除标记字段)
+                            //    //物理删除
+                            //    var formatyear = Convert.ToDecimal(year);
+                            //    var alreadytown2 = context.ApdFctLandTown2.Where(f => f.OrgCode.Equals(item.ORGCODE) && f.PeriodYear.Equals(formatyear));
+                            //    var alreadytown = context.ApdFctLandTown.Where(f => alreadytown2.Select(g => g.RecordId).Contains(f.T2Id));
+                            //    context.ApdFctLandTown2.RemoveRange(alreadytown2);
+                            //    context.ApdFctLandTown.RemoveRange(alreadytown);
+                            //}
                             ApdFctLandTown2 t2 = new ApdFctLandTown2()
                             {
                                 OrgCode = item.ORGCODE,

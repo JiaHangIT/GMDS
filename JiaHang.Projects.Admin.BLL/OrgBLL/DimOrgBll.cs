@@ -204,6 +204,10 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
 
         public FuncResult WriteData(IEnumerable<ApdDimOrg> list, string year, string userid)
         {
+            /*
+            * 同一年，一个企业只能导入一次
+            * 更新，导入时，以年份为维度删除数据
+            * **/
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
@@ -216,12 +220,14 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
                 //    fr.Message = "未找到配置的企业信息!";
                 //    return fr;
                 //}
+                var existdata = context.ApdDimOrg.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdDimOrg.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode, year))
-                    {
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode, year))
+                    //{
+                    //    //continue;
+                    //}
                     item.CreationDate = DateTime.Now;
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdDimOrg.Add(item);

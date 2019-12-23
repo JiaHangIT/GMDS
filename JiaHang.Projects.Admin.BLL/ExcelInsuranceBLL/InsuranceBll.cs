@@ -19,9 +19,9 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
 
         public InsuranceBll(DataContext _context) { this.context = _context; }
 
-        public FuncResult GetList()
+        public FuncResult GetList(SearchInsModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var query = from r in context.ApdFctInsurance
@@ -37,7 +37,11 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
                                 InsuranceMonth=r.InsuranceMonth,
                                 Remark = r.Remark
                             };
-
+                query = query.Where(f => (
+                                   (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+                                   (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
+                                   (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+                                   ));
                 fr.Content = query.ToList();
                 return fr;
             }
@@ -49,13 +53,14 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
         }
         public FuncResult GetListPagination(SearchInsModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var query = from r in context.ApdFctInsurance
                             join o in context.ApdDimOrg on r.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = r.CreationDate,
                                 PeriodYear = r.PeriodYear,
                                 RecordId = r.RecordId,
                                 OrgName = o.OrgName,
@@ -88,9 +93,13 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
         /// <param name="list"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public FuncResult WriteData(IEnumerable<ApdFctInsuranceDal> list, string year)
+        public FuncResult WriteData(IEnumerable<ApdFctInsuranceDal> list, string year,string userid)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            /*
+            * 同一年，一个企业只能导入一次
+            * 更新，导入时，以年份为维度删除数据
+            * **/
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var _year = Convert.ToDecimal(year);
@@ -111,12 +120,16 @@ namespace JiaHang.Projects.Admin.BLL.ExcelInsuranceBLL
                         return fr;
                     }
                 }
+                var existdata = context.ApdFctInsurance.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctInsurance.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode, year))
-                    {
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode, year))
+                    //{
+                    //    //continue;
+                    //}
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctInsurance.Add(item);
                 }
                 //list.ToList().ForEach(c => c.PeriodYear = _year);

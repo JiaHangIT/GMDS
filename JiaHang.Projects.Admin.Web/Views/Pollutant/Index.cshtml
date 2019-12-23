@@ -144,6 +144,15 @@
                              label="备注"
                              width="120">
             </el-table-column>
+            <el-table-column prop="creationDate"
+                             label="创建时间"
+                             width="180">
+                <template slot-scope="scope">
+                    <span>
+                        {{format(scope.row.creationDate)}}
+                    </span>
+                </template>
+            </el-table-column>
             <el-table-column fixed="right"
                              label="操作"
                              width="150">
@@ -264,47 +273,6 @@
             </div>
 
 
-            @*<table>
-                <tr>
-                    <td>是否纳入环统范围</td>
-                    <td>
-                        <el-select v-model="form.isInSystem" placeholder="请选择">
-                            <el-option v-for="item in options"
-                                       :key="item"
-                                       :label="item"
-                                       :value="item">
-                            </el-option>
-                        </el-select>
-                    </td>
-                    <td>&nbsp;&nbsp;化学需氧量排放当量</td>
-                    <td><el-input placeholder="请输入" v-model="form.oxygen"></el-input></td>
-                </tr>
-                <tr>
-                    <td>氨氮排放当量</td>
-                    <td><el-input placeholder="请输入" v-model="form.ammoniaNitrogen"></el-input></td>
-                    <td>二氧化硫排放当量</td>
-                    <td><el-input placeholder="请输入" v-model="form.sulfurDioxide"></el-input></td>
-                </tr>
-                <tr>
-                    <td>氮氧化物排放当量</td>
-                    <td><el-input placeholder="请输入" v-model="form.nitrogenOxide"></el-input></td>
-                    <td>煤炭</td>
-                    <td><el-input placeholder="请输入" v-model="form.coal"></el-input></td>
-                </tr>
-                <tr>
-                    <td>燃料油</td>
-                    <td><el-input placeholder="请输入" v-model="form.fuelOil"></el-input></td>
-                    <td>氢气</td>
-                    <td><el-input placeholder="请输入" v-model="form.hydrogen"></el-input></td>
-                </tr>
-                <tr>
-                    <td>薪柴</td>
-                    <td><el-input placeholder="请输入" v-model="form.firewood"></el-input></td>
-                    <td>备注</td>
-                    <td><el-input placeholder="请输入" v-model="form.remark"></el-input></td>
-                </tr>
-            </table>*@
-
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
@@ -404,6 +372,15 @@
             }
         },
         methods: {
+            format(val) {
+                if (val) {
+                    let date = new Date(val)
+                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+                    console.log(date)
+
+                }
+
+            },
             fetchlist() {
                 let vm = this;
                 vm.loading = true

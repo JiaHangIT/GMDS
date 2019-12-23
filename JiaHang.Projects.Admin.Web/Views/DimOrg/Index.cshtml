@@ -130,9 +130,14 @@
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column prop="periodYear"
-                             label="年份"
+            <el-table-column prop="creationDate"
+                             label="创建时间"
                              width="180">
+                <template slot-scope="scope">
+                    <span>
+                        {{format(scope.row.creationDate)}}
+                    </span>
+                </template>
             </el-table-column>
             <el-table-column fixed="right"
                              label="操作"
@@ -268,61 +273,6 @@
                     </div>
                 </div>
             </div>
-            @*<table>
-                <tr>
-                    <td>统一社会信用代码</td>
-                    <td><el-input placeholder="请输入" v-model="form.orgCode"></el-input></td>
-                    <td>企业名称</td>
-                    <td><el-input placeholder="请输入" v-model="form.orgName"></el-input></td>
-                </tr>
-                <tr>
-                    <td>镇街</td>
-                    <td><el-input placeholder="请输入" v-model="form.town"></el-input></td>
-                    <td>登记注册类型</td>
-                    <td><el-input placeholder="请输入" v-model="form.registrationType"></el-input></td>
-                </tr>
-                <tr>
-                    <td>住所</td>
-                    <td><el-input placeholder="请输入" v-model="form.address"></el-input></td>
-                    <td>法定代表人</td>
-                    <td><el-input placeholder="请输入" v-model="form.legalRepresentative"></el-input></td>
-                </tr>
-                <tr>
-                    <td>法定代表人电话</td>
-                    <td><el-input placeholder="请输入" v-model="form.phone"></el-input></td>
-                    <td>日常联系人</td>
-                    <td><el-input placeholder="请输入" v-model="form.linkMan"></el-input></td>
-                </tr>
-                <tr>
-                    <td>日常联系人电话</td>
-                    <td><el-input placeholder="请输入" v-model="form.phone2"></el-input></td>
-                    <td>行业</td>
-                    <td><el-input placeholder="请输入" v-model="form.industry"></el-input></td>
-                </tr>
-                <tr>
-                    <td>登记状态</td>
-                    <td><el-input placeholder="请输入" v-model="form.registrationStatus"></el-input></td>
-                    <td>注册资本</td>
-                    <td><el-input placeholder="请输入" v-model="form.registrationMoney"></el-input></td>
-                </tr>
-                <tr>
-                    <td>注册日期</td>
-                    <td>
-                        <el-date-picker v-model="form.registrationDate"
-                                        type="date"
-                                        placeholder="选择日期">
-                        </el-date-picker>
-                    </td>
-                    <td>年份</td>
-                    <td>
-                        <el-date-picker v-model="form.periodYear"
-                                        type="year"
-                                        format="yyyy"
-                                        placeholder="选择年">
-                        </el-date-picker>
-                    </td>
-                </tr>
-            </table>*@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click=" ()=>{this.centerDialogVisible = false}">取 消</el-button>
@@ -428,7 +378,7 @@
             format(val) {
                 if (val) {
                     let date = new Date(val)
-                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
                     console.log(date)
 
                 }

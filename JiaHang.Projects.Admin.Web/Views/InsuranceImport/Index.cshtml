@@ -102,6 +102,15 @@
                              label="备注"
                              width="120">
             </el-table-column>
+            <el-table-column prop="creationDate"
+                             label="创建时间"
+                             width="180">
+                <template slot-scope="scope">
+                    <span>
+                        {{format(scope.row.creationDate)}}
+                    </span>
+                </template>
+            </el-table-column>
             <el-table-column fixed="right"
                              label="操作"
                              width="150">
@@ -250,6 +259,15 @@
             }
         },
         methods: {
+            format(val) {
+                if (val) {
+                    let date = new Date(val)
+                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+                    console.log(date)
+
+                }
+
+            },
             fetchlist() {
                 let vm = this;
 
@@ -327,7 +345,19 @@
                 console.log(err)
             },
             exportdata() {
-                window.location.href = '/api/InsuranceImport/export'
+                let vm = this
+                let y = ''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                let post = {
+                    pagesize: vm.pageSize,
+                    pagenum: vm.currentPage,
+                    orgname: vm.orgname,
+                    orgcode: vm.orgcode,
+                    year: y
+                };
+                window.location.href = '/api/InsuranceImport/export?' + $.param(post)
             },
             downtemplate() {
                 window.location.href = `/api/InsuranceImport/downtemplate`
@@ -442,7 +472,7 @@
                 };
                 ids = ids.substring(1, ids.length)
                 console.log(ids);
-                vm.$confirm(`此操作将删除${batchdatas.length}条系统帮助信息, 是否继续?`, '提示', {
+                vm.$confirm(`此操作将删除${batchdatas.length}条企业参保信息, 是否继续?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'

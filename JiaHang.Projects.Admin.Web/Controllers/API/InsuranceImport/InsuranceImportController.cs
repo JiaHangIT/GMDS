@@ -48,7 +48,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         {
             try
             {
-                return IMBll.GetList();
+                return IMBll.GetList(new SearchInsModel ());
             }
             catch (Exception)
             {
@@ -107,7 +107,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         [HttpGet("delete/{key}")]
         public async Task<FuncResult> DeleteData(string key)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
             try
             {
                 if (string.IsNullOrWhiteSpace(key))
@@ -158,7 +158,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         [HttpGet("{year}")]
         public FuncResult Import(string year)
         {
-            FuncResult result = new FuncResult() { IsSuccess = true, Message = "Success" };
+            FuncResult result = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
             try
             {
                 var excelfile = Request.Form.Files[0];
@@ -229,7 +229,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
                             LastUpdateDate = DateTime.Now
                         });
 
-                        result = IMBll.WriteData(filterdata, year);
+                        result = IMBll.WriteData(filterdata, year, HttpContext.CurrentUser(cache).Id);
 
                     }
                     else
@@ -285,30 +285,53 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.InsuranceImport
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
-        public FileResult Export()
+        public FileResult Export(int pagesize, int pagenum, string orgname, string orgcode, string year)
         {
             try
             {
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
-                var summarydata = IMBll.GetList();
+                var summarydata = IMBll.GetList(new SearchInsModel() { orgname = orgname, orgcode = orgcode, year = year });
                 var data = (List<ReturnWaterModel>)((dynamic)summarydata).Content;
 
-                string TempletFileName = $"{hosting.WebRootPath}\\template\\企业研发经费支出情况取数表格式-局高新合作交流科.xls";
+                string TempletFileName = $"{hosting.WebRootPath}\\template\\月平均参保人数取数表格式-区社保基金局.xls";
                 FileStream file = new FileStream(TempletFileName, FileMode.Open, FileAccess.Read);
 
                 var xssfworkbook = new HSSFWorkbook(file);
                 ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
 
+                ICellStyle Style = xssfworkbook.CreateCellStyle();
+
+                Style.Alignment = HorizontalAlignment.Center;
+                Style.VerticalAlignment = VerticalAlignment.Center;
+                Style.BorderTop = BorderStyle.Thin;
+                Style.BorderRight = BorderStyle.Thin;
+                Style.BorderLeft = BorderStyle.Thin;
+                Style.BorderBottom = BorderStyle.Thin;
+                Style.DataFormat = 0;
+
 
                 for (int i = 5; i < data.Count + 5; i++)
                 {
-                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 5].OrgName);
-                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 5].Town);
-                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
-                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
-                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(Convert.ToDouble(data[i - 5].InsuranceMonth));
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
+                    var row = sheet1.CreateRow(i);
+                    row.Height = 35 * 20;
+
+
+                    row.CreateCell(0).SetCellValue(i - 4);
+                    row.Cells[0].CellStyle = Style;
+                    row.CreateCell(1).SetCellValue(data[i - 5].OrgName);
+                    row.Cells[1].CellStyle = Style;
+                    row.CreateCell(2).SetCellValue(data[i - 5].Town);
+                    row.Cells[2].CellStyle = Style;
+                    row.CreateCell(3).SetCellValue(data[i - 5].OrgCode);
+                    row.Cells[3].CellStyle = Style;
+                    row.CreateCell(4).SetCellValue(data[i - 5].RegistrationType);
+                    row.Cells[4].CellStyle = Style;
+                    row.CreateCell(5).SetCellValue(data[i - 5].Address);
+                    row.Cells[5].CellStyle = Style;
+                    row.CreateCell(6).SetCellValue(Convert.ToDouble(data[i - 5].InsuranceMonth));
+                    row.Cells[6].CellStyle = Style;
+                    row.CreateCell(7).SetCellValue(data[i - 5].Remark);
+                    row.Cells[7].CellStyle = Style;
                 }
 
                 //转为字节数组

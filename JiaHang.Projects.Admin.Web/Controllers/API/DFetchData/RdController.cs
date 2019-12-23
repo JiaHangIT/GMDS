@@ -275,7 +275,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
         {
             try
             {
-                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+                FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
                 pagenum--; if (pagenum < 0)
                 {
                     pagenum = 0;
@@ -289,17 +289,39 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.DFetchData
                 var xssfworkbook = new HSSFWorkbook(file);
                 ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
 
+                ICellStyle Style = xssfworkbook.CreateCellStyle();
+
+                Style.Alignment = HorizontalAlignment.Center;
+                Style.VerticalAlignment = VerticalAlignment.Center;
+                Style.BorderTop = BorderStyle.Thin;
+                Style.BorderRight = BorderStyle.Thin;
+                Style.BorderLeft = BorderStyle.Thin;
+                Style.BorderBottom = BorderStyle.Thin;
+                Style.DataFormat = 0;
 
                 for (int i = 5; i < data.Count + 5; i++)
                 {
-                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 5].OrgName);
-                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 5].Town);
-                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 5].OrgCode);
-                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 5].RegistrationType);
-                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 5].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 5].IsHighTech);
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(Convert.ToDouble(data[i - 5].RDExpenditure));
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 5].Remark);
+                    var row = sheet1.CreateRow(i);
+                    row.Height = 35 * 20;
+                  
+                    row.CreateCell(0).SetCellValue(i - 4);
+                    row.Cells[0].CellStyle = Style;
+                    row.CreateCell(1).SetCellValue(data[i - 5].OrgName);
+                    row.Cells[1].CellStyle = Style;
+                    row.CreateCell(2).SetCellValue(data[i - 5].Town);
+                    row.Cells[2].CellStyle = Style;
+                    row.CreateCell(3).SetCellValue(data[i - 5].OrgCode);
+                    row.Cells[3].CellStyle = Style;
+                    row.CreateCell(4).SetCellValue(data[i - 5].RegistrationType);
+                    row.Cells[4].CellStyle = Style;
+                    row.CreateCell(5).SetCellValue(data[i - 5].Address);
+                    row.Cells[5].CellStyle = Style;
+                    row.CreateCell(6).SetCellValue(data[i - 5].IsHighTech);
+                    row.Cells[6].CellStyle = Style;
+                    row.CreateCell(7).SetCellValue(Convert.ToDouble(data[i - 5].RDExpenditure));
+                    row.Cells[7].CellStyle = Style;
+                    row.CreateCell(8).SetCellValue(data[i - 5].Remark);
+                    row.Cells[8].CellStyle = Style;
                 }
 
                 //转为字节数组

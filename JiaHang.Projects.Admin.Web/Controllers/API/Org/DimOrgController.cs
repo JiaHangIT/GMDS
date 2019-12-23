@@ -290,22 +290,51 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Org
                 var xssfworkbook = new HSSFWorkbook(file);
                 ISheet sheet1 = xssfworkbook.GetSheet("Sheet1");
 
+                ICellStyle Style = xssfworkbook.CreateCellStyle();
+
+                Style.Alignment = HorizontalAlignment.Center;
+                Style.VerticalAlignment = VerticalAlignment.Center;
+                Style.BorderTop = BorderStyle.Thin;
+                Style.BorderRight = BorderStyle.Thin;
+                Style.BorderLeft = BorderStyle.Thin;
+                Style.BorderBottom = BorderStyle.Thin;
+                Style.DataFormat = 0;
+
 
                 for (int i = 6; i < data.Count + 6; i++)
                 {
-                    sheet1.GetRow(i).GetCell(1).SetCellValue(data[i - 6].OrgName);
-                    sheet1.GetRow(i).GetCell(2).SetCellValue(data[i - 6].Town);
-                    sheet1.GetRow(i).GetCell(3).SetCellValue(data[i - 6].OrgCode);
-                    sheet1.GetRow(i).GetCell(4).SetCellValue(data[i - 6].RegistrationType);
-                    sheet1.GetRow(i).GetCell(5).SetCellValue(data[i - 6].Address);
-                    sheet1.GetRow(i).GetCell(6).SetCellValue(data[i - 6].LegalRepresentative);
-                    sheet1.GetRow(i).GetCell(7).SetCellValue(data[i - 6].Phone);
-                    sheet1.GetRow(i).GetCell(8).SetCellValue(data[i - 6].LinkMan);
-                    sheet1.GetRow(i).GetCell(9).SetCellValue(data[i - 6].Phone2);
-                    sheet1.GetRow(i).GetCell(10).SetCellValue(data[i - 6].Industry);
-                    sheet1.GetRow(i).GetCell(11).SetCellValue(data[i - 6].RegistrationStatus);
-                    sheet1.GetRow(i).GetCell(12).SetCellValue(Convert.ToDouble(data[i - 6].RegistrationMoney));
-                    sheet1.GetRow(i).GetCell(13).SetCellValue(Convert.ToString(data[i - 6].RegistrationDate));
+                    var row = sheet1.CreateRow(i);
+                    row.Height = 35 * 20;
+
+
+                    row.CreateCell(0).SetCellValue(i - 4);
+                    row.Cells[0].CellStyle = Style;
+                    row.CreateCell(1).SetCellValue(data[i - 6].OrgName);
+                    row.Cells[1].CellStyle = Style;
+                    row.CreateCell(2).SetCellValue(data[i - 6].Town);
+                    row.Cells[2].CellStyle = Style;
+                    row.CreateCell(3).SetCellValue(data[i - 6].OrgCode);
+                    row.Cells[3].CellStyle = Style;
+                    row.CreateCell(4).SetCellValue(data[i - 6].RegistrationType);
+                    row.Cells[4].CellStyle = Style;
+                    row.CreateCell(5).SetCellValue(data[i - 6].Address);
+                    row.Cells[5].CellStyle = Style;
+                    row.CreateCell(6).SetCellValue(data[i - 6].LegalRepresentative);
+                    row.Cells[6].CellStyle = Style;
+                    row.CreateCell(7).SetCellValue(data[i - 6].Phone);
+                    row.Cells[7].CellStyle = Style;
+                    row.CreateCell(8).SetCellValue(data[i - 6].LinkMan);
+                    row.Cells[8].CellStyle = Style;
+                    row.CreateCell(9).SetCellValue(data[i - 6].Phone2);
+                    row.Cells[9].CellStyle = Style;
+                    row.CreateCell(10).SetCellValue(data[i - 6].Industry);
+                    row.Cells[10].CellStyle = Style;
+                    row.CreateCell(11).SetCellValue(data[i - 6].RegistrationStatus);
+                    row.Cells[11].CellStyle = Style;
+                    row.CreateCell(12).SetCellValue(Convert.ToDouble(data[i - 6].RegistrationMoney));
+                    row.Cells[12].CellStyle = Style;
+                    row.CreateCell(13).SetCellValue(Convert.ToString(data[i - 6].RegistrationDate));
+                    row.Cells[13].CellStyle = Style;
                 }
 
                 //转为字节数组

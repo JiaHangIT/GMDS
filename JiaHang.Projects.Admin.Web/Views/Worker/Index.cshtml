@@ -67,7 +67,7 @@
             <el-table-column fixed
                              prop="orgName"
                              label="企业名称"
-                             width="120">
+                             width="150">
             </el-table-column>
             <el-table-column prop="periodYear"
                              label="年份"
@@ -75,15 +75,15 @@
             </el-table-column>
             <el-table-column prop="town"
                              label="所属镇街"
-                             width="120">
+                             width="150">
             </el-table-column>
             <el-table-column prop="orgCode"
                              label="统一社会信用代码"
-                             width="120">
+                             width="150">
             </el-table-column>
             <el-table-column prop="registrationType"
                              label="登记注册类型"
-                             width="120">
+                             width="180">
             </el-table-column>
             <el-table-column prop="address"
                              label="住所"
@@ -95,10 +95,18 @@
             </el-table-column>
             <el-table-column prop="remark"
                              label="备注"
-                             width="120">
+                             width="150">
             </el-table-column>
-            <el-table-column fixed="right"
-                             label="操作"
+            <el-table-column prop="creationDate"
+                             label="创建时间"
+                             width="180">
+                <template slot-scope="scope">
+                    <span>
+                        {{format(scope.row.creationDate)}}
+                    </span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作"
                              width="150">
                 <template slot-scope="scope">
                     <el-button size="mini"
@@ -221,6 +229,15 @@
             }
         },
         methods: {
+            format(val) {
+                if (val) {
+                    let date = new Date(val)
+                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+                    console.log(date)
+
+                }
+
+            },
             fetchlist() {
                 let vm = this;
                 vm.loading = true

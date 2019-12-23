@@ -22,7 +22,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
 
         public FuncResult GetListPagination(SearchExcelModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 //var q= context.ApdFctWater
@@ -30,6 +30,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                             join o in context.ApdDimOrg on c.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = c.CreationDate,
                                 RecordId = c.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
@@ -64,9 +65,9 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
         /// 列表
         /// </summary>
         /// <returns></returns>
-        public FuncResult GetList()
+        public FuncResult GetList(SearchExcelModel model)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var query = from c in context.ApdFctWater
@@ -84,7 +85,11 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                                 Other = c.Other,
                                 Remark = c.Remark
                             };
-
+                query = query.Where(f => (
+                                 (string.IsNullOrWhiteSpace(model.orgcode) || f.OrgCode.Contains(model.orgcode)) &&
+                                 (string.IsNullOrWhiteSpace(model.orgname) || f.OrgName.Contains(model.orgname)) &&
+                                 (string.IsNullOrWhiteSpace(model.year) || f.PeriodYear.Equals(Convert.ToDecimal(model.year)))
+                                 ));
                 fr.Content = query.ToList();
                 return fr;
             }
@@ -99,8 +104,12 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
         /// ?
         /// </summary>
         /// <returns></returns>
-        public FuncResult WriteData(IEnumerable<ApdFctWaterDal> list, string year)
+        public FuncResult WriteData(IEnumerable<ApdFctWaterDal> list, string year,string userid)
         {
+            /*
+             * 同一年，一个企业只能导入一次
+             * 更新，导入时，以年份为维度删除数据
+             * **/
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
@@ -123,16 +132,19 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                         return fr;
                     }
                 }
+                var existdata = context.ApdFctWater.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctWater.RemoveRange(existdata);
                 foreach (var item in list)
                 {
                     if (isAlreadyExport(item.OrgCode, year))
                     {
                         //continue;
                     }
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctWater.Add(item);
                 }
-                ////list.ToList().ForEach(c => c.PeriodYear = _year);
-                //context.ApdFctWater.AddRange(list);
+
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try

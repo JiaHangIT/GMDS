@@ -69,6 +69,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                             join o in context.ApdDimOrg on e.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = e.CreationDate,
                                 PeriodYear = e.PeriodYear,
                                 RecordId = e.RecordId,
                                 OrgName = o.OrgName,
@@ -168,6 +169,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         {
             /*
              * 同一年，一个企业只能导入一次
+             * 更新，导入时，以年份为维度删除数据
              * **/
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
@@ -190,14 +192,15 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         return fr;
                     }
                 }
-                //var existdata = list.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                var existdata = context.ApdFctElectric.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctElectric.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode, year))
-                    {
-                        //删掉
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode, year))
+                    //{
+                    //    //删掉
+                    //    //continue;
+                    //}
                     item.CreationDate = DateTime.Now;
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctElectric.Add(item);
