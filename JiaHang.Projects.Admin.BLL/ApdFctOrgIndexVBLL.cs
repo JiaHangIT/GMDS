@@ -193,7 +193,7 @@ namespace JiaHang.Projects.Admin.BLL
         public async Task<byte[]> ExportAll(string orgname, string year, string industy, string town, string field, string desc)
 
         {
-            var comlumHeadrs = new[] { "年份", "企业名称", "所属行业", "所在街道(园区)", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
+            var comlumHeadrs = new[] { "年份", "企业名称", "所属行业", "所在街道(园区)","数据状态","数据提示", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
             byte[] result;
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
             List<string> wheres = new List<string>();
@@ -251,32 +251,34 @@ namespace JiaHang.Projects.Admin.BLL
                     worksheet.Cells["B" + j].Value = obj.ORG_NAME;
                     worksheet.Cells["C" + j].Value = obj.INDUSTRY;
                     worksheet.Cells["D" + j].Value = obj.TOWN;
-                    worksheet.Cells["E" + j].Value = obj.COMPOSITE_SCORE;
-                    worksheet.Cells["F" + j].Value = obj.TAX_PER_MU_SCORE;
-                    worksheet.Cells["G" + j].Value = obj.ADD_VALUE_PER_MU_SCORE;
-                    worksheet.Cells["H" + j].Value = obj.PRODUCTIVITY_SCORE;
-                    worksheet.Cells["I" + j].Value = obj.POLLUTANT_DISCHARGE_SCORE;
-                    worksheet.Cells["J" + j].Value = obj.ENERGY_CONSUMPTION_SCORE;
-                    worksheet.Cells["K" + j].Value = obj.NET_ASSETS_PROFIT_SCORE;
-                    worksheet.Cells["L" + j].Value = obj.R_D_EXPENDITURE_RATIO_SCORE;
-                    worksheet.Cells["M" + j].Value = obj.OWNER_EQUITY;
-                    worksheet.Cells["N" + j].Value = obj.WORKER_MONTH;
-                    worksheet.Cells["O" + j].Value = obj.Industrial_added_value;
-                    worksheet.Cells["P" + j].Value = obj.pollutant_discharge2;
-                    worksheet.Cells["Q" + j].Value = obj.fact_tax;
-                    worksheet.Cells["R" + j].Value = obj.LAND_AREA;
-                    worksheet.Cells["S" + j].Value = obj.PROFIT;
-                    worksheet.Cells["T" + j].Value = obj.ASSETS;
-                    worksheet.Cells["U" + j].Value = obj.MAIN_BUSINESS_INCOME;
-                    worksheet.Cells["V" + j].Value = obj.R_D_EXPENDITURE;
-                    worksheet.Cells["W" + j].Value = obj.Energy_consumption2;
-                    worksheet.Cells["X" + j].Value = obj.TAX_PER_MU;
-                    worksheet.Cells["Y" + j].Value = obj.ADD_VALUE_PER_MU;
-                    worksheet.Cells["Z" + j].Value = obj.ENERGY_CONSUMPTION;
-                    worksheet.Cells["AA" + j].Value = obj.POLLUTANT_DISCHARGE;
-                    worksheet.Cells["AB" + j].Value = obj.PRODUCTIVITY;
-                    worksheet.Cells["AC" + j].Value = obj.NET_ASSETS_PROFIT;
-                    worksheet.Cells["AD" + j].Value = obj.R_D_EXPENDITURE_RATIO;
+                    worksheet.Cells["E" + j].Value = obj.DATA_STATUS;
+                    worksheet.Cells["F" + j].Value = obj.DATA_TIP;
+                    worksheet.Cells["G" + j].Value = obj.COMPOSITE_SCORE;
+                    worksheet.Cells["H" + j].Value = obj.TAX_PER_MU_SCORE;
+                    worksheet.Cells["I" + j].Value = obj.ADD_VALUE_PER_MU_SCORE;
+                    worksheet.Cells["J" + j].Value = obj.PRODUCTIVITY_SCORE;
+                    worksheet.Cells["K" + j].Value = obj.POLLUTANT_DISCHARGE_SCORE;
+                    worksheet.Cells["L" + j].Value = obj.ENERGY_CONSUMPTION_SCORE;
+                    worksheet.Cells["M" + j].Value = obj.NET_ASSETS_PROFIT_SCORE;
+                    worksheet.Cells["N" + j].Value = obj.R_D_EXPENDITURE_RATIO_SCORE;
+                    worksheet.Cells["O" + j].Value = obj.OWNER_EQUITY;
+                    worksheet.Cells["P" + j].Value = obj.WORKER_MONTH;
+                    worksheet.Cells["Q" + j].Value = obj.Industrial_added_value;
+                    worksheet.Cells["R" + j].Value = obj.pollutant_discharge2;
+                    worksheet.Cells["S" + j].Value = obj.fact_tax;
+                    worksheet.Cells["T" + j].Value = obj.LAND_AREA;
+                    worksheet.Cells["U" + j].Value = obj.PROFIT;
+                    worksheet.Cells["V" + j].Value = obj.ASSETS;
+                    worksheet.Cells["W" + j].Value = obj.MAIN_BUSINESS_INCOME;
+                    worksheet.Cells["X" + j].Value = obj.R_D_EXPENDITURE;
+                    worksheet.Cells["Y" + j].Value = obj.Energy_consumption2;
+                    worksheet.Cells["Z" + j].Value = obj.TAX_PER_MU;
+                    worksheet.Cells["AA" + j].Value = obj.ADD_VALUE_PER_MU;
+                    worksheet.Cells["AB" + j].Value = obj.ENERGY_CONSUMPTION;
+                    worksheet.Cells["AC" + j].Value = obj.POLLUTANT_DISCHARGE;
+                    worksheet.Cells["AD" + j].Value = obj.PRODUCTIVITY;
+                    worksheet.Cells["AE" + j].Value = obj.NET_ASSETS_PROFIT;
+                    worksheet.Cells["AF" + j].Value = obj.R_D_EXPENDITURE_RATIO;
                     j++;
                 }
             });
@@ -343,6 +345,10 @@ namespace JiaHang.Projects.Admin.BLL
     }
     public class ReturnDate
     {
+        //数据状态
+        public string DATA_STATUS { get; set; }
+        //数据提示 
+        public string DATA_TIP { get; set; }
         //亩均税收得分
         public decimal TAX_PER_MU_SCORE { get; set; }
         //亩均增加值得分
