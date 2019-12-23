@@ -22,7 +22,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelLandDistrictBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctLandDistrict> list, string year)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var _year = Convert.ToDecimal(year);
@@ -76,7 +76,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelLandDistrictBLL
         /// <returns></returns>
         public FuncResult GetList()
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功!" };
             try
             {
                 var query = from c in context.ApdFctLandDistrict  

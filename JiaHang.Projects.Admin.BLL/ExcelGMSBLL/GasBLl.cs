@@ -28,6 +28,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
                             join o in context.ApdDimOrg on c.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = c.CreationDate,
                                 RecordId = c.RecordId,
                                 OrgName = o.OrgName,
                                 Town = o.Town,
@@ -94,9 +95,13 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
         /// ?
         /// </summary>
         /// <returns></returns>
-        public FuncResult WriteData(IEnumerable<ApdFctGas> list, string year)
+        public FuncResult WriteData(IEnumerable<ApdFctGas> list, string year,string userid)
         {
-            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "Ok" };
+            /*
+            * 同一年，一个企业只能导入一次
+            * 更新，导入时，以年份为维度删除数据
+            * **/
+            FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
             try
             {
                 var _year = Convert.ToDecimal(year);
@@ -117,16 +122,20 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
                         return fr;
                     }
                 }
+                var existdata = context.ApdFctGas.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctGas.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode, year))
-                    {
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode, year))
+                    //{
+                    //    //continue;
+                    //}
+
+                    item.CreationDate = DateTime.Now;
+                    item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctGas.Add(item);
                 }
-                //list.ToList().ForEach(c => c.PeriodYear = _year);
-                //context.ApdFctGas.AddRange(list);
+
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try

@@ -26,6 +26,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                             join o in context.ApdDimOrg on c.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = c.CreationDate,
                                 PeriodYear = c.PeriodYear,
                                 RecordId = c.RecordId,
                                 OrgName = o.OrgName,
@@ -195,6 +196,10 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctContaminants> list,string year,string userid)
         {
+            /*
+          * 同一年，一个企业只能导入一次
+          * 更新，导入时，以年份为维度删除数据
+          * **/
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
@@ -216,18 +221,19 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         return fr;
                     }
                 }
+                var existdata = context.ApdFctContaminants.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctContaminants.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode,year))
-                    {
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode,year))
+                    //{
+                    //    //continue;
+                    //}
                     item.CreationDate = DateTime.Now;
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctContaminants.Add(item);
                 }
-                //list.ToList().ForEach(c => c.PeriodYear = _year);
-                //context.ApdFctContaminants.AddRange(list);
+              
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try

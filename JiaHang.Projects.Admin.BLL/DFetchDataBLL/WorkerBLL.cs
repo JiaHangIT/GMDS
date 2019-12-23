@@ -65,6 +65,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                             join o in context.ApdDimOrg on w.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = w.CreationDate,
                                 PeriodYear = w.PeriodYear,
                                 RecordId = w.RecordId,
                                 OrgName = o.OrgName,
@@ -160,6 +161,10 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
 
         public FuncResult WriteData(IEnumerable<ApdFctWorker> list, string year,string userid)
         {
+            /*
+        * 同一年，一个企业只能导入一次
+        * 更新，导入时，以年份为维度删除数据
+        * **/
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
@@ -172,9 +177,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     fr.Message = $"未找到配置的企业信息，统一信息代码为{string.Join(',', dm.Select(g => g.OrgCode))}！";
                     return fr;
                 }
-                /*
-                 * 先把以前的批次删掉
-                 * **/
+          
 
                 var orgcodegroupby = list.GroupBy(g => new { g.OrgCode, g.PeriodYear }).Select(s => new { OrgCode = s.Key.OrgCode, PeriodYear = s.Key.PeriodYear, Count = s.Count() });
                 foreach (var item in orgcodegroupby)
@@ -186,18 +189,21 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         return fr;
                     }
                 }
+                var existdata = context.ApdFctWorker.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctWorker.RemoveRange(existdata);
 
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode,year))
-                    {
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode,year))
+                    //{
+                    //    //continue;
+                    //}
                     item.CreationDate = DateTime.Now;
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctWorker.Add(item);
                 }
-                //context.ApdFctWorker.AddRange(list);
+
+              
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try

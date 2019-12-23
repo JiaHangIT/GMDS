@@ -66,6 +66,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                             join o in context.ApdDimOrg on r.OrgCode equals o.OrgCode
                             select new
                             {
+                                CreationDate = r.CreationDate,
                                 PeriodYear = r.PeriodYear,
                                 RecordId = r.RecordId,
                                 OrgName = o.OrgName,
@@ -169,6 +170,10 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
         /// <returns></returns>
         public FuncResult WriteData(IEnumerable<ApdFctRD> list,string year,string userid)
         {
+            /*
+            * 同一年，一个企业只能导入一次
+            * 更新，导入时，以年份为维度删除数据
+            * **/
             FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功" };
             try
             {
@@ -191,19 +196,19 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                         return fr;
                     }
                 }
-                
-                //list.ToList().ForEach(c => c.PeriodYear = _year);
-                //context.ApdFctRD.AddRange(list);
+
+                var existdata = context.ApdFctRD.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
+                context.ApdFctRD.RemoveRange(existdata);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try
                     {
                         foreach (var item in list)
                         {
-                            if (isAlreadyExport(item.OrgCode, year))
-                            {
-                                //continue;
-                            }
+                            //if (isAlreadyExport(item.OrgCode, year))
+                            //{
+                            //    //continue;
+                            //}
                             item.RecordId = Guid.NewGuid().ToString();
                             item.CreationDate = DateTime.Now;
                             item.CreatedBy = Convert.ToDecimal(userid);
