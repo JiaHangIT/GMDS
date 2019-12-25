@@ -136,10 +136,10 @@ namespace JiaHang.Projects.Admin.BLL.ExcelFctWaterBLL
                 context.ApdFctWater.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    if (isAlreadyExport(item.OrgCode, year))
-                    {
-                        //continue;
-                    }
+                    //if (isAlreadyExport(item.OrgCode, year))
+                    //{
+                    //    //continue;
+                    //}
                     item.CreationDate = DateTime.Now;
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctWater.Add(item);
