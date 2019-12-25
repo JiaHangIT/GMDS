@@ -75,6 +75,9 @@ namespace JiaHang.Projects.Admin.BLL
                 {
                     sql.Append(" order by " + field + " " + desc);
                 }
+                else {
+                    sql.Append("  order by DATA_STATUS");
+                }
                 List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
                 foreach (var item in list)
                 {
