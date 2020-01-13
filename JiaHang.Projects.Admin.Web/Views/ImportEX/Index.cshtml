@@ -113,27 +113,27 @@
                 </el-table-column>
             </el-table-column>
             <el-table-column prop="entPaidTax"
-                             label="企业实缴税金（万元）"
+                             label="企业实缴税金（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="employeeRemunerationON"
-                             label="职工薪酬（万元）"
+                             label="职工薪酬（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="depreciation"
-                             label="固定资产折旧（万元）"
+                             label="固定资产折旧（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="profit"
-                             label="营业利润（万元）"
+                             label="营业利润（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="mainBusinessIncome"
-                             label="主营业务收入（万元）"
+                             label="主营业务收入（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="radEexpenses"
-                             label="允许扣除的研发费用（万元）"
+                             label="允许扣除的研发费用（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="numberOfEmployees"
@@ -141,11 +141,11 @@
                              width="120">
             </el-table-column>
             <el-table-column prop="ownerEquity"
-                             label="所有者权益（万元）"
+                             label="所有者权益（元）"
                              width="120">
             </el-table-column>
             <el-table-column prop="totalProfit"
-                             label="利润总额（万元）"
+                             label="利润总额（元）"
                              width="120">
             </el-table-column>
             @*<el-table-column prop="remark"
@@ -200,29 +200,29 @@
                 <el-form-item label="企业名称：" prop="orgName">
                     <el-input disabled="true" placeholder="企业名称" v-model="form.orgName"></el-input>
                 </el-form-item>
-                <el-form-item label="企业实缴税金（万元）：" prop="entPaidTax">
-                    <el-input placeholder="企业实缴税金（万元）" v-model="form.entPaidTax"></el-input>
+                <el-form-item label="企业实缴税金（元）：" prop="entPaidTax">
+                    <el-input placeholder="企业实缴税金（元）" v-model="form.entPaidTax"></el-input>
                 </el-form-item>
-                <el-form-item label="职工薪酬（万元）" prop="employeeRemunerationON">
-                    <el-input placeholder="职工薪酬（万元）" v-model="form.employeeRemunerationON"></el-input>
+                <el-form-item label="职工薪酬（元）" prop="employeeRemunerationON">
+                    <el-input placeholder="职工薪酬（元）" v-model="form.employeeRemunerationON"></el-input>
                 </el-form-item>
-                <el-form-item label="固定资产折旧（万元）" prop="depreciation">
-                    <el-input placeholder="固定资产折旧（万元）" v-model="form.depreciation"></el-input>
+                <el-form-item label="固定资产折旧（元）" prop="depreciation">
+                    <el-input placeholder="固定资产折旧（元）" v-model="form.depreciation"></el-input>
                 </el-form-item>
-                <el-form-item label="营业利润（万元）" prop="profit">
-                    <el-input placeholder="营业利润（万元）" v-model="form.profit"></el-input>
+                <el-form-item label="营业利润（元）" prop="profit">
+                    <el-input placeholder="营业利润（元）" v-model="form.profit"></el-input>
                 </el-form-item>
-                <el-form-item label="主营业务收入（万元）" prop="mainBusinessIncome">
-                    <el-input placeholder="主营业务收入（万元）" v-model.number="form.mainBusinessIncome"></el-input>
+                <el-form-item label="主营业务收入（元）" prop="mainBusinessIncome">
+                    <el-input placeholder="主营业务收入（元）" v-model.number="form.mainBusinessIncome"></el-input>
                 </el-form-item>
-                <el-form-item label="允许扣除的研发费用（万元）" prop="radEexpenses">
-                    <el-input placeholder="允许扣除的研发费用（万元）" v-model.number="form.radEexpenses"></el-input>
+                <el-form-item label="允许扣除的研发费用（元）" prop="radEexpenses">
+                    <el-input placeholder="允许扣除的研发费用（元）" v-model.number="form.radEexpenses"></el-input>
                 </el-form-item>
                 <el-form-item label="平均从业人数（人）" prop="numberOfEmployees">
                     <el-input placeholder="平均从业人数（人）" v-model.number="form.numberOfEmployees"></el-input>
                 </el-form-item>
-                <el-form-item label="利润总额（万元）" prop="totalProfit">
-                    <el-input placeholder="利润总额（万元）" v-model.number="form.totalProfit"></el-input>
+                <el-form-item label="利润总额（元）" prop="totalProfit">
+                    <el-input placeholder="利润总额（元）" v-model.number="form.totalProfit"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
