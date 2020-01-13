@@ -217,12 +217,12 @@
         <el-table-column label="数据状态"
                          width="100"
                          prop="datA_STATUS">
-            
+
         </el-table-column>
         <el-table-column label="数据提示"
                          width="300"
                          prop="datA_TIP">
-         
+
         </el-table-column>
         <el-table-column label="综合评分"
                          sortable="custom"
@@ -301,10 +301,10 @@
                          prop="profit">
         </el-table-column>
         @*<el-table-column label="净资产"
-                         sortable
-                         width="150"
-                         prop="assets">
-        </el-table-column>*@
+                             sortable
+                             width="150"
+                             prop="assets">
+            </el-table-column>*@
         <el-table-column label="主营业务收入（万元）"
                          sortable
                          width="200"
@@ -456,23 +456,23 @@
                                 评<br />
                                 分
                             </td>
-                            <td>
+                            <td id="sixclick" title="亩均税收+亩均增加值+单位能耗增加值+全员劳动生成率+净资产收益率+研发经费支出占主营业务收入比重">
                                 6<br />
                                 <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
                                 </div>
                                 <span id="sixpm"></span>|<span id="sixflpf"></span>
                             </td>
-                            <td>
+                            <td id="oneclick" title="单位增加值主要污染物排放当量">
                                 1<br />
                                 <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
                                 </div>
                                 <span id="onepm"></span>|<span id="onepf"></span>
                             </td>
-                            <td>
+                            <td >
                                 X<br />
                                 <div style="width: 90%; height: 1px; background-color: Black; margin:auto;">
                                 </div>
-                                6|<span id="xpf"></span>
+                                0|<span id="xpf"></span>
                             </td>
                         </tr>
                     </table>
@@ -640,7 +640,7 @@
                                 </div>
                             </td>
                             <td colspan="3">
-                                <img alt="" src="~/images/jiantou/bigright.png"  />
+                                <img alt="" src="~/images/jiantou/bigright.png" />
                             </td>
                             <td>
                                 <div class="dwpwqzjzdiv">
@@ -675,6 +675,11 @@
         var layer = layui.layer
         var form = layui.form;
         var $ = layui.$
+        $(function () {
+            $('#sixclick').poshytip();
+            $('#oneclick').poshytip();
+        })
+       
     })
 </script>
 <script>
@@ -923,8 +928,8 @@
                         //item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
                         //item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
                         //item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
-                        console.log("111",response.data.content.list[0])
-                        $('#mjss').html(response.data.content.list[0].taX_PER_MU )
+                        console.log("111", response.data.content.list[0])
+                        $('#mjss').html(response.data.content.list[0].taX_PER_MU)
                         $('#mjzjz').html(response.data.content.list[0].adD_VALUE_PER_MU)
                         $('#qyldscl').html(response.data.content.list[0].productivity)
                         $('#dwpwqzjz').html(response.data.content.list[0].pollutanT_DISCHARGE)
@@ -933,7 +938,7 @@
                         $('#yfjftrb').html(response.data.content.list[0].r_D_EXPENDITURE_RATIO)
 
                         $('#pollutant_discharge').html(response.data.content.list[0].pollutant_discharge2)
-                        $('#MAIN_BUSINESS_INCOME').html(response.data.content.list[0].maiN_BUSINESS_INCOME )
+                        $('#MAIN_BUSINESS_INCOME').html(response.data.content.list[0].maiN_BUSINESS_INCOME)
                         $('#ownerequity').html(response.data.content.list[0].owneR_EQUITY)
                         $('#WORKER_MONTH').html(response.data.content.list[0].workeR_MONTH)
                         $('#Industrial_added_value').html(response.data.content.list[0].industrial_added_value)
