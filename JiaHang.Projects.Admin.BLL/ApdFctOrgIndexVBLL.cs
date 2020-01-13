@@ -79,10 +79,10 @@ namespace JiaHang.Projects.Admin.BLL
                     sql.Append("  order by DATA_STATUS");
                 }
                 List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
-                foreach (var item in list)
-                {
-                    item.OWNER_EQUITY = Math.Round(Convert.ToDecimal(item.OWNER_EQUITY / 10000), 2);
-                }
+                //foreach (var item in list)
+                //{
+                //    item.OWNER_EQUITY = Math.Round(Convert.ToDecimal(item.OWNER_EQUITY / 10000), 2);
+                //}
                 int total = list.Count();
                 if (pageSize * currentPage > total)
                 {
@@ -196,7 +196,7 @@ namespace JiaHang.Projects.Admin.BLL
         public async Task<byte[]> ExportAll(string orgname, string year, string industy, string town, string field, string desc)
 
         {
-            var comlumHeadrs = new[] { "年份", "企业名称", "所属行业", "所在街道(园区)","数据状态","数据提示", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位排污权增加值得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费投入比得分", "所有者权益（万元）", "年职工人数", "工业增加值", "主要污染排放量", "税收实际贡献", "用地面积", "净利润", "净资产", "主营业务收入", "研发经费支出", "综合能耗", "亩均税收", "亩均增加值", "单位能耗增加值", "单位排污增加值", "全员劳动生产率", "净资产收益率", "研发经费投入比" };
+            var comlumHeadrs = new[] { "年份", "企业名称", "所属行业", "所在街道(园区)","数据状态","数据提示", "综合评分", "亩均税收得分", "亩均增加值得分", "全员劳动生产率得分", "单位增加值主要污染物排放得分", "单位能耗增加值得分", "净资产收益率得分", "研发经费支出占主营业务收入比重得分", "所有者权益（万元）", "从业人员平均数（人）", "工业增加值（万元）", "污染物排放当量（吨）", "实缴税金（万元）", "用地面积（亩）", "利润总额（万元）", "净资产", "主营业务收入（万元）", "研发经费支出（万元）", "工业企业能源消费量（吨标准煤）", "亩均税收（万元/亩）", "亩均增加值（万元/亩）", " 单位能耗增加值（万元/吨标煤）", "单位增加值主要污染物排放当量（当量/万元）", "全员劳动生产率（万元/人）", "净资产收益率（%）", "研发经费支出占主营业务收入比重（%）" };
             byte[] result;
             StringBuilder sql = new StringBuilder("select * from VIEW_COMPANY_INDEX_SCORE_TOTAL");
             List<string> wheres = new List<string>();
@@ -373,7 +373,7 @@ namespace JiaHang.Projects.Admin.BLL
         public string ORG_NAME { get; set; }
         public string INDUSTRY { get; set; }
         public string TOWN { get; set; }
-        public decimal COMPOSITE_SCORE { get; set; }
+        public decimal? COMPOSITE_SCORE { get; set; }
         public decimal TAX_PER_MU { get; set; }
         public decimal ADD_VALUE_PER_MU { get; set; }
         public decimal PRODUCTIVITY { get; set; }

@@ -1,0 +1,446 @@
+﻿
+@{
+    ViewData["Title"] = "指标权重系数";
+}
+
+
+<style>
+    .v-modal {
+        display: none;
+    }
+
+    #app {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff;
+    }
+</style>
+<div id="app">
+
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item label="年份">
+            <el-date-picker v-model="orgyear"
+                            type="year"
+                            format="yyyy"
+                            placeholder="选择年">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="fetchList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="primary" @@click="handleAdd">添加</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" type="danger" @@click="batchDelete">批量删除</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table ref="multipleTable"
+              :data="data"
+              :border="true"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @@selection-change="handleSelectionChange">
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
+        <el-table-column label="所属年份"
+                         prop="periodYear">
+        </el-table-column>
+        <el-table-column label="亩均税收"
+                         prop="taxPerMu">
+        </el-table-column>
+        <el-table-column label="亩均增加值"
+                         prop="addValuePerMu">
+        </el-table-column>
+        <el-table-column label="单位能耗增加值"
+                         prop="energyConsumption">
+        </el-table-column>
+        <el-table-column label="全员劳动生产率"
+                         prop="procuctivity">
+        </el-table-column>
+        <el-table-column label="净资产收益率"
+                         prop="netAssesProfit">
+        </el-table-column>
+        <el-table-column label="研发经费支出占主营业务收入比重"
+                         prop="rdExpenditureRatio">
+        </el-table-column>
+        <el-table-column label="单位增加值主要污染物排放当量"
+                         prop="pollutantDischarge">
+        </el-table-column>
+        <el-table-column label="操作">
+            <template slot-scope="scope">
+                <el-button size="mini"
+                           v-on:click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini"
+                           type="danger"
+                           v-on:click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination @@size-change="handleSizeChange"
+                   @@current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
+    <el-dialog :title="title"
+               :visible.sync="centerDialogVisible"
+               width="30%"
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="亩均税收" prop="taxPerMu">
+                <el-input v-model="form.taxPerMu"></el-input>
+            </el-form-item>
+
+            <el-form-item label="亩均增加值" prop="addValuePerMu">
+                <el-input v-model="form.addValuePerMu"></el-input>
+            </el-form-item>
+            <el-form-item label="单位能耗增加值" prop="energyConsumption">
+                <el-input v-model="form.energyConsumption"></el-input>
+            </el-form-item>
+            <el-form-item label="全员劳动生产率" prop="procuctivity">
+                <el-input v-model="form.procuctivity"></el-input>
+            </el-form-item>
+            <el-form-item label="净资产收益率" prop="netAssesProfit">
+                <el-input v-model="form.netAssesProfit"></el-input>
+            </el-form-item>
+            <el-form-item label="研发经费支出占主营业务收入比重" prop="rdExpenditureRatio">
+                <el-input v-model="form.rdExpenditureRatio"></el-input>
+            </el-form-item>
+            <el-form-item label="单位增加值主要污染物排放当量" prop="pollutantDischarge">
+                <el-input v-model="form.pollutantDischarge"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancel()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSave('form')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog :title="addtitle"
+               :visible.sync="centerDialogVisibleadd"
+               width="30%"
+               center>
+        <el-form :label-position="labelPosition" label-width="160px" :model="formAdd" :rules="rulesAdd" ref="formAdd">
+            <el-form-item label="年份" prop="periodYear">
+                <el-date-picker v-model="formAdd.periodYear"
+                                type="year"
+                                format="yyyy"
+                                placeholder="选择年">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="亩均税收" prop="taxPerMu" >
+                <el-input v-model="formAdd.taxPerMu"></el-input>
+            </el-form-item>
+
+            <el-form-item label="亩均增加值" prop="addValuePerMu">
+                <el-input v-model="formAdd.addValuePerMu"></el-input>
+            </el-form-item>
+            <el-form-item label="单位能耗增加值" prop="energyConsumption">
+                <el-input v-model="formAdd.energyConsumption"></el-input>
+            </el-form-item>
+            <el-form-item label="全员劳动生产率" prop="procuctivity">
+                <el-input v-model="formAdd.procuctivity"></el-input>
+            </el-form-item>
+            <el-form-item label="净资产收益率" prop="netAssesProfit">
+                <el-input v-model="formAdd.netAssesProfit"></el-input>
+            </el-form-item>
+            <el-form-item label="研发经费支出占主营业务收入比重" prop="rdExpenditureRatio">
+                <el-input v-model="formAdd.rdExpenditureRatio"></el-input>
+            </el-form-item>
+            <el-form-item label="单位增加值主要污染物排放当量" prop="pollutantDischarge">
+                <el-input v-model="formAdd.pollutantDischarge"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="dialogCancelAdd()">取 消</el-button>
+            <el-button type="primary" v-on:click="dialogSaveAdd('formAdd')">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var layer = layui.layer
+        var form = layui.form;
+        var $ = layui.$
+    })
+</script>
+<script>
+    let connectionId = "";
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                data: [],
+                centerDialogVisible: false,
+                centerDialogVisibleadd:false,
+                currentPage: 1,
+                pageSize: 10,
+                total: 0,
+                addtitle: "添加",
+                title:"修改",
+                multipleSelection: [],//获取批量选择的数据
+                orgyear:'',
+               
+                form: {
+                    taxPerMu: '',
+                    addValuePerMu: '',
+                    energyConsumption: '',
+                    procuctivity: '',
+                    netAssesProfit: '',
+                    rdExpenditureRatio: '',
+                    pollutantDischarge: '',
+                },
+                formAdd: {
+                    periodYear:'',
+                    taxPerMu: '',
+                    addValuePerMu: '',
+                    energyConsumption: '',
+                    procuctivity: '',
+                    netAssesProfit: '',
+                    rdExpenditureRatio: '',
+                    pollutantDischarge: '',
+                },
+                rules: {
+                    taxPerMu: [
+                        { required: true, message: '不能为空', trigger: 'blur' },
+                    ]
+                },
+                rulesAdd: {
+                    taxPerMu: [
+                        { required: true, message: '不能为空', trigger: 'blur' },
+                    ]
+                },
+                formLabelWidth: '160px',
+                labelPosition: 'left',
+            }
+        },
+        methods: {
+            fetchList: function () {
+                let vm = this
+                let y=''
+                if (vm.orgyear != '' && vm.orgyear != null) {
+                    y = vm.orgyear.getFullYear()
+                }
+                axios.get(`/api/ApdDimRatio/${vm.pageSize}/${vm.currentPage}?year=${y}`)
+                    .then(function (response) {
+                        vm.data = response.data.content.datas;
+                        vm.total = response.data.content.total;
+                        console.log(data);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            handleEdit: function (index, row) {
+                //编辑
+                let vm = this
+                let rowstr = JSON.stringify(row)
+                let formdata = JSON.parse(rowstr)
+                vm.form = formdata;
+                vm.centerDialogVisible = true
+            },
+            handleDelete: function (index, row) {
+                let vm = this
+                //删除
+                //弹出确认框
+                this.$confirm('此操作将删除该信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    console.log("年份ID", row.periodYear)
+                    axios.delete('/api/ApdDimRatio/' + parseInt(row.periodYear))
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+            },
+             //添加
+            handleAdd: function () {
+                let vm = this
+                vm.resetFormAdd()
+                vm.centerDialogVisibleadd = true
+            },
+            dialogCancel: function () {
+                let vm = this;
+                vm.centerDialogVisible = false
+            },
+            dialogCancelAdd: function () {
+                let vm = this;
+                vm.centerDialogVisibleadd = false
+            },
+            dialogSave: function (formName) {
+                let vm = this;
+                //if (vm.form.databaseTypeId.length == 0 || vm.form.databaseTypeId == "") {
+                //    this.$message.error('请选择连接名称')
+                //    return false;
+                //}
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        console.log("get年份",vm.form.periodYear);
+                        var url = `/api/ApdDimRatio/${parseInt(vm.form.periodYear)
+                    }`;
+                        var method = "PUT";
+                        console.log(vm.form);
+                        axios({ url: url, method: method, data: vm.form })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisible = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
+                        return;
+                    }
+                });
+            },
+            dialogSaveAdd: function (formName) {
+                let vm = this;
+                //if (vm.form.databaseTypeId.length == 0 || vm.form.databaseTypeId == "") {
+                //    this.$message.error('请选择连接名称')
+                //    return false;
+                //}
+            let y=''
+                if (vm.formAdd.periodYear != '' && vm.formAdd.periodYear != null) {
+                    vm.formAdd.periodYear = vm.formAdd.periodYear.getFullYear()
+                }
+                console.log(vm.formAdd);
+                vm.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        var url = `/api/ApdDimRatio`;
+                        var method = "Post";
+                       
+                        axios({ url: url, method: method, data: vm.formAdd })
+                            .then(function (response) {
+                                if (!response.data.isSuccess) {
+                                    vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                    return;
+                                }
+                                vm.$message({ title: '成功', message: response.data.message, type: 'success' })
+                                vm.fetchList();
+                                vm.centerDialogVisibleadd = false
+                            })
+                            .catch(function (error) {
+                                vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                                console.log(error);
+                            });
+
+                    } else {
+                        console.log('error submit!!');
+                        return;
+                    }
+                });
+            },
+            resetForm() {
+                let vm = this;
+                vm.form.addValuePerMu = ''
+                vm.form.energyConsumption = ''
+                vm.form.procuctivity = ''
+                vm.form.netAssesProfit =''
+                vm.form.rdExpenditureRatio = ''
+                vm.form.pollutantDischarge =''
+            },
+            resetFormAdd() {
+                let vm = this;
+                vm.formAdd.periodYear = ''
+                vm.formAdd.addValuePerMu = ''
+                vm.formAdd.addValuePerMu = ''
+                vm.formAdd.energyConsumption = ''
+                vm.formAdd.procuctivity = ''
+                vm.formAdd.netAssesProfit = ''
+                vm.formAdd.rdExpenditureRatio = ''
+                vm.formAdd.pollutantDischarge = ''
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.fetchList();
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.currentPage = val;
+                this.fetchList();
+            },
+
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            batchDelete() {
+                let vm = this
+                let batchdatas = this.multipleSelection;
+                if (batchdatas.length == 0) {
+                    vm.$message("请先选中数据再进行操作！");
+                    return;
+                }
+                let ids = '';
+                for (let i = 0; i < batchdatas.length; i++) {
+                    ids += `&years=${batchdatas[i].periodYear}`;
+                };
+                ids = ids.substring(1, ids.length)
+
+                vm.$confirm(`此操作将删除${batchdatas.length}条信息, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete('/api/ApdDimRatio/Deletes?' + ids)
+                        .then(function (response) {
+                            if (!response.data.isSuccess) {
+                                vm.$message({ title: '失败', message: response.data.message, type: 'error' })
+                                return;
+                            }
+                            vm.$message({ title: '成功', message: '删除成功', type: 'success' })
+                            vm.fetchList();
+                            vm.centerDialogVisible = false
+                        })
+                        .catch(function (error) {
+                            vm.$message({ title: '异常', message: '发生了预料之外的错误!', type: 'error' })
+                            console.log(error);
+                        });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+                console.log(this.multipleSelection);
+            }
+        },
+        mounted: function () {
+            let vm = this
+            vm.fetchList();
+        }
+
+    });
+</script>
+
