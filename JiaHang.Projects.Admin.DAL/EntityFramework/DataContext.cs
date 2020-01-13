@@ -83,6 +83,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<ApdFctContaminants> ApdFctContaminants { get; set; }
         public virtual DbSet<ApdFctElectric> ApdFctElectric { get; set; }
         public virtual DbSet<ApdFctWorker> ApdFctWorker { get; set; }
+        public virtual DbSet<ApdDimRatio> ApdDimRatio { get; set; }
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
 
@@ -4341,6 +4342,25 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
              .HasColumnType("NVARCHAR2(30)");
                 entity.Property(e => e.Industry).HasColumnName("INDUSTRY")
              .HasColumnType("NVARCHAR2(30)");
+            });
+            modelBuilder.Entity<ApdDimRatio>(entity =>
+            {
+                entity.HasKey(e => e.PeriodYear);
+                entity.HasIndex(e => e.Procuctivity)
+                .HasName("PERIOD_YEAR")
+                .IsUnique()
+                ;
+                entity.ToTable("APD_DIM_RATIO");
+                entity.Property(e => e.PeriodYear).HasColumnName("PERIOD_YEAR");
+                entity.Property(e => e.TaxPerMu).HasColumnName("TAX_PER_MU");
+                entity.Property(e => e.AddValuePerMu).HasColumnName("ADD_VALUE_PER_MU");
+                entity.Property(e => e.Procuctivity).HasColumnName("PRODUCTIVITY");
+                entity.Property(e => e.PollutantDischarge).HasColumnName("POLLUTANT_DISCHARGE");
+                entity.Property(e => e.EnergyConsumption).HasColumnName("ENERGY_CONSUMPTION");
+                entity.Property(e => e.NetAssesProfit).HasColumnName("NET_ASSETS_PROFIT");
+                entity.Property(e => e.RDExpenditureRatio).HasColumnName("R_D_EXPENDITURE_RATIO");
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+               
             });
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
                //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))

@@ -79,10 +79,10 @@ namespace JiaHang.Projects.Admin.BLL
                     sql.Append("  order by DATA_STATUS");
                 }
                 List<ReturnDate> list = OracleDbHelper.Query<ReturnDate>(sql.ToString());
-                foreach (var item in list)
-                {
-                    item.OWNER_EQUITY = Math.Round(Convert.ToDecimal(item.OWNER_EQUITY / 10000), 2);
-                }
+                //foreach (var item in list)
+                //{
+                //    item.OWNER_EQUITY = Math.Round(Convert.ToDecimal(item.OWNER_EQUITY / 10000), 2);
+                //}
                 int total = list.Count();
                 if (pageSize * currentPage > total)
                 {
@@ -373,7 +373,7 @@ namespace JiaHang.Projects.Admin.BLL
         public string ORG_NAME { get; set; }
         public string INDUSTRY { get; set; }
         public string TOWN { get; set; }
-        public decimal COMPOSITE_SCORE { get; set; }
+        public decimal? COMPOSITE_SCORE { get; set; }
         public decimal TAX_PER_MU { get; set; }
         public decimal ADD_VALUE_PER_MU { get; set; }
         public decimal PRODUCTIVITY { get; set; }
