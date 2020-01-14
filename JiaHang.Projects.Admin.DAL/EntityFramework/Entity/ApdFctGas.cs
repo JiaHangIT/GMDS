@@ -8,7 +8,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework.Entity
     {
         public string OrgCode { get; set; }
         public decimal? Gas { get; set; }
-        public decimal? Other { get; set; }
+        public string Other { get; set; }
         public string Remark { get; set; }
         public DateTime? CreationDate { get; set; }
         public decimal? CreatedBy { get; set; }

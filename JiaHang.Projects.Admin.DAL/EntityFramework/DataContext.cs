@@ -327,7 +327,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
 
                 entity.Property(e => e.Other)
                     .HasColumnName("OTHER")
-                    .HasColumnType("NUMBER");
+                    .HasColumnType("NVARCHAR2(30)");
 
                 entity.Property(e => e.PeriodYear)
                     .HasColumnName("PERIOD_YEAR")
