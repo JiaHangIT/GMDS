@@ -114,13 +114,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                                 colname = "Q6";
                                 Convert.ToDecimal(q_6);
 
-                                var q_7 = current.Q7;
-                                if (q_7 == "")
-                                {
-                                    continue;
-                                }
-                                colname = "Q7";
-                                Convert.ToDecimal(q_7);
 
                                
                                 count++;
