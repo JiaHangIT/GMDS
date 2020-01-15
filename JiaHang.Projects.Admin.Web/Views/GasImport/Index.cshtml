@@ -103,7 +103,7 @@
             </el-table-column>
 
             <el-table-column prop="other"
-                             label="其他方式燃气使用量（立方米）"
+                             label="企业是否存在其他方式使用燃气的情况"
                              width="150">
             </el-table-column>
 
@@ -167,8 +167,15 @@
                 <el-form-item label="天然气用气量（立方米）">
                     <el-input placeholder="请输入天然气用气量（立方米）" v-model="form.gas"></el-input>
                 </el-form-item>
-                <el-form-item label="其他方式燃气使用量（立方米）">
-                    <el-input placeholder="请输入其他方式燃气使用量（立方米）" v-model="form.other"></el-input>
+                <el-form-item label="企业是否存在其他方式使用燃气的情况">
+                    <el-select v-model="form.other" placeholder="请选择">
+                        <el-option v-for="item in optLevel"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value"
+                                   :disabled="item.disabled">
+                        </el-option>
+                    </el-select>                    
                 </el-form-item>
             </el-row>
 
@@ -247,7 +254,11 @@
                 data: [],
 
                 multipleSelection: [],//获取批量选择的数据
-
+                optLevel: [
+                    { value: '', label: '请选择' },
+                    { value: '是', label: '是' },
+                    { value: '否', label: '否' },                    
+                ],
                 total: 0,
                 pageSize: 10,
                 currentPage: 1,

@@ -284,7 +284,7 @@ namespace JiaHang.Projects.Admin.BLL.ExcelGMSBLL
         public string RegistrationType { get; set; }
         public string Address { get; set; }
         public decimal? Gas { get; set; }        
-        public decimal? Other { get; set; }      
+        public string Other { get; set; }      
         public string Remark { get; set; }
     }
     //public class ApdFctGasModels

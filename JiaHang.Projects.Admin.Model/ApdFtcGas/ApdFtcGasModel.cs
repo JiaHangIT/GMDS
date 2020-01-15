@@ -8,7 +8,7 @@ namespace JiaHang.Projects.Admin.Model.ApdFtcGas
     {
         public string OrgCode { get; set; }
         public decimal? Gas { get; set; }
-        public decimal? Other { get; set; }
+        public string Other { get; set; }
         public string Remark { get; set; }
         public DateTime? CreationDate { get; set; }
         public decimal? CreatedBy { get; set; }

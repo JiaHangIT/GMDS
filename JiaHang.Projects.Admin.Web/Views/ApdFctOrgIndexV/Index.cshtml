@@ -217,12 +217,12 @@
         <el-table-column label="数据状态"
                          width="100"
                          prop="datA_STATUS">
-            
+
         </el-table-column>
         <el-table-column label="数据提示"
                          width="300"
                          prop="datA_TIP">
-         
+
         </el-table-column>
         <el-table-column label="综合评分"
                          sortable="custom"
@@ -245,9 +245,9 @@
                          width="200"
                          prop="productivitY_SCORE">
         </el-table-column>
-        <el-table-column label="单位排污权增加值得分"
+        <el-table-column label="单位增加值主要污染物排放得分"
                          sortable
-                         width="200"
+                         width="300"
                          prop="pollutanT_DISCHARGE_SCORE">
         </el-table-column>
         <el-table-column label="单位能耗增加值得分"
@@ -260,9 +260,9 @@
                          width="200"
                          prop="neT_ASSETS_PROFIT_SCORE">
         </el-table-column>
-        <el-table-column label="研发经费投入比得分"
+        <el-table-column label=" 研发经费支出占主营业务收入比重得分"
                          sortable
-                         width="200"
+                         width="320"
                          prop="r_D_EXPENDITURE_RATIO_SCORE">
         </el-table-column>
         <el-table-column label="所有者权益（万元）"
@@ -270,87 +270,87 @@
                          width="200"
                          prop="owneR_EQUITY">
         </el-table-column>
-        <el-table-column label="年职工人数"
-                         sortable
-                         width="150"
-                         prop="workeR_MONTH">
-        </el-table-column>
-        <el-table-column label="工业增加值"
-                         sortable
-                         width="150"
-                         prop="industrial_added_value">
-        </el-table-column>
-        <el-table-column label="主要污染排放量"
+        <el-table-column label="从业人员平均数（人）"
                          sortable
                          width="200"
+                         prop="workeR_MONTH">
+        </el-table-column>
+        <el-table-column label="工业增加值（万元）"
+                         sortable
+                         width="200"
+                         prop="industrial_added_value">
+        </el-table-column>
+        <el-table-column label="污染物排放当量（吨）"
+                         sortable
+                         width="220"
                          prop="pollutant_discharge2">
         </el-table-column>
-        <el-table-column label="税收实际贡献"
+        <el-table-column label="实缴税金（万元）"
                          sortable
-                         width="150"
+                         width="200"
                          prop="fact_tax">
         </el-table-column>
-        <el-table-column label="用地面积"
+        <el-table-column label="用地面积（亩）"
                          sortable
-                         width="150"
+                         width="200"
                          prop="lanD_AREA">
         </el-table-column>
-        <el-table-column label="净利润"
+        <el-table-column label="利润总额（万元）"
                          sortable
-                         width="150"
+                         width="200"
                          prop="profit">
         </el-table-column>
         @*<el-table-column label="净资产"
+                             sortable
+                             width="150"
+                             prop="assets">
+            </el-table-column>*@
+        <el-table-column label="主营业务收入（万元）"
                          sortable
-                         width="150"
-                         prop="assets">
-        </el-table-column>*@
-        <el-table-column label="主营业务收入"
-                         sortable
-                         width="150"
+                         width="200"
                          prop="maiN_BUSINESS_INCOME">
         </el-table-column>
-        <el-table-column label="研发经费支出"
+        <el-table-column label=" 研发经费支出（万元）"
                          sortable
-                         width="150"
+                         width="200"
                          prop="r_D_EXPENDITURE">
         </el-table-column>
-        <el-table-column label="综合能耗"
+        <el-table-column label="工业企业能源消费量（吨标准煤）"
                          sortable
-                         width="150"
+                         width="280"
                          prop="energy_consumption2">
         </el-table-column>
-        <el-table-column label="亩均税收"
+        <el-table-column label="亩均税收（万元/亩）"
                          sortable
-                         width="150"
+                         width="200"
                          prop="taX_PER_MU">
         </el-table-column>
-        <el-table-column label="亩均增加值"
+        <el-table-column label=" 亩均增加值（万元/亩）"
                          sortable
-                         width="180"
+                         width="220"
                          prop="adD_VALUE_PER_MU">
         </el-table-column>
-        <el-table-column label="单位能耗增加值"
+        <el-table-column label="单位能耗增加值（万元/吨标煤）"
                          sortable
-                         width="200"
+                         width="280"
                          prop="energY_CONSUMPTION">
         </el-table-column>
-        <el-table-column label="单位排污增加值"
+        <el-table-column label="单位增加值主要污染物排放当量（当量/万元）"
                          sortable
-                         width="200"
+                         width="280"
                          prop="pollutanT_DISCHARGE">
         </el-table-column>
-        <el-table-column label="全员劳动生产率"
+        <el-table-column label="全员劳动生产率（万元/人）"
                          sortable
-                         width="200"
+                         width="260"
                          prop="productivity">
         </el-table-column>
-        <el-table-column label="净资产收益率"
+        <el-table-column label="净资产收益率（%）"
                          sortable
                          width="180"
                          prop="neT_ASSETS_PROFIT">
         </el-table-column>
-        <el-table-column label="研发经费投入比"
+        <el-table-column label="研发经费支出占主营业务收入比重（%）"
                          sortable
                          width="200"
                          prop="r_D_EXPENDITURE_RATIO">
@@ -456,23 +456,23 @@
                                 评<br />
                                 分
                             </td>
-                            <td>
+                            <td id="sixclick" title="亩均税收+亩均增加值+单位能耗增加值+全员劳动生成率+净资产收益率+研发经费支出占主营业务收入比重">
                                 6<br />
                                 <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
                                 </div>
                                 <span id="sixpm"></span>|<span id="sixflpf"></span>
                             </td>
-                            <td>
+                            <td id="oneclick" title="单位增加值主要污染物排放当量">
                                 1<br />
                                 <div style="width: 90%; height: 1px; background-color: Black;margin:auto;">
                                 </div>
                                 <span id="onepm"></span>|<span id="onepf"></span>
                             </td>
-                            <td>
+                            <td >
                                 X<br />
                                 <div style="width: 90%; height: 1px; background-color: Black; margin:auto;">
                                 </div>
-                                6|<span id="xpf"></span>
+                                0|<span id="xpf"></span>
                             </td>
                         </tr>
                     </table>
@@ -481,27 +481,31 @@
                     </p>
                     <table class="tableCss2" style="width: 100%;">
                         <tr>
-                            <td></td>
+                            <td>
+                                绿色：大于平均值</br>
+                                黄色：等于平均值</br>
+                                红色：小于平均值
+                            </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
-                                    税收实际贡献<br />
+                                    实缴税金<br />
                                     <span id="fact_tax"></span>万元
                                 </div>
                             </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
-                                    综合能耗<br />
+                                    工业企业能源消费量<br />
                                     <span id="Energy_consumption2"></span>吨标煤
                                 </div>
                             </td>
                             <td colspan="3">
-                                <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
+                                <img alt="" src="~/images/jiantou/bigright.png" />
                             </td>
                             <td>
-                                <div class="dwnhdiv">
-                                    单位能耗<br />
+                                <div class="dwnhdiv" id="dwnhdiv" title="工业增加值÷工业企业能源消费量">
+                                    单位能耗增加值<br />
                                     <span id="dwnh"></span>万元/吨标煤
                                 </div>
                             </td>
@@ -510,15 +514,15 @@
                             </td>
                             <td>
                                 <div class="divWhite">
-                                    净利润<br />
-                                    <span id="PROFIT"></span>万
+                                    利润总额<br />
+                                    <span id="PROFIT"></span>万元
                                 </div>
                             </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
                                     研发经费支出<br />
-                                    <span id="R_D_EXPENDITURE"></span>万
+                                    <span id="R_D_EXPENDITURE"></span>万元
                                 </div>
                             </td>
                         </tr>
@@ -526,33 +530,33 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/top.png" style="width: 20px; height: 30px" />
                             </td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/up.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/top.png" style="width: 20px; height: 30px" />
                             </td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/bottom.png" style="width: 20px; height: 30px" />
                             </td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/bottom.png" style="width: 20px; height: 30px" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <div class="mjzjzdiv">
+                                <div class="mjzjzdiv" id="mjzjzdiv" title="工业增加值÷用地面积">
                                     亩均增加值<br />
                                     <span id="mjzjz"></span>万元/亩
                                 </div>
                             </td>
                             <td>
-                                <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
+                                <img alt="" src="~/images/jiantou/left.png" style="width: 30px; height: 20px" />
                             </td>
                             <td>
                                 <div class="divWhite">
@@ -561,7 +565,7 @@
                                 </div>
                             </td>
                             <td>
-                                <img alt="" src="~/images/left.png" style="width: 30px; height: 20px" />
+                                <img alt="" src="~/images/jiantou/left.png" style="width: 30px; height: 20px" />
                             </td>
                             <td>
                                 <div class="divWhite">
@@ -570,34 +574,34 @@
                                 </div>
                             </td>
                             <td>
-                                <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
+                                <img alt="" src="~/images/jiantou/right.png" style="width: 30px; height: 20px" />
                             </td>
                             <td>
                                 <div class="divWhite">
-                                    年均职工人数<br />
+                                    从业人员平均数<br />
                                     <span id="WORKER_MONTH"></span>人
                                 </div>
                             </td>
                             <td>
-                                <img alt="" src="~/images/right.png" style="width: 30px; height: 20px" />
+                                <img alt="" src="~/images/jiantou/right.png" style="width: 30px; height: 20px" />
                             </td>
                             <td>
-                                <div class="qyldscldiv">
+                                <div class="qyldscldiv" id="qyldscldiv" title="工业增加值÷从业人员平均人数">
                                     全员劳动生产率<br />
-                                    <span id="qyldscl"></span>万元/人.年
+                                    <span id="qyldscl"></span>万元/人
                                 </div>
                             </td>
                             <td>
                                 <div class="divWhite">
-                                    净资产<br />
-                                    <span id="ASSETS"></span>万
+                                    所有者权益<br />
+                                    <span id="ownerequity"></span>万元
                                 </div>
                             </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
                                     主营业务收入<br />
-                                    <span id="MAIN_BUSINESS_INCOME"></span>万
+                                    <span id="MAIN_BUSINESS_INCOME"></span>万元
                                 </div>
                             </td>
                         </tr>
@@ -605,29 +609,29 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/bottom.png" style="width: 20px; height: 30px" />
                             </td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/bottom.png" style="width: 20px; height: 30px" />
                             </td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/bottom.png" style="width: 20px; height: 30px" />
                             </td>
                             <td></td>
                             <td>
-                                <img alt="" src="~/images/down.png" style="width: 20px; height: 30px" />
+                                <img alt="" src="~/images/jiantou/bottom.png" style="width: 20px; height: 30px" />
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td></td>
                             <td>
-                                <div class="mjssdiv">
+                                <div class="mjssdiv" id="mjssdiv" title="实缴税金÷用地面积">
                                     亩均税收<br />
                                     <span id="mjss"></span>万元/亩
                                 </div>
@@ -635,30 +639,30 @@
                             <td></td>
                             <td>
                                 <div class="divWhite">
-                                    主要污染物排放当量<br />
-                                    <span id="pollutant_discharge"></span>
+                                    污染物排放当量<br />
+                                    <span id="pollutant_discharge"></span>吨
                                 </div>
                             </td>
                             <td colspan="3">
-                                <img alt="" src="~/images/right.png" style="width: 164px; height: 20px" />
+                                <img alt="" src="~/images/jiantou/bigright.png" />
                             </td>
                             <td>
-                                <div class="dwpwqzjzdiv">
-                                    单位排污权增加值<br />
-                                    <span id="dwpwqzjz"></span>万元/吨
+                                <div class="dwpwqzjzdiv" id="dwpwqzjzdiv" title="主要污染物排放当量÷工业增加值">
+                                    单位增加值主要污染物排放当量<br />
+                                    <span id="dwpwqzjz"></span>当量/万元
                                 </div>
                             </td>
                             <td>
-                                <div class="jzcsyldiv">
+                                <div class="jzcsyldiv" id="jzcsyldiv" title="利润总额÷所有者权益">
                                     净资产收益率<br />
                                     <span id="jzcsyl"></span>%
                                 </div>
                             </td>
                             <td></td>
                             <td>
-                                <div class="yfjftrbdiv">
-                                    研发经费投入比<br />
-                                    <span id="yfjftrb"></span>
+                                <div class="yfjftrbdiv" id="yfjftrbdiv" title="研发经费支出÷主营业务收入">
+                                    研发经费支出占主营业务收入比重<br />
+                                    <span id="yfjftrb"></span>%
                                 </div>
                             </td>
                         </tr>
@@ -675,6 +679,18 @@
         var layer = layui.layer
         var form = layui.form;
         var $ = layui.$
+        $(function () {
+            $('#sixclick').poshytip();
+            $('#oneclick').poshytip();
+            $('#mjzjzdiv').poshytip();
+            $('#mjssdiv').poshytip();
+            $('#dwnhdiv').poshytip();
+            $('#qyldscldiv').poshytip();
+            $('#jzcsyldiv').poshytip();
+            $('#yfjftrbdiv').poshytip();
+            $('#dwpwqzjzdiv').poshytip();
+        })
+       
     })
 </script>
 <script>
@@ -923,7 +939,8 @@
                         //item2.PROFIT = Math.Round(Convert.ToDecimal(item2.PROFIT / 10000), 2);
                         //item2.Industrial_added_value = Math.Round(Convert.ToDecimal(item2.Industrial_added_value / 10000), 2);
                         //item2.PRODUCTIVITY = Math.Round(Convert.ToDecimal(item2.PRODUCTIVITY / 10000), 2);
-                        $('#mjss').html(response.data.content.list[0].taX_PER_MU )
+                        console.log("111", response.data.content.list[0])
+                        $('#mjss').html(response.data.content.list[0].taX_PER_MU)
                         $('#mjzjz').html(response.data.content.list[0].adD_VALUE_PER_MU)
                         $('#qyldscl').html(response.data.content.list[0].productivity)
                         $('#dwpwqzjz').html(response.data.content.list[0].pollutanT_DISCHARGE)
@@ -932,16 +949,16 @@
                         $('#yfjftrb').html(response.data.content.list[0].r_D_EXPENDITURE_RATIO)
 
                         $('#pollutant_discharge').html(response.data.content.list[0].pollutant_discharge2)
-                        $('#MAIN_BUSINESS_INCOME').html((response.data.content.list[0].maiN_BUSINESS_INCOME / 10000).toFixed(2))
-                        $('#ASSETS').html(response.data.content.list[0].assets)
+                        $('#MAIN_BUSINESS_INCOME').html(response.data.content.list[0].maiN_BUSINESS_INCOME)
+                        $('#ownerequity').html(response.data.content.list[0].owneR_EQUITY)
                         $('#WORKER_MONTH').html(response.data.content.list[0].workeR_MONTH)
-                        $('#Industrial_added_value').html((response.data.content.list[0].industrial_added_value / 10000).toFixed(2))
+                        $('#Industrial_added_value').html(response.data.content.list[0].industrial_added_value)
                         $('#LAND_AREA').html(response.data.content.list[0].lanD_AREA)
                         $('#R_D_EXPENDITURE').html(response.data.content.list[0].r_D_EXPENDITURE)
                         $('#PROFIT').html((response.data.content.list[0].profit / 10000).toFixed(2))
                         //综合能耗
                         $('#Energy_consumption2').html(response.data.content.list[0].energy_consumption2)
-                        $('#fact_tax').html((response.data.content.list[0].fact_tax / 10000).toFixed(2))
+                        $('#fact_tax').html(response.data.content.list[0].fact_tax)
                         $('#COMPOSITE_SCORE').html(response.data.content.list[0].compositE_SCORE)
                         $('#sixflpf').html(response.data.content.industyCount)
                         $('#xpf').html(response.data.content.industyCount)

@@ -208,7 +208,7 @@
                 });
         }
 
-        function table2(name, score1, score2,year) {
+        function table2(name, score1, score2, year) {
             var datas2 = [];
             var countdata2 = [];
             axios.get(`/api/EchartReportParms/GetTownData?name=${name}&score1=${score1}&score2=${score2}&year=${year}`)
@@ -264,7 +264,7 @@
                 .catch(function (error) {
                     console.log(error)
                 });
-          
+        }
         form.on('select(myselect)', function (data) {
             var year = $('#year').val()
             axios.get(`/api/EchartReportParms/GetIndustryData?name=${data.value}&score1=${fs1}&score2=${fs2}&year=${year}`)
@@ -471,7 +471,8 @@
             $(".divUnSelected1").css("background-color", 'white')
             $(".divUnSelected2").css("background-color", 'white')
             $(".divUnSelected3").css("background-color", '#2497f3')
-        })
+            })
+
         $(function () {
             let year = $('#year').val();
             //inittable1("", -1, 60,year);
@@ -852,7 +853,7 @@
                             },
                         },
                         tooltip: {
-                            show: false,
+                            show: true,
                             trigger: 'item',
                             formatter: "{a} <br/>{b} : {c} ({d}%)"
                         },
@@ -929,7 +930,7 @@
                             },
                         },
                         tooltip: {
-                            show: false,
+                            show: true,
                             trigger: 'item',
                             formatter: "{a} <br/>{b} : {c} ({d}%)"
                         },
@@ -1005,7 +1006,7 @@
                             },
                         },
                         tooltip: {
-                            show: false,
+                            show: true,
                             trigger: 'item',
                             formatter: "{a} <br/>{b} : {c} ({d}%)"
                         },
@@ -1083,7 +1084,7 @@
                             },
                         },
                         tooltip: {
-                            show: false,
+                            show: true,
                             trigger: 'item',
                             formatter: "{a} <br/>{b} : {c} ({d}%)"
                         },

@@ -114,13 +114,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                                 colname = "Q6";
                                 Convert.ToDecimal(q_6);
 
-                                var q_7 = current.Q7;
-                                if (q_7 == "")
-                                {
-                                    continue;
-                                }
-                                colname = "Q7";
-                                Convert.ToDecimal(q_7);
 
                                
                                 count++;
@@ -142,7 +135,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.GasImport
                             PeriodYear = Convert.ToDecimal(year),
                             OrgCode = g.Q3,
                             Gas = g.Q6 == ""  ? null : Convert.ToDecimal(g.Q6),
-                            Other = g.Q7 == "" ? null : Convert.ToDecimal(g.Q7),                           
+                            Other = g.Q7 == "" ? null : g.Q7,                           
                             Remark = g.Q8,
                             CreationDate= DateTime.Now
                         });
