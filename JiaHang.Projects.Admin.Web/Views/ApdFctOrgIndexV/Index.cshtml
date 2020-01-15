@@ -280,7 +280,7 @@
                          width="200"
                          prop="industrial_added_value">
         </el-table-column>
-        <el-table-column label="污染物排放（吨）"
+        <el-table-column label="污染物排放当量（吨）"
                          sortable
                          width="220"
                          prop="pollutant_discharge2">
@@ -481,7 +481,11 @@
                     </p>
                     <table class="tableCss2" style="width: 100%;">
                         <tr>
-                            <td></td>
+                            <td>
+                                绿色：大于平均值</br>
+                                黄色：等于平均值</br>
+                                红色：小于平均值
+                            </td>
                             <td></td>
                             <td>
                                 <div class="divWhite">
@@ -500,7 +504,7 @@
                                 <img alt="" src="~/images/jiantou/bigright.png" />
                             </td>
                             <td>
-                                <div class="dwnhdiv">
+                                <div class="dwnhdiv" id="dwnhdiv" title="工业增加值÷工业企业能源消费量">
                                     单位能耗增加值<br />
                                     <span id="dwnh"></span>万元/吨标煤
                                 </div>
@@ -546,7 +550,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <div class="mjzjzdiv">
+                                <div class="mjzjzdiv" id="mjzjzdiv" title="工业增加值÷用地面积">
                                     亩均增加值<br />
                                     <span id="mjzjz"></span>万元/亩
                                 </div>
@@ -582,7 +586,7 @@
                                 <img alt="" src="~/images/jiantou/right.png" style="width: 30px; height: 20px" />
                             </td>
                             <td>
-                                <div class="qyldscldiv">
+                                <div class="qyldscldiv" id="qyldscldiv" title="工业增加值÷从业人员平均人数">
                                     全员劳动生产率<br />
                                     <span id="qyldscl"></span>万元/人
                                 </div>
@@ -627,7 +631,7 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <div class="mjssdiv">
+                                <div class="mjssdiv" id="mjssdiv" title="实缴税金÷用地面积">
                                     亩均税收<br />
                                     <span id="mjss"></span>万元/亩
                                 </div>
@@ -635,7 +639,7 @@
                             <td></td>
                             <td>
                                 <div class="divWhite">
-                                    污染物排放<br />
+                                    污染物排放当量<br />
                                     <span id="pollutant_discharge"></span>吨
                                 </div>
                             </td>
@@ -643,20 +647,20 @@
                                 <img alt="" src="~/images/jiantou/bigright.png" />
                             </td>
                             <td>
-                                <div class="dwpwqzjzdiv">
-                                    单位排污权增加值<br />
-                                    <span id="dwpwqzjz"></span>万元/当量
+                                <div class="dwpwqzjzdiv" id="dwpwqzjzdiv" title="主要污染物排放当量÷工业增加值">
+                                    单位增加值主要污染物排放当量<br />
+                                    <span id="dwpwqzjz"></span>当量/万元
                                 </div>
                             </td>
                             <td>
-                                <div class="jzcsyldiv">
+                                <div class="jzcsyldiv" id="jzcsyldiv" title="利润总额÷所有者权益">
                                     净资产收益率<br />
                                     <span id="jzcsyl"></span>%
                                 </div>
                             </td>
                             <td></td>
                             <td>
-                                <div class="yfjftrbdiv">
+                                <div class="yfjftrbdiv" id="yfjftrbdiv" title="研发经费支出÷主营业务收入">
                                     研发经费支出占主营业务收入比重<br />
                                     <span id="yfjftrb"></span>%
                                 </div>
@@ -678,6 +682,13 @@
         $(function () {
             $('#sixclick').poshytip();
             $('#oneclick').poshytip();
+            $('#mjzjzdiv').poshytip();
+            $('#mjssdiv').poshytip();
+            $('#dwnhdiv').poshytip();
+            $('#qyldscldiv').poshytip();
+            $('#jzcsyldiv').poshytip();
+            $('#yfjftrbdiv').poshytip();
+            $('#dwpwqzjzdiv').poshytip();
         })
        
     })
