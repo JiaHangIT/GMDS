@@ -205,7 +205,7 @@ namespace JiaHang.Projects.Admin.BLL.DFetchDataBLL
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdFctElectric.Add(item);
                 }
-                //context.ApdFctElectric.AddRange(list);  
+                //context.ApdFctElectric.AddRange(list);
                 using (IDbContextTransaction trans = context.Database.BeginTransaction())
                 {
                     try

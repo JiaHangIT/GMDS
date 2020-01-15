@@ -469,7 +469,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
         {
             try
             {
-               
                 FuncResult fr = new FuncResult() { IsSuccess = true, Message = "操作成功！" };
                 pagenum--; if (pagenum < 0)
                 {
@@ -504,23 +503,6 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                     var row = sheet1.CreateRow(i);
                     row.Height = 35 * 20;
                   
-                    //row.CreateCell(1).SetCellValue(data[i - 5].OrgName);
-                    //row.Cells[1].CellStyle = Style;
-                    //row.CreateCell(2).SetCellValue(data[i - 5].Town);
-                    //row.Cells[2].CellStyle = Style;
-                    //row.CreateCell(3).SetCellValue(data[i - 5].OrgCode);
-                    //row.Cells[3].CellStyle = Style;
-                    //row.CreateCell(4).SetCellValue(data[i - 5].RegistrationType);
-                    //row.Cells[4].CellStyle = Style;
-                    //row.CreateCell(5).SetCellValue(data[i - 5].Address);
-                    //row.Cells[5].CellStyle = Style;
-                    //row.CreateCell(6).SetCellValue(Convert.ToDouble(data[i - 5].NetSupply));
-                    //row.Cells[6].CellStyle = Style;
-                    //row.CreateCell(7).SetCellValue(Convert.ToDouble(data[i - 5].Spontaneous));
-                    //row.Cells[7].CellStyle = Style;
-                    //row.CreateCell(8).SetCellValue(data[i - 5].Remark);
-                    //row.Cells[8].CellStyle = Style;
-
                     row.CreateCell(0).SetCellValue(i - 5);
                     row.Cells[0].CellStyle = Style;
                     row.CreateCell(1).SetCellValue(data[i-6].OrgName);
@@ -618,64 +600,7 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API
                 xssfworkbook.Write(stream);
                 var buf = stream.ToArray();
                 return File(buf, "application/ms-excel", $"{DateTime.Now.ToString("yyyy-MM-dd:hh:mm:ss")}.xls");
-
-
-                #region 原有方法
-                //byte[] result;
-
-                //using (var package = new ExcelPackage())
-                //{
-                //    var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                //    worksheet.Cells["A1:H1"].Merge = true;
-                //    //worksheet.Cells[1, 1].Value = string.IsNullOrEmpty(model.searchcondition) ? "全国" : model.searchcondition;
-                //    //worksheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                //    //for (int i = 0; i < comlumHeadrs.Count(); i++)
-                //    //{
-                //    //    worksheet.Cells[2, i + 1].Value = comlumHeadrs[i];
-                //    //    worksheet.Cells[2, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                //    //}
-                //    //如果是空数据 直接返回
-                //    if (data.Count() <= 1)
-                //    {
-                //        //return package.GetAsByteArray();
-                //        //return File(package.GetAsByteArray(), "application/ms-excel", "test");
-                //    }
-                //    var j = 3;//数据行
-                //    foreach (var item in data)
-                //    {
-                //        var rt = item.GetType();
-                //        var rp = rt.GetProperties();
-
-                //        //B到Q
-                //        worksheet.Cells["B" + j].Value = item.OrgName;
-                //        worksheet.Cells["C" + j].Value = item.Town;
-                //        worksheet.Cells["D" + j].Value = item.OrgCode;
-                //        worksheet.Cells["E" + j].Value = item.RegistrationType;
-                //        worksheet.Cells["F" + j].Value = item.Address;
-                //        worksheet.Cells["G" + j].Value = item.LegalRepresentative;
-                //        worksheet.Cells["H" + j].Value = item.Phone;
-                //        worksheet.Cells["I" + j].Value = item.LinkMan;
-                //        worksheet.Cells["J" + j].Value = item.Phone2;
-                //        worksheet.Cells["K" + j].Value = item.OwnershipLand;
-                //        worksheet.Cells["L" + j].Value = item.ProtectionLand;
-                //        worksheet.Cells["M" + j].Value = item.ReduceLand;
-                //        worksheet.Cells["N" + j].Value = item.FactLand;
-                //        worksheet.Cells["O" + j].Value = item.RentLand;
-                //        worksheet.Cells["P" + j].Value = item.LeaseLand;
-                //        worksheet.Cells["Q" + j].Value = item.Remark;
-
-                //        j++;
-                //    }
-
-                //    result = package.GetAsByteArray();
-                //}
-
-                //return File(result, "application/ms-excel", $"{DateTime.Now.ToString("yyyy-MM-dd:hh:mm:ss")}.xls");
-                #endregion
-
-
-
+                
             }
             catch (Exception ex)
             {

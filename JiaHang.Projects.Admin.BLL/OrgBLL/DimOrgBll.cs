@@ -213,21 +213,12 @@ namespace JiaHang.Projects.Admin.BLL.OrgBLL
             {
 
                 var _year = Convert.ToDecimal(year);
-                //var dm = list.Where(f => !context.ApdDimOrg.Select(g => g.OrgCode).Contains(f.OrgCode));
-                //if (dm != null && dm.Count() > 0)
-                //{
-                //    fr.IsSuccess = false;
-                //    fr.Message = "未找到配置的企业信息!";
-                //    return fr;
-                //}
+
                 var existdata = context.ApdDimOrg.Where(f => f.PeriodYear.Equals(Convert.ToDecimal(year)));
                 context.ApdDimOrg.RemoveRange(existdata);
                 foreach (var item in list)
                 {
-                    //if (isAlreadyExport(item.OrgCode, year))
-                    //{
-                    //    //continue;
-                    //}
+
                     item.CreationDate = DateTime.Now;
                     item.CreatedBy = Convert.ToDecimal(userid);
                     context.ApdDimOrg.Add(item);
