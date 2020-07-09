@@ -109,6 +109,21 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             entity.LastUpdatedBy = currentUserId;
             entity.LastUpdateDate = DateTime.Now;
 
+            if (entity.UserAccount.Length < 6)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "账户至少设置6位!" };
+            }
+
+            var pr = passwordverify(entity.UserPassword);
+            if (pr != Strength.Normal)
+            {
+                if (pr == Strength.Invalid)
+                {
+                    return new FuncResult() { IsSuccess = false, Message = "账户至少设置6位!" };
+                }
+                return new FuncResult() { IsSuccess = false, Message = "密码至少8位，由数字、字母或特殊字符中2种方式组成!" };
+            }
+
             _context.SysUserInfo.Update(entity);
             await _context.SaveChangesAsync();
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "修改成功" };
@@ -159,6 +174,13 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             return new FuncResult() { IsSuccess = true, Message = $"已成功删除{ids.Length}条记录" };
 
         }
+
+        /// <summary>
+        /// 账户至少6位，密码需要复杂度检测
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="currentUserId"></param>
+        /// <returns></returns>
         public async Task<FuncResult> Add(SysUserInfoModel model, string currentUserId)
         {
             SysUserInfo entity = new SysUserInfo
@@ -178,6 +200,21 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 CreatedBy = currentUserId
 
             };
+            if (entity.UserAccount.Length < 6)
+            {
+                return new FuncResult() { IsSuccess = false, Message = "账户至少设置6位!" };
+            }
+          
+            var pr = passwordverify(entity.UserPassword);
+            if (pr != Strength.Normal)
+            {
+                if (pr == Strength.Invalid)
+                {
+                    return new FuncResult() { IsSuccess = false, Message = "密码至少8位!" };
+                }
+                return new FuncResult() { IsSuccess = false, Message = "密码至少8位，由数字、字母或特殊字符中2种方式组成!" };
+            }
+            
             await _context.SysUserInfo.AddAsync(entity);
 
             using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction trans = _context.Database.BeginTransaction())
@@ -197,6 +234,34 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
 
             return new FuncResult() { IsSuccess = true, Content = entity, Message = "添加成功" };
         }
+
+        /// <summary>
+        /// 密码至少8位，由数字、字母或特殊字符中2种方式组成
+        /// </summary>
+        public static Func<string, Strength> passwordverify = (password) =>
+           {
+                //空字符串强度值为0
+                if (password == "" || password.Length < 8) return Strength.Invalid;
+
+                //字符统计
+                int iNum = 0, iLtt = 0, iSym = 0;
+               foreach (char c in password)
+               {
+                   if (c >= '0' && c <= '9') iNum++;
+                   else if (c >= 'a' && c <= 'z') iLtt++;
+                   else if (c >= 'A' && c <= 'Z') iLtt++;
+                   else iSym++;
+               }
+               if (iLtt == 0 && iSym == 0) return Strength.Weak; //纯数字密码
+                if (iNum == 0 && iLtt == 0) return Strength.Weak; //纯符号密码
+                if (iNum == 0 && iSym == 0) return Strength.Weak; //纯字母密码
+                if (password.Length <= 6) return Strength.Weak; //长度不大于6的密码
+                if (iLtt == 0) return Strength.Normal; //数字和符号构成的密码
+                if (iSym == 0) return Strength.Normal; //数字和字母构成的密码
+                if (iNum == 0) return Strength.Normal; //字母和符号构成的密码
+                if (password.Length <= 10) return Strength.Normal; //长度不大于10的密码
+                return Strength.Strong; //由数字、字母、符号构成的密码
+            };
 
         public FuncResult<SysUserInfo> Login(string userAccount, string password)
         {
@@ -286,4 +351,15 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
 
 
     }
+
+    /// <summary>
+    /// 密码强度
+    /// </summary>
+    public enum Strength
+    {
+        Invalid = 0, //无效密码
+        Weak = 1, //低强度密码
+        Normal = 2, //中强度密码
+        Strong = 3 //高强度密码
+    };
 }

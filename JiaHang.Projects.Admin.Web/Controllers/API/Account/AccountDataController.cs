@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using JiaHang.Projects.Admin.BLL.Relation;
 using JiaHang.Projects.Admin.BLL.SysOperRightBLL;
@@ -11,6 +12,7 @@ using JiaHang.Projects.Admin.Web.WebApiIdentityAuth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
 {
@@ -24,8 +26,10 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
         private readonly SysUserInfoBLL sysUserInfoService;
         private readonly CurrentUserRouteBLL currentUserRouteBLL;
         private readonly SysOperRightBLL sysOperRightBLL;
+        private readonly DataContext dataContext;
         public AccountDataController(DAL.EntityFramework.DataContext context, IMemoryCache cache)
         {
+            this.dataContext = context;
             credentialsManage = new CredentialsManage(cache);
             sysUserInfoService = new SysUserInfoBLL(context);
             currentUserRouteBLL = new CurrentUserRouteBLL(context);
@@ -38,6 +42,8 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
         [HttpPost]
         public FuncResult Login([FromBody]AccountLogin model)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             if (model == null)
             {
                 return new FuncResult() { IsSuccess = false, Message = "请输入正确用户名及密码" };
@@ -47,6 +53,30 @@ namespace JiaHang.Projects.Admin.Web.Controllers.API.Account
             if (!result.IsSuccess)
             {
                 return new FuncResult() { IsSuccess = result.IsSuccess, Message = result.Message };
+            }
+            VisLog visLog = new VisLog()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Method = "login",
+                UserId = result.Content.UserId,
+                VisTime = DateTime.Now,
+                RequestUrl = HttpContext.Request.Host + HttpContext.Request.Path + HttpContext.Request.QueryString,
+                RequestBody = JsonConvert.SerializeObject(model),
+                RequestMethod = "POST",
+                Params = JsonConvert.SerializeObject(model),
+                Result = JsonConvert.SerializeObject(result.Content),
+                TakeUpTime = (decimal)stopwatch.Elapsed.TotalMilliseconds,
+                DeleteFlag = 0
+            };
+            dataContext.VisLog.Add(visLog);
+            try
+            {
+                dataContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
 
             //写入到缓存中

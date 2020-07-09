@@ -84,6 +84,7 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
         public virtual DbSet<ApdFctElectric> ApdFctElectric { get; set; }
         public virtual DbSet<ApdFctWorker> ApdFctWorker { get; set; }
         public virtual DbSet<ApdDimRatio> ApdDimRatio { get; set; }
+        public virtual DbSet<VisLog> VisLog { get; set; }
         // Unable to generate entity type for table 'DCSP_USER.AAAA_AAAA'. Please see the warning messages.
         // Unable to generate entity type for table 'DCSP_USER.TEMP_WXF'. Please see the warning messages.
 
@@ -4361,6 +4362,28 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                 entity.Property(e => e.RDExpenditureRatio).HasColumnName("R_D_EXPENDITURE_RATIO");
                 entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
                
+            });
+
+            modelBuilder.Entity<VisLog>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Id)
+                .HasName("PRIMARY_KEY")
+                .IsUnique();
+
+                entity.ToTable("VISLOG");
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Method).HasColumnName("METHOD");
+                entity.Property(e => e.UserId).HasColumnName("USERID");
+                entity.Property(e => e.VisTime).HasColumnName("VISTIME");
+                entity.Property(e => e.RequestUrl).HasColumnName("REQUESTURL");
+                entity.Property(e => e.RequestMethod).HasColumnName("REQUESTMETHOD");
+                entity.Property(e => e.RequestBody).HasColumnName("REQUESTBODY");
+                entity.Property(e => e.Params).HasColumnName("PARAMS");
+                entity.Property(e => e.Result).HasColumnName("RESULT");
+                entity.Property(e => e.TakeUpTime).HasColumnName("TAKEUPTIME");
+                entity.Property(e => e.DeleteFlag).HasColumnName("DELETE_FLAG");
+
             });
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
                //.Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType))

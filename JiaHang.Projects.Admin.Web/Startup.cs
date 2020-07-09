@@ -40,7 +40,7 @@ namespace JiaHang.Projects.Admin.Web
             //注入依赖
             services.AddUEditorService();
 
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContext<DataContext>(options =>
             {
                // options.UseOracle(oracle_connection);
@@ -54,7 +54,11 @@ namespace JiaHang.Projects.Admin.Web
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
             //注入异常过滤器
-            services.AddMvc(options=>options.Filters.Add<GlobalExceptionFilter>()).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options=> {
+                options.Filters.Add<GlobalExceptionFilter>();
+                options.Filters.Add<ActionAttribute>();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
