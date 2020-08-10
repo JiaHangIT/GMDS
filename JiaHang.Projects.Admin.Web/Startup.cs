@@ -2,7 +2,6 @@
 using JiaHang.Projects.Admin.DAL.EntityFramework;
 using JiaHang.Projects.Admin.Web.Filter;
 using JiaHang.Projects.Admin.Web.WebApiIdentityAuth;
-//using JiaHang.Projects.Admin.Web.WebApiIdentityAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -94,7 +93,7 @@ namespace JiaHang.Projects.Admin.Web
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "JiaHang MXBI API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "JiaHang GM API V1");
             });
         }
     }
