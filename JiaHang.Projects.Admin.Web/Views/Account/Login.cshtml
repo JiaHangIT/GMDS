@@ -3,8 +3,8 @@
     ViewData["Title"] = "Login";
     Layout = null;
 }
-<link href="https://at.alicdn.com/t/font_1018241_zxgexn67aas.css" rel="stylesheet" />
 
+<link href="~/css/font_1018241_zxgexn67aas.css" rel="stylesheet" />
 <link href="~/layui/css/layui.css" rel="stylesheet" />
 <style>
     #login_view {
@@ -111,6 +111,9 @@
             <div class="from-text" id="angree">
                 <i class="iconfont icon-checkboxoutline" id="angreechecked" style="display:none;font-size:18px;"></i>  <i class="iconfont icon-checkboxoutlineblank" id="angreeunchecked" style="font-size:18px;"></i>  <label>系统需要获取到您的账号信息</label>
             </div>
+            <div class="from-text" id="info">
+                <label style="color:orange">《使用需知》</label>
+            </div>
             <div class="from-text login-btn">
                 <input type="button" id="btn_login" value="登   录" />
 
@@ -190,7 +193,16 @@
 
         }
 
-
+        document.getElementById("info").onclick = function () {
+            layer.open({
+                type: 0,
+                title: ['使用需知', 'font-size:12px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+                content: '1.信息的录入</br>不得填报任何违反有关法律规定信息； </br>不得填报任何不完整、虚假的信息； </br>用户填报的内容和提供的证件完全真实有效，如有不实，用户承担由此产生的一切后果和相关责任。</br>'
+                    + '</br> 2.信息的使用</br>本网站提供的其它信息，仅与其相应内容有关的目的而被使用；</br>不得将任何本系统的信息用作任何商业目的。</br> ',
+                btn: [],
+            });
+        }
+        
         document.onkeydown = function (event) {
             var e = event || window.event;
             if (e && e.keyCode == 13) { //回车键的键值为13

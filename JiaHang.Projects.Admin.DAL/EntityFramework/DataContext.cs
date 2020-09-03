@@ -4118,6 +4118,10 @@ namespace JiaHang.Projects.Admin.DAL.EntityFramework
                     .HasColumnName("LAST_UPDATED_BY")
                     .HasColumnType("NVARCHAR2(40)");
 
+                entity.Property(e => e.ValidTime)
+                .HasColumnName("VALIDTIME")
+                .HasColumnType("DATE");
+
                 entity.Property(e => e.UserAccount)
                     .IsRequired()
                     .HasColumnName("USER_ACCOUNT")

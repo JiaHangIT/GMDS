@@ -46,8 +46,9 @@ namespace JiaHang.Projects.Admin.Model.SysUserInfo.RequestModel
         public string UserMobileNo { get; set; }
 
 
-
-
-
+        /// <summary>
+        /// 用户密码有效期止
+        /// </summary>
+        public DateTime UserValidTime { get; set; }
     }
 }

@@ -70,7 +70,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 User_Email = e.UserEmail,
                 User_Password = e.UserPassword,
                 User_Mobile_No = e.UserMobile,
-                CreationDate = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")
+                CreationDate = e.CreationDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                User_Valid_Time = e.ValidTime
             });
 
             return new FuncResult() { IsSuccess = true, Content = new { data, total } };
@@ -108,6 +109,7 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
             entity.UserMobile = model.UserMobileNo;
             entity.LastUpdatedBy = currentUserId;
             entity.LastUpdateDate = DateTime.Now;
+            entity.ValidTime = model.UserValidTime;
 
             if (entity.UserAccount.Length < 6)
             {
@@ -197,7 +199,8 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
                 LastUpdatedBy = currentUserId,
                 LastUpdateDate = DateTime.Now,
                 CreationDate = DateTime.Now,
-                CreatedBy = currentUserId
+                CreatedBy = currentUserId,
+                ValidTime = model.UserValidTime
 
             };
             if (entity.UserAccount.Length < 6)
@@ -267,12 +270,27 @@ namespace JiaHang.Projects.Admin.BLL.SysUserInfoervice
         {
             var result = new FuncResult<SysUserInfo>() { IsSuccess = false, Message = "账号或密码错误!" };
 
-            var entity = _context.SysUserInfo.FirstOrDefault(e => e.UserAccount == userAccount);
+            var entity = _context.SysUserInfo.SingleOrDefault(e => e.UserAccount == userAccount);
             if (entity != null && entity.UserPassword == password)
             {
-                result.Content = entity;
-                result.Message = "登录成功";
-                result.IsSuccess = true;
+                if (entity.ValidTime != null)
+                {
+                    var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    if (currentDate > entity.ValidTime)
+                    {
+                        result.Content = entity;
+                        result.Message = $"用户密码已过期，请联系管理员，过期时间{entity.ValidTime}";
+                        result.IsSuccess = false;
+                    }
+                   
+                }
+                else
+                {
+                    result.Content = entity;
+                    result.Message = "登录成功";
+                    result.IsSuccess = true;
+                }
+                
             }
             return result;
         }
